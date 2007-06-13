@@ -1,0 +1,163 @@
+-----------------------------------------------------------------------------
+--
+--   SCCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/drop_maitab.sql-arc   2.0   Jun 13 2007 16:32:32   smarshall  $
+--       Module Name      : $Workfile:   drop_maitab.sql  $
+--       Date into SCCS   : $Date:   Jun 13 2007 16:32:32  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
+--       SCCS Version     : $Revision:   2.0  $
+--
+-----------------------------------------------------------------------------
+
+Prompt Dropping MAI tables
+
+drop table ACTIVITIES;
+drop table ACTIVITIES_REPORT;
+drop table ACTIVITY_GROUPS;
+drop table ACT_FREQS;
+drop table ACT_GROUP_MEMBS;
+drop table ACT_REPORT_LINES;
+drop table BOQ_ITEMS;
+drop table BPR34A_TT;
+drop table BPR34B_TT;
+drop table BPR35A_TT;
+drop table BPR35B_TT;
+drop table BUDGETS;
+drop table CLAIM_PAYMENTS;
+drop table COLOUR_LAYER_MAP;
+drop table CONTRACTOR_DISC_BANDS;
+drop table CONTRACTOR_DISC_GROUPS;
+drop table CONTRACTS;
+drop table CONTRACT_ITEMS;
+drop table CONTRACT_PAYMENTS;
+drop table CONTRACT_SURCHARGES;
+drop table COST_CENTRES;
+drop table DEFAULT_TREATS;
+drop table DEFECTS;
+drop table DEFECT_PRIORITIES;
+drop table DEF_MOVEMENTS;
+drop table DEF_TREATS;
+drop table DEF_TYPES;
+drop table DELETED_DEFECTS;
+drop table DEL_INV_ITEMS;
+drop table DOC_DEF_PRIORITIES;
+drop table DOC_DEF_TREATS;
+drop table EXT_ACTIVITIES;
+drop table EXT_ACT_ROAD_USAGE;
+drop table FINANCIAL_YEARS;
+drop table HHINV_HOLD_1;
+drop table HHINV_ITEM_ERR_1;
+drop table HHINV_ITEM_ERR_2;
+drop table HHINV_ITEM_ERR_3;
+drop table HHINV_LOAD_1;
+drop table HHINV_LOAD_2;
+drop table HHINV_LOAD_3;
+drop table HHINV_ODL_LOG;
+drop table HHINV_RUN_LOG;
+drop table HHINV_SECT_LOG;
+drop table HH_LOAD_BATCHES;
+drop table HH_LOAD_RECS;
+drop table IFF_SECT_STACK;
+drop table IHMS_ALLOCATED_AMTS;
+drop table IHMS_CONVERSIONS;
+drop table INSURANCE_CLAIM_ACTIVITIES;
+drop table INSURANCE_CLAIM_PARAMETERS;
+drop table INTERFACE_BOQ;
+drop table INTERFACE_CLAIMS_BOQ_ALL;
+drop table INTERFACE_CLAIMS_WOL_ALL;
+drop table INTERFACE_CLAIMS_WOR_ALL;
+drop table INTERFACE_COMPLETIONS_ALL;
+drop table INTERFACE_ERRONEOUS_RECORDS;
+drop table INTERFACE_HEADERS;
+drop table INTERFACE_RUN_LOG;
+drop table INTERFACE_WOL;
+drop table INTERFACE_WOR;
+drop table INV_ATTRI_DOMAINS;
+drop table INV_ATTRI_ROW_CNT;
+drop table INV_ITEMS_ALL;
+drop table INV_ITEM_HISTORY;
+drop table INV_ITEM_TYPES;
+drop table INV_MP_ERRORS;
+drop table INV_TMP;
+drop table INV_TYPE_ATTRIBS;
+drop table INV_TYPE_COLOURS;
+drop table ITEM_CODE_BREAKDOWNS;
+drop table ITY_CATEGORY_ROLES;
+drop table JOB_SIZES;
+drop table LAMP_CONFIGS;
+drop table LOAD_ERRORS;
+drop table LOCAL_FREQS;
+drop table MAI2325_QUERY;
+drop table MAI2325_RESULTS;
+drop table MAI3890_DOCTMP;
+drop table MAI3890_INVTMP;
+drop table MAI3890_WKTMP;
+drop table NAVIGATOR;
+drop table NL_AREA_USAGES;
+drop table NOTICES;
+drop table NOTICE_DEFECTS;
+drop table ORG_UNITS;
+drop table PBI_QUERY;
+drop table PBI_QUERY_ATTRIBS;
+drop table PBI_QUERY_TYPES;
+drop table PBI_RESULTS;
+drop table PBI_RESULTS_INV;
+drop table PEOPLE;
+drop table QUERYTAB$$$;
+drop table RELATED_INVENTORY;
+drop table RELATED_MAINTENANCE;
+drop table REPAIRS;
+drop table SCHEDULES;
+drop table SCHEDULE_ITEMS;
+drop table SCHEDULE_ROADS;
+drop table SCHEMES;
+drop table SCHEME_ACTIVITIES;
+drop table SCHEME_ASSESSMENTS;
+drop table SCHEME_CONTRACTORS;
+drop table SCHEME_HISTORY;
+drop table SCHEME_ROADS;
+drop table SECTION_FREQS;
+drop table SECT_FREQ1;
+drop table SECT_FREQ2;
+drop table STANDARD_ITEMS;
+drop table STANDARD_ITEM_SECTIONS;
+drop table STANDARD_ITEM_SUB_SECTIONS;
+drop table TEMP_2140;
+drop table TEMP_ACT_LINES;
+drop table TEMP_BPR3100_ARE;
+drop table TEMP_BPR3100_ARL;
+drop table TEMP_CONTRACTS_LOCK;
+drop table TEMP_DEFECTS;
+drop table TEMP_LOAD_2;
+drop table TEMP_PMS4440_COMMENTS;
+drop table TEMP_PMS4440_COMPSCHEMES;
+drop table TEMP_PMS4440_DEFBANDS;
+drop table TEMP_PMS4440_DEFECTS;
+drop table TEMP_PMS4440_DEFECT_LIST;
+drop table TEMP_PMS4440_DETTRTS;
+drop table TEMP_PMS4440_REPORT_SECTIONS;
+drop table TEMP_PMS4440_ROADCONS;
+drop table TEMP_PMS4440_STRIP_DATA;
+drop table TEMP_PMS4440_STRIP_HEADER;
+drop table TEMP_PMS4440_STRIP_LIST;
+drop table TEMP_REPLACE_DEFECTS;
+drop table TEMP_SPLIT_LINES;
+drop table TEMP_UNMERGE_DEFECTS;
+drop table TEMP_UNREPLACE_DEFECTS;
+drop table TEMP_UNSPLIT_DEFECTS;
+drop table TMP_BPR2140;
+drop table TREATMENTS;
+drop table TREATMENT_MODELS;
+drop table TREATMENT_MODEL_ITEMS;
+drop table VALID_FOR_MAINTENANCE;
+drop table VAT_RATES;
+drop table WOL_INTERIM_PAYMENTS;
+drop table WORK_ORDERS;
+drop table WORK_ORDER_CLAIMS;
+drop table WORK_ORDER_LINES;
+drop table WO_AUDIT;
+drop table WO_AUDIT_COLUMNS;
+drop table XSP_RESTRAINTS;
+drop table XSP_REVERSAL;
+
