@@ -1,0 +1,238 @@
+CREATE OR REPLACE package mai_audit as
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkh-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       Module Name      : $Workfile:   mai_audit.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.4
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)mai_audit.pck	1.1 08/23/00'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+-- <TYPES>
+    type old_vals is record
+        (wor_works_order_no  work_orders.wor_works_order_no%type
+        ,wol_id              work_order_lines.wol_id%type
+        ,boq_id              boq_items.boq_id%type
+        ,wor_act_cost        work_orders.wor_act_cost%type
+        ,wor_date_confirmed  work_orders.wor_date_confirmed%type
+        ,wor_act_cost_code   work_orders.wor_act_cost_code%type
+        ,wor_closed_by_id    work_orders.wor_closed_by_id%type
+        ,wor_con_id          work_orders.wor_con_id%type
+        ,wor_est_complete    work_orders.wor_est_complete%type
+        ,wor_est_cost        work_orders.wor_est_cost%type
+        ,wor_last_print_date work_orders.wor_last_print_date%type
+        ,wor_priority        work_orders.wor_priority%type
+        ,wor_rse_he_id_group work_orders.wor_rse_he_id_group%type
+        ,wor_score           work_orders.wor_score%type
+        ,wol_date_complete   work_order_lines.wol_date_complete%type
+        ,wol_est_cost        work_order_lines.wol_est_cost%type
+        ,wol_act_cost        work_order_lines.wol_act_cost%type
+        ,wol_rse_he_id       work_order_lines.wol_rse_he_id%type
+        ,wol_status_code     work_order_lines.wol_status_code%type
+        ,wol_gang            work_order_lines.wol_gang%type
+        ,boq_act_cost        boq_items.boq_act_cost%type
+        ,boq_act_quantity    boq_items.boq_act_quantity%type
+        ,boq_act_rate        boq_items.boq_act_rate%type
+        ,boq_est_cost        boq_items.boq_est_cost%type
+        ,boq_est_quantity    boq_items.boq_est_quantity%type
+        ,boq_est_rate        boq_items.boq_est_rate%type
+        ,boq_sta_item_code   boq_items.boq_sta_item_code%type
+        ,wor_peo_person_id   work_orders.wor_peo_person_id%type
+        ,wor_mod_by_id       work_orders.wor_mod_by_id%type);
+
+
+   session_start date := null;
+   log_all hig_options.hop_value%type;
+
+
+   type aud_tab is table of varchar2(201)
+   index by binary_integer;
+   aud_tab_no integer := 0;  -- count of records in table
+-- </TYPES>
+--
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="get_version">
+     function   get_version return varchar2;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wor_audit_setup">
+    procedure wor_audit_setup(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                             ,p_wor_act_cost        work_orders.wor_act_cost%type
+                             ,p_wor_date_confirmed  work_orders.wor_date_confirmed%type
+                             ,p_wor_act_cost_code   work_orders.wor_act_cost_code%type
+                             ,p_wor_closed_by_id    work_orders.wor_closed_by_id%type
+                             ,p_wor_con_id          work_orders.wor_con_id%type
+                             ,p_wor_est_complete    work_orders.wor_est_complete%type
+                             ,p_wor_est_cost        work_orders.wor_est_cost%type
+                             ,p_wor_last_print_date work_orders.wor_last_print_date%type
+                             ,p_wor_priority        work_orders.wor_priority%type
+                             ,p_wor_rse_he_id_group work_orders.wor_rse_he_id_group%type
+                             ,p_wor_score           work_orders.wor_score%type
+                             ,p_wor_peo_person_id   work_orders.wor_peo_person_id%type
+                             ,p_wor_mod_by_id       work_orders.wor_mod_by_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wor_audit">
+    procedure wor_audit(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                       ,p_wor_act_cost        work_orders.wor_act_cost%type
+                       ,p_wor_date_confirmed  work_orders.wor_date_confirmed%type
+                       ,p_wor_act_cost_code   work_orders.wor_act_cost_code%type
+                       ,p_wor_closed_by_id    work_orders.wor_closed_by_id%type
+                       ,p_wor_con_id          work_orders.wor_con_id%type
+                       ,p_wor_est_complete    work_orders.wor_est_complete%type
+                       ,p_wor_est_cost        work_orders.wor_est_cost%type
+                       ,p_wor_last_print_date work_orders.wor_last_print_date%type
+                       ,p_wor_priority        work_orders.wor_priority%type
+                       ,p_wor_rse_he_id_group work_orders.wor_rse_he_id_group%type
+                       ,p_wor_score           work_orders.wor_score%type
+                       ,p_wor_peo_person_id   work_orders.wor_peo_person_id%type
+                       ,p_wor_mod_by_id       work_orders.wor_mod_by_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wor_create">
+   procedure wor_create (p_wor_works_order_no in work_orders.wor_works_order_no%type
+                        ,p_wor_peo_person_id  in work_orders.wor_peo_person_id%type
+                        ,p_wor_mod_by_id      in work_orders.wor_mod_by_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wol_audit_setup">
+   procedure wol_audit_setup(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                            ,p_wol_id             in work_order_lines.wol_id%type
+                            ,p_wol_date_complete  in work_order_lines.wol_date_complete%type
+                            ,p_wol_est_cost       in work_order_lines.wol_est_cost%type
+                            ,p_wol_act_cost       in work_order_lines.wol_act_cost%type
+                            ,p_wol_rse_he_id      in work_order_lines.wol_rse_he_id%type
+                            ,p_wol_status_code    in work_order_lines.wol_status_code%type
+                            ,p_wol_gang           in work_order_lines.wol_gang%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wol_audit">
+    procedure wol_audit(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                       ,p_wol_id             in work_order_lines.wol_id%type
+                       ,p_wol_date_complete  in work_order_lines.wol_date_complete%type
+                       ,p_wol_est_cost       in work_order_lines.wol_est_cost%type
+                       ,p_wol_act_cost       in work_order_lines.wol_act_cost%type
+                       ,p_wol_rse_he_id      in work_order_lines.wol_rse_he_id%type
+                       ,p_wol_status_code    in work_order_lines.wol_status_code%type
+                       ,p_wol_gang           in work_order_lines.wol_gang%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wol_delete">
+    procedure wol_delete(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                        ,p_wol_id             in work_order_lines.wol_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="wol_create"> 
+    procedure wol_create(p_wor_works_order_no in work_orders.wor_works_order_no%type
+                       ,p_wol_id             in work_order_lines.wol_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="boq_audit_setup">
+   procedure boq_audit_setup(p_boq_id             in boq_items.boq_id%type
+                            ,p_boq_wol_id         in boq_items.boq_wol_id%type
+                            ,p_boq_act_cost       in boq_items.boq_act_cost%type
+                            ,p_boq_act_quantity   in boq_items.boq_act_quantity%type
+                            ,p_boq_act_rate       in boq_items.boq_act_rate%type
+                            ,p_boq_est_cost       in boq_items.boq_est_cost%type
+                            ,p_boq_est_quantity   in boq_items.boq_est_quantity%type
+                            ,p_boq_est_rate       in boq_items.boq_est_rate%type
+                            ,p_boq_sta_item_code  in boq_items.boq_sta_item_code%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="boq_audit">
+   procedure boq_audit(p_boq_id             in boq_items.boq_id%type
+                      ,p_boq_wol_id         in boq_items.boq_wol_id%type
+                      ,p_boq_act_cost       in boq_items.boq_act_cost%type
+                      ,p_boq_act_quantity   in boq_items.boq_act_quantity%type
+                      ,p_boq_act_rate       in boq_items.boq_act_rate%type
+                      ,p_boq_est_cost       in boq_items.boq_est_cost%type
+                      ,p_boq_est_quantity   in boq_items.boq_est_quantity%type
+                      ,p_boq_est_rate       in boq_items.boq_est_rate%type
+                      ,p_boq_sta_item_code  in boq_items.boq_sta_item_code%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="boq_delete">
+   procedure boq_delete (p_boq_id             in boq_items.boq_id%type
+                        ,p_boq_wol_id         in boq_items.boq_wol_id%type);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="boq_create">
+   procedure boq_create (p_boq_id             in boq_items.boq_id%type
+                        ,p_boq_wol_id         in boq_items.boq_wol_id%type);
+-----------------------------------------------------------------------------
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="cp_audit">
+   procedure cp_audit ( pi_wol_id        in wo_audit.WAD_WOL_ID%TYPE
+                      , pi_new_status    in wo_audit.WAD_CHANGE%TYPE
+                      , pi_old_status    in wo_audit.WAD_CHANGE_FROM%TYPE
+                      );
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="cpa_audit">
+   procedure cpa_audit ( pi_cp_woc_claim_ref   in claim_payments.cp_woc_claim_ref%TYPE
+                       , pi_cp_woc_con_id      in claim_payments.cp_woc_con_id%TYPE
+                       , pi_cp_wol_id          in claim_payments.cp_wol_id%TYPE
+                       , pi_cp_status          in claim_payments.cp_status%TYPE
+                       , pi_cp_claim_value     in claim_payments.cp_claim_value%TYPE
+                       , pi_cp_payment_id      in claim_payments.cp_payment_id%TYPE
+                       , pi_cp_payment_value   in claim_payments.cp_payment_value%TYPE
+                       , pi_cp_payment_date    in claim_payments.cp_payment_date%TYPE
+                       , pi_cp_fis_payment_ref in claim_payments.cp_fis_payment_ref%TYPE
+                       , pi_cp_fyr_id          in claim_payments.cp_fyr_id%TYPE
+                       , pi_cp_invoice_no      in claim_payments.cp_invoice_no%TYPE
+                       );
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PRAGMA>
+    PRAGMA RESTRICT_REFERENCES( get_version, WNDS);
+--
+-- </PRAGMA
+-----------------------------------------------------------------------------
+end;
+/

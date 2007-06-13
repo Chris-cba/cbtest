@@ -1,0 +1,38 @@
+CREATE OR REPLACE package int_utility is
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/int_utility.pkh-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       Module Name      : $Workfile:   int_utility.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.1
+--
+-- Originally taken from '@(#)intutil.pck	1.1 01/27/99'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid	constant	varchar2(2000) := '$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_field">
+function get_field(string  varchar2, field_no number) RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+pragma restrict_references(get_field, WNDS, RNDS, WNPS, RNPS);
+--</PRAGMA>
+--
+----------------------------------------------------------------------------
+end int_utility;
+/
