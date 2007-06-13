@@ -1,0 +1,147 @@
+CREATE OR REPLACE PACKAGE mai_sdo_util
+IS
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       Module Name      : $Workfile:   mai_sdo_util.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.7
+--
+--   Author : A. Edwards
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) exor corporation ltd, 2006
+-----------------------------------------------------------------------------
+--
+   g_sccsid   CONSTANT VARCHAR2 (80) := '@(#)mai_sdo_util.pkh	1.7 05/08/07';
+--
+   g_table_name       CONSTANT user_tables.table_name%TYPE       := 'DEFECTS';
+   g_view_name        CONSTANT user_tables.table_name%TYPE       := 'V_MAI_DEFECTS';
+   g_sdo_pk           CONSTANT user_tables.table_name%TYPE       := 'DEFECT_ID';
+   g_pk_column        CONSTANT user_tab_columns.column_name%TYPE := 'DEF_DEFECT_ID';
+   g_feature_tab_xy   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_XY_SDO';
+   g_feature_tab_lr   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_LR_SDO';
+   g_shape_col        CONSTANT user_tab_columns.column_name%TYPE := 'GEOLOC';
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+   FUNCTION get_version
+      RETURN VARCHAR2;
+
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+   FUNCTION get_body_version
+      RETURN VARCHAR2;
+
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--  PROCEDURES/FUNCTIONS migrated from IM_FUNCS package
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="get_hco_descr">
+-- This function returns the hco_meaning for the specified domain value. The third
+--  (optional) parameter allows you to specify the NVL value either from a predefined
+--  set or your own value
+--
+--   Predefined values are -  "UK" - Unknown
+--                            "NS" - Not Set
+--                            "NU" - Not Used
+--
+   FUNCTION get_hco_meaning
+               ( pi_hdo_domain hig_domains.hdo_domain%TYPE
+               , pi_hco_code   hig_codes.hco_code%TYPE
+               , pi_nvl_code   VARCHAR2 DEFAULT NULL )
+     RETURN hig_codes.hco_meaning%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_interval_desc">
+-- This function returns the description for the specified domain value
+--
+   FUNCTION get_interval_desc
+               ( pi_int_code intervals.int_code%TYPE)
+     RETURN intervals.int_descr%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_treatment_descr">
+-- Get the treatment description
+--
+   FUNCTION get_treatment_descr
+               ( pi_tre_treat_code treatments.tre_treat_code%TYPE)
+     RETURN treatments.tre_descr%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_estimated_cost_of_defect">
+-- Obtain the Estimated cost for a defect repair
+--
+   FUNCTION get_estimated_cost_of_defect
+               ( pi_def_defect_id  defects.def_defect_id%TYPE
+               , pi_rep_action_cat repairs.rep_action_cat%TYPE)
+     RETURN NUMBER;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_actual_cost_of_defect">
+-- Obtain the actual cost for a defect repair
+--
+   FUNCTION get_actual_cost_of_defect
+               ( pi_def_defect_id  defects.def_defect_id%TYPE
+               , pi_rep_action_cat repairs.rep_action_cat%TYPE )
+     RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_admin_unit_descr">
+-- This function returns the name for a specified admin unit
+--
+   FUNCTION get_admin_unit_descr
+               ( pi_hau_admin_unit hig_admin_units.hau_admin_unit%TYPE)
+     RETURN hig_admin_units.hau_name%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="MAKE_BASE_SDO
+   PROCEDURE make_base_sdo_layer
+               ( pi_theme_name    IN nm_themes_all.nth_theme_name%TYPE
+               , pi_asset_type    IN nm_inv_types.nit_inv_type%TYPE
+               , pi_asset_descr   IN nm_inv_types.nit_descr%TYPE
+               , pi_x_column      IN user_tab_columns.column_name%TYPE
+               , pi_y_column      IN user_tab_columns.column_name%TYPE
+               , pi_lr_ne_column  IN user_tab_columns.column_name%TYPE
+               , pi_lr_st_chain   IN user_tab_columns.column_name%TYPE
+               , pi_snapping_trig IN VARCHAR2 DEFAULT 'TRUE');
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="MAKE_DEFECT_SECURE_VIEW"
+  PROCEDURE make_defect_secure_view;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="CREATE_LOOKUPS"
+  PROCEDURE create_lookups
+             ( pi_asset_type   IN   nm_inv_types.nit_inv_type%TYPE );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+
+END mai_sdo_util;
+/
