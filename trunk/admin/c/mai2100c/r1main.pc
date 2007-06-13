@@ -1,0 +1,704 @@
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r1main.pc	1.3 09/10/04";
+
+/* *******************************************************************
+
+   REPORT  : BPRI 2100 - Loads Husky Hunter data into the Database.
+
+
+   AUTHOR  : D.P.Turner   - Oracle Corp UK.
+   VERSION : 1.0
+   DATE    : 3rd December 1987
+   DESCRIPTION  :-
+    i)    Check whether all records are loaded by ODL process.
+    ii)   Allocates unique sequence number to each new record.
+    iii)  Checks for inconsistencies in number  of records written
+         to the database.
+    iv)   Will report on any section level errors.
+
+   CHANGE HISTORY :-
+    DATE         : 10-Dec-92
+    CHANGED BY   : Rod Strong
+    DESCRIPTTION : This change necessary for PC MS/DOS version: variable
+                   icode set to 0 & used in "dummy" call to proload, instead
+                   of literal 0.  This dummy call is used in "format check only"
+                   mode.
+
+    DATE         : 08-Feb-93
+    CHANGED BY   : Rod Strong
+    DESCRIPTTION : Add logoff from Oracle before exits where missing.
+   
+    DATE         : 01-SEP-97
+    CHANGED BY   : G Fletcher
+    DESCRIPTION  : 1.7 > 2.1 database conversion
+
+    DATE         : 31-10-97
+    CHANGED BY   : G Fletcher
+    DESCRIPTION  : client-server conversion
+
+    DATE         : 24-Apr-01
+    CHANGED BY   : M Elsmore
+    DESCRIPTION  : Changed for Hampshire such that SECTION NUMBER can
+                   be alphanumeric if ANSECTNO product option is Y,
+                   otherwise it must be numeric.
+
+    DATE         : 27-Apr-01
+    CHANGED BY   : M Elsmore
+    DESCRIPTION  : Changed to tidy up FORMAT CHECK and VALIDATION and 
+                   LOAD error/progress messages.
+
+    DATE         : 14-Jun-01
+    CHANGED BY   : M Elsmore
+    DESCRIPTION  : ECDM 686490
+    ****************************************************************** */
+
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include "rmms.h"
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+
+EXEC SQL BEGIN DECLARE SECTION;
+
+/* -------------------------------------------------------- *
+   24-Apr-01. MRE. Added ansectno_flag
+ * -------------------------------------------------------- */
+     VARCHAR      ansectno_flag[100];
+
+     long int     count_a;
+     long int     count_b;
+     long int     count_c;
+     long int     count_z;
+     long int     expect_b;
+     long int     expect_c;
+     long int     icode;
+     long int     max_sq;
+     long int     tot_recs;
+     VARCHAR sec_code[6];
+     VARCHAR uid[21];
+     VARCHAR sys_date[25];
+     VARCHAR linkcode[11];
+     VARCHAR run_date[25];
+     VARCHAR tst_dir_now[2];
+     VARCHAR tst_dir_run[2];
+     int     tst_fst_run;
+     int     tst_heid;
+     VARCHAR tst_inv_dt[10];
+     VARCHAR tst_lnk[30];
+     VARCHAR tst_ld_dte[10];
+     int     tst_lst_run;
+     long int tst_rec_sq;
+     VARCHAR tst_rsf[2];
+     VARCHAR tst_sect[5];
+     VARCHAR tst_suc_stat[1];
+     VARCHAR tst_full[1000];
+EXEC SQL END DECLARE SECTION;
+
+/************************************************************ 
+* Function Declaration area                                 *
+************************************************************/ 
+
+#define SQLCA_STORAGE_CLASS extern 
+
+EXEC SQL INCLUDE sqlext.h;
+
+short EXDebug;
+char *EXRepOutpath;
+char EXJobNo[10];
+char pipe_msg[254];
+char csv_separator;
+
+extern int rmms_flag;  /* indicates database type included to allow for
+road  segment sys flag on romis databases only  G Dutton 27 oct 89*/
+
+/* Note length of string increased from 71 to 100 to allow format errors
+to report line number G Dutton 14 dec 88 */
+char err_msg[100];
+   
+/*stack added to allow inventory load to report more than one error when
+loading records G Dutton 20 Oct 89*/
+char err_stack[100][100];
+
+/*flag insert yes/no used to control the insert of records to Oracle G Dutton
+20 Oct 89*/
+BOOLEAN insyn;
+
+/*flag format check yes/no G Dutton 20 Oct 89*/                
+BOOLEAN fcheck;
+
+/*number printed errors in file yes/no G Dutton 20 Oct 89*/                
+int prerrors;
+
+/*Count of number errorneous records G Dutton 20 Oct 89*/
+int noerrs;                                         
+
+/*Output flag S screen C (with pause)  F file only
+D disable screen output G Dutton 20 Oct 89*/
+char output;                                         
+   
+FILE *fi;
+
+main(argc,argv)
+int argc;
+char *argv[];
+{
+  	int i,count = 0;
+
+	jobmain(argc,argv);
+
+	get_params(3); /* Retrieve 3 GRI job params */
+
+	if (EXParam[2].len==0)
+	{
+		EXEC SQL ROLLBACK WORK;
+		jobend(EXJobId,1,"GRI Param 3 not set");
+		EXEC SQL COMMIT WORK;
+		dblogoff();
+	}
+
+/* 
+** Check for format check only flag set insert flag to false if set
+*/
+                                                          
+	if (chkabv(EXParam[0].arr,"F") == TRUE)
+	{
+		insyn=FALSE;
+		fcheck=TRUE;
+	}
+	else
+	{
+		insyn=TRUE;                   
+		fcheck=FALSE;
+	}
+	 
+    if ( ( fi = fopen(EXRepOutpath,"w") ) == NULL )
+    {
+     	sprintf(err_msg,"%s %s",EXRepOutpath,strerror(errno));
+        strcpy(pipe_msg,"ERROR: Unable to open output file ");
+        strcat(pipe_msg,(char *)EXRepOutpath);
+        write_pipe(NULL,pipe_msg);
+	    EXEC SQL ROLLBACK WORK;
+	  	jobend(EXJobId,1,err_msg);
+	    EXEC SQL COMMIT WORK;
+	    dblogoff();
+    }
+    
+/* -------------------------------------------------------------------- *
+   24-Apr-01. MRE. Get the ANSECTNO product option. If it does not
+   exist, set the ansectno_flag to 'N'.
+ * -------------------------------------------------------------------- */
+        EXEC SQL EXECUTE
+        BEGIN
+           :ansectno_flag := hig.get_sysopt('ANSECTNO');
+        END;
+        END-EXEC;
+        if (ansectno_flag.len == 0){
+            strcpy(ansectno_flag.arr,"N");
+            ansectno_flag.len = 1;
+        }
+        else {
+            ansectno_flag.arr[ansectno_flag.len] = '\0';
+        }
+/* -------------------------------------------------------------------- *
+   24-Apr-01. MRE. End of changes.
+ * -------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------- *
+   27-Apr-01. MRE.  Select of date and output of report heading moved
+   here so that they print at the top of the report.
+ * -------------------------------------------------------------------- */
+	EXEC SQL SELECT SYSDATE,USER
+           		INTO :sys_date,:uid
+           		FROM DUAL;
+	rep_head();
+/* 
+** If insert flag  == TRUE get date,sequence no,load records to Oracle 
+*/
+
+ 	if (insyn==TRUE)
+ 	{
+
+
+        EXEC SQL BEGIN DECLARE SECTION;
+           varchar l_csv_separator[2];
+           short int li_csv_separator;
+        EXEC SQL END DECLARE SECTION;
+
+        l_csv_separator.arr[0] = ',';
+        l_csv_separator.arr[1] = '\0';
+        l_csv_separator.len = 1;
+        li_csv_separator = 0;
+
+        EXEC SQL EXECUTE
+        BEGIN
+           :l_csv_separator := hig.get_sysopt('CSVSEPVAL');
+        END;
+        END-EXEC;
+
+        if (l_csv_separator.len == 0)
+        {
+           l_csv_separator.arr[0] = ',';
+           l_csv_separator.arr[1] = '\0';
+           l_csv_separator.len = 1;
+        }
+
+        csv_separator = l_csv_separator.arr[0];
+
+  		EXEC SQL SELECT ne_id_seq.nextval,
+                   		TO_CHAR(SYSDATE,'RRMMDD:HHMISS')
+		            	into :icode,
+       		          	:run_date
+            			FROM dual;
+
+   		run_date.arr[run_date.len] = '\0';
+   		uid.arr[uid.len] = '\0';
+
+		if (!proload(run_date.arr,icode,&max_sq,uid.arr))                  
+   		{
+   			dump_errs();
+
+   			fprintf(fi,"\nEND OF ERROR REPORT\n");
+			fprintf(fi,"\n\n\nEND OF REPORT\n");
+   			fclose(fi);
+     		strcpy(err_msg,"ERRORS DETECTED DURING FORMAT CHECKING");
+			puts(err_msg);
+                write_pipe(fi,err_msg);
+	    	EXEC SQL ROLLBACK WORK;
+	  		jobend(EXJobId,1,err_msg);
+	    	EXEC SQL COMMIT WORK;
+	    	dblogoff();
+   			exit(EX_FAIL);
+   		}
+	}
+	else /* do not load records to Oracle call proload with dummy parameters */
+	{
+        write_pipe(fi,"INFO: Format check option selected");
+     	printf("\nINFO: Format check option selected\n");
+		/* while (TRUE)
+		{    */
+   			prerrors = 0;
+   			if (output != 'D') 
+			{
+				output = 'C';
+			}
+   			icode = 0;
+   			if (!proload("010101",icode,&max_sq,"format check"))
+   			{
+				dump_errs();
+   				fprintf(fi,"END OF ERROR REPORT\n");
+   				printf("\n*** ERRORS - DETECTED DURING FORMAT CHECKING  ***\n");
+                                write_pipe(fi,"ERROR: *** ERRORS - DETECTED DURING FORMAT CHECKING ***");
+   				fflush(fi); 
+			}
+		/* }  */
+	}
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    =>Macro LOG_LOAD_RUN loads the ODL log table with the columns listed
+      in the insert statement below.<=
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+   	EXEC SQL INSERT INTO HHINV_ODL_LOG
+   	                    (RUN_DATE,
+                      	RUN_USER,
+                       	INVENT_BY,
+                       	COUNT_SECT,
+                       	COUNT_INVENT,
+                       	LAST_SEQ_NO,
+                       	NEW_SEQ_NO,
+                       	Z_REC_SEQ_NO)
+            		SELECT SYSDATE,
+                   		UPPER(:uid),
+                   		UPPER(:uid),
+                   		TO_NUMBER(SUBSTR(FULL_VALUE,1,4)),
+                   		TO_NUMBER(SUBSTR(FULL_VALUE,6,4)),
+                   		:icode,
+                   		:max_sq,
+                   		REC_SEQ_NO
+            		FROM HHINV_LOAD_1
+            		WHERE REC_TYPE = 'Z'
+            		AND   REC_SEQ_NO = :max_sq;
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   =>Macro CHECK_TIE_UP locates inconsistencies in loaded data, and
+     indicates severe errors in the data load process.<=
+
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+/*  if ( ( ( max_sq - icode ) != ( expect_b + expect_c + 2 ) ) ||
+       ( tot_recs != ( max_sq - icode ) ) )
+   {
+    strcpy(err_msg,
+           "ERROR: Processing for Load has located inconsistencies BPR-8115");
+    err_proc();
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,err_msg);
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(EX_FAIL);
+   } */
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   =>Macro PULL_OUT_SECT inserts into table hhinv_sect_log for one
+     `B' record from the husky hunter.<=
+
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
+ /*database type of ROMIS */
+{
+  EXEC SQL INSERT INTO HHINV_SECT_LOG
+                       (FST_RUN_NUM,
+                        LST_RUN_NUM,
+                        LOAD_DATE,
+                        REC_SEQ_NO,
+                        HE_ID,
+                        SCL_CLASS,
+                        LINKCODE,
+                        SECTION_CODE,
+                        INVENT_DATE,
+                        INVENT_BY,
+                        INVENT_BY_INIT,
+                        PEO_INVENT_BY_ID,
+                        DIRECT_RUN,
+                        DIRECT_NOW,
+                        RE_SUB_FLG,
+                        SUCCESS_STAT,
+                        ERROR_LEVEL,
+                        ERROR_MSG,
+                        HHINV_RSE_SYS_FLAG,
+                        SURVEY_LENGTH,
+                        sect_start_node,
+                        sub_section_length,
+                        full_partial_ind)
+
+           SELECT 0,
+               0,
+               SYSDATE,
+               REC_SEQ_NO,
+               NVL(RSE.RSE_HE_ID,-9999999),
+               RSE.RSE_SCL_SECT_CLASS,
+               upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1)),
+               ltrim(rtrim(
+                 substr(full_value,
+                   instr(full_value,',',1,1) + 1,
+                   instr(full_value,',',1,2) - instr(full_value,',',1,1)-1))),
+               TO_DATE(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,2) + 1,
+                   instr(full_value,',',1,3) - instr(full_value,',',1,2)-1),
+                                                  'RRMMDD'),
+               UPPER(:uid),
+               LTRIM(RTRIM(SUBSTR(FULL_VALUE, 
+                   instr(full_value,',',1,4) + 1,3))),
+               PEO.HUS_USER_ID,
+               SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,3) + 1,
+                   instr(full_value,',',1,4) - instr(full_value,',',1,3)-1),
+               SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,3) + 1,
+                   instr(full_value,',',1,4) - instr(full_value,',',1,3)-1),
+               'N',
+               '0',
+               NULL,
+               NULL,
+               RSE_SYS_FLAG,
+               substr(full_value,
+                     instr(full_value,',',1,5) + 1,
+                     instr(full_value,',',1,6) - instr(full_value,',',1,5)-1),
+               substr(full_value,
+                     instr(full_value,',',1,6) + 1,
+                     instr(full_value,',',1,7) - instr(full_value,',',1,6)-1),
+               substr(full_value,
+                     instr(full_value,',',1,7) + 1,
+                     instr(full_value,',',1,8) - instr(full_value,',',1,7)-1),
+               substr(full_value,
+                     instr(full_value,',',1,8) + 1,1)
+        FROM   HHINV_LOAD_1, ROAD_SECTIONS RSE, HIG_USERS PEO
+        WHERE  REC_TYPE = 'B'
+        AND    LOAD_DATE = TO_DATE(:run_date,'RRMMDD:HHMISS')
+/* -------------------------------------------------------- *
+   14-Jun-01. MRE. Added RTRIM for ECDM 686490
+ * -------------------------------------------------------- */
+        AND    RSE.RSE_GROUP(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1))))
+        AND    RSE.RSE_SECT_NO(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,12,instr(full_value,',',1,2)-12))))
+        AND    PEO.HUS_INITIALS(+)    = 
+               LTRIM(RTRIM(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,4) + 1,3)));
+
+}
+else
+{
+  EXEC SQL INSERT INTO HHINV_SECT_LOG
+                       (FST_RUN_NUM,
+                        LST_RUN_NUM,
+                        LOAD_DATE,
+                        REC_SEQ_NO,
+                        HE_ID,
+                        SCL_CLASS,
+                        LINKCODE,
+                        SECTION_CODE,
+                        INVENT_DATE,
+                        INVENT_BY,
+                        INVENT_BY_INIT,
+                        PEO_INVENT_BY_ID,
+                        DIRECT_RUN,
+                        DIRECT_NOW,
+                        RE_SUB_FLG,
+                        SUCCESS_STAT,
+                        ERROR_LEVEL,
+                        ERROR_MSG,
+                        SURVEY_LENGTH)
+
+           SELECT 0,
+               0,
+               SYSDATE,
+               REC_SEQ_NO,
+               NVL(RSE.RSE_HE_ID,-9999999),
+               RSE.RSE_SCL_SECT_CLASS,
+               upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1)),
+               ltrim(rtrim(
+                 substr(full_value,
+                   instr(full_value,',',1,1) + 1,
+                   instr(full_value,',',1,2) - instr(full_value,',',1,1)-1))),
+               TO_DATE(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,2) + 1,
+                   instr(full_value,',',1,3) - instr(full_value,',',1,2)-1),
+                                                  'RRMMDD'),
+               UPPER(:uid),
+               LTRIM(RTRIM(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,4) + 1,
+                   instr(full_value,',',1,5) - instr(full_value,',',1,4)-1))),
+               DECODE(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,4) + 1,
+                   instr(full_value,',',1,5) - instr(full_value,',',1,4)-1)
+                            ,NULL,NULL,PEO.HUS_USER_ID),
+               SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,3) + 1,
+                   instr(full_value,',',1,4) - instr(full_value,',',1,3)-1),
+               SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,3) + 1,
+                   instr(full_value,',',1,4) - instr(full_value,',',1,3)-1),
+               'N',
+               '0',
+               NULL,
+               NULL,
+               substr(full_value,
+                     instr(full_value,',',1,5) + 1,
+                     instr(full_value,',',1,6) - instr(full_value,',',1,5)-1)
+        FROM   HHINV_LOAD_1, ROAD_SECTIONS RSE, HIG_USERS PEO
+        WHERE  REC_TYPE = 'B'
+        AND    LOAD_DATE = TO_DATE(:run_date,'RRMMDD:HHMISS')
+/* -------------------------------------------------------- *
+   14-Jun-01. MRE. Added RTRIM for ECDM 686490
+ * -------------------------------------------------------- */
+        AND    RSE.RSE_GROUP(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1))))
+        AND    RSE.RSE_SECT_NO(+) =LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,12,instr(full_value,',',1,2)-12))))
+        AND    PEO.HUS_INITIALS(+)    = 
+               LTRIM(RTRIM(SUBSTR(FULL_VALUE,
+                   instr(full_value,',',1,4) + 1,3)));
+}
+   if (sqlca.sqlcode < 0)
+      sql_err("Populate HHINV_SECT_LOG");
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   =>Macro CHK_DUPL_SECT checks for duplicate loaded sections<=
+
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+  
+ /*          INTO     :linkcode, :sec_code */
+/*  The following code was commented out at some stage to allow duplicate UKPMS 
+    data loads for a section, but allows this for ordinary Inventory loads.
+    Re-enabled, with specific checks for UKPMS loads, for release 2.2.0.7  
+    Rod Strong, June 2002  */
+
+  EXEC SQL DECLARE C1 CURSOR FOR
+           SELECT   LINKCODE,SECTION_CODE
+           FROM     HHINV_SECT_LOG HHS
+           WHERE    REC_SEQ_NO > :icode
+           AND      HHS.HE_ID != -9999999
+           AND      (HHS.HE_ID)
+           IN
+         ( SELECT   HHS2.HE_ID
+           FROM     HHINV_SECT_LOG HHS2
+           GROUP BY HHS2.HE_ID
+           HAVING   COUNT('A') > 1 )
+/*  Following code added by Rod Strong, June 2002:   */
+           and not exists
+         ( select 1 from ukpms_view_definitions, hhinv_load_1 hhl1
+           where hhl1.rec_seq_no > hhs.rec_seq_no
+           and   hhl1.rec_type = 'C'
+           and   substr(hhl1.full_value,1,2) = uvd_inv_code
+           and   uvd_sys_flag = hhs.hhinv_rse_sys_flag
+           and   uvd_xsp_method_in_use = 'U'
+           and   uvd_feature_or_survey in ('S','?') );
+/*  End of added code  */
+
+  EXEC SQL WHENEVER NOT FOUND GOTO fin;
+
+  EXEC SQL OPEN C1;
+
+
+  EXEC SQL FETCH C1 INTO :linkcode, :sec_code;
+
+
+  for ( count = 0; sqlca.sqlcode != 1403 ; count++ )
+   {
+
+    if ( count == 0 )
+     {
+      fprintf(fi,"     Sections have - Duplicate Sections/Inventories ");
+      fprintf(fi,"Loaded:-\n\n");
+      fprintf(fi,"                 Linkcode                Section\n");
+      fprintf(fi,"                 --------                -------\n\n");
+      printf("     Sections have - Duplicate Sections/Inventories ");
+      printf("Loaded:-\n\n");
+      printf("                 Linkcode                Section\n");
+      printf("                 --------                -------\n\n");
+      write_pipe(fi,"WARN: Sections have - Duplicate Sections/Inventories loaded :-");
+      write_pipe(fi,"     Linkcode           Section");
+      count++;
+     }
+
+    sec_code.arr[sec_code.len] = '\0';
+    linkcode.arr[linkcode.len] = '\0';
+    fprintf(fi,"                %s                    ",linkcode.arr);
+    fprintf(fi," %s\n",sec_code.arr);
+    printf("                %s                    ",linkcode.arr);
+    printf(" %s\n",sec_code.arr);
+    strcpy(pipe_msg,"     ");
+    strcat(pipe_msg,linkcode.arr);
+    strcat(pipe_msg,"  ");
+    strcat(pipe_msg,sec_code.arr);
+    write_pipe(fi,pipe_msg);
+    
+
+    EXEC SQL FETCH C1 INTO :linkcode, :sec_code;
+
+   }
+/*  This was the end of the commented-out code  */
+fin:
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   =>Macro COMMIT YES/NO commits changes inspite of duplicate sections
+     if required by the user.<=       
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+/*
+	EXEC SQL CLOSE C1;
+*/
+  	if ((EXParam[1].arr[0] == 'N') && (count > 0))
+  	{
+      	   printf("\nWARNING: Duplicate Inventory Found but Not Loaded BPR-8300\n");
+           printf("************************************************************\n");
+           write_pipe(fi,"WARN: Duplicate Inventory Found but Not Loaded BPR-8300");
+	   EXEC SQL ROLLBACK WORK;
+  	}
+
+  	if ((EXParam[1].arr[0] == 'Y') && (count > 0))
+  	{
+           EXEC SQL COMMIT WORK;
+      	   printf("\nWARNING: Duplicate Inventory Found and Loaded BPR-8300\n");
+           printf("********************************************************\n");
+           write_pipe(fi,"WARN: Duplicate Inventory Found and Loaded BPR-8300");
+	   EXEC SQL COMMIT WORK;
+  	}
+
+  	if (count == 0)
+   	{
+           if(!fcheck){
+      	       fprintf(fi,"\n               VALIDATION AND LOAD SUCCESSFUL\n");
+           }
+      	   printf("\n\nINFO: REPORT EXECUTION COMPLETED SUCCESSFULLY BPR-8505\n");
+      	   printf("******************************************************\n");  
+           write_pipe(fi,"INFO: REPORT EXECUTION COMPLETED SUCCESSFULLY BPR-8505");
+           jobend(EXJobId,0,err_msg);
+           EXEC SQL COMMIT WORK;
+   	}
+
+        
+  	fprintf(fi,"\n\n\nEND OF REPORT\n");
+        
+  	fclose(fi);
+	dblogoff();
+  	exit(0);
+}
+
+err_proc()
+
+/* ********************************************************************
+   Procedure to report error found in the input data
+   ******************************************************************** */
+{
+/* -------------------------------------------------------------------- *
+ * 27-Apr-01. MRE.  Following line removed.                             *
+ *	rep_head();                                                     *
+ * -------------------------------------------------------------------- */
+  	fprintf(fi,"\n\n\n   %s\n\n\n",err_msg);
+  	fprintf(fi,"\nEND OF ERROR REPORT\n");
+	
+  	printf("\n%s\n",err_msg);
+  	printf("\n*** ERRORS - DETECTED ON DOWN LOAD TO DATABASE ***\n");
+        write_pipe(fi,err_msg);
+        write_pipe(fi,"ERROR: *** ERRORS - DETECTED ON DOWN LOAD TO DATABASE ***");
+
+  	fprintf(fi,"\n\n\nEND OF REPORT\n");
+  	fclose(fi);
+
+  	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,err_msg);
+	EXEC SQL COMMIT WORK;
+}
+
+rep_head()
+/* *******************************************************************
+   Final report of load
+   ******************************************************************* */
+ {
+/* -------------------------------------------------------------------- *
+   27-Apr-01. MRE.  Heading changes depending on type of run. (And to
+   underline properly for different NLS_DATE_FORMATs !!
+ * -------------------------------------------------------------------- */
+ int i;
+ if(fcheck){
+      fprintf(fi,"\nBPRI2100      FORMAT CHECK OF HUSKY HUNTER DATA    %s",sys_date.arr);
+      fprintf(fi,"\n========      =================================    ");
+  }
+  else {
+      fprintf(fi,"\nBPRI2100      LOAD OF HUSKY HUNTER DATA TO DATABASE    %s",sys_date.arr);
+      fprintf(fi,"\n========      =====================================    ");
+  }
+  for( i = 0; i < sys_date.len; i++ ){
+      fprintf(fi,"=");
+  }
+  fprintf(fi,"\n\n");
+ }
+
+void usersigfunc(sig)
+int sig;
+{
+        char temp[100];
+
+	printf("Signal %d received. Aborting ...",sig);
+        i_toa(sig,temp);
+        strcpy(pipe_msg,"FATAL: Signal ");
+        strcat(pipe_msg,temp);
+        strcat(pipe_msg," received. Aborting ...");
+        write_pipe(fi,pipe_msg);
+        
+  	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}
