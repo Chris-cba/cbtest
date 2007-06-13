@@ -1,0 +1,971 @@
+/* ============================================================================
+ *
+ * Program      : mai2220 
+ *
+ * Author       : H.Buckley 
+ * Version      : 1.0
+ * Date         : 16-Oct-1995 
+ * Description  : This program has been designed to extract a series of
+ *                codes and descriptions and to present the codes in an
+ *                orderly format. The format of the file has been determined
+ *                by Parkman Engineering as the file produced by this 
+ *                program should be loadable into the Parkmans Roadline 350
+ *                product. 
+ *
+ *                This program should create a file with the following file
+ *                naming convention :
+ *
+ *                <Owner Initials><File Number>.CDE ( ie HB_001.CDE )
+ *
+ *                The file created by this program should contain the
+ *                following record types :
+ *
+ *                'A' :  Notifiable Organisations  ( By ORG UNIT )
+ *                'B' :  Rechargeable Organisations( By ORG UNIT )
+ *                'C' :  MSH ( Activity Codes )
+ *                'D' :  Priority
+ *                'E' :  Inspection Source         ( Ref Base    )
+ *                'F' :  Survey Method    [ To be left in but will be ignored ]
+ *                'G' :  Complaint Type            ( Ref Base    )
+ *                'H' :  Complaint Source          ( Ref Base    )
+ *                'I' :  Comment Class             ( Ref Base    )
+ *                'J' :  Road surface condition    ( Ref Base    )
+ *                'K' :  Road weather condition    ( Ref Base    )           
+ *                'L' :  Inspectors Initials       ( By ORG UNIT )
+ *                'M' :  Defect Types          
+ *                The program will be executed via the Highways GRI and
+ *                should only accept parameters of Username/Password and
+ *                GRI Job Id.
+ *
+ * Parameters   : GRI Report Parameters are :
+ *                                   
+ *                          a) Date From which data is valid.
+ *                          b) Date To   which data valid 
+ *                          c) User Identification value ( User Initials )
+ *
+ * CHANGE HISTORY :-
+ * Date         : 01-Feb-1996
+ * Changed by   : H.Buckley 
+ * Description  : Added codes for road surface condition and weather condition 
+ *
+ * DATE         : 01-SEP-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : 1.7 > 2.1 database conversion
+ *                
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ *                
+ * ============================================================================
+ */
+
+/*SCCS ID keyword, do not remove */
+static char *sccsid = "@(#)mai2220.pc	1.1 09/16/03";
+
+#define FATAL   1                         /* Failure boolean indicator    */
+#define SUCCESS 1                         /* Success boolean indicator    */
+#define d_quote '"'                       /* Double quote constant        */
+#define fld_sep ','                       /* Field separator character    */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
+#include <errno.h>
+#include "rmms.h"
+
+EXEC SQL BEGIN DECLARE SECTION;
+
+int        rmms_flag                      /* Database type                */
+          ,rba_rec[50];                   /* Ref base record type         */
+varchar    full_date[19]                  /* The current date             */
+          ,parameters[50][41]             /* Report parameters 1,2,3      */
+          ,oun_unit_code[50][11]          /* Org unit code                */
+          ,oun_name[50][41]               /* Org Unit name                */
+          ,rba_ref_value[50][21]          /* Ref base value               */
+          ,rba_ref_meaning[50][53]        /* Ref base meaning             */
+          ,dty_defect_code[50][5]         /* Defect Code                  */
+          ,dty_descr1[50][41]             /* Defect description           */
+          ,siss_id[50][4]                 /* Standard item identifier     */
+          ,siss_name[50][61]              /* Standard item name           */
+          ,peo_name[50][41]               /* Persons name                 */
+          ,peo_initials[50][4]            /* People initials              */
+          ,p1[40]                         /* Effective date parameter     */
+;
+short      parametersi[50]                /* Report parameters indicator  */
+          ,oun_unit_codei[50]             /* Unit code indicator          */
+          ,oun_namei[50]                  /* Unit name indicator          */
+          ,rba_ref_valuei[50]             /* Ref base value indicator     */
+          ,rba_ref_meaningi[50]          /* Ref base meaning indicator   */
+          ,dty_defect_codei[50]          /* Defect code indicator        */ 
+          ,dty_descr1i[50]                /* Defect description indicator */
+          ,siss_idi[50]                   /* Standard item id indicator   */
+          ,siss_namei[50]                 /* Standard item name indicator */
+          ,peo_namei[50]                  /* People name indicator        */
+          ,peo_initialsi[50]              /* People initials indicator    */
+;
+EXEC SQL END DECLARE SECTION;
+
+int        status=0                       /* Program status indicator     */
+          ,recs[15]={0}                   /* Number of records of a type  */
+          ,DEBUG=0                        /* Debugging variable           */
+;
+char       *strchr();
+char       oun_unit_code_str[50]          /* Unit code string variable    */
+          ,oun_name_str[50]               /* Unit name string variable    */
+          ,rba_ref_value_str[50]          /* Ref base string variable     */
+          ,rba_ref_meaning_str[50]        /* Ref base string variable     */
+          ,peo_initials_str[3]            /* Person string variable       */ 
+          ,peo_name_str[40]               /* Person name string variable  */
+          ,siss_id_str[50]                /* Standard item id             */
+          ,siss_name_str[50]              /* Standard item name           */
+;
+
+FILE *open_cde_rep();
+void jobmain();
+
+short EXDebug;
+char *EXRepOutpath;
+char GBErrMsg[255];
+char pipe_msg[254];
+
+EXEC SQL INCLUDE sqlext.h;
+
+main(argc,argv)
+int argc;
+char *argv[];
+ {
+	static	FILE *fp;        
+	char	*ptr;
+
+	jobmain(argc,argv);
+	
+  	get_params(1);
+
+  	dbase_type();
+
+  	fp=open_cde_rep();
+	
+  	get_a_type_records(fp);
+	
+  	get_b_type_records(fp);
+	
+  	get_c_type_records(fp);
+	
+  	get_d_type_records(fp);
+	
+  	get_l_type_records(fp);
+	
+  	get_k_type_records(fp);
+
+  	get_z_type_records(fp);
+
+	if (DEBUG)
+		printf("\nLogging off ...");
+
+        write_pipe(NULL,"Module sucessfully completed.");
+        write_pipe(NULL,"File containing Static Reference data is : ");
+        strcpy(pipe_msg,"       ");
+        strcat(pipe_msg,EXRepOutpath);
+        write_pipe(NULL,pipe_msg);
+	jobend(EXJobId,0,"");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+
+	exit(0);
+}
+
+
+/* *==========================================================================
+   * Displays the type of database being used by selection of the database 
+   * type indicator from USER_DEFNS                                        
+   *                                                                       
+   * Displays a database narrative to describe the database type.          
+   *                                                                       
+   * =========================================================================
+   */
+
+int dbase_type()
+{
+   char database_type[30];           /* Database type narrative string var */
+
+   if (DEBUG)
+   {
+     printf("\nExecuting Dbase_type\t\t....Debugging");
+   }
+
+   EXEC SQL SELECT TO_NUMBER(HOP_VALUE),
+                   TO_CHAR(sysdate,'DD-MON-YY:HH24::MI:SS')
+			INTO   :rmms_flag,:full_date
+			FROM   HIG_OPTIONS
+			WHERE  HOP_ID='RMMSFLAG'
+			AND    HOP_PRODUCT='HIG';
+
+   switch ( rmms_flag )
+   {
+	  case 1 : strcpy(database_type,"Oracle DTp Standard");
+			   break;
+      case 2 : strcpy(database_type,"Hims/Oracle Hybrid");
+			   break; 
+      case 3 : strcpy(database_type,"Maintenance Manager");
+			   break;
+      case 4 : strcpy(database_type,"Welsh Office Standard");
+			   break;
+      default: strcpy(database_type,"**Unknown**");
+			   break;
+   }
+
+   strcpy(pipe_msg,"Database type is : ");
+   strcat(pipe_msg,database_type);
+   write_pipe(NULL,pipe_msg);
+   printf("\nDatabase type is : %s\n",database_type);
+
+   return(SUCCESS);
+}
+
+/* ===========================================================================
+ * Function: get_a_type_records                                           
+ *                                                                        
+ * Obtain all 'A' type records from the database and format them into a   
+ * buffer ready to be output to a specified datafile.                     
+ *                                                                        
+ * ===========================================================================
+ */
+int get_a_type_records(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;
+    char rec_type='A';
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_A_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C1 CURSOR FOR
+    SELECT   oun.oun_unit_code
+	        ,oun.oun_name
+    FROM     org_units oun
+    WHERE    to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+    BETWEEN  nvl(oun.oun_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      nvl(oun.oun_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      oun.oun_org_unit_type = 'NO'
+    AND      oun.oun_admin_org_id 
+    IN       ( select adg.hag_child_admin_unit
+               from   hig_admin_groups adg
+                     ,hig_users        peo
+               where  adg.hag_parent_admin_unit = peo.hus_admin_unit
+               and    peo.hus_username = user )
+    union
+    select   oun.oun_unit_code,
+             oun.oun_name
+    from     org_units oun, hig_options
+    where    oun.oun_unit_code = hop_value
+    and      oun.oun_org_unit_type = 'NO'
+    and      hop_id = 'UNKNOWNORG'
+    ORDER BY 1;
+            
+	EXEC SQL OPEN C1;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C1 INTO :oun_unit_code:oun_unit_codei
+                          ,:oun_name:oun_namei; 
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+
+    display_records("A",fin_yn,c_count,norecs);
+
+	for ( i=0; i < c_count; ++i )
+	{
+      slen_varchar(oun_unit_code[i]);
+      term_varchar(oun_unit_code[i]);
+      slen_varchar(oun_name[i]);
+      term_varchar(oun_name[i]);
+
+      strcpy(oun_unit_code_str,oun_unit_code[i].arr);
+      strcpy(oun_name_str     ,oun_name[i].arr);
+
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rec_type
+                                      ,fld_sep
+                                      ,oun_unit_code_str        
+                                      ,fld_sep
+                                      ,oun_name_str
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rec_type
+                                   ,fld_sep
+                                   ,oun_unit_code_str
+                                   ,fld_sep
+                                   ,oun_name_str
+                                   ,d_quote);
+    }
+    }
+	EXEC SQL CLOSE C1;
+
+    recs[0]=norecs;
+
+    return(SUCCESS);
+}
+
+/* ============================================================================
+ * Function: get_b_type_records                                            
+ *                                                                        
+ * Obtain all 'B' type records from the database and format them into a  
+ * buffer ready to be output to a specified datafile.                   
+ *                                                                     
+ * ============================================================================
+ */
+
+int get_b_type_records(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;
+    char rec_type='B';
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_B_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C2 CURSOR FOR
+    SELECT   oun.oun_unit_code
+		    ,oun.oun_name
+    FROM     org_units oun
+    WHERE    to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+    BETWEEN  nvl(oun.oun_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      nvl(oun.oun_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      oun.oun_org_unit_type = 'RE'
+    AND      oun.oun_admin_org_id 
+    IN       ( select adg.hag_child_admin_unit
+               from   hig_admin_groups adg
+                     ,hig_users       peo
+               where  adg.hag_parent_admin_unit = peo.hus_admin_unit
+               and    peo.hus_username = user )
+    ORDER BY oun.oun_unit_code;
+
+
+	EXEC SQL OPEN C2;
+
+    while (!fin_yn)
+    {
+
+	EXEC SQL FETCH C2 INTO :oun_unit_code:oun_unit_codei
+                          ,:oun_name:oun_namei; 
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+
+    display_records("B",fin_yn,c_count,norecs);
+      
+	for ( i=0; i < c_count; ++i )
+	{
+
+      term_varchar(oun_unit_code[i]);
+      term_varchar(oun_name[i]);
+
+      strcpy(oun_unit_code_str,oun_unit_code[i].arr);
+      strcpy(oun_name_str,oun_name[i].arr);
+
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rec_type
+                                      ,fld_sep
+                                      ,oun_unit_code_str
+                                      ,fld_sep
+                                      ,oun_name_str
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rec_type
+                                   ,fld_sep
+                                   ,oun_unit_code_str
+                                   ,fld_sep
+                                   ,oun_name_str
+                                   ,d_quote);
+    }
+
+    }
+	EXEC SQL CLOSE C2;
+
+    recs[1]=norecs;
+
+    return(SUCCESS);
+}
+
+
+/* ============================================================================
+ * Function: get_c_type_records                                            
+ *                                                                        
+ * Obtain all 'C' type records from the database and format them into a  
+ * buffer ready to be output to a specified datafile.                   
+ *                                                                     
+ * ============================================================================
+ */
+int get_c_type_records(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;
+    char rec_type='C';
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_C_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C3 CURSOR FOR
+    SELECT   siss.siss_id 
+		    ,siss.siss_name
+    FROM     standard_item_sub_sections siss 
+    WHERE    to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+    BETWEEN  nvl(siss.siss_start_date,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      nvl(siss.siss_end_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    ORDER BY siss.siss_id; 
+
+	EXEC SQL OPEN C3;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C3 INTO :siss_id:siss_idi
+                          ,:siss_name:siss_namei; 
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+ 
+    display_records("C",fin_yn,c_count,norecs);
+
+	for ( i=0; i < c_count; ++i )
+	{
+
+      term_varchar(siss_id[i]);
+      term_varchar(siss_name[i]);
+
+      strcpy(siss_id_str,siss_id[i].arr);
+      strcpy(siss_name_str,siss_name[i].arr);
+
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rec_type
+                                      ,fld_sep
+                                      ,siss_id_str 
+                                      ,fld_sep
+                                      ,siss_name_str
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rec_type
+                                   ,fld_sep
+                                   ,siss_id_str
+                                   ,fld_sep
+                                   ,siss_name_str
+                                   ,d_quote);
+    }
+    }
+
+	EXEC SQL CLOSE C3;
+
+    recs[2]=norecs;
+
+    return(SUCCESS);
+}
+
+/* ============================================================================
+ * Function: get_d_type_records                                            
+ *                                                                    
+ * Obtain all 'D' type records from the database and format them into a  
+ * buffer ready to be output to a specified datafile.                   
+ *                                                                     
+ * ============================================================================
+ */
+int get_d_type_records(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_D_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C4 CURSOR FOR
+         SELECT   68 /* D */ 
+                 ,hco_code
+	             ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'DEFECT_PRIORITIES'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   69 /* E */ 
+                 ,hco_code
+		         ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'INITIATION_TYPE'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   70 /* F */ 
+                 ,hco_code
+			     ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'SURVEY_METHOD'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   71 /* G */ 
+                 ,hco_code
+			     ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'COMPLAINT_TYPE'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   72 /* H */ 
+                 ,hco_code
+			     ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'COMPLAINT_SOURCE'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   73 /* I */ 
+                 ,hco_code
+		         ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'DOC_CATEGORIES'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   74 /* J */ 
+                 ,hco_code
+		         ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain  = 'SURFACE_CONDITION'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    UNION
+         SELECT   75 /* K */ 
+                 ,hco_code
+		         ,hco_meaning
+         FROM     hig_codes
+         WHERE    hco_domain = 'WEATHER_CONDITION'
+         AND      to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY') 
+         BETWEEN  nvl(hco_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+         AND      nvl(hco_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    ORDER BY 1,2; 
+
+	EXEC SQL OPEN C4;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C4 INTO :rba_rec
+                          ,:rba_ref_value:rba_ref_valuei
+                          ,:rba_ref_meaning:rba_ref_meaningi; 
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+
+    display_records("D",fin_yn,c_count,norecs);
+
+	for ( i=0; i < c_count; ++i )
+	{
+  
+      recs[rba_rec[i]-65]++ ;
+      term_varchar(rba_ref_value[i]);
+      term_varchar(rba_ref_meaning[i]);
+
+      
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rba_rec[i]
+                                      ,fld_sep
+                                      ,rba_ref_value[i].arr
+                                      ,fld_sep
+                                      ,rba_ref_meaning[i].arr
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rba_rec[i]
+                                   ,fld_sep
+                                   ,rba_ref_value[i].arr
+                                   ,fld_sep
+                                   ,rba_ref_meaning[i].arr
+                                   ,d_quote);
+    }
+    }
+
+	EXEC SQL CLOSE C4;
+
+    return(SUCCESS);
+}
+
+
+/* ============================================================================
+ * Function: get_l_type_records                                            
+ *                                                                        
+ * Obtain all 'L' type records from the database and format them into a  
+ * buffer ready to be output to a specified datafile.                   
+ *                                                                     
+ * ============================================================================
+ */
+
+int get_l_type_records(fp)
+FILE *fp;
+{
+    int  norecs  = 0
+	    ,i       = 0
+	    ,fin_yn  = 0
+   	    ,c_count = 0;
+    char rec_type='L';
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_l_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C10 CURSOR FOR
+    SELECT   peo.hus_initials
+		    ,peo.hus_name
+    FROM     hig_users peo
+    WHERE    to_date(:EXParam[0],'DD-MON-YYYY')
+    BETWEEN  nvl(peo.hus_start_date  ,to_date(:EXParam[0],'DD-MON-YYYY'))
+    AND      nvl(peo.hus_end_date    ,to_date(:EXParam[0],'DD-MON-YYYY'))
+    AND      peo.hus_admin_unit
+    IN       ( select adg.hag_child_admin_unit
+               from   hig_admin_groups adg
+                     ,hig_users 	   peo2
+               where  adg.hag_parent_admin_unit = peo2.hus_admin_unit
+               and    peo2.hus_username = user )
+    ORDER BY peo.hus_initials;
+
+	EXEC SQL OPEN C10;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C10 INTO :peo_initials:peo_initialsi
+                           ,:peo_name:peo_namei;
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+
+    display_records("L",fin_yn,c_count,norecs);
+
+	for ( i=0; i < c_count; ++i )
+	{
+
+      term_varchar(peo_initials[i]);
+      term_varchar(peo_name[i]);
+
+      strcpy(peo_initials_str,peo_initials[i].arr);
+      strcpy(peo_name_str,peo_name[i].arr);
+
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rec_type
+                                      ,fld_sep
+                                      ,peo_initials_str
+                                      ,fld_sep
+                                      ,peo_name_str
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rec_type
+                                   ,fld_sep
+                                   ,peo_initials_str
+                                   ,fld_sep
+                                   ,peo_name_str
+                                   ,d_quote);
+    }
+    }
+
+	EXEC SQL CLOSE C10;
+
+    recs[11]=norecs;
+
+    return(SUCCESS);
+}
+
+
+/* ==========================================================================
+ * Function: get_k_type_records                                            
+ * Purpose : This function should obtain all of the defect codes and the     
+ *           defect descriptions. This is a new record type and was requested
+ *           by Parkmans on ( 17/01/96 ). 
+ * ==========================================================================
+ */
+
+int get_k_type_records(fp)
+FILE *fp;
+{
+    int  norecs  = 0
+	    ,i       = 0
+	    ,fin_yn  = 0
+   	    ,c_count = 0;
+    char rec_type='M';
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_M_type_records\t\t....Debugging");
+    }
+
+    EXEC SQL DECLARE C11 CURSOR FOR
+    SELECT   distinct dty_defect_code
+		    ,dty_descr1 
+    FROM     def_types     
+    WHERE    to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY')
+    BETWEEN  nvl(dty_start_date  ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    AND      nvl(dty_end_date    ,to_date(nvl(:EXParam[0],sysdate),'DD-MON-YYYY'))
+    ORDER BY dty_defect_code;
+
+	EXEC SQL OPEN C11;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C11 INTO :dty_defect_code:dty_defect_codei
+                           ,:dty_descr1:dty_descr1i;
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];               
+
+    display_records("M",fin_yn,c_count,norecs);
+
+	for ( i=0; i < c_count; ++i )
+	{
+
+      term_varchar(dty_defect_code[i]);
+      term_varchar(dty_descr1[i]);
+
+      if (DEBUG)
+      {
+             printf("%c%c%c%s%c%s%c\n",d_quote
+                                      ,rec_type
+                                      ,fld_sep
+                                      ,dty_defect_code[i].arr
+                                      ,fld_sep
+                                      ,dty_descr1[i].arr
+                                      ,d_quote);
+      }
+
+      fprintf(fp,"%c%c%c%s%c%s%c\n",d_quote
+                                   ,rec_type
+                                   ,fld_sep
+                                   ,dty_defect_code[i].arr
+                                   ,fld_sep
+                                   ,dty_descr1[i].arr
+                                   ,d_quote);
+    }
+    }
+
+	EXEC SQL CLOSE C11;
+
+    recs[12]=norecs;
+
+    return(SUCCESS);
+}
+
+
+/* ===========================================================================
+ * Function: get_z_type_records                                            
+ *                                                                         
+ * Obtain all 'Z' type records from the database and format them into a    
+ * buffer ready to be output to a specified datafile.                      
+ *                                                                         
+ * ===========================================================================
+ */
+int get_z_type_records(fp)
+FILE *fp;
+{
+    char rec_type='Z';
+    int  i;
+
+    for (i=0;i<13;i++)
+      recs[13]=recs[13]+recs[i];
+
+    if (DEBUG)
+    {
+        printf("\nExecuting Get_Z_type_records\t\t....Debugging");
+    }
+
+    if (DEBUG)
+    {
+ printf("%c%c%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c\n"
+                                                                      ,d_quote
+                                                                      ,rec_type
+                                                                      ,fld_sep
+                                                                      ,recs[0]
+                                                                      ,fld_sep
+                                                                      ,recs[1]
+                                                                      ,fld_sep
+                                                                      ,recs[2]
+                                                                      ,fld_sep
+                                                                      ,recs[3]
+                                                                      ,fld_sep
+                                                                      ,recs[4]
+                                                                      ,fld_sep
+                                                                      ,recs[5]
+                                                                      ,fld_sep
+                                                                      ,recs[6]
+                                                                      ,fld_sep
+                                                                      ,recs[7]
+                                                                      ,fld_sep
+                                                                      ,recs[8]
+                                                                      ,fld_sep
+                                                                      ,recs[9]
+                                                                      ,fld_sep
+                                                                      ,recs[10]
+                                                                      ,fld_sep
+                                                                      ,recs[11]
+                                                                      ,fld_sep
+                                                                      ,recs[12]
+                                                                      ,fld_sep
+                                                                      ,recs[13]
+                                                                      ,d_quote);
+    }
+
+fprintf(fp,"%c%c%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c%03d%c\n"
+                                                            ,d_quote
+                                                            ,rec_type
+                                                            ,fld_sep
+                                                            ,recs[0]
+                                                            ,fld_sep
+                                                            ,recs[1]
+                                                            ,fld_sep
+                                                            ,recs[2]
+                                                            ,fld_sep
+                                                            ,recs[3]
+                                                            ,fld_sep
+                                                            ,recs[4]
+                                                            ,fld_sep
+                                                            ,recs[5]
+                                                            ,fld_sep
+                                                            ,recs[6]
+                                                            ,fld_sep
+                                                            ,recs[7]
+                                                            ,fld_sep
+                                                            ,recs[8]
+                                                            ,fld_sep
+                                                            ,recs[9]
+                                                            ,fld_sep
+                                                            ,recs[10] 
+                                                            ,fld_sep
+                                                            ,recs[11]
+                                                            ,fld_sep
+                                                            ,recs[12]
+                                                            ,fld_sep
+                                                            ,recs[13]
+                                                            ,d_quote);
+    return(SUCCESS);
+
+}
+
+/* ============================================================================
+ * Function : open_cde_rep()                             
+ *                                                       
+ * Opens ouput file and writes header record to ouput    
+ * based on information in tab USER_DEFNS.               
+ *                                                       
+ * ============================================================================
+ */
+
+FILE *open_cde_rep()
+{
+FILE *fp; 
+#ifndef IBM
+FILE *fopen();
+#endif
+
+	if ((fp=fopen(EXRepOutpath,"w")) == NULL)
+	{              
+                write_pipe(NULL,"Unable to open output output file for writing");
+                write_pipe(NULL,"File Name is : ");
+                write_pipe(NULL,EXRepOutpath);
+		sprintf(GBErrMsg,"%s %s",EXRepOutpath,strerror(errno));
+                puts(GBErrMsg);
+	   	EXEC SQL ROLLBACK WORK;
+	   	jobend(EXJobId,1,GBErrMsg);
+	   		EXEC SQL COMMIT WORK;
+	   	dblogoff();
+	   	exit(EX_FAIL);
+	}
+
+	return(fp); /* Return file pointer of opened file */
+
+ }
+
+/* ============================================================================
+ * Function : display_records
+ *
+ * Description : This function should be used to display the selected records
+ *               for a s.elected record type.
+ *
+ * ============================================================================
+ */
+int display_records(r_type,f_n,c_c,n_r )
+char *r_type;
+int  f_n
+    ,c_c
+    ,n_r;
+{
+    int i;
+
+    if (DEBUG)
+    {
+       printf("\n%s Type Records\n",r_type);
+	   printf("Fin_yn : %d\n",f_n);
+	   printf("c_count: %d\n",c_c);
+	   printf("norecs : %d\n",n_r);
+    } 
+
+    return(SUCCESS);
+}
+
+void usersigfunc(sig)
+int sig;
+{
+        write_pipe(NULL,"Abort signal recevied. Unable to continue. Abort");
+	printf("Signal %d received. Aborting ...",sig);
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}
