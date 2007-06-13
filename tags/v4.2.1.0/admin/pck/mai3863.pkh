@@ -1,0 +1,182 @@
+CREATE OR REPLACE PACKAGE Pedif AS
+ --<PACKAGE>
+ -----------------------------------------------------------------------------
+ --
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   mai3863.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.1
+ --
+ -----------------------------------------------------------------------------
+ --   Originally taken from '@(#)mai3863.pck    @(#)mai3863.pck	1.31 08/05/02';
+ -----------------------------------------------------------------------------
+ --	Copyright (c) exor corporation ltd, 2002
+ -----------------------------------------------------------------------------
+ --</PACKAGE>
+ --
+/* ==========================================================================
+   Exor Corporation Limited(c)1999
+   Author : H.Buckley
+   Date   : May 1999
+   Module : mai3863
+   Changed: 22-May-2000
+   ==========================================================================
+   --
+   Note: This package makes use of advanced pl/sql techniques and
+         packages which were made available in v2.3 . The file
+         directories make use of the Oracle parameter UTL_FILE_DIR
+         which MUST be set in the init.ora file.
+         Multiple values may be assigned to the parameter. Oracle
+         reccomend that the parameter be repeated and new values
+         added, Oracle will actually concatenate these values and
+         introduce a comma separator between each value. No end
+         'slash' should be plpaced on any of the directory values.
+         eg: UTL_FILE_DIR=c:\exor\output
+             UTL_FILE_DIR=c:\exor\reports
+             UTL_FILE_DIR=d:\temp
+         With the above parameters set the user may elect to use
+         any of the three directories ( providing that they exist
+         on the machine ).
+         Note : It is important that the Oracle directory structure
+         entered into the Oracle parameter file (init.ora) is maintained
+         in the same CASE as the directory structure entered as a GRI
+         parameter. I have found the download process to be unreliable
+         , resulting in an error to the effect that the output file
+         cannot be created.
+         The procedure should be supplied with upto 4 parameters.
+         These parameters are as follows:
+         Parameter Destination
+     Generated Output
+     ----------------
+     The output file will contain pedif related information. The name of the file
+     will be in the format PED?????.dat where ????? will be obtained from a sequence.
+     No input filename will be required and the destination will be a non-visible
+     parameter.
+     --
+     Filename : Edif filename was set to SURVEYP.ped. This is the filename used within
+                the Parkmans software. I have had to make a change to this routine so
+                that this file is named appropreately.
+     [HB]     : A modification was requested by ET on 10/12/99 whereby the current version of the
+                module should be displayed to the user. This has been incorporated into the module
+                and makes use of the sccs variable.
+     In record 31, ALL users are currently downloaded. A modification is required to
+     allow only inspectors to be downloaded. This will be achieved by the use of the
+     job title of the user ( ie INSP )
+     Record types 6/7 needed to be modified so that they worked for 'SI' activities.
+     I have enforced the same logic within these two record types as was included
+     recently for the 2 (Activity) record type.
+     [DC 17-12-99] : Duplicate values returned for record 13. Distinct added to query
+     [HB 21-12-99] : I have been asked to order the network by the inspection route
+                     sequence. I have therefore introduced a function and I have applied this
+                     function to the Order of cursor 38 and this will achieve the requirement.
+     [HB 01-02-00] : I have been asked to remove the network indicator from the following
+                     records (2,3,6,8). I have also had to remove the instring function from
+                     these cursors.
+     [HB 03-04-00] : I have been informed that there are end-dated metadata items included in the
+                     EDIF file. I will modify the program so that end dated items are excluded.
+     [HB 25-05-00] : I have received a mail message from Dan Mullineux. In the mail Dan has
+                     asked that the xsp value and description from record 14 be placed into
+                     record 15 and that record 14 become redundant.
+                     Steve Moore has requested that the module have an ACTIVITY GROUP as a
+                     parameter and that all activity selections take this into consideration.
+                     The group ALL may also be specified in which case ALL activities should
+                     be selected.
+     [DC 20-06-00] : Tsingma need to restrict the defect priorities according to discipline
+                     This required a rewrite of cursor 24. An extra parameter INVENTORY_XSP
+                     has been added to the GRI that allows the user to select the XSP of
+                     inventory that they wish to download. This will speed up the download
+                     if required.
+   --
+   The PEDIF record format is as follows :
+   1    Version
+   2    Activity Type description
+   3    Defect Type description
+   4    Treatment code descriptions
+   5    Defect attributes
+   6    Activity Defect Attributes Relationship
+   7    Activity Inventory Relationship
+   8    Defect Treatment Relationship
+   11    Invnetory Items
+   12    Inventory Attributes
+   13    Attribute Values
+   14    XSP List
+   15    Inventory Type XSP List
+   21    Notifiable Code
+   22    Rechargable Code
+   23    SISS Code
+   24    Priority Code
+   25    survey Initiation
+   26    Complaint Type
+   27    Complaint Source
+   28    Comment class
+   29    Road
+   30    Weather
+   31    Inspector
+   32   Standard Item Sections
+   33   Standard Item Sub-Sections
+   34    Standard Items
+   33   Inventory Hierarchy Details
+   34   Sections to be Inspected
+   35   Inventory Hierarchy
+   36   Road Network ( Sections )
+   37   Inspection Activities
+   ======================================================================================
+ */
+ --<GLOBVAR>
+     g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)mai3863.pkh	1.1 09/23/03';
+ --  g_sccsid is the SCCS ID for the package
+ --</GLOBVAR>
+ --
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Create_File">
+    PROCEDURE Create_File(loc_in  VARCHAR2
+                        ,file_in VARCHAR2
+                        ,line_in VARCHAR2);
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Main">
+    PROCEDURE Main( job_id IN NUMBER);
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="ProcessPedif">
+   FUNCTION ProcessPedif( job_id IN NUMBER )
+   RETURN BOOLEAN;
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Close_File">
+   FUNCTION Close_File(file_in IN utl_file.file_type)
+   RETURN BOOLEAN;
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Writeln">
+   FUNCTION Writeln(File_Handle IN utl_file.file_type,line_in VARCHAR2)
+   RETURN BOOLEAN;
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="FileExists">
+   FUNCTION FileExists(loc_in  VARCHAR2
+                      ,file_in VARCHAR2)
+   RETURN BOOLEAN;
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Is_Open">
+   FUNCTION Is_Open(File_In utl_file.file_type )
+   RETURN BOOLEAN;
+ --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PROC NAME="Inspection_Order">
+   FUNCTION  Inspection_Order( Parent_id IN road_segs.rse_he_id%TYPE
+                             , Child_Id  IN road_segs.rse_he_id%TYPE)
+   RETURN NUMBER;
+   --</PROC>                        
+ -----------------------------------------------------------------------------
+ --<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES( Inspection_Order, wnds, wnps);
+ --</PRAGMA>                        
+ -----------------------------------------------------------------------------
+END Pedif;
+/

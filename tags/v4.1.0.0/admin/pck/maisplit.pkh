@@ -1,0 +1,154 @@
+create or replace package maisplit as
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   maisplit.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based onSCCS Version     : 1.2
+--
+--
+-- This package contains procedures and functions which are required by
+-- the Split process within Network Manager.
+--
+-- Maintenance Manager specific functionality can be found here,
+-- whilst the core functionality of the network processes can be found
+-- in the HIGSPLIT package.
+--
+-- Originally taken from '@(#)maisplit.pck 1.14 01/11/02';
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--**** SPLIT PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_data">
+  procedure check_data (p_id        in     number,
+                        p_chain     in     number,
+                        p_effective in     date,
+                        p_errors    in out number,
+                        p_err_text  in out varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_new_insp">
+  procedure create_new_insp (p_old_insp in number
+                            ,p_new_insp in number
+                            ,p_road     in number
+                            ,p_start    in number
+                            ,p_end      in number
+                            ,p_actioned in date);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_new_defect">
+  procedure create_new_defect (p_old_defect in number
+                              ,p_new_defect in number
+                              ,p_road       in number
+                              ,p_new_insp   in number
+                              ,p_st_chain   in number
+                              ,p_actioned   in date);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="split_data">
+  procedure split_data (p_id        in number,
+                        p_chain     in number,
+                        p_effective in date,
+                        p_id1       in number,
+                        p_id2       in  number,
+                        p_actioned  in date);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="split_schemes">
+  procedure split_schemes (p_id    in road_segs.rse_he_id%type,
+                           p_id1   in road_segs.rse_he_id%type,
+                           p_id2   in road_segs.rse_he_id%type,
+                           p_chain in scheme_roads.start_point%type);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--**** UNSPLIT PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="data_check ">
+  procedure data_check (p_id            in     number, -- section to be checked
+                        p_actioned_date in     varchar2,
+                        p_errors        in out number,
+                        p_error_string  in out varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_data_unsplit">
+  procedure check_data_unsplit (p_id1          in      number,  -- first split section
+                                p_id2          in      number,  -- second split section
+                                p_actioned     in      varchar2,
+                                p_errors       in out  number,
+                                p_error_string in out  varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="unsplit_data">
+  procedure unsplit_data (p_id           in number,  -- section to be unsplit
+                          p_id1          in number,  -- first split section
+                          p_id2          in number,  -- second split section
+                          p_history_date in varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="freq">
+  function freq (p_int_code in varchar) return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (freq, WNDS, WNPS, RNPS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+end maisplit;
+/

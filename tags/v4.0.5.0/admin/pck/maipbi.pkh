@@ -1,0 +1,31 @@
+CREATE OR REPLACE PACKAGE maipbi AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipbi.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   maipbi.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)maipbi.pck	1.5 01/07/00'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="construct_pbi">
+    procedure construct_pbi(p_qry_id in pbi_query.qry_id%type,code in out varchar2);
+--</PROC>
+--
+end maipbi;
+/

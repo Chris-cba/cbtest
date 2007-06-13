@@ -1,0 +1,262 @@
+CREATE OR REPLACE package maiwo is
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   maiwo.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.5
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)maiwo.pck	1.13 08/04/03'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="get_version">
+--
+   function get_version return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_perc_item_comp">
+--
+   function get_perc_item_comp(p_boq_id in boq_items.boq_id%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="works_order_complete">
+--
+  function works_order_complete (
+       p_works_order_no in work_orders.wor_works_order_no%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="bal_sum">
+--
+   function bal_sum
+      ( p_cost           work_orders.wor_est_cost%type
+       ,p_cng_disc_group org_units.oun_cng_disc_group%type)
+    return number; -- work_orders.wor_est_balancing_sum%type; <-- this gives an
+                                                               -- error in forms!
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="update_defect_date">
+--
+   procedure update_defect_date(p_def_id         in defects.def_defect_id%type
+                               ,p_date_compl     in defects.def_date_compl%type
+                               ,p_works_order_no in work_orders.wor_works_order_no%type
+                                ,p_wol_id         in work_order_lines.wol_id%type default 0
+                               ,p_hour_compl     in number default 0
+                               ,p_mins_compl     in number default 0);
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="adjust_contract_figures">
+--
+    procedure adjust_contract_figures (p_wol_id    in work_order_lines.wol_id%type
+                                      ,p_con_id    in contracts.con_id%type
+                                      ,p_operation in varchar2);
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="previous_payment">
+--
+   function previous_payment(p_wol_id            claim_payments.cp_wol_id%type
+                            ,p_current_claim_ref work_order_claims.woc_claim_ref%type)
+    return number; -- claim_payments.cp_claim_value%type;   <-- this gives an
+                                                             -- error in forms!
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="wol_invoice_status">
+--
+   function wol_invoice_status(p_wol_id work_order_lines.wol_id%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="final_already_paid">
+--
+   function final_already_paid(p_wol_id work_order_lines.wol_id%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="final_claim_exists">
+--
+   function final_claim_exists(p_wol_id work_order_lines.wol_id%type) return boolean;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="can_complete_wol">
+--
+  function can_complete_wol(p_works_order_no in work_orders.wor_works_order_no%type)
+  return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_boq_id_seq">
+--
+  function get_boq_id_seq return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="create_interim_payment">
+--
+   function create_interim_payment(p_wol_id in   work_order_lines.wol_id%type
+                                  ,p_act_cost in work_order_lines.wol_act_cost%type)
+   return boolean;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="clear_interim_payment">
+--
+   procedure clear_interim_payment(p_wol_id in work_order_lines.wol_id%type);
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_unpaid_interim_amount">
+--
+   function  get_unpaid_interim_amount(p_wol_id in work_order_lines.wol_id%type)
+   return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_last_interim_amount">
+--
+   function get_last_interim_amount(p_wol_id in work_order_lines.wol_id%type)
+   return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="add_percent_item">
+--
+   function add_percent_item(p_parent in boq_items.boq_id%type
+                            ,p_percent_item in standard_items.sta_item_code%type
+                            ,p_bud_id       in budgets.bud_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="recalc_percent_item">
+--
+   function recalc_percent_item(p_boq_item    in boq_items.boq_id%type
+                              ,p_comp_method in hig_status_codes.hsc_status_code%type default null) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="recalc_perc_dim">
+--
+   function  recalc_perc_dim(p_boq_id in  boq_items.boq_id%type
+                           ,p_new_dim in boq_items.boq_act_dim1%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="return_parent_item_cost">
+--
+  procedure return_parent_item_cost(p_boq_id in       boq_items.boq_id%type
+                                   ,p_est_cost in out boq_items.boq_est_cost%type
+                                   ,p_act_cost in out boq_items.boq_act_cost%type);
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="has_attached_perc_item">
+--
+  function has_attached_perc_item(p_boq_id in boq_items.boq_id%type) return boolean;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="delete_percent_item">
+--
+  function delete_percent_item(p_boq_item in boq_items.boq_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="has_role">
+--
+  function has_role(r_name in user_role_privs.granted_role%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="paid_so_far">
+--
+  function paid_so_far(p_wol_id in work_order_lines.wol_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="claimed_so_far">
+--
+  function claimed_so_far(p_wol_id in work_order_lines.wol_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="boq_paid_so_far">
+--
+  function boq_paid_so_far(p_boq_id in boq_items.boq_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="paid_prior_to_payment_run">
+--
+  function paid_prior_to_payment_run(p_wol_id in work_order_lines.wol_id%type
+                                    ,p_cnp_id in claim_payments.cp_payment_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="boq_paid_prior_to_payment_run">
+--
+  function boq_paid_prior_to_payment_run(p_boq_id in boq_items.boq_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="claimed_prior_to_payment_run">
+--
+  function claimed_prior_to_payment_run(p_wol_id in work_order_lines.wol_id%type
+                                       ,p_cnp_id in claim_payments.cp_payment_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="boq_claimed_prior_payment_run">
+--
+  function boq_claimed_prior_payment_run(p_boq_id in boq_items.boq_id%type) return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="complete_status">
+--
+  function complete_status(p_status in hig_status_codes.hsc_status_code%type) return boolean;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="process_payment_run">
+--
+  function process_payment_run(p_con_id     in contracts.con_id%type
+                              ,p_apply_vat in varchar2 default 'N'
+                              ,l_oun_ord_id in org_units.oun_org_id%type
+                              ,l_NO_FC_FILE in varchar2
+                              ,l_cnp_id     out work_order_lines.wol_cnp_id%type
+                              ,l_error_code out hig_errors.her_no%type
+                              ,l_error_appl out hig_errors.her_appl%type) return boolean;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_user_authorise_min">
+--
+   function get_user_authorise_min return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_user_authorise_max">
+--
+   function get_user_authorise_max return number;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="get_job_code">
+--
+   function get_job_code(p_works_order in work_orders.wor_works_order_no%type) return varchar2;
+--</PROC>
+-------------------------------------------------------------------------------
+--<PROC NAME="reprice_item">
+--
+   function reprice_item(p_item_code in boq_items.boq_sta_item_code%type
+                        ,p_con_id    in work_orders.wor_con_id%type
+                        ,p_rse_he_id in work_order_lines.wol_rse_he_id%type
+                        ,p_priority  in defects.def_priority%type) return number;
+--</PROC>
+--
+-------------------------------------------------------------------------------
+--<PROC NAME="get_wo">
+--
+FUNCTION get_wo(pi_wor_works_order_no  IN work_orders.wor_works_order_no%TYPE
+               ,pi_raise_not_found     IN BOOLEAN     DEFAULT TRUE
+               ,pi_not_found_sqlcode  IN PLS_INTEGER DEFAULT -20000) RETURN work_orders%ROWTYPE;
+--</PROC>
+--
+--
+---------------------------------------------------------------------------------------------------
+--<PROC NAME="get_wol">
+--
+FUNCTION get_wol(pi_wol_id            IN work_order_lines.wol_id%TYPE
+                ,pi_raise_not_found   IN BOOLEAN     DEFAULT TRUE
+                ,pi_not_found_sqlcode IN PLS_INTEGER DEFAULT -20000) RETURN work_order_lines%ROWTYPE;
+--</PROC>
+--
+end maiwo;
+/
+

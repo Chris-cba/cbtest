@@ -1,0 +1,57 @@
+CREATE OR REPLACE package wo_budget_check is
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   wo_budget_check.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based onSCCS Version     : 1.2
+--
+-----------------------------------------------------------------------------
+--   Originally taken from @(#)wo_budget_check.pck	1.1 03/26/02
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="update_budget">
+--
+PROCEDURE update_budget( p_bud_committed IN budgets.bud_committed%TYPE
+                       , p_bud_actual    IN budgets.bud_actual%TYPE
+                       , p_bud_id        IN budgets.bud_id%TYPE);
+--
+--</PROC>                       
+-----------------------------------------------------------------------------
+--<PROC NAME="update_valbud">
+--
+PROCEDURE update_valbud( p_bud_id         IN budgets.bud_id%TYPE --IN
+                       , p_bud_committed  IN OUT budgets.bud_committed%TYPE --OUT
+                       , p_bud_actual     IN OUT budgets.bud_actual%TYPE --OUT
+                       , p_update_records IN OUT boolean --OUT
+                       );
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="valbud_unique">
+--
+PROCEDURE valbud_unique( p_bud_id        IN budgets.bud_id%TYPE);
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="valbud">
+--
+   procedure valbud;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+end wo_budget_check;
+/

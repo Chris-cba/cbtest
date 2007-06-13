@@ -1,0 +1,164 @@
+CREATE OR REPLACE PACKAGE P$Interface AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   pinterface.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)pinterface.pck	1.3 05/18/99'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+/* 
+   Note: This package makes use of advanced pl/sql techniques and
+         packages which were made available in v2.3 . The file
+	 directories make use of the Oracle parameter UTL_FILE_DIR
+	 which MUST be set in the init.ora file.
+	 Multiple values may be assigned to the parameter. Oracle
+	 reccomend that the parameter be repeated and new values
+	 added, Oracle will actually concatenate these values and
+	 introduce a comma separator between each value. No end
+	 'slash' should be plpaced on any of the directory values.
+	 eg: UTL_FILE_DIR=c:\exor\output
+	     UTL_FILE_DIR=c:\exor\reports
+		 UTL_FILE_DIR=d:\temp
+	 With the above parameters set the user may elect to use
+	 any of the three directories ( providing that they exist
+	 on the machine ).
+	 Note : It is important that the Oracle directory structure
+	        entered into the Oracle parameter file (init.ora) is maintained
+		in the same CASE as the directojry structure entered as a GRI
+	 	parameter. I have found the download process to be unreliable
+		, resulting in an error to the effect that the output file
+		cannot be created.
+	 The procedure should be supplied with upto 4 parameters.
+	 These parameters are as follows:
+	 Parameter Output Seq.
+         Parameter Destination
+         Parameter Filetype
+         Parameter Input File
+         If the user wishes, a sequence number may be entered, in which
+	 case a file will be created with the sequence number embeded as
+	 part of the filename. If the user does not enter a sequence
+	 number then one will be obtained internally.
+   Data Problems: I have found a problem with the type '10' record in
+                  that the section description has the town added to the
+	 	  end. The town is separated by a comma and this should
+		  be changed and the comma replaced by say a semi-colon.
+		  There should therefore bne a change made to the download
+		  procedure to replace all commas in the road description.
+   ==========================================================================
+   Exor Corporation Limited(c)1999
+   Author : H.Buckley
+   Date   : March 1999
+   Module : mai3859
+   ==========================================================================
+*/
+-----------------------------------------------------------------------------
+--<PROC NAME="Create_File">
+--
+   Procedure Create_File(loc_in  varchar2
+                        ,file_in varchar2
+			,line_in varchar2);
+--			
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Main">
+--
+   Procedure Main( job_id in number);
+--   
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_NextLine">
+--
+   Procedure Get_NextLine( in_file  in utl_file.file_type
+                           ,out_line out varchar2
+			   ,not_eof  out boolean );
+--			  
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ProcessInvoiceRecords">
+--
+   Function ProcessInvoiceRecords
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ProcessWorkRecords">
+--
+   Function ProcessWorkRecords
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ProcessComplRecords">
+--
+   Function ProcessComplRecords
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ProcessSectRecords">
+--
+   Function ProcessSectRecords
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Close_File">
+--
+   Function Close_File(file_in in utl_file.file_type)
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Writeln">
+--
+   Function Writeln(File_Handle in utl_file.file_type,line_in  varchar2)
+   return boolean;
+--   
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="FileExists">
+--
+   Function FileExists(loc_in  varchar2
+                       ,file_in varchar2)
+   return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="is_open">
+--
+   Function is_open(file_in utl_file.file_type) return boolean;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="GetFields">
+--
+   Function GetFields( InString in varchar2 )
+   return number;
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="GetField">
+--
+   Function GetField( InString in varchar2,FldNo in number )
+   return varchar2;
+--</PROC>
+-----------------------------------------------------------------------------
+END P$Interface;
+/
