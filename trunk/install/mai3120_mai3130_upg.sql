@@ -1,0 +1,105 @@
+-----------------------------------------------------------------------------
+--
+--   SCCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai3120_mai3130_upg.sql-arc   2.0   Jun 13 2007 16:32:34   smarshall  $
+--       Module Name      : $Workfile:   mai3120_mai3130_upg.sql  $
+--       Date into SCCS   : $Date:   Jun 13 2007 16:32:34  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based on SCCS Version     : 1.1
+--
+--   Product upgrade script
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2004
+-----------------------------------------------------------------------------
+--
+--
+--
+SET ECHO OFF
+SET LINESIZE 120
+SET HEADING OFF
+SET FEEDBACK OFF
+--
+-- Grab date/time to append to log file names this is standard to all upgrade/install scripts
+
+undefine log_extension
+col         log_extension new_value log_extension noprint
+set term off
+select  TO_CHAR(sysdate,'DDMONYYYY_HH24MISS')||'.LOG' log_extension from dual
+/
+set term on
+
+---------------------------------------------------------------------------------------------------
+
+
+-- Spool to Logfile
+
+define logfile1='mai3120_mai3130_1_&log_extension'
+define logfile2='mai3120_mai3130_2_&log_extension'
+spool &logfile1
+
+
+--get some db info
+
+SELECT 'Install Running on ' ||LOWER(USER||'@'||instance_name||'.'||host_name)||' - DB ver : '||version
+FROM v$instance;
+SELECT 'Current version of '||hpr_product||' ' ||hpr_version
+FROM hig_products
+WHERE hpr_product IN ('MAI','PMS');
+
+
+---------------------------------------------------------------------------------------------------
+--                        ****************   CHECK(S)   *******************
+
+WHENEVER SQLERROR EXIT
+begin
+   hig2.pre_upgrade_check (p_product               => 'MAI'
+                          ,p_new_version           => '3.1.3.0'
+                          ,p_allowed_old_version_1 => '3.1.2.0'
+                          );
+END;
+/
+WHENEVER SQLERROR CONTINUE
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   CONTEXT   *******************
+--The compile_all will have reset the user context so we must reinitialise it
+--
+SET FEEDBACK OFF
+
+SET TERM ON
+PROMPT Reinitialising Context...
+SET TERM OFF
+BEGIN
+  nm3context.initialise_context;
+  nm3user.instantiate_user;
+END;
+/
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   VERSION NUMBER   *******************
+SET TERM ON
+Prompt Setting The Version Number...
+SET TERM OFF
+
+BEGIN
+      hig2.upgrade('MAI','mai3120_mai3130_upg.sql','Upgrade from 3.1.2.0 to 3.1.3.0','3.1.3.0');
+      hig2.upgrade('PMS','mai3120_mai3130_upg.sql','Upgrade from 3.1.2.0 to 3.1.3.0','3.1.3.0');
+END;
+/
+COMMIT;
+
+SET HEADING OFF
+SELECT 'Product updated to version '||hpr_product||' ' ||hpr_version product_version
+FROM hig_products
+WHERE hpr_product IN ('MAI','PMS');
+
+
+spool off
+exit
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   END OF SCRIPT   *******************
+
