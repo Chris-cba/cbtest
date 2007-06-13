@@ -1,0 +1,823 @@
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r5att.pc	1.1 09/16/03";
+
+/*************************************************************************
+* Modified By  Date     Description                                      *
+* ------------ -------- ----------------------------------------------   *
+* Rod Strong   3-Feb-93 Added call to oralogoff before exit error        * 
+* H.Buckley    1-Aug-94 Added include file <stdlib.h> (atof function )   *
+*                       Amended reference to att_dec_places array.       *    
+* DATE         : 04-11-97
+* CHANGED BY   : G Fletcher
+* DESCRIPTION  : client-server conversion
+*                                                                        *
+**************************************************************************/
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+  extern VARCHAR sys_flag[2];
+  VARCHAR att_inv_code[3];
+  VARCHAR att_attrib_name[200][33];
+  VARCHAR att_dtp_code[200][5];
+  int     att_dec_places[200];
+  int     att_fld_length[200];
+  VARCHAR att_format[200][11];
+  char    att_manditory_yn[200][1];    
+  char    att_validate_yn[200][1];    
+  int     att_disp_seq_no[200];
+
+  short int i_att_attrib_name[200]
+           ,i_att_dec_places[200]
+           ,i_att_fld_length[200]
+           ,i_att_format[200]
+           ,i_att_manditory_yn[200]
+           ,i_att_validate_yn[200]
+           ,i_att_disp_seq_no[200]
+           ,i_att_dtp_code[200]
+;
+  extern int     c2_id;
+  extern VARCHAR c2_inv_code[100][3];
+  extern int     c2_st_chain[100];
+  extern int     c2_end_chain[100];
+  extern char    c2_x_sect[100][1];  
+  extern VARCHAR c2_angle[100][8];
+  extern VARCHAR c2_class[100][3];
+  extern VARCHAR c2_colour[100][3];
+  extern VARCHAR c2_description[100][41];
+  extern VARCHAR c2_diagram[100][7];
+  extern VARCHAR c2_distance[100][9];
+  extern VARCHAR c2_gap[100][8];
+  extern VARCHAR c2_height[100][8];
+  extern VARCHAR c2ht2[100][8];
+  extern VARCHAR c2_id_code[100][9];
+  extern VARCHAR c2_instal_date[100][7];
+  extern VARCHAR c2_invent_date[100][7];
+  extern VARCHAR c2_itemcode[100][9];
+  extern VARCHAR c2_length[100][8];
+  extern VARCHAR c2_material[100][3];
+  extern VARCHAR c2_method[100][3];
+  extern VARCHAR c2_note[100][41];
+  extern VARCHAR c2_no_of_units[100][4];
+  extern VARCHAR c2_options[100][3];
+  extern VARCHAR c2_elec_board[100][5];
+  extern VARCHAR c2_owner[100][5];
+  extern VARCHAR c2_photo[100][7];
+  extern VARCHAR c2_power[100][8];
+  extern VARCHAR c2_type[100][3];
+  extern VARCHAR c2_width[100][8];
+  extern VARCHAR c2_x_char_1[100][21];
+  extern VARCHAR c2_x_date_1[100][7];
+  extern VARCHAR c2_x_domain_1[100][3];
+  extern VARCHAR c2_x_number_1[100][12];
+  extern VARCHAR c2_tot_watt[100][5];
+  extern VARCHAR c2_d_patt[100][5];
+  extern VARCHAR c2_lt_1[100][5];
+  extern VARCHAR c2_lt_2[100][5];
+  extern VARCHAR c2_lt_3[100][5];
+  extern VARCHAR c2_no_1[100][5];
+  extern VARCHAR c2_no_2[100][5];
+  extern VARCHAR c2_no_3[100][5];
+  extern VARCHAR c2_wo_1[100][5];
+  extern VARCHAR c2_wo_2[100][5];
+  extern VARCHAR c2_wo_3[100][5];
+
+  extern VARCHAR c2_inv_ownership[100][5];
+  extern VARCHAR c2_primary_key[100][51];
+  extern VARCHAR c2_foreign_key[100][51];
+  extern VARCHAR c2_det_xsp[100][5];
+  extern VARCHAR c2_offset[100][41];
+  extern VARCHAR c2_num_attrib16[100][41];
+  extern VARCHAR c2_num_attrib17[100][41];
+  extern VARCHAR c2_num_attrib18[100][41];
+  extern VARCHAR c2_num_attrib19[100][41];
+  extern VARCHAR c2_num_attrib20[100][41];
+  extern VARCHAR c2_num_attrib21[100][41];
+  extern VARCHAR c2_num_attrib22[100][41];
+  extern VARCHAR c2_num_attrib23[100][41];
+  extern VARCHAR c2_num_attrib24[100][41];
+  extern VARCHAR c2_num_attrib25[100][41];
+  extern VARCHAR c2_chr_attrib26[100][41];
+  extern VARCHAR c2_chr_attrib27[100][51];
+  extern VARCHAR c2_chr_attrib28[100][51];
+  extern VARCHAR c2_chr_attrib29[100][51];
+  extern VARCHAR c2_chr_attrib30[100][51];
+  extern VARCHAR c2_chr_attrib31[100][51];
+  extern VARCHAR c2_chr_attrib32[100][51];
+  extern VARCHAR c2_chr_attrib33[100][51];
+  extern VARCHAR c2_chr_attrib34[100][51];
+  extern VARCHAR c2_chr_attrib35[100][51];
+  extern VARCHAR c2_chr_attrib36[100][51];
+  extern VARCHAR c2_chr_attrib37[100][51];
+  extern VARCHAR c2_chr_attrib38[100][51];
+  extern VARCHAR c2_chr_attrib39[100][51];
+  extern VARCHAR c2_chr_attrib40[100][51];
+  extern VARCHAR c2_chr_attrib41[100][51];
+  extern VARCHAR c2_chr_attrib42[100][51];
+  extern VARCHAR c2_chr_attrib43[100][51];
+  extern VARCHAR c2_chr_attrib44[100][51];
+  extern VARCHAR c2_chr_attrib45[100][51];
+  extern VARCHAR c2_chr_attrib46[100][51];
+  extern VARCHAR c2_chr_attrib47[100][51];
+  extern VARCHAR c2_chr_attrib48[100][51];
+  extern VARCHAR c2_chr_attrib49[100][51];
+  extern VARCHAR c2_chr_attrib50[100][51];
+  extern VARCHAR c2_chr_attrib51[100][51];
+  extern VARCHAR c2_chr_attrib52[100][51];
+  extern VARCHAR c2_chr_attrib53[100][51];
+  extern VARCHAR c2_chr_attrib54[100][51];
+  extern VARCHAR c2_chr_attrib55[100][51];
+  extern VARCHAR c2_chr_attrib56[100][201];
+  extern VARCHAR c2_chr_attrib57[100][201];
+  extern VARCHAR c2_chr_attrib58[100][201];
+  extern VARCHAR c2_chr_attrib59[100][201];
+  extern VARCHAR c2_chr_attrib60[100][201];
+  extern VARCHAR c2_chr_attrib61[100][201];
+  extern VARCHAR c2_chr_attrib62[100][201];
+  extern VARCHAR c2_chr_attrib63[100][201];
+  extern VARCHAR c2_chr_attrib64[100][201];
+  extern VARCHAR c2_chr_attrib65[100][201];
+  extern VARCHAR c2_chr_attrib66[100][501];
+  extern VARCHAR c2_chr_attrib67[100][501];
+  extern VARCHAR c2_chr_attrib68[100][501];
+  extern VARCHAR c2_chr_attrib69[100][501];
+  extern VARCHAR c2_chr_attrib70[100][501];
+  extern VARCHAR c2_chr_attrib71[100][501];
+  extern VARCHAR c2_chr_attrib72[100][501];
+  extern VARCHAR c2_chr_attrib73[100][501];
+  extern VARCHAR c2_chr_attrib74[100][501];
+  extern VARCHAR c2_chr_attrib75[100][501];
+  extern VARCHAR c2_num_attrib76[100][41];
+  extern VARCHAR c2_num_attrib77[100][41];
+  extern VARCHAR c2_num_attrib78[100][41];
+  extern VARCHAR c2_num_attrib79[100][41];
+  extern VARCHAR c2_num_attrib80[100][41];
+  extern VARCHAR c2_num_attrib81[100][41];
+  extern VARCHAR c2_num_attrib82[100][41];
+  extern VARCHAR c2_num_attrib83[100][41];
+  extern VARCHAR c2_num_attrib84[100][41];
+  extern VARCHAR c2_num_attrib85[100][41];
+  extern VARCHAR c2_date_attrib86[100][7];
+  extern VARCHAR c2_date_attrib87[100][7];
+  extern VARCHAR c2_date_attrib88[100][7];
+  extern VARCHAR c2_date_attrib89[100][7];
+  extern VARCHAR c2_date_attrib90[100][7];
+  extern VARCHAR c2_date_attrib91[100][7];
+  extern VARCHAR c2_date_attrib92[100][7];
+  extern VARCHAR c2_date_attrib93[100][7];
+  extern VARCHAR c2_date_attrib94[100][7];
+  extern VARCHAR c2_date_attrib95[100][7];
+
+  extern short int ic2_x_sect[100];  
+  extern short int ic2_angle[100];
+  extern short int ic2_class[100];
+  extern short int ic2_colour[100];
+  extern short int ic2_description[100];
+  extern short int ic2_diagram[100];
+  extern short int ic2_distance[100];
+  extern short int ic2_gap[100];
+  extern short int ic2_height[100];
+  extern short int ic2ht2[100];
+  extern short int ic2_id_code[100];
+  extern short int ic2_instal_date[100];
+  extern short int ic2_invent_date[100];
+  extern short int ic2_itemcode[100];
+  extern short int ic2_length[100];
+  extern short int ic2_material[100];
+  extern short int ic2_method[100];
+  extern short int ic2_note[100];
+  extern short int ic2_no_of_units[100];
+  extern short int ic2_options[100];
+  extern short int ic2_elec_board[100];
+  extern short int ic2_owner[100];
+  extern short int ic2_photo[100];
+  extern short int ic2_power[100];
+  extern short int ic2_type[100];
+  extern short int ic2_width[100];
+  extern short int ic2_x_char_1[100];
+  extern short int ic2_x_date_1[100];
+  extern short int ic2_x_domain_1[100];
+  extern short int ic2_x_number_1[100];
+  extern short int ic2_tot_watt[100];
+  extern short int ic2_d_patt[100];
+  extern short int ic2_lt_1[100];
+  extern short int ic2_lt_2[100];
+  extern short int ic2_lt_3[100];
+  extern short int ic2_no_1[100];
+  extern short int ic2_no_2[100];
+  extern short int ic2_no_3[100];
+  extern short int ic2_wo_1[100];
+  extern short int ic2_wo_2[100];
+  extern short int ic2_wo_3[100];
+
+  extern short int ic2_inv_ownership[100];
+  extern short int ic2_primary_key[100];
+  extern short int ic2_foreign_key[100];
+  extern short int ic2_det_xsp[100];
+  extern short int ic2_offset[100];
+  extern short int ic2_num_attrib16[100];
+  extern short int ic2_num_attrib17[100];
+  extern short int ic2_num_attrib18[100];
+  extern short int ic2_num_attrib19[100];
+  extern short int ic2_num_attrib20[100];
+  extern short int ic2_num_attrib21[100];
+  extern short int ic2_num_attrib22[100];
+  extern short int ic2_num_attrib23[100];
+  extern short int ic2_num_attrib24[100];
+  extern short int ic2_num_attrib25[100];
+  extern short int ic2_chr_attrib26[100];
+  extern short int ic2_chr_attrib27[100];
+  extern short int ic2_chr_attrib28[100];
+  extern short int ic2_chr_attrib29[100];
+  extern short int ic2_chr_attrib30[100];
+  extern short int ic2_chr_attrib31[100];
+  extern short int ic2_chr_attrib32[100];
+  extern short int ic2_chr_attrib33[100];
+  extern short int ic2_chr_attrib34[100];
+  extern short int ic2_chr_attrib35[100];
+  extern short int ic2_chr_attrib36[100];
+  extern short int ic2_chr_attrib37[100];
+  extern short int ic2_chr_attrib38[100];
+  extern short int ic2_chr_attrib39[100];
+  extern short int ic2_chr_attrib40[100];
+  extern short int ic2_chr_attrib41[100];
+  extern short int ic2_chr_attrib42[100];
+  extern short int ic2_chr_attrib43[100];
+  extern short int ic2_chr_attrib44[100];
+  extern short int ic2_chr_attrib45[100];
+  extern short int ic2_chr_attrib46[100];
+  extern short int ic2_chr_attrib47[100];
+  extern short int ic2_chr_attrib48[100];
+  extern short int ic2_chr_attrib49[100];
+  extern short int ic2_chr_attrib50[100];
+  extern short int ic2_chr_attrib51[100];
+  extern short int ic2_chr_attrib52[100];
+  extern short int ic2_chr_attrib53[100];
+  extern short int ic2_chr_attrib54[100];
+  extern short int ic2_chr_attrib55[100];
+  extern short int ic2_chr_attrib56[100];
+  extern short int ic2_chr_attrib57[100];
+  extern short int ic2_chr_attrib58[100];
+  extern short int ic2_chr_attrib59[100];
+  extern short int ic2_chr_attrib60[100];
+  extern short int ic2_chr_attrib61[100];
+  extern short int ic2_chr_attrib62[100];
+  extern short int ic2_chr_attrib63[100];
+  extern short int ic2_chr_attrib64[100];
+  extern short int ic2_chr_attrib65[100];
+  extern short int ic2_chr_attrib66[100];
+  extern short int ic2_chr_attrib67[100];
+  extern short int ic2_chr_attrib68[100];
+  extern short int ic2_chr_attrib69[100];
+  extern short int ic2_chr_attrib70[100];
+  extern short int ic2_chr_attrib71[100];
+  extern short int ic2_chr_attrib72[100];
+  extern short int ic2_chr_attrib73[100];
+  extern short int ic2_chr_attrib74[100];
+  extern short int ic2_chr_attrib75[100];
+  extern short int ic2_num_attrib76[100];
+  extern short int ic2_num_attrib77[100];
+  extern short int ic2_num_attrib78[100];
+  extern short int ic2_num_attrib79[100];
+  extern short int ic2_num_attrib80[100];
+  extern short int ic2_num_attrib81[100];
+  extern short int ic2_num_attrib82[100];
+  extern short int ic2_num_attrib83[100];
+  extern short int ic2_num_attrib84[100];
+  extern short int ic2_num_attrib85[100];
+  extern short int ic2_date_attrib86[100];
+  extern short int ic2_date_attrib87[100];
+  extern short int ic2_date_attrib88[100];
+  extern short int ic2_date_attrib89[100];
+  extern short int ic2_date_attrib90[100];
+  extern short int ic2_date_attrib91[100];
+  extern short int ic2_date_attrib92[100];
+  extern short int ic2_date_attrib93[100];
+  extern short int ic2_date_attrib94[100];
+  extern short int ic2_date_attrib95[100];
+
+EXEC SQL END DECLARE SECTION;
+ 
+/************************************************************ 
+* Structure used to point to inventory attributes           *
+* for decoding purposes. Column names held in array names.  *
+************************************************************/ 
+
+extern short EXDebug;
+extern char pipe_msg[254];
+
+#define NOATTS 113          /* No of inventory attributes */
+struct        {char  *name; /* attribute column name      */
+      unsigned char  *add;  /* Pointer to attribute       */     
+               short *iadd; /* Pointer to indicator       */     
+               } att[NOATTS] = {
+"IIT_ANGLE",               c2_angle[0].arr,        &ic2_angle[0],
+"IIT_CLASS",               c2_class[0].arr,        &ic2_class[0],
+"IIT_COLOUR",             c2_colour[0].arr,       &ic2_colour[0],
+"IIT_DESCRIPTION",   c2_description[0].arr,  &ic2_description[0],
+"IIT_DIAGRAM",           c2_diagram[0].arr,      &ic2_diagram[0],
+"IIT_DISTANCE",         c2_distance[0].arr,     &ic2_distance[0],
+"IIT_GAP",                   c2_gap[0].arr,          &ic2_gap[0],
+"IIT_HEIGHT",             c2_height[0].arr,       &ic2_height[0],
+"IIT_HEIGHT_2",               c2ht2[0].arr,           &ic2ht2[0],
+"IIT_ID_CODE",           c2_id_code[0].arr,      &ic2_id_code[0],
+"IIT_INSTAL_DATE",   c2_instal_date[0].arr,  &ic2_instal_date[0],
+"IIT_INVENT_DATE",   c2_invent_date[0].arr,  &ic2_invent_date[0],
+"IIT_ITEMCODE",         c2_itemcode[0].arr,     &ic2_itemcode[0],
+"IIT_LENGTH",             c2_length[0].arr,       &ic2_length[0],
+"IIT_MATERIAL",         c2_material[0].arr,     &ic2_material[0],
+"IIT_METHOD",             c2_method[0].arr,       &ic2_method[0],
+"IIT_NOTE",                 c2_note[0].arr,         &ic2_note[0],
+"IIT_NO_OF_UNITS",   c2_no_of_units[0].arr,  &ic2_no_of_units[0],
+"IIT_OPTIONS",           c2_options[0].arr,      &ic2_options[0],
+"IIT_OWNER",               c2_owner[0].arr,        &ic2_owner[0],
+"IIT_PHOTO",               c2_photo[0].arr,        &ic2_photo[0],
+"IIT_POWER",               c2_power[0].arr,        &ic2_power[0],
+"IIT_TYPE",                 c2_type[0].arr,         &ic2_type[0],
+"IIT_WIDTH",               c2_width[0].arr,        &ic2_width[0],
+"IIT_XTRA_CHAR_1",      c2_x_char_1[0].arr,     &ic2_x_char_1[0],
+"IIT_XTRA_DATE_1",      c2_x_date_1[0].arr,     &ic2_x_date_1[0],
+"IIT_XTRA_DOMAIN_1",  c2_x_domain_1[0].arr,   &ic2_x_domain_1[0],
+"IIT_XTRA_NUMBER_1",  c2_x_number_1[0].arr,   &ic2_x_number_1[0],
+"IIT_INV_OWNERSHIP",  c2_inv_ownership[0].arr, &ic2_inv_ownership[0],
+"IIT_PRIMARY_KEY", c2_primary_key[0].arr, &ic2_primary_key[0],
+"IIT_FOREIGN_KEY", c2_foreign_key[0].arr, &ic2_foreign_key[0],
+"IIT_DET_XSP", c2_det_xsp[0].arr, &ic2_det_xsp[0],
+"IIT_OFFSET",  c2_offset[0].arr, &ic2_offset[0],
+"IIT_NUM_ATTRIB16", c2_num_attrib16[0].arr, &ic2_num_attrib16[0],
+"IIT_NUM_ATTRIB17", c2_num_attrib17[0].arr, &ic2_num_attrib17[0],
+"IIT_NUM_ATTRIB18", c2_num_attrib18[0].arr, &ic2_num_attrib18[0],
+"IIT_NUM_ATTRIB19", c2_num_attrib19[0].arr, &ic2_num_attrib19[0],
+"IIT_NUM_ATTRIB20", c2_num_attrib20[0].arr, &ic2_num_attrib20[0],
+"IIT_NUM_ATTRIB21", c2_num_attrib21[0].arr, &ic2_num_attrib21[0],
+"IIT_NUM_ATTRIB22", c2_num_attrib22[0].arr, &ic2_num_attrib22[0],
+"IIT_NUM_ATTRIB23", c2_num_attrib23[0].arr, &ic2_num_attrib23[0],
+"IIT_NUM_ATTRIB24", c2_num_attrib24[0].arr, &ic2_num_attrib24[0],
+"IIT_NUM_ATTRIB25", c2_num_attrib25[0].arr, &ic2_num_attrib25[0],
+"IIT_CHR_ATTRIB26", c2_chr_attrib26[0].arr, &ic2_chr_attrib26[0],
+"IIT_CHR_ATTRIB27", c2_chr_attrib27[0].arr, &ic2_chr_attrib27[0],
+"IIT_CHR_ATTRIB28", c2_chr_attrib28[0].arr, &ic2_chr_attrib28[0],
+"IIT_CHR_ATTRIB29", c2_chr_attrib29[0].arr, &ic2_chr_attrib29[0],
+"IIT_CHR_ATTRIB30", c2_chr_attrib30[0].arr, &ic2_chr_attrib30[0],
+"IIT_CHR_ATTRIB31", c2_chr_attrib31[0].arr, &ic2_chr_attrib31[0],
+"IIT_CHR_ATTRIB32", c2_chr_attrib32[0].arr, &ic2_chr_attrib32[0],
+"IIT_CHR_ATTRIB33", c2_chr_attrib33[0].arr, &ic2_chr_attrib33[0],
+"IIT_CHR_ATTRIB34", c2_chr_attrib34[0].arr, &ic2_chr_attrib34[0],
+"IIT_CHR_ATTRIB35", c2_chr_attrib35[0].arr, &ic2_chr_attrib35[0],
+"IIT_CHR_ATTRIB36", c2_chr_attrib36[0].arr, &ic2_chr_attrib36[0],
+"IIT_CHR_ATTRIB37", c2_chr_attrib37[0].arr, &ic2_chr_attrib37[0],
+"IIT_CHR_ATTRIB38", c2_chr_attrib38[0].arr, &ic2_chr_attrib38[0],
+"IIT_CHR_ATTRIB39", c2_chr_attrib39[0].arr, &ic2_chr_attrib39[0],
+"IIT_CHR_ATTRIB40", c2_chr_attrib40[0].arr, &ic2_chr_attrib40[0],
+"IIT_CHR_ATTRIB41", c2_chr_attrib41[0].arr, &ic2_chr_attrib41[0],
+"IIT_CHR_ATTRIB42", c2_chr_attrib42[0].arr, &ic2_chr_attrib42[0],
+"IIT_CHR_ATTRIB43", c2_chr_attrib43[0].arr, &ic2_chr_attrib43[0],
+"IIT_CHR_ATTRIB44", c2_chr_attrib44[0].arr, &ic2_chr_attrib44[0],
+"IIT_CHR_ATTRIB45", c2_chr_attrib45[0].arr, &ic2_chr_attrib45[0],
+"IIT_CHR_ATTRIB46", c2_chr_attrib46[0].arr, &ic2_chr_attrib46[0],
+"IIT_CHR_ATTRIB47", c2_chr_attrib47[0].arr, &ic2_chr_attrib47[0],
+"IIT_CHR_ATTRIB48", c2_chr_attrib48[0].arr, &ic2_chr_attrib48[0],
+"IIT_CHR_ATTRIB49", c2_chr_attrib49[0].arr, &ic2_chr_attrib49[0],
+"IIT_CHR_ATTRIB50", c2_chr_attrib50[0].arr, &ic2_chr_attrib50[0],
+"IIT_CHR_ATTRIB51", c2_chr_attrib51[0].arr, &ic2_chr_attrib51[0],
+"IIT_CHR_ATTRIB52", c2_chr_attrib52[0].arr, &ic2_chr_attrib52[0],
+"IIT_CHR_ATTRIB53", c2_chr_attrib53[0].arr, &ic2_chr_attrib53[0],
+"IIT_CHR_ATTRIB54", c2_chr_attrib54[0].arr, &ic2_chr_attrib54[0],
+"IIT_CHR_ATTRIB55", c2_chr_attrib55[0].arr, &ic2_chr_attrib55[0],
+"IIT_CHR_ATTRIB56", c2_chr_attrib56[0].arr, &ic2_chr_attrib56[0],
+"IIT_CHR_ATTRIB57", c2_chr_attrib57[0].arr, &ic2_chr_attrib57[0],
+"IIT_CHR_ATTRIB58", c2_chr_attrib58[0].arr, &ic2_chr_attrib58[0],
+"IIT_CHR_ATTRIB59", c2_chr_attrib59[0].arr, &ic2_chr_attrib59[0],
+"IIT_CHR_ATTRIB60", c2_chr_attrib60[0].arr, &ic2_chr_attrib60[0],
+"IIT_CHR_ATTRIB61", c2_chr_attrib61[0].arr, &ic2_chr_attrib61[0],
+"IIT_CHR_ATTRIB62", c2_chr_attrib62[0].arr, &ic2_chr_attrib62[0],
+"IIT_CHR_ATTRIB63", c2_chr_attrib63[0].arr, &ic2_chr_attrib63[0],
+"IIT_CHR_ATTRIB64", c2_chr_attrib64[0].arr, &ic2_chr_attrib64[0],
+"IIT_CHR_ATTRIB65", c2_chr_attrib65[0].arr, &ic2_chr_attrib65[0],
+"IIT_CHR_ATTRIB66", c2_chr_attrib66[0].arr, &ic2_chr_attrib66[0],
+"IIT_CHR_ATTRIB67", c2_chr_attrib67[0].arr, &ic2_chr_attrib67[0],
+"IIT_CHR_ATTRIB68", c2_chr_attrib68[0].arr, &ic2_chr_attrib68[0],
+"IIT_CHR_ATTRIB69", c2_chr_attrib69[0].arr, &ic2_chr_attrib69[0],
+"IIT_CHR_ATTRIB70", c2_chr_attrib70[0].arr, &ic2_chr_attrib70[0],
+"IIT_CHR_ATTRIB71", c2_chr_attrib71[0].arr, &ic2_chr_attrib71[0],
+"IIT_CHR_ATTRIB72", c2_chr_attrib72[0].arr, &ic2_chr_attrib72[0],
+"IIT_CHR_ATTRIB73", c2_chr_attrib73[0].arr, &ic2_chr_attrib73[0],
+"IIT_CHR_ATTRIB74", c2_chr_attrib74[0].arr, &ic2_chr_attrib74[0],
+"IIT_CHR_ATTRIB75", c2_chr_attrib75[0].arr, &ic2_chr_attrib75[0],
+"IIT_NUM_ATTRIB76", c2_num_attrib76[0].arr, &ic2_num_attrib76[0],
+"IIT_NUM_ATTRIB77", c2_num_attrib77[0].arr, &ic2_num_attrib77[0],
+"IIT_NUM_ATTRIB78", c2_num_attrib78[0].arr, &ic2_num_attrib78[0],
+"IIT_NUM_ATTRIB79", c2_num_attrib79[0].arr, &ic2_num_attrib79[0],
+"IIT_NUM_ATTRIB80", c2_num_attrib80[0].arr, &ic2_num_attrib80[0],
+"IIT_NUM_ATTRIB81", c2_num_attrib81[0].arr, &ic2_num_attrib81[0],
+"IIT_NUM_ATTRIB82", c2_num_attrib82[0].arr, &ic2_num_attrib82[0],
+"IIT_NUM_ATTRIB83", c2_num_attrib83[0].arr, &ic2_num_attrib83[0],
+"IIT_NUM_ATTRIB84", c2_num_attrib84[0].arr, &ic2_num_attrib84[0],
+"IIT_NUM_ATTRIB85", c2_num_attrib85[0].arr, &ic2_num_attrib85[0],
+"IIT_DATE_ATTRIB86", c2_date_attrib86[0].arr, &ic2_date_attrib86[0],
+"IIT_DATE_ATTRIB87", c2_date_attrib87[0].arr, &ic2_date_attrib87[0],
+"IIT_DATE_ATTRIB88", c2_date_attrib88[0].arr, &ic2_date_attrib88[0],
+"IIT_DATE_ATTRIB89", c2_date_attrib89[0].arr, &ic2_date_attrib89[0],
+"IIT_DATE_ATTRIB90", c2_date_attrib90[0].arr, &ic2_date_attrib90[0],
+"IIT_DATE_ATTRIB91", c2_date_attrib91[0].arr, &ic2_date_attrib91[0],
+"IIT_DATE_ATTRIB92", c2_date_attrib92[0].arr, &ic2_date_attrib92[0],
+"IIT_DATE_ATTRIB93", c2_date_attrib93[0].arr, &ic2_date_attrib93[0],
+"IIT_DATE_ATTRIB94", c2_date_attrib94[0].arr, &ic2_date_attrib94[0],
+"IIT_DATE_ATTRIB95", c2_date_attrib95[0].arr, &ic2_date_attrib95[0]
+} ;
+
+/************************************************************ 
+ * Function :att_qry()                                      *
+ *                                                          *
+ * Querys rows into array for use by fch_att() function     *
+ * from TABLE INV_TYPE_ATTRIB for a particular inv item type*
+ * returns number of item attributes  found                 *
+ ************************************************************/ 
+
+int att_qry(inv_type)
+char *inv_type;
+{
+static char old_inv[3]="??";
+static int old_att_no=0;
+
+if (strcmp(old_inv,inv_type) == 0)
+{ return(old_att_no); }
+else
+{
+  strcpy(att_inv_code.arr,inv_type);
+  att_inv_code.len = strlen(att_inv_code.arr);
+  
+    EXEC SQL SELECT ITA_ATTRIB_NAME
+                   ,ITA_DEC_PLACES
+                   ,ITA_FLD_LENGTH
+                   ,ITA_FORMAT
+                   ,ITA_MANDITORY_YN
+                   ,ITA_VALIDATE_YN
+                   ,NVL(ITA_DISP_SEQ_NO,0)
+                   ,ITA_DTP_CODE
+         INTO 
+                    :att_attrib_name:i_att_attrib_name
+                   ,:att_dec_places:i_att_dec_places
+                   ,:att_fld_length:i_att_fld_length
+                   ,:att_format:i_att_format
+                   ,:att_manditory_yn:i_att_manditory_yn    
+                   ,:att_validate_yn:i_att_validate_yn
+                   ,:att_disp_seq_no:i_att_disp_seq_no
+                   ,:att_dtp_code:i_att_dtp_code
+         FROM INV_TYPE_ATTRIBS 
+         WHERE ITA_ITY_SYS_FLAG like upper(:sys_flag)
+         AND   ITA_IIT_INV_CODE  = :att_inv_code
+         ORDER BY ITA_DISP_SEQ_NO;
+  
+  
+    oraerror("att_qry : cursor 1");
+  
+     if (sqlca.sqlcode != EOFTCH)
+     {  
+        printf("\n ERROR : Too many rows for array - function\n");
+        printf("\n att_qry() BPR-0389\n");
+        strcpy(pipe_msg,"ERROR : Too many rows for array - ");
+        strcat(pipe_msg,"function att_qry() BPR-0389");
+        write_pipe(NULL,pipe_msg);
+	    EXEC SQL ROLLBACK WORK;
+	    jobend(EXJobId,1,"Too many rows for array(att_qry())");
+	    EXEC SQL COMMIT WORK;
+	    dblogoff();
+	    exit(EX_FAIL);
+     }
+
+  strcpy(old_inv,inv_type);
+  old_att_no = sqlca.sqlerrd[2]; 
+  
+  return(sqlca.sqlerrd[2]);
+}
+
+}
+
+
+
+
+
+/************************************************************ 
+ * Function :get_on_site_att()                              *
+ *                                                          *
+ * returns a string containing all the on site attributes   *
+ * for a particular inventory item. Note this is very       *
+ * complicated due to the denormalised structure of the     *
+ * Inventory items table.                                   *
+ *                                                          *
+ *                                                          *
+ ************************************************************/ 
+
+
+void get_on_site_att(c_att_str,no_atts,no_doms)
+char *c_att_str;
+int  no_atts;
+int  no_doms;
+{
+/* Loop counter                                             */
+int j,i;
+char temp[10];
+char *s;
+char f_str[10];
+char dtp_trans[5];
+
+c_att_str[0] = '\0';
+
+s=c_att_str;
+
+/************************************************************ 
+ * For all attributes for this inv type                     *
+ ************************************************************/ 
+  for (i=0;i<no_atts;i++)
+  {
+    att_format[i].arr[att_format[i].len] = '\0';
+    att_attrib_name[i].arr[att_attrib_name[i].len] = '\0';
+
+/************************************************************ 
+ * If Valid on site attribute                               *
+ ************************************************************/ 
+
+    if (att_disp_seq_no[i] != 0)
+    {
+       for( j=0 ; j<NOATTS  ; j++)
+       {
+
+/************************************************************ 
+ * Attribute name found in decode structure                 *
+ ************************************************************/ 
+
+         if( strcmp(att_attrib_name[i].arr,att[j].name) == 0 )
+         {
+
+if (EXDebug)
+{
+   /* ---------------------------------------------------*/
+   /* Test introduced by HB 1-Aug-1994. Please leave in. */
+   /* ---------------------------------------------------*/
+   printf("\nAttribute : %s %d %s",att[j].name,att_dec_places[i],att[j].add);
+   
+   strcpy(pipe_msg,"Attribut :");
+   strcat(pipe_msg,att[j].name);
+   strcat(pipe_msg," ");
+   i_toa(att_dec_places[i],temp);
+   strcat(pipe_msg,temp);
+   strcat(pipe_msg," ");
+   strcat(pipe_msg,att[j].add);
+   write_pipe(NULL,pipe_msg);
+}
+
+/************************************************************ 
+ * If null set up ' ' in string for print                   *
+ ************************************************************/ 
+            if (*att[j].iadd == -1)
+            {strcpy(att[j].add," ");}
+
+/************************************************************ 
+ * Increment string pointer s to end of current string      *
+ ************************************************************/ 
+
+            s = s + strlen(s);
+
+/************************************************************ 
+ * If Domain type attribute                                 *
+ * else if real type attribute                              *
+ * else if integer type attribute                           *
+ * else assume it is a string type                          *
+ ************************************************************/ 
+
+           if (att_validate_yn[i][0] == 'Y') /* If validation flag set      */ 
+           {  if (par_set('H','C') == 1)     /* If Husky Hunter file format */
+              {   
+                 sprintf(s,"%4s,",att[j].add);}   
+              else if (get_dom(no_doms,att[j].add,
+                      att_attrib_name[i].arr,dtp_trans)  == 1)
+              {   
+                 sprintf(s,"%4s,",dtp_trans); }
+              else
+              {  
+                 sprintf(s,"%4s,",att[j].add);}   
+
+           }   
+           else if ((strcmp(att_format[i].arr,"NUMBER" ) == 0) &&
+                    (att_dec_places[i] != 0) )  /* Some decimal places      */
+           { /* Print decimal value */  
+             sprintf(s,"%6.2f,",atof((char *) att[j].add));}  
+           else if (strcmp(att_format[i].arr,"NUMBER" ) == 0)
+           { 
+             sprintf(s,"%4s,",att[j].add);}         /* Print integer value  */ 
+           else
+           {
+            /* sprintf(f_str,"%%%ds,",att_fld_length[i]); */
+            sprintf(f_str,"%%%ds,",strlen(att[j].add));
+            sprintf(s,f_str,att[j].add);}   
+            break;
+           }
+        }     
+    }
+  }
+}
+
+
+
+/************************************************************ 
+ * Function :get_off_site_att()                             *
+ *                                                          *
+ * returns a string containing all the off site attributes  *
+ * for a particular inventory item. Note this is very       *
+ * complicated due to the denormalised structure of the     *
+ * Inventory items table.                                   *
+ *                                                          *
+ *                                                          *
+ ************************************************************/ 
+
+
+void get_off_site_att(array_no,d_att_str,no_atts,no_doms)
+	int  array_no;
+	char *d_att_str;
+	int  no_atts;
+	int  no_doms;
+{
+	/* Loop counter                                             */
+	int           j,i,k,l;
+	char          *s;
+	char          f_str[10];
+	unsigned char dtp_trans[20][5];
+	unsigned char *strs[30];
+	char          *space_str=" ";
+
+	k=1;
+	l=15;
+	for (i=0;i<=14;i++)             /* For all strings from 1..14 inclusive */
+	 strs[i]=(unsigned char *) space_str;
+
+	if (ic2_elec_board[array_no] != -1)
+	{strs[0]=c2_elec_board[array_no].arr;}
+
+	if (ic2_tot_watt[array_no] != -1)
+	{strs[13]=c2_tot_watt[array_no].arr;}
+
+	if (ic2_d_patt[array_no] != -1)
+	{strs[3]=c2_d_patt[array_no].arr;}
+
+	if (ic2_lt_1[array_no] != -1)
+	{strs[4]=c2_lt_1[array_no].arr;}
+
+	if (ic2_lt_2[array_no] != -1)
+	{strs[7]=c2_lt_2[array_no].arr;}
+
+	if (ic2_lt_3[array_no] != -1)
+	{strs[10]=c2_lt_3[array_no].arr;}
+
+	if (ic2_no_1[array_no] != -1)
+	{strs[6]=c2_no_1[array_no].arr;}
+
+	if (ic2_no_2[array_no] != -1)
+	{strs[9]=c2_no_2[array_no].arr;}
+
+	if (ic2_no_3[array_no] != -1)
+	{strs[12]=c2_no_3[array_no].arr;}
+
+	if (ic2_wo_1[array_no] != -1)
+	{strs[5]=c2_wo_1[array_no].arr;}
+
+	if (ic2_wo_2[array_no] != -1)
+	{strs[8]=c2_wo_2[array_no].arr;}
+
+	if (ic2_wo_3[array_no] != -1)
+	{strs[11]=c2_wo_3[array_no].arr;}
+	
+	d_att_str[0]='\0';
+	
+
+/************************************************************ 
+ * For all attributes for this inv type                     *
+ ************************************************************/ 
+
+  for (i=0;i<no_atts;i++)
+  {
+/************************************************************ 
+ * If Valid off site attribute                              *
+ ************************************************************/ 
+
+    if (att_disp_seq_no[i] == 0)
+    {
+       for( j=0 ; j<NOATTS  ; j++)
+       {
+
+/************************************************************ 
+ * Attribute name found in decode structure                 *
+ ************************************************************/ 
+
+         if( strcmp(att_attrib_name[i].arr,att[j].name) == 0 )
+         {
+
+
+/************************************************************ 
+ * If null set up ' ' in string for print                   *
+ ************************************************************/ 
+
+            if (*att[j].iadd == -1)
+            {strcpy(att[j].add," ");}
+
+/************************************************************ 
+ * If dtp specified set str to point to it                  *
+ ************************************************************/ 
+
+         if( strcmp(att_dtp_code[i].arr,"OPHO") == 0 )
+         {if (get_dom(no_doms,att[j].add,
+                      att_attrib_name[i].arr,dtp_trans[k])  == 1)
+              {  strs[1]=dtp_trans[k];k++; }
+              else
+              {  strs[1]=att[j].add;} }   
+         else
+         if( strcmp(att_dtp_code[i].arr,"INDT") == 0 )
+           {  strs[2]=att[j].add;}   
+         else
+         if( strcmp(att_dtp_code[i].arr,"INOW") == 0 )
+         {if (get_dom(no_doms,att[j].add,
+                      att_attrib_name[i].arr,dtp_trans[k])  == 1)
+              {  strs[14]=dtp_trans[k];k++; }
+              else
+              {  strs[14]=att[j].add;} }   
+
+/************************************************************ 
+ * If Domain type attribute                                 *
+ * else if real type attribute                              *
+ * else if integer type attribute                           *
+ * else assume it is a string type                          *
+ ************************************************************/ 
+           else
+           if (att_validate_yn[i][0] == 'Y')
+           {  if (par_set('H','C') == 1)
+              { strs[l]=att[j].add;l++;}   
+              else if (get_dom(no_doms,att[j].add,
+                      att_attrib_name[i].arr,dtp_trans[k])  == 1)
+              {  strs[l]=dtp_trans[k];l++;k++; }
+              else
+              {  strs[l]=att[j].add;l++;}   
+
+           }   
+           else if ((strcmp(att_format[i].arr,"NUMBER" ) == 0) &&
+                    (att_dec_places[i] != 0) )
+           {sprintf((char *) att[j].add,"%6.2f,",atof((char *) att[j].add));
+            strs[l]=att[j].add;l++;}   
+           else if (strcmp(att_format[i].arr,"NUMBER" ) == 0)
+           {sprintf((char *) att[j].add,"%4s,",(char *) att[j].add);
+            strs[l]=att[j].add;l++;}   
+           else
+           {sprintf(f_str,"%%%ds,",att_fld_length[i]);
+            sprintf((char *) att[j].add,f_str,(char *) att[j].add);
+            strs[l]=att[j].add;l++;}   
+
+            break;
+         }
+        }     
+     
+    }
+      
+  }
+
+sprintf(d_att_str,
+"%4s,%4s,%6s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,%4s,",
+strs[0],
+strs[1],
+strs[2],
+strs[3],
+strs[4],
+strs[5],
+strs[6],
+strs[7],
+strs[8],
+strs[9],
+strs[10],
+strs[11],
+strs[12],
+strs[13],
+strs[14]);
+
+for (i=15;i<l;i++)
+  { strcat(d_att_str,strs[i]);
+    strcat(d_att_str,",");
+  }
+
+}
+
+
+

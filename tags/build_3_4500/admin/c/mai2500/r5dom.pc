@@ -1,0 +1,177 @@
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r5dom.pc	1.1 09/16/03";
+
+/*
+* MODIFIED BY: Rod Strong 3-Feb-93                         
+* REASON     : Add call to oralogoff before error exit 
+*
+* DATE         : 31-10-97
+* CHANGED BY   : G Fletcher
+* DESCRIPTION  : client-server conversion
+*/
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include "rmms.h"
+
+/************************************************************ 
+* SQL communication header file.                            *
+* Declared  external                                        *
+************************************************************/ 
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+  extern VARCHAR sys_flag[2];
+  extern VARCHAR att_inv_code[3];
+  VARCHAR dom_attrib_name[1000][33];
+  VARCHAR dom_value[1000][6];
+  VARCHAR dom_dtp_code[1000][5];
+  short int i_dom_dtp_code[1000];
+EXEC SQL END DECLARE SECTION;
+
+extern short EXDebug;
+extern char pipe_msg[254];
+
+/************************************************************ 
+* Structure used to point to inventory attributes           *
+* for decoding purposes. Column names held in array names.  *
+************************************************************/ 
+
+extern struct {char  *name; /* attribute column name      */
+               char  *add;  /* Pointer to attribute       */     
+               short *iadd; /* Pointer to indicator       */     
+               } att[]; 
+
+/************************************************************ 
+ * Function :dom_qry()                                      *
+ *                                                          *
+ * Querys rows into array for use by fch_dom() function     *
+ * from TABLE INV_ATTRIB_DOMAINS for a particular inv item  *
+ * type returns number of domain values   found             *
+ ************************************************************/ 
+
+int dom_qry(inv_type)
+char *inv_type;
+{
+/* Loop counter                                             */
+int i;
+char temp[10];
+static char old_inv[3]="??";
+static int old_dom_no=0;
+
+
+if (strcmp(old_inv,inv_type) == 0)
+{ return(old_dom_no); }
+else
+{
+
+  strcpy(att_inv_code.arr,inv_type);
+  att_inv_code.len = strlen(att_inv_code.arr);
+  
+    EXEC SQL SELECT IAD_ITA_ATTRIB_NAME,
+                    SUBSTR(IAD_VALUE,0,5),                       
+                    IAD_DTP_CODE                    
+              INTO 
+                    :dom_attrib_name,
+                    :dom_value,
+                    :dom_dtp_code:i_dom_dtp_code
+         FROM INV_ATTRI_DOMAINS
+         WHERE IAD_ITA_ITY_SYS_FLAG like upper(:sys_flag)
+         AND   IAD_ITA_INV_CODE  = :att_inv_code;
+  
+  
+    oraerror("dom_qry : cursor 1");
+  
+     if (sqlca.sqlcode != EOFTCH)
+     {  
+        printf("\n ERROR : Too many rows for array - function\n");
+        printf("\n dom_qry() BPR-0389\n");
+        strcpy(pipe_msg,"ERROR : Too many rows for array - ");
+        strcat(pipe_msg,"function dom_qry() BPR-0389");
+        write_pipe(NULL,pipe_msg);
+	    EXEC SQL ROLLBACK WORK;
+	    jobend(EXJobId,1,"Too many rows for array(dom_qry())");
+	    EXEC SQL COMMIT WORK;
+	    dblogoff();
+	    exit(EX_FAIL);
+     }
+  
+     for (i=0;i<sqlca.sqlerrd[2];i++)
+     {  dom_attrib_name[i].arr[dom_attrib_name[i].len] = '\0';
+        dom_value[i].arr[dom_value[i].len]             = '\0';
+        dom_dtp_code[i].arr[dom_dtp_code[i].len]       = '\0'; 
+        if (EXDebug)
+        {
+           /* ---------------------------------------------- */
+           /* Test entered by HB 1-Aug-1994. Please leave    */
+           /* ---------------------------------------------- */
+           printf("\nAttribute : %s",dom_attrib_name[i].arr);
+           printf(" Value : %s",dom_value[i].arr);
+           printf(" DTP Code  : %s",dom_dtp_code[i].arr); 
+           strcpy(pipe_msg,"Attribute : ");
+           strcat(pipe_msg,dom_attrib_name[i].arr);
+           strcat(pipe_msg," Value : ");
+           strcat(pipe_msg,dom_value[i].arr);
+           strcat(pipe_msg," DTP Code  : ");
+           strcat(pipe_msg,dom_dtp_code[i].arr);
+           write_pipe(NULL,pipe_msg);
+        }
+      }
+  
+  
+  strcpy(old_inv,inv_type); 
+  old_dom_no =sqlca.sqlerrd[2]; 
+
+  return(sqlca.sqlerrd[2]);
+
+}
+}
+
+
+
+
+
+/************************************************************ 
+ * Function :get_dom()                                      *
+ *                                                          *
+ * Returns the dtp translation of a code                    *
+ *                                                          *
+ ************************************************************/ 
+
+
+int get_dom(no_doms,value,attribute,dtp_trans)
+int  no_doms;
+char *value,*attribute,*dtp_trans;
+{
+/* Loop counter                                             */
+int i;
+
+  for (i=0;i<no_doms;i++)
+  {  if ( strcmp(attribute,dom_attrib_name[i].arr) == 0)  
+     {  if ( strcmp(value,dom_value[i].arr) == 0)  
+        {  strcpy(dtp_trans,dom_dtp_code[i].arr);
+           if (i_dom_dtp_code[i] == -1)
+           { return(-1); }
+           else 
+           { return(1);  }
+        }
+     }
+  }
+
+return(-1);
+}
+
+
+
+
+
