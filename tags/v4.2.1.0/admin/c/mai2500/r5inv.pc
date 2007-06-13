@@ -1,0 +1,1277 @@
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r5inv.pc	1.1 09/16/03";
+
+/************************************************************
+* MODIFIED BY: Rod Strong 3-Feb-93                          *
+* REASON     : Add call to oralogoff before error exits     *
+*															*
+* DATE         : 04-11-97                                   *
+* CHANGED BY   : G Fletcher                                 *
+* DESCRIPTION  : client-server conversion                   *
+************************************************************/
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+#include "rmms.h"
+
+/************************************************************ 
+* SQL communication header file.                            *
+* Declared  external                                        *
+************************************************************/ 
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+/************************************************************ 
+* This symbolic constant defines the number of valid        *
+* inventory item types for RMMS systems with about 50% free *
+* space. For customised RMMS systems this constant may      *
+* need to be changed where a large number of user defined   *
+* inventory items exist.                                    *
+* Nb. The precompiler does not understand symbolic          *
+* constants                                                 *
+************************************************************/ 
+#define NO_OF_INV_TYPES 1000 
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+
+  VARCHAR i_inv_grouping[2];
+
+  extern VARCHAR sys_flag[2];
+  VARCHAR val_inv[1000][3];
+  int     c2_id;
+  VARCHAR c2_inv_code[200][3];
+  int     c2_st_chain[200];
+  int     c2_end_chain[200];
+  char    c2_x_sect[200][1];  
+  VARCHAR c2_angle[200][8];
+  VARCHAR c2_class[200][3];
+  VARCHAR c2_colour[200][3];
+  VARCHAR c2_description[200][41];
+  VARCHAR c2_diagram[200][7];
+  VARCHAR c2_distance[200][9];
+  VARCHAR c2_gap[200][8];
+  VARCHAR c2_height[200][8];
+  VARCHAR c2ht2[200][8];
+  VARCHAR c2_id_code[200][9];
+  VARCHAR c2_instal_date[200][7];
+  VARCHAR c2_invent_date[200][7];
+  VARCHAR c2_itemcode[200][9];
+  VARCHAR c2_length[200][8];
+  VARCHAR c2_material[200][3];
+  VARCHAR c2_method[200][3];
+  VARCHAR c2_note[200][41];
+  VARCHAR c2_no_of_units[200][4];
+  VARCHAR c2_options[200][3];
+  VARCHAR c2_elec_board[200][5];
+  VARCHAR c2_owner[200][5];
+  VARCHAR c2_photo[200][7];
+  VARCHAR c2_power[200][8];
+  VARCHAR c2_type[200][3];
+  VARCHAR c2_width[200][8];
+  VARCHAR c2_x_char_1[200][21];
+  VARCHAR c2_x_date_1[200][7];
+  VARCHAR c2_x_domain_1[200][3];
+  VARCHAR c2_x_number_1[200][12];
+  VARCHAR c2_tot_watt[200][5];
+  VARCHAR c2_d_patt[200][5];
+  VARCHAR c2_lt_1[200][5];
+  VARCHAR c2_lt_2[200][5];
+  VARCHAR c2_lt_3[200][5];
+  VARCHAR c2_no_1[200][5];
+  VARCHAR c2_no_2[200][5];
+  VARCHAR c2_no_3[200][5];
+  VARCHAR c2_wo_1[200][5];
+  VARCHAR c2_wo_2[200][5];
+  VARCHAR c2_wo_3[200][5];
+
+  VARCHAR c2_inv_ownership[200][5];
+  VARCHAR c2_primary_key[200][51];
+  VARCHAR c2_foreign_key[200][51];
+  VARCHAR c2_det_xsp[200][5];
+  VARCHAR c2_offset[200][41];
+  VARCHAR c2_num_attrib16[200][41];
+  VARCHAR c2_num_attrib17[200][41];
+  VARCHAR c2_num_attrib18[200][41];
+  VARCHAR c2_num_attrib19[200][41];
+  VARCHAR c2_num_attrib20[200][41];
+  VARCHAR c2_num_attrib21[200][41];
+  VARCHAR c2_num_attrib22[200][41];
+  VARCHAR c2_num_attrib23[200][41];
+  VARCHAR c2_num_attrib24[200][41];
+  VARCHAR c2_num_attrib25[200][41];
+  VARCHAR c2_chr_attrib26[200][41];
+  VARCHAR c2_chr_attrib27[200][51];
+  VARCHAR c2_chr_attrib28[200][51];
+  VARCHAR c2_chr_attrib29[200][51];
+  VARCHAR c2_chr_attrib30[200][51];
+  VARCHAR c2_chr_attrib31[200][51];
+  VARCHAR c2_chr_attrib32[200][51];
+  VARCHAR c2_chr_attrib33[200][51];
+  VARCHAR c2_chr_attrib34[200][51];
+  VARCHAR c2_chr_attrib35[200][51];
+  VARCHAR c2_chr_attrib36[200][51];
+  VARCHAR c2_chr_attrib37[200][51];
+  VARCHAR c2_chr_attrib38[200][51];
+  VARCHAR c2_chr_attrib39[200][51];
+  VARCHAR c2_chr_attrib40[200][51];
+  VARCHAR c2_chr_attrib41[200][51];
+  VARCHAR c2_chr_attrib42[200][51];
+  VARCHAR c2_chr_attrib43[200][51];
+  VARCHAR c2_chr_attrib44[200][51];
+  VARCHAR c2_chr_attrib45[200][51];
+  VARCHAR c2_chr_attrib46[200][51];
+  VARCHAR c2_chr_attrib47[200][51];
+  VARCHAR c2_chr_attrib48[200][51];
+  VARCHAR c2_chr_attrib49[200][51];
+  VARCHAR c2_chr_attrib50[200][51];
+  VARCHAR c2_chr_attrib51[200][51];
+  VARCHAR c2_chr_attrib52[200][51];
+  VARCHAR c2_chr_attrib53[200][51];
+  VARCHAR c2_chr_attrib54[200][51];
+  VARCHAR c2_chr_attrib55[200][51];
+  VARCHAR c2_chr_attrib56[200][201];
+  VARCHAR c2_chr_attrib57[200][201];
+  VARCHAR c2_chr_attrib58[200][201];
+  VARCHAR c2_chr_attrib59[200][201];
+  VARCHAR c2_chr_attrib60[200][201];
+  VARCHAR c2_chr_attrib61[200][201];
+  VARCHAR c2_chr_attrib62[200][201];
+  VARCHAR c2_chr_attrib63[200][201];
+  VARCHAR c2_chr_attrib64[200][201];
+  VARCHAR c2_chr_attrib65[200][201];
+  VARCHAR c2_chr_attrib66[200][501];
+  VARCHAR c2_chr_attrib67[200][501];
+  VARCHAR c2_chr_attrib68[200][501];
+  VARCHAR c2_chr_attrib69[200][501];
+  VARCHAR c2_chr_attrib70[200][501];
+  VARCHAR c2_chr_attrib71[200][501];
+  VARCHAR c2_chr_attrib72[200][501];
+  VARCHAR c2_chr_attrib73[200][501];
+  VARCHAR c2_chr_attrib74[200][501];
+  VARCHAR c2_chr_attrib75[200][501];
+  VARCHAR c2_num_attrib76[200][41];
+  VARCHAR c2_num_attrib77[200][41];
+  VARCHAR c2_num_attrib78[200][41];
+  VARCHAR c2_num_attrib79[200][41];
+  VARCHAR c2_num_attrib80[200][41];
+  VARCHAR c2_num_attrib81[200][41];
+  VARCHAR c2_num_attrib82[200][41];
+  VARCHAR c2_num_attrib83[200][41];
+  VARCHAR c2_num_attrib84[200][41];
+  VARCHAR c2_num_attrib85[200][41];
+  VARCHAR c2_date_attrib86[200][7];
+  VARCHAR c2_date_attrib87[200][7];
+  VARCHAR c2_date_attrib88[200][7];
+  VARCHAR c2_date_attrib89[200][7];
+  VARCHAR c2_date_attrib90[200][7];
+  VARCHAR c2_date_attrib91[200][7];
+  VARCHAR c2_date_attrib92[200][7];
+  VARCHAR c2_date_attrib93[200][7];
+  VARCHAR c2_date_attrib94[200][7];
+  VARCHAR c2_date_attrib95[200][7];
+
+
+
+  short int ic2_x_sect[200];  
+  short int ic2_angle[200];
+  short int ic2_class[200];
+  short int ic2_colour[200];
+  short int ic2_description[200];
+  short int ic2_diagram[200];
+  short int ic2_distance[200];
+  short int ic2_gap[200];
+  short int ic2_height[200];
+  short int ic2ht2[200];
+  short int ic2_id_code[200];
+  short int ic2_instal_date[200];
+  short int ic2_invent_date[200];
+  short int ic2_itemcode[200];
+  short int ic2_length[200];
+  short int ic2_material[200];
+  short int ic2_method[200];
+  short int ic2_note[200];
+  short int ic2_no_of_units[200];
+  short int ic2_options[200];
+  short int ic2_elec_board[200];
+  short int ic2_owner[200];
+  short int ic2_photo[200];
+  short int ic2_power[200];
+  short int ic2_type[200];
+  short int ic2_width[200];
+  short int ic2_x_char_1[200];
+  short int ic2_x_date_1[200];
+  short int ic2_x_domain_1[200];
+  short int ic2_x_number_1[200];
+  short int ic2_tot_watt[200];
+  short int ic2_d_patt[200];
+  short int ic2_lt_1[200];
+  short int ic2_lt_2[200];
+  short int ic2_lt_3[200];
+  short int ic2_no_1[200];
+  short int ic2_no_2[200];
+  short int ic2_no_3[200];
+  short int ic2_wo_1[200];
+  short int ic2_wo_2[200];
+  short int ic2_wo_3[200];
+
+  short int ic2_inv_ownership[200];
+  short int ic2_primary_key[200];
+  short int ic2_foreign_key[200];
+  short int ic2_det_xsp[200];
+  short int ic2_offset[200];
+  short int ic2_num_attrib16[200];
+  short int ic2_num_attrib17[200];
+  short int ic2_num_attrib18[200];
+  short int ic2_num_attrib19[200];
+  short int ic2_num_attrib20[200];
+  short int ic2_num_attrib21[200];
+  short int ic2_num_attrib22[200];
+  short int ic2_num_attrib23[200];
+  short int ic2_num_attrib24[200];
+  short int ic2_num_attrib25[200];
+  short int ic2_chr_attrib26[200];
+  short int ic2_chr_attrib27[200];
+  short int ic2_chr_attrib28[200];
+  short int ic2_chr_attrib29[200];
+  short int ic2_chr_attrib30[200];
+  short int ic2_chr_attrib31[200];
+  short int ic2_chr_attrib32[200];
+  short int ic2_chr_attrib33[200];
+  short int ic2_chr_attrib34[200];
+  short int ic2_chr_attrib35[200];
+  short int ic2_chr_attrib36[200];
+  short int ic2_chr_attrib37[200];
+  short int ic2_chr_attrib38[200];
+  short int ic2_chr_attrib39[200];
+  short int ic2_chr_attrib40[200];
+  short int ic2_chr_attrib41[200];
+  short int ic2_chr_attrib42[200];
+  short int ic2_chr_attrib43[200];
+  short int ic2_chr_attrib44[200];
+  short int ic2_chr_attrib45[200];
+  short int ic2_chr_attrib46[200];
+  short int ic2_chr_attrib47[200];
+  short int ic2_chr_attrib48[200];
+  short int ic2_chr_attrib49[200];
+  short int ic2_chr_attrib50[200];
+  short int ic2_chr_attrib51[200];
+  short int ic2_chr_attrib52[200];
+  short int ic2_chr_attrib53[200];
+  short int ic2_chr_attrib54[200];
+  short int ic2_chr_attrib55[200];
+  short int ic2_chr_attrib56[200];
+  short int ic2_chr_attrib57[200];
+  short int ic2_chr_attrib58[200];
+  short int ic2_chr_attrib59[200];
+  short int ic2_chr_attrib60[200];
+  short int ic2_chr_attrib61[200];
+  short int ic2_chr_attrib62[200];
+  short int ic2_chr_attrib63[200];
+  short int ic2_chr_attrib64[200];
+  short int ic2_chr_attrib65[200];
+  short int ic2_chr_attrib66[200];
+  short int ic2_chr_attrib67[200];
+  short int ic2_chr_attrib68[200];
+  short int ic2_chr_attrib69[200];
+  short int ic2_chr_attrib70[200];
+  short int ic2_chr_attrib71[200];
+  short int ic2_chr_attrib72[200];
+  short int ic2_chr_attrib73[200];
+  short int ic2_chr_attrib74[200];
+  short int ic2_chr_attrib75[200];
+  short int ic2_num_attrib76[200];
+  short int ic2_num_attrib77[200];
+  short int ic2_num_attrib78[200];
+  short int ic2_num_attrib79[200];
+  short int ic2_num_attrib80[200];
+  short int ic2_num_attrib81[200];
+  short int ic2_num_attrib82[200];
+  short int ic2_num_attrib83[200];
+  short int ic2_num_attrib84[200];
+  short int ic2_num_attrib85[200];
+  short int ic2_date_attrib86[200];
+  short int ic2_date_attrib87[200];
+  short int ic2_date_attrib88[200];
+  short int ic2_date_attrib89[200];
+  short int ic2_date_attrib90[200];
+  short int ic2_date_attrib91[200];
+  short int ic2_date_attrib92[200];
+  short int ic2_date_attrib93[200];
+  short int ic2_date_attrib94[200];
+  short int ic2_date_attrib95[200];
+
+  varchar select_string[7000];
+/* extern char *select_string;
+EXEC SQL VAR select_string IS STRING(1024);
+ */
+EXEC SQL END DECLARE SECTION;
+
+/************************************************************ 
+* Function Declaration area.                                * 
+************************************************************/ 
+
+
+extern char pipe_msg[254];
+
+void inv_qry();
+void get_on_site_att();
+void get_off_site_att();
+int att_qry();
+int dom_qry();
+
+/************************************************************ 
+* Structure used to point to and included selected          *
+* Inventory item types                                      *
+************************************************************/ 
+
+struct s_invtps
+{unsigned char *inv_type;
+ char yn;
+} ;
+
+/* Number of valid inventory item types                       */
+static int no_val_inv;
+
+static struct s_invtps invtps[NO_OF_INV_TYPES];
+
+static char all_inv_yn;
+   
+
+/************************************************************ 
+* Structure used to point to inventory attributes           *
+* for decoding purposes. Column names held in array names.  *
+************************************************************/ 
+
+extern struct {char  *name; /* attribute column name      */
+      unsigned char  *add;  /* Pointer to attribute       */     
+               short *iadd; /* Pointer to indicator       */     
+               } att[]; 
+
+/************************************************************ 
+ *Function : sel_inventory()                                *
+ *                                                          *
+ * inventory item types to be selected (% indicates all)    *
+ *                                                          *
+ ************************************************************/ 
+
+int sel_inventory()
+{
+   static int no_req_inv;
+   char req_inv[3];
+   int i=0,j=0;
+	char *ptr,
+	     *tok;
+
+   /************************************************************ 
+    * Set up array for all valid inventory item types          *
+    * and return no of valid types                             *
+    ************************************************************/
+
+	no_val_inv = get_invtps();
+    no_req_inv = 0;
+
+	/* ptr=malloc(EXParam[1].len+1);
+	strcpy(ptr,(char *)EXParam[1].arr); */
+
+        for (i=2; i<EXParamCount; i++)
+        {
+           j+=EXParam[i].len+1;
+        }
+        ptr = malloc(j);
+
+        strcpy(ptr,(char *)EXParam[2].arr);
+
+        for (i=3; i<EXParamCount; i++)
+        {
+           strcat(ptr,",");
+           strcat(ptr,(char *)EXParam[i].arr);
+        }
+
+        if (strlen(ptr) == 0)
+           strcpy(ptr,"%");
+   
+	tok=strtok(ptr,",");
+
+	if (!tok)
+	{
+	   	EXEC SQL ROLLBACK WORK;
+	   	jobend(EXJobId,1,"Invalid GRI Parameter number 2. No item types");
+	   	EXEC SQL COMMIT WORK;
+	   	dblogoff();
+	   	exit(EX_FAIL);
+	}
+
+	while (tok)
+	{
+   		if (tok[0]=='%')
+		{
+			no_req_inv = no_val_inv;
+                        all_inv_yn = 'Y';
+   			return(no_req_inv);
+		}
+                all_inv_yn='N';
+  		strcpy(req_inv,tok);
+        no_req_inv = no_req_inv + chk_inv(req_inv,no_val_inv);
+        if ( no_req_inv == no_val_inv )
+   			return(no_req_inv);
+
+		tok=strtok(NULL,",");
+    }
+    return(no_req_inv);
+}
+
+/************************************************************ 
+ *Function : get_invtps()                                *
+ *                                                          *
+ * Get all valid inventory item types                       *
+ *                                                          *
+ *  * If more inventory than space in array                 *
+ *    issue error                                           *
+ *                                                          *
+ *  * return number of valid inventory                      *   
+ ************************************************************/ 
+
+int get_invtps() 
+{
+
+/* Loop counter variable                                     */
+int i;
+
+   /************************************************************ 
+    * Get Valid inventory item types                           *
+    ************************************************************/
+
+EXEC SQL SELECT ITY_INV_CODE
+         INTO   :val_inv
+         FROM   INV_ITEM_TYPES
+         WHERE  ITY_SYS_FLAG like upper(:sys_flag)
+         AND    ITY_ROAD_CHARACTERISTIC = 'I'
+         ORDER BY ITY_INV_CODE;
+
+   oraerror("get_invtps : cursor 1");
+
+   /************************************************************ 
+    * Check all inventory item types returned                  *
+    ************************************************************/
+
+   if (sqlca.sqlcode != EOFTCH)
+   {  
+      printf("\n ERROR : Too many rows for array - function\n");
+      printf("\n get_invtps () BPR-0389\n");
+      strcpy(pipe_msg,"ERROR : Too many rows for array - ");
+      strcat(pipe_msg,"function get_invtps () BPR-0389");
+      write_pipe(NULL,pipe_msg);
+	  EXEC SQL ROLLBACK WORK;
+	  jobend(EXJobId,1,"Too nmany rows for array(get_invtps())");
+	  EXEC SQL COMMIT WORK;
+	  dblogoff();
+	  exit(EX_FAIL);
+   }
+
+   /************************************************************ 
+    * Check at least one inventory item type  returned         *
+    ************************************************************/
+
+   if (sqlca.sqlerrd[2] == 0)
+   {  
+      printf("\n ERROR : No inventory item types found\n");
+      printf("\n Check with your RMMS administrator BPR-0533\n");
+      write_pipe(NULL,"ERROR : No inventory item types found");
+      write_pipe(NULL,"Check with your RMMS administrator BPR-0533");
+	  EXEC SQL ROLLBACK WORK;
+	  jobend(EXJobId,1,"No Inventory Item Types found");
+	  EXEC SQL COMMIT WORK;
+	  dblogoff();
+      exit(EX_FAIL);
+   }
+   
+   /************************************************************ 
+    * Null terminate all inventory item types in array.        *
+    * Set up structure pointer to array for later use.         *
+    ************************************************************/
+
+   for (i=0;i < sqlca.sqlerrd[2]; i++)
+   { val_inv[i].arr[val_inv[i].len] = '\0';
+     invtps[i].inv_type = val_inv[i].arr;
+   }
+
+   /************************************************************ 
+    * Return number of items fetched                           *
+    ************************************************************/
+
+return(sqlca.sqlerrd[2]);
+}
+
+/************************************************************ 
+ *Function : chk_inv()                                      *
+ *                                                          *
+ * Check previously retrieved array of inventory for        *
+ * Valid item                                               *
+ *                                                          *
+ *  * If non print error                                    *
+ *                                                          *
+ *  * return number of valid inventory selected             *   
+ ************************************************************/ 
+
+int chk_inv(req_inv,no_val_inv)
+char *req_inv;
+int no_val_inv;
+{
+  /* Loop counters                                              */
+   int i,j=0;
+   
+   
+   for(i=0; i < no_val_inv;i++)
+   { if (chkabv(req_inv,invtps[i].inv_type) == TRUE)
+     {  j++;
+        invtps[i].yn='Y';
+     }
+   }
+
+  if (j==0)
+  {
+    printf("\nERROR: This is not a valid inventory item type BPR-0254\n");
+    write_pipe(NULL,"ERROR: This is not a valid inventory item type BPR-0254");
+  }
+      
+return(j);
+
+}
+
+/************************************************************ 
+ * Function :fch_inv()                                      *
+ *                                                          *
+ * Fetches Inventory info from the table INV_ITEMS          *
+ ************************************************************/ 
+ 
+int c2_this_fetch;
+int c2_count;
+int c2_so_far; 
+short int c2_eof;
+
+int fch_inv(inv_code,st_chain,end_chain,x_sect,c_att_str,d_att_str)
+char *inv_code;
+int  *st_chain;
+int  *end_chain;
+char *x_sect;  
+char *c_att_str;
+char *d_att_str;
+{
+/* Total number attributes for item type                    */
+int no_atts;
+/* Total number domains    for item type                    */
+int no_doms;
+     
+
+if ((c2_this_fetch == 0)&&(c2_eof == -1))
+{  return(-2);}
+
+c2_inv_code[c2_count].arr[c2_inv_code[c2_count].len] = '\0';
+
+c2_angle[c2_count].arr[c2_angle[c2_count].len] = '\0';
+att[0].add  = c2_angle[c2_count].arr;
+att[0].iadd = &ic2_angle[c2_count];
+c2_class[c2_count].arr[c2_class[c2_count].len] = '\0';
+att[1].add    = c2_class[c2_count].arr;
+att[1].iadd   = &ic2_class[c2_count];
+c2_colour[c2_count].arr[c2_colour[c2_count].len] = '\0';
+att[2].add    = c2_colour[c2_count].arr;
+att[2].iadd   = &ic2_colour[c2_count];
+c2_description[c2_count].arr[c2_description[c2_count].len] = '\0';
+att[3].add    = c2_description[c2_count].arr;
+att[3].iadd   = &ic2_description[c2_count];
+c2_diagram[c2_count].arr[c2_diagram[c2_count].len] = '\0';
+att[4].add    = c2_diagram[c2_count].arr;
+att[4].iadd   = &ic2_diagram[c2_count];
+c2_distance[c2_count].arr[c2_distance[c2_count].len] = '\0';
+att[5].add    = c2_distance[c2_count].arr;
+att[5].iadd   = &ic2_distance[c2_count];
+c2_gap[c2_count].arr[c2_gap[c2_count].len] = '\0';
+att[6].add    = c2_gap[c2_count].arr;
+att[6].iadd   = &ic2_gap[c2_count];
+c2_height[c2_count].arr[c2_height[c2_count].len] = '\0';
+att[7].add    = c2_height[c2_count].arr;
+att[7].iadd   = &ic2_height[c2_count];
+c2ht2[c2_count].arr[c2ht2[c2_count].len] = '\0';
+att[8].add    = c2ht2[c2_count].arr;
+att[8].iadd   = &ic2ht2[c2_count];
+c2_id_code[c2_count].arr[c2_id_code[c2_count].len] = '\0';
+att[9].add    = c2_id_code[c2_count].arr;
+att[9].iadd   = &ic2_id_code[c2_count];
+c2_instal_date[c2_count].arr[c2_instal_date[c2_count].len] = '\0';
+att[10].add    = c2_instal_date[c2_count].arr;
+att[10].iadd   = &ic2_instal_date[c2_count];
+c2_invent_date[c2_count].arr[c2_invent_date[c2_count].len] = '\0';
+att[11].add    = c2_invent_date[c2_count].arr;
+att[11].iadd   = &ic2_invent_date[c2_count];
+c2_itemcode[c2_count].arr[c2_itemcode[c2_count].len] = '\0';
+att[12].add    = c2_itemcode[c2_count].arr;
+att[12].iadd   = &ic2_itemcode[c2_count];
+c2_length[c2_count].arr[c2_length[c2_count].len] = '\0';
+att[13].add    = c2_length[c2_count].arr;
+att[13].iadd   = &ic2_length[c2_count];
+c2_material[c2_count].arr[c2_material[c2_count].len] = '\0';
+att[14].add    = c2_material[c2_count].arr;
+att[14].iadd   = &ic2_material[c2_count];
+c2_method[c2_count].arr[c2_method[c2_count].len] = '\0';
+att[15].add    = c2_method[c2_count].arr;
+att[15].iadd   = &ic2_method[c2_count];
+c2_note[c2_count].arr[c2_note[c2_count].len] = '\0';
+att[16].add    = c2_note[c2_count].arr;
+att[16].iadd   = &ic2_note[c2_count];
+c2_no_of_units[c2_count].arr[c2_no_of_units[c2_count].len] = '\0';
+att[17].add    = c2_no_of_units[c2_count].arr;
+att[17].iadd   = &ic2_no_of_units[c2_count];
+c2_options[c2_count].arr[c2_options[c2_count].len] = '\0';
+att[18].add    = c2_options[c2_count].arr;
+att[18].iadd   = &ic2_options[c2_count];
+c2_owner[c2_count].arr[c2_owner[c2_count].len] = '\0';
+att[19].add    = c2_owner[c2_count].arr;
+att[19].iadd   = &ic2_owner[c2_count];
+c2_photo[c2_count].arr[c2_photo[c2_count].len] = '\0';
+att[20].add    = c2_photo[c2_count].arr;
+att[20].iadd   = &ic2_photo[c2_count];
+c2_power[c2_count].arr[c2_power[c2_count].len] = '\0';
+att[21].add    = c2_power[c2_count].arr;
+att[21].iadd   = &ic2_power[c2_count];
+c2_type[c2_count].arr[c2_type[c2_count].len] = '\0';
+att[22].add    = c2_type[c2_count].arr;
+att[22].iadd   = &ic2_type[c2_count];
+c2_width[c2_count].arr[c2_width[c2_count].len] = '\0';
+att[23].add    = c2_width[c2_count].arr;
+att[23].iadd   = &ic2_width[c2_count];
+c2_x_char_1[c2_count].arr[c2_x_char_1[c2_count].len] = '\0';
+att[24].add    = c2_x_char_1[c2_count].arr;
+att[24].iadd   = &ic2_x_char_1[c2_count];
+c2_x_date_1[c2_count].arr[c2_x_date_1[c2_count].len] = '\0';
+att[25].add    = c2_x_date_1[c2_count].arr;
+att[25].iadd   = &ic2_x_date_1[c2_count];
+c2_x_domain_1[c2_count].arr[c2_x_domain_1[c2_count].len] = '\0';
+att[26].add    = c2_x_domain_1[c2_count].arr;
+att[26].iadd   = &ic2_x_domain_1[c2_count];
+c2_x_number_1[c2_count].arr[c2_x_number_1[c2_count].len] = '\0';
+att[27].add    = c2_x_number_1[c2_count].arr;
+att[27].iadd   = &ic2_x_number_1[c2_count];
+
+c2_inv_ownership[c2_count].arr[c2_inv_ownership[c2_count].len] = '\0';
+att[28].add    = c2_inv_ownership[c2_count].arr;
+att[28].iadd   = &ic2_inv_ownership[c2_count];
+c2_primary_key[c2_count].arr[c2_primary_key[c2_count].len] = '\0';
+att[29].add    = c2_primary_key[c2_count].arr;
+att[29].iadd   = &ic2_primary_key[c2_count];
+c2_foreign_key[c2_count].arr[c2_foreign_key[c2_count].len] = '\0';
+att[30].add    = c2_foreign_key[c2_count].arr;
+att[30].iadd   = &ic2_foreign_key[c2_count];
+c2_det_xsp[c2_count].arr[c2_det_xsp[c2_count].len] = '\0';
+att[31].add    = c2_det_xsp[c2_count].arr;
+att[31].iadd   = &ic2_det_xsp[c2_count];
+c2_offset[c2_count].arr[c2_offset[c2_count].len] = '\0';
+att[32].add    = c2_offset[c2_count].arr;
+att[32].iadd   = &ic2_offset[c2_count];
+c2_num_attrib16[c2_count].arr[c2_num_attrib16[c2_count].len] = '\0';
+att[33].add    = c2_num_attrib16[c2_count].arr;
+att[33].iadd   = &ic2_num_attrib16[c2_count];
+c2_num_attrib17[c2_count].arr[c2_num_attrib17[c2_count].len] = '\0';
+att[34].add    = c2_num_attrib17[c2_count].arr;
+att[34].iadd   = &ic2_num_attrib17[c2_count];
+c2_num_attrib18[c2_count].arr[c2_num_attrib18[c2_count].len] = '\0';
+att[35].add    = c2_num_attrib18[c2_count].arr;
+att[35].iadd   = &ic2_num_attrib18[c2_count];
+c2_num_attrib19[c2_count].arr[c2_num_attrib19[c2_count].len] = '\0';
+att[36].add    = c2_num_attrib19[c2_count].arr;
+att[36].iadd   = &ic2_num_attrib19[c2_count];
+c2_num_attrib20[c2_count].arr[c2_num_attrib20[c2_count].len] = '\0';
+att[37].add    = c2_num_attrib20[c2_count].arr;
+att[37].iadd   = &ic2_num_attrib20[c2_count];
+c2_num_attrib21[c2_count].arr[c2_num_attrib21[c2_count].len] = '\0';
+att[38].add    = c2_num_attrib21[c2_count].arr;
+att[38].iadd   = &ic2_num_attrib21[c2_count];
+c2_num_attrib22[c2_count].arr[c2_num_attrib22[c2_count].len] = '\0';
+att[39].add    = c2_num_attrib22[c2_count].arr;
+att[39].iadd   = &ic2_num_attrib22[c2_count];
+c2_num_attrib23[c2_count].arr[c2_num_attrib23[c2_count].len] = '\0';
+att[40].add    = c2_num_attrib23[c2_count].arr;
+att[40].iadd   = &ic2_num_attrib23[c2_count];
+c2_num_attrib24[c2_count].arr[c2_num_attrib24[c2_count].len] = '\0';
+att[41].add    = c2_num_attrib24[c2_count].arr;
+att[41].iadd   = &ic2_num_attrib24[c2_count];
+c2_num_attrib25[c2_count].arr[c2_num_attrib25[c2_count].len] = '\0';
+att[42].add    = c2_num_attrib25[c2_count].arr;
+att[42].iadd   = &ic2_num_attrib25[c2_count];
+c2_chr_attrib26[c2_count].arr[c2_chr_attrib26[c2_count].len] = '\0';
+att[43].add    = c2_chr_attrib26[c2_count].arr;
+att[43].iadd   = &ic2_chr_attrib26[c2_count];
+c2_chr_attrib27[c2_count].arr[c2_chr_attrib27[c2_count].len] = '\0';
+att[44].add    = c2_chr_attrib27[c2_count].arr;
+att[44].iadd   = &ic2_chr_attrib27[c2_count];
+c2_chr_attrib28[c2_count].arr[c2_chr_attrib28[c2_count].len] = '\0';
+att[45].add    = c2_chr_attrib28[c2_count].arr;
+att[45].iadd   = &ic2_chr_attrib28[c2_count];
+c2_chr_attrib29[c2_count].arr[c2_chr_attrib29[c2_count].len] = '\0';
+att[46].add    = c2_chr_attrib29[c2_count].arr;
+att[46].iadd   = &ic2_chr_attrib29[c2_count];
+c2_chr_attrib30[c2_count].arr[c2_chr_attrib30[c2_count].len] = '\0';
+att[47].add    = c2_chr_attrib30[c2_count].arr;
+att[47].iadd   = &ic2_chr_attrib30[c2_count];
+c2_chr_attrib31[c2_count].arr[c2_chr_attrib31[c2_count].len] = '\0';
+att[48].add    = c2_chr_attrib31[c2_count].arr;
+att[48].iadd   = &ic2_chr_attrib31[c2_count];
+c2_chr_attrib32[c2_count].arr[c2_chr_attrib32[c2_count].len] = '\0';
+att[49].add    = c2_chr_attrib32[c2_count].arr;
+att[49].iadd   = &ic2_chr_attrib32[c2_count];
+c2_chr_attrib33[c2_count].arr[c2_chr_attrib33[c2_count].len] = '\0';
+att[50].add    = c2_chr_attrib33[c2_count].arr;
+att[50].iadd   = &ic2_chr_attrib33[c2_count];
+c2_chr_attrib34[c2_count].arr[c2_chr_attrib34[c2_count].len] = '\0';
+att[51].add    = c2_chr_attrib34[c2_count].arr;
+att[51].iadd   = &ic2_chr_attrib34[c2_count];
+c2_chr_attrib35[c2_count].arr[c2_chr_attrib35[c2_count].len] = '\0';
+att[52].add    = c2_chr_attrib35[c2_count].arr;
+att[52].iadd   = &ic2_chr_attrib35[c2_count];
+c2_chr_attrib36[c2_count].arr[c2_chr_attrib36[c2_count].len] = '\0';
+att[53].add    = c2_chr_attrib36[c2_count].arr;
+att[53].iadd   = &ic2_chr_attrib36[c2_count];
+c2_chr_attrib37[c2_count].arr[c2_chr_attrib37[c2_count].len] = '\0';
+att[54].add    = c2_chr_attrib37[c2_count].arr;
+att[54].iadd   = &ic2_chr_attrib37[c2_count];
+c2_chr_attrib38[c2_count].arr[c2_chr_attrib38[c2_count].len] = '\0';
+att[55].add    = c2_chr_attrib38[c2_count].arr;
+att[55].iadd   = &ic2_chr_attrib38[c2_count];
+c2_chr_attrib39[c2_count].arr[c2_chr_attrib39[c2_count].len] = '\0';
+att[56].add    = c2_chr_attrib39[c2_count].arr;
+att[56].iadd   = &ic2_chr_attrib39[c2_count];
+c2_chr_attrib40[c2_count].arr[c2_chr_attrib40[c2_count].len] = '\0';
+att[57].add    = c2_chr_attrib40[c2_count].arr;
+att[57].iadd   = &ic2_chr_attrib40[c2_count];
+c2_chr_attrib41[c2_count].arr[c2_chr_attrib41[c2_count].len] = '\0';
+att[58].add    = c2_chr_attrib41[c2_count].arr;
+att[58].iadd   = &ic2_chr_attrib41[c2_count];
+c2_chr_attrib42[c2_count].arr[c2_chr_attrib42[c2_count].len] = '\0';
+att[59].add    = c2_chr_attrib42[c2_count].arr;
+att[59].iadd   = &ic2_chr_attrib42[c2_count];
+c2_chr_attrib43[c2_count].arr[c2_chr_attrib43[c2_count].len] = '\0';
+att[60].add    = c2_chr_attrib43[c2_count].arr;
+att[60].iadd   = &ic2_chr_attrib43[c2_count];
+c2_chr_attrib44[c2_count].arr[c2_chr_attrib44[c2_count].len] = '\0';
+att[61].add    = c2_chr_attrib44[c2_count].arr;
+att[61].iadd   = &ic2_chr_attrib44[c2_count];
+c2_chr_attrib45[c2_count].arr[c2_chr_attrib45[c2_count].len] = '\0';
+att[62].add    = c2_chr_attrib45[c2_count].arr;
+att[62].iadd   = &ic2_chr_attrib45[c2_count];
+c2_chr_attrib46[c2_count].arr[c2_chr_attrib46[c2_count].len] = '\0';
+att[63].add    = c2_chr_attrib46[c2_count].arr;
+att[63].iadd   = &ic2_chr_attrib46[c2_count];
+c2_chr_attrib47[c2_count].arr[c2_chr_attrib47[c2_count].len] = '\0';
+att[64].add    = c2_chr_attrib47[c2_count].arr;
+att[64].iadd   = &ic2_chr_attrib47[c2_count];
+c2_chr_attrib48[c2_count].arr[c2_chr_attrib48[c2_count].len] = '\0';
+att[65].add    = c2_chr_attrib48[c2_count].arr;
+att[65].iadd   = &ic2_chr_attrib48[c2_count];
+c2_chr_attrib49[c2_count].arr[c2_chr_attrib49[c2_count].len] = '\0';
+att[66].add    = c2_chr_attrib49[c2_count].arr;
+att[66].iadd   = &ic2_chr_attrib49[c2_count];
+c2_chr_attrib50[c2_count].arr[c2_chr_attrib50[c2_count].len] = '\0';
+att[67].add    = c2_chr_attrib50[c2_count].arr;
+att[67].iadd   = &ic2_chr_attrib50[c2_count];
+c2_chr_attrib51[c2_count].arr[c2_chr_attrib51[c2_count].len] = '\0';
+att[68].add    = c2_chr_attrib51[c2_count].arr;
+att[68].iadd   = &ic2_chr_attrib51[c2_count];
+c2_chr_attrib52[c2_count].arr[c2_chr_attrib52[c2_count].len] = '\0';
+att[69].add    = c2_chr_attrib52[c2_count].arr;
+att[69].iadd   = &ic2_chr_attrib52[c2_count];
+c2_chr_attrib53[c2_count].arr[c2_chr_attrib53[c2_count].len] = '\0';
+att[70].add    = c2_chr_attrib53[c2_count].arr;
+att[70].iadd   = &ic2_chr_attrib53[c2_count];
+c2_chr_attrib54[c2_count].arr[c2_chr_attrib54[c2_count].len] = '\0';
+att[71].add    = c2_chr_attrib54[c2_count].arr;
+att[71].iadd   = &ic2_chr_attrib54[c2_count];
+c2_chr_attrib55[c2_count].arr[c2_chr_attrib55[c2_count].len] = '\0';
+att[72].add    = c2_chr_attrib55[c2_count].arr;
+att[72].iadd   = &ic2_chr_attrib55[c2_count];
+c2_chr_attrib56[c2_count].arr[c2_chr_attrib56[c2_count].len] = '\0';
+att[73].add    = c2_chr_attrib56[c2_count].arr;
+att[73].iadd   = &ic2_chr_attrib56[c2_count];
+c2_chr_attrib57[c2_count].arr[c2_chr_attrib57[c2_count].len] = '\0';
+att[74].add    = c2_chr_attrib57[c2_count].arr;
+att[74].iadd   = &ic2_chr_attrib57[c2_count];
+c2_chr_attrib58[c2_count].arr[c2_chr_attrib58[c2_count].len] = '\0';
+att[75].add    = c2_chr_attrib58[c2_count].arr;
+att[75].iadd   = &ic2_chr_attrib58[c2_count];
+c2_chr_attrib59[c2_count].arr[c2_chr_attrib59[c2_count].len] = '\0';
+att[76].add    = c2_chr_attrib59[c2_count].arr;
+att[76].iadd   = &ic2_chr_attrib59[c2_count];
+c2_chr_attrib60[c2_count].arr[c2_chr_attrib60[c2_count].len] = '\0';
+att[77].add    = c2_chr_attrib60[c2_count].arr;
+att[77].iadd   = &ic2_chr_attrib60[c2_count];
+c2_chr_attrib61[c2_count].arr[c2_chr_attrib61[c2_count].len] = '\0';
+att[78].add    = c2_chr_attrib61[c2_count].arr;
+att[78].iadd   = &ic2_chr_attrib61[c2_count];
+c2_chr_attrib62[c2_count].arr[c2_chr_attrib62[c2_count].len] = '\0';
+att[79].add    = c2_chr_attrib62[c2_count].arr;
+att[79].iadd   = &ic2_chr_attrib62[c2_count];
+c2_chr_attrib63[c2_count].arr[c2_chr_attrib63[c2_count].len] = '\0';
+att[80].add    = c2_chr_attrib63[c2_count].arr;
+att[80].iadd   = &ic2_chr_attrib63[c2_count];
+c2_chr_attrib64[c2_count].arr[c2_chr_attrib64[c2_count].len] = '\0';
+att[81].add    = c2_chr_attrib64[c2_count].arr;
+att[81].iadd   = &ic2_chr_attrib64[c2_count];
+c2_chr_attrib65[c2_count].arr[c2_chr_attrib65[c2_count].len] = '\0';
+att[82].add    = c2_chr_attrib65[c2_count].arr;
+att[82].iadd   = &ic2_chr_attrib65[c2_count];
+c2_chr_attrib66[c2_count].arr[c2_chr_attrib66[c2_count].len] = '\0';
+att[83].add    = c2_chr_attrib66[c2_count].arr;
+att[83].iadd   = &ic2_chr_attrib66[c2_count];
+c2_chr_attrib67[c2_count].arr[c2_chr_attrib67[c2_count].len] = '\0';
+att[84].add    = c2_chr_attrib67[c2_count].arr;
+att[84].iadd   = &ic2_chr_attrib67[c2_count];
+c2_chr_attrib68[c2_count].arr[c2_chr_attrib68[c2_count].len] = '\0';
+att[85].add    = c2_chr_attrib68[c2_count].arr;
+att[85].iadd   = &ic2_chr_attrib68[c2_count];
+c2_chr_attrib69[c2_count].arr[c2_chr_attrib69[c2_count].len] = '\0';
+att[86].add    = c2_chr_attrib69[c2_count].arr;
+att[86].iadd   = &ic2_chr_attrib69[c2_count];
+c2_chr_attrib70[c2_count].arr[c2_chr_attrib70[c2_count].len] = '\0';
+att[87].add    = c2_chr_attrib70[c2_count].arr;
+att[87].iadd   = &ic2_chr_attrib70[c2_count];
+c2_chr_attrib71[c2_count].arr[c2_chr_attrib71[c2_count].len] = '\0';
+att[88].add    = c2_chr_attrib71[c2_count].arr;
+att[88].iadd   = &ic2_chr_attrib71[c2_count];
+c2_chr_attrib72[c2_count].arr[c2_chr_attrib72[c2_count].len] = '\0';
+att[89].add    = c2_chr_attrib72[c2_count].arr;
+att[89].iadd   = &ic2_chr_attrib72[c2_count];
+c2_chr_attrib73[c2_count].arr[c2_chr_attrib73[c2_count].len] = '\0';
+att[90].add    = c2_chr_attrib73[c2_count].arr;
+att[90].iadd   = &ic2_chr_attrib73[c2_count];
+c2_chr_attrib74[c2_count].arr[c2_chr_attrib74[c2_count].len] = '\0';
+att[91].add    = c2_chr_attrib74[c2_count].arr;
+att[91].iadd   = &ic2_chr_attrib74[c2_count];
+c2_chr_attrib75[c2_count].arr[c2_chr_attrib75[c2_count].len] = '\0';
+att[92].add    = c2_chr_attrib75[c2_count].arr;
+att[92].iadd   = &ic2_chr_attrib75[c2_count];
+c2_num_attrib76[c2_count].arr[c2_num_attrib76[c2_count].len] = '\0';
+att[93].add    = c2_num_attrib76[c2_count].arr;
+att[93].iadd   = &ic2_num_attrib76[c2_count];
+c2_num_attrib77[c2_count].arr[c2_num_attrib77[c2_count].len] = '\0';
+att[94].add    = c2_num_attrib77[c2_count].arr;
+att[94].iadd   = &ic2_num_attrib77[c2_count];
+c2_num_attrib78[c2_count].arr[c2_num_attrib78[c2_count].len] = '\0';
+att[95].add    = c2_num_attrib78[c2_count].arr;
+att[95].iadd   = &ic2_num_attrib78[c2_count];
+c2_num_attrib79[c2_count].arr[c2_num_attrib79[c2_count].len] = '\0';
+att[96].add    = c2_num_attrib79[c2_count].arr;
+att[96].iadd   = &ic2_num_attrib79[c2_count];
+c2_num_attrib80[c2_count].arr[c2_num_attrib80[c2_count].len] = '\0';
+att[97].add    = c2_num_attrib80[c2_count].arr;
+att[97].iadd   = &ic2_num_attrib80[c2_count];
+c2_num_attrib81[c2_count].arr[c2_num_attrib81[c2_count].len] = '\0';
+att[98].add    = c2_num_attrib81[c2_count].arr;
+att[98].iadd   = &ic2_num_attrib81[c2_count];
+c2_num_attrib82[c2_count].arr[c2_num_attrib82[c2_count].len] = '\0';
+att[99].add    = c2_num_attrib82[c2_count].arr;
+att[99].iadd   = &ic2_num_attrib82[c2_count];
+c2_num_attrib83[c2_count].arr[c2_num_attrib83[c2_count].len] = '\0';
+att[100].add    = c2_num_attrib83[c2_count].arr;
+att[100].iadd   = &ic2_num_attrib83[c2_count];
+c2_num_attrib84[c2_count].arr[c2_num_attrib84[c2_count].len] = '\0';
+att[101].add    = c2_num_attrib84[c2_count].arr;
+att[101].iadd   = &ic2_num_attrib84[c2_count];
+c2_num_attrib85[c2_count].arr[c2_num_attrib85[c2_count].len] = '\0';
+att[102].add    = c2_num_attrib85[c2_count].arr;
+att[102].iadd   = &ic2_num_attrib85[c2_count];
+c2_date_attrib86[c2_count].arr[c2_date_attrib86[c2_count].len] = '\0';
+att[103].add    = c2_date_attrib86[c2_count].arr;
+att[103].iadd   = &ic2_date_attrib86[c2_count];
+c2_date_attrib87[c2_count].arr[c2_date_attrib87[c2_count].len] = '\0';
+att[104].add    = c2_date_attrib87[c2_count].arr;
+att[104].iadd   = &ic2_date_attrib87[c2_count];
+c2_date_attrib88[c2_count].arr[c2_date_attrib88[c2_count].len] = '\0';
+att[105].add    = c2_date_attrib88[c2_count].arr;
+att[105].iadd   = &ic2_date_attrib88[c2_count];
+c2_date_attrib89[c2_count].arr[c2_date_attrib89[c2_count].len] = '\0';
+att[106].add    = c2_date_attrib89[c2_count].arr;
+att[106].iadd   = &ic2_date_attrib89[c2_count];
+c2_date_attrib90[c2_count].arr[c2_date_attrib90[c2_count].len] = '\0';
+att[107].add    = c2_date_attrib90[c2_count].arr;
+att[107].iadd   = &ic2_date_attrib90[c2_count];
+c2_date_attrib91[c2_count].arr[c2_date_attrib91[c2_count].len] = '\0';
+att[108].add    = c2_date_attrib91[c2_count].arr;
+att[108].iadd   = &ic2_date_attrib91[c2_count];
+c2_date_attrib92[c2_count].arr[c2_date_attrib92[c2_count].len] = '\0';
+att[109].add    = c2_date_attrib92[c2_count].arr;
+att[109].iadd   = &ic2_date_attrib92[c2_count];
+c2_date_attrib93[c2_count].arr[c2_date_attrib93[c2_count].len] = '\0';
+att[110].add    = c2_date_attrib93[c2_count].arr;
+att[110].iadd   = &ic2_date_attrib93[c2_count];
+c2_date_attrib94[c2_count].arr[c2_date_attrib94[c2_count].len] = '\0';
+att[111].add    = c2_date_attrib94[c2_count].arr;
+att[111].iadd   = &ic2_date_attrib94[c2_count];
+c2_date_attrib95[c2_count].arr[c2_date_attrib95[c2_count].len] = '\0';
+att[112].add    = c2_date_attrib95[c2_count].arr;
+att[112].iadd   = &ic2_date_attrib95[c2_count];
+
+c2_elec_board[c2_count].arr[c2_elec_board[c2_count].len] = '\0';
+c2_d_patt[c2_count].arr[c2_d_patt[c2_count].len] ='\0';
+c2_lt_1[c2_count].arr[c2_lt_1[c2_count].len] ='\0';
+c2_lt_2[c2_count].arr[c2_lt_2[c2_count].len] ='\0';
+c2_lt_3[c2_count].arr[c2_lt_3[c2_count].len] ='\0';
+c2_tot_watt[c2_count].arr[c2_tot_watt[c2_count].len]='\0';
+c2_no_1[c2_count].arr[c2_no_1[c2_count].len]='\0';
+c2_no_2[c2_count].arr[c2_no_2[c2_count].len]='\0';
+c2_no_3[c2_count].arr[c2_no_3[c2_count].len]='\0';
+c2_wo_1[c2_count].arr[c2_wo_1[c2_count].len]='\0';
+c2_wo_2[c2_count].arr[c2_wo_2[c2_count].len]='\0';
+c2_wo_3[c2_count].arr[c2_wo_3[c2_count].len]='\0';
+
+strcpy(inv_code,(char *)c2_inv_code[c2_count].arr);
+*st_chain=c2_st_chain[c2_count];
+*end_chain=c2_end_chain[c2_count];
+*x_sect = c2_x_sect[c2_count][0];
+  
+no_atts=att_qry(inv_code);
+no_doms=dom_qry(inv_code);
+
+get_on_site_att(c_att_str,no_atts,no_doms);
+c_att_str[strlen(c_att_str)-1] = '\0';
+get_off_site_att(c2_count,d_att_str,no_atts,no_doms);
+d_att_str[strlen(d_att_str)-1] = '\0';
+     
+c2_count++;
+
+if (c2_count == c2_this_fetch)
+{
+if (c2_eof == -1)
+   return(-1);
+else
+   inv_qry();
+}
+return(1);
+}
+
+/************************************************************ 
+ * Function :set_inv_qry()                                  *
+ *                                                          *
+ * Sets up start query conditions for query from            *
+ * previously chosen inventory criteria.                    *
+ ************************************************************/ 
+
+static char *sel_inv = 
+"SELECT IIT_ITY_INV_CODE,IIT_ST_CHAIN,IIT_END_CHAIN,IIT_X_SECT,\
+TO_CHAR(IIT_ANGLE),IIT_CLASS,IIT_COLOUR,IIT_DESCRIPTION,IIT_DIAGRAM,\
+TO_CHAR(IIT_DISTANCE),TO_CHAR(IIT_GAP),TO_CHAR(IIT_HEIGHT),\
+TO_CHAR(IIT_HEIGHT_2),IIT_ID_CODE,\
+TO_CHAR(IIT_INSTAL_DATE,'DDMMYY'),TO_CHAR(IIT_INVENT_DATE,'DDMMYY'),\
+IIT_ITEMCODE,\
+TO_CHAR(IIT_LENGTH),IIT_MATERIAL,IIT_METHOD,IIT_NOTE,\
+TO_CHAR(IIT_NO_OF_UNITS),\
+IIT_OPTIONS,nvl(oun_elec_id,substr(OUN_NAME,1,4)),IIT_OWNER,\
+IIT_PHOTO,TO_CHAR(IIT_POWER),IIT_TYPE,TO_CHAR(IIT_WIDTH),\
+IIT_XTRA_CHAR_1,TO_CHAR(IIT_XTRA_DATE_1,'DDMMYY'),IIT_XTRA_DOMAIN_1,\
+TO_CHAR(IIT_XTRA_NUMBER_1),\
+IIT_INV_OWNERSHIP,\
+IIT_PRIMARY_KEY, IIT_FOREIGN_KEY, IIT_DET_XSP,\
+to_char(IIT_OFFSET), to_char(IIT_NUM_ATTRIB16),\
+to_char(IIT_NUM_ATTRIB17), to_char(IIT_NUM_ATTRIB18),\
+to_char(IIT_NUM_ATTRIB19), to_char(IIT_NUM_ATTRIB20),\
+to_char(IIT_NUM_ATTRIB21), to_char(IIT_NUM_ATTRIB22),\
+to_char(IIT_NUM_ATTRIB23), to_char(IIT_NUM_ATTRIB24),\
+to_char(IIT_NUM_ATTRIB25),\
+IIT_CHR_ATTRIB26, IIT_CHR_ATTRIB27, IIT_CHR_ATTRIB28,\
+IIT_CHR_ATTRIB29, IIT_CHR_ATTRIB30, IIT_CHR_ATTRIB31,\
+IIT_CHR_ATTRIB32, IIT_CHR_ATTRIB33, IIT_CHR_ATTRIB34,\
+IIT_CHR_ATTRIB35, IIT_CHR_ATTRIB36, IIT_CHR_ATTRIB37,\
+IIT_CHR_ATTRIB38, IIT_CHR_ATTRIB39, IIT_CHR_ATTRIB40,\
+IIT_CHR_ATTRIB41, IIT_CHR_ATTRIB42, IIT_CHR_ATTRIB43,\
+IIT_CHR_ATTRIB44, IIT_CHR_ATTRIB45, IIT_CHR_ATTRIB46,\
+IIT_CHR_ATTRIB47, IIT_CHR_ATTRIB48, IIT_CHR_ATTRIB49,\
+IIT_CHR_ATTRIB50, IIT_CHR_ATTRIB51, IIT_CHR_ATTRIB52,\
+IIT_CHR_ATTRIB53, IIT_CHR_ATTRIB54, IIT_CHR_ATTRIB55,\
+IIT_CHR_ATTRIB56, IIT_CHR_ATTRIB57, IIT_CHR_ATTRIB58,\
+IIT_CHR_ATTRIB59, IIT_CHR_ATTRIB60, IIT_CHR_ATTRIB61,\
+IIT_CHR_ATTRIB62, IIT_CHR_ATTRIB63, IIT_CHR_ATTRIB64,\
+IIT_CHR_ATTRIB65, IIT_CHR_ATTRIB66, IIT_CHR_ATTRIB67,\
+IIT_CHR_ATTRIB68, IIT_CHR_ATTRIB69, IIT_CHR_ATTRIB70,\
+IIT_CHR_ATTRIB71, IIT_CHR_ATTRIB72, IIT_CHR_ATTRIB73,\
+IIT_CHR_ATTRIB74, IIT_CHR_ATTRIB75,";
+
+static char *sel2_inv = 
+"to_char(IIT_NUM_ATTRIB76), to_char(IIT_NUM_ATTRIB77),\
+to_char(IIT_NUM_ATTRIB78), to_char(IIT_NUM_ATTRIB79),\
+to_char(IIT_NUM_ATTRIB80), to_char(IIT_NUM_ATTRIB81),\
+to_char(IIT_NUM_ATTRIB82), to_char(IIT_NUM_ATTRIB83),\
+to_char(IIT_NUM_ATTRIB84), to_char(IIT_NUM_ATTRIB85),\
+to_char(IIT_DATE_ATTRIB86,'DDMMYY'), to_char(IIT_DATE_ATTRIB87,'DDMMYY'),\
+to_char(IIT_DATE_ATTRIB88,'DDMMYY'), to_char(IIT_DATE_ATTRIB89,'DDMMYY'),\
+to_char(IIT_DATE_ATTRIB90,'DDMMYY'), to_char(IIT_DATE_ATTRIB91,'DDMMYY'),\
+to_char(IIT_DATE_ATTRIB92,'DDMMYY'), to_char(IIT_DATE_ATTRIB93,'DDMMYY'),\
+to_char(IIT_DATE_ATTRIB94,'DDMMYY'), to_char(IIT_DATE_ATTRIB95,'DDMMYY'),\
+TO_CHAR(LCO_TOTAL_WATTAGE),\
+LCO_DISTRIBUTION_PATTERN,\
+LCO_LAMP_TYPE_1,\
+LCO_LAMP_TYPE_2,\
+LCO_LAMP_TYPE_3,\
+TO_CHAR(LCO_NUMBER_OF_LAMP_1),\
+TO_CHAR(LCO_NUMBER_OF_LAMP_2),\
+TO_CHAR(LCO_NUMBER_OF_LAMP_3),\
+TO_CHAR(LCO_WATTAGE_OF_LAMP_1),\
+TO_CHAR(LCO_WATTAGE_OF_LAMP_2),\
+TO_CHAR(LCO_WATTAGE_OF_LAMP_3) \
+FROM INV_ITEMS, LAMP_CONFIGS, ORG_UNITS,INV_ITEM_TYPES \
+WHERE IIT_ITY_SYS_FLAG like upper(:sys_flag)\
+AND   NVL(IIT_INV_OWNERSHIP,'DTP') = 'DTP'\
+AND IIT_RSE_HE_ID = :he_id AND IIT_END_DATE IS NULL \
+AND IIT_OUN_ORG_ID_ELEC_BOARD =  OUN_ORG_ID (+) \
+AND IIT_ITY_INV_CODE = ITY_INV_CODE \
+AND ITY_SYS_FLAG = IIT_ITY_SYS_FLAG \
+AND ITY_ROAD_CHARACTERISTIC = 'I' \
+AND IIT_LCO_LAMP_CONFIG_ID = LCO_LAMP_CONFIG_ID (+)"; 
+
+void set_inv_qry()
+{
+/* char string to prepare inventory                          */
+char c2_str[5000];
+/* loop counter                                              */
+int i;
+
+
+   strcpy(i_inv_grouping.arr,EXParam[1].arr);
+   i_inv_grouping.len = EXParam[1].len;
+
+   if (i_inv_grouping.len == 0)
+   {
+      strcpy(i_inv_grouping.arr,"%");
+      i_inv_grouping.len = 1;
+   }
+     
+
+if (all_inv_yn == 'Y')
+ {  strcpy(c2_str,sel_inv);
+    strcat(c2_str,sel2_inv);
+    strcat(c2_str," AND ITY_ELEC_DRAIN_CARR like upper('");
+    strcat(c2_str,i_inv_grouping.arr);
+    strcat(c2_str,"')");
+ }   
+else
+  { strcpy(c2_str,sel_inv);    
+    strcat(c2_str,sel2_inv);
+    strcat(c2_str," AND ITY_ELEC_DRAIN_CARR like upper('");
+    strcat(c2_str,i_inv_grouping.arr);
+    strcat(c2_str,"')");
+    strcat(c2_str," AND IIT_ITY_INV_CODE IN (");   
+    for (i=0;i<no_val_inv;i++)
+    { if (invtps[i].yn == 'Y')
+      {  strcat(c2_str,"'");     
+         strcat(c2_str,(char *)invtps[i].inv_type);     
+         strcat(c2_str,"',");     
+      }
+    }
+    c2_str[strlen(c2_str) -1] = ')';
+   
+  }
+  if (par_set('D','C') == 1)
+  { strcat(c2_str," ORDER BY IIT_ST_CHAIN DESC,IIT_END_CHAIN DESC ");}
+  else
+  { strcat(c2_str," ORDER BY IIT_ST_CHAIN,IIT_END_CHAIN");}
+
+  strcpy((char *)select_string.arr,c2_str);    
+  slen_varchar(select_string);
+  term_varchar(select_string);
+
+
+ EXEC SQL PREPARE S2 FROM :select_string;
+ oraerror("set_inv_qry : cursor 1");
+
+ EXEC SQL DECLARE C2 CURSOR FOR S2;
+ oraerror("set_inv_qry : cursor 2");
+
+}
+
+/************************************************************ 
+ * Function :open_inv_qry()                                 *
+ *                                                          *
+ * Opens inventory query cursor binding on the appropriate  *
+ * road segment highway element id                          *
+ ************************************************************/ 
+
+void open_inv_qry(id)
+int id;
+{
+void inv_qry();
+
+ c2_id = id;
+ EXEC SQL OPEN C2 USING :sys_flag,:c2_id;
+ oraerror("open_inv_qry : cursor 1");
+
+ c2_this_fetch = 0;
+ c2_count = 0;
+ c2_so_far = 0; 
+ inv_qry();
+
+}
+
+
+/************************************************************ 
+ * Function :inv_qry()                                      *
+ *                                                          *
+ * Querys rows into array for use by fch_inv() function     *
+ * from TABLE INV_ITEMS                                     *
+ ************************************************************/ 
+
+void inv_qry()
+{
+  EXEC SQL FETCH C2 INTO 
+                    :c2_inv_code,
+                    :c2_st_chain,
+                    :c2_end_chain,
+                    :c2_x_sect,  
+                    :c2_angle:ic2_angle,
+                    :c2_class:ic2_class,
+                    :c2_colour:ic2_colour,
+                    :c2_description:ic2_description,
+                    :c2_diagram:ic2_diagram,
+                    :c2_distance:ic2_distance,
+                    :c2_gap:ic2_gap,
+                    :c2_height:ic2_height,
+                    :c2ht2:ic2ht2,
+                    :c2_id_code:ic2_id_code,
+                    :c2_instal_date:ic2_instal_date,
+                    :c2_invent_date:ic2_invent_date,
+                    :c2_itemcode:ic2_itemcode,
+                    :c2_length:ic2_length,
+                    :c2_material:ic2_material,
+                    :c2_method:ic2_method,
+                    :c2_note:ic2_note,
+                    :c2_no_of_units:ic2_no_of_units,
+                    :c2_options:ic2_options,
+                    :c2_elec_board:ic2_elec_board,
+                    :c2_owner:ic2_owner,
+                    :c2_photo:ic2_photo,
+                    :c2_power:ic2_power,
+                    :c2_type:ic2_type,
+                    :c2_width:ic2_width,
+                    :c2_x_char_1:ic2_x_char_1,
+                    :c2_x_date_1:ic2_x_date_1,
+                    :c2_x_domain_1:ic2_x_domain_1,
+                    :c2_x_number_1:ic2_x_number_1,
+                    :c2_inv_ownership:ic2_inv_ownership,
+                    :c2_primary_key:ic2_primary_key,
+                    :c2_foreign_key:ic2_foreign_key,
+                    :c2_det_xsp:ic2_det_xsp,
+                    :c2_offset:ic2_offset,
+                    :c2_num_attrib16:ic2_num_attrib16,
+                    :c2_num_attrib17:ic2_num_attrib17,
+                    :c2_num_attrib18:ic2_num_attrib18,
+                    :c2_num_attrib19:ic2_num_attrib19,
+                    :c2_num_attrib20:ic2_num_attrib20,
+                    :c2_num_attrib21:ic2_num_attrib21,
+                    :c2_num_attrib22:ic2_num_attrib22,
+                    :c2_num_attrib23:ic2_num_attrib23,
+                    :c2_num_attrib24:ic2_num_attrib24,
+                    :c2_num_attrib25:ic2_num_attrib25,
+                    :c2_chr_attrib26:ic2_chr_attrib26,
+                    :c2_chr_attrib27:ic2_chr_attrib27,
+                    :c2_chr_attrib28:ic2_chr_attrib28,
+                    :c2_chr_attrib29:ic2_chr_attrib29,
+                    :c2_chr_attrib30:ic2_chr_attrib30,
+                    :c2_chr_attrib31:ic2_chr_attrib31,
+                    :c2_chr_attrib32:ic2_chr_attrib32,
+                    :c2_chr_attrib33:ic2_chr_attrib33,
+                    :c2_chr_attrib34:ic2_chr_attrib34,
+                    :c2_chr_attrib35:ic2_chr_attrib35,
+                    :c2_chr_attrib36:ic2_chr_attrib36,
+                    :c2_chr_attrib37:ic2_chr_attrib37,
+                    :c2_chr_attrib38:ic2_chr_attrib38,
+                    :c2_chr_attrib39:ic2_chr_attrib39,
+                    :c2_chr_attrib40:ic2_chr_attrib40,
+                    :c2_chr_attrib41:ic2_chr_attrib41,
+                    :c2_chr_attrib42:ic2_chr_attrib42,
+                    :c2_chr_attrib43:ic2_chr_attrib43,
+                    :c2_chr_attrib44:ic2_chr_attrib44,
+                    :c2_chr_attrib45:ic2_chr_attrib45,
+                    :c2_chr_attrib46:ic2_chr_attrib46,
+                    :c2_chr_attrib47:ic2_chr_attrib47,
+                    :c2_chr_attrib48:ic2_chr_attrib48,
+                    :c2_chr_attrib49:ic2_chr_attrib49,
+                    :c2_chr_attrib50:ic2_chr_attrib50,
+                    :c2_chr_attrib51:ic2_chr_attrib51,
+                    :c2_chr_attrib52:ic2_chr_attrib52,
+                    :c2_chr_attrib53:ic2_chr_attrib53,
+                    :c2_chr_attrib54:ic2_chr_attrib54,
+                    :c2_chr_attrib55:ic2_chr_attrib55,
+                    :c2_chr_attrib56:ic2_chr_attrib56,
+                    :c2_chr_attrib57:ic2_chr_attrib57,
+                    :c2_chr_attrib58:ic2_chr_attrib58,
+                    :c2_chr_attrib59:ic2_chr_attrib59,
+                    :c2_chr_attrib60:ic2_chr_attrib60,
+                    :c2_chr_attrib61:ic2_chr_attrib61,
+                    :c2_chr_attrib62:ic2_chr_attrib62,
+                    :c2_chr_attrib63:ic2_chr_attrib63,
+                    :c2_chr_attrib64:ic2_chr_attrib64,
+                    :c2_chr_attrib65:ic2_chr_attrib65,
+                    :c2_chr_attrib66:ic2_chr_attrib66,
+                    :c2_chr_attrib67:ic2_chr_attrib67,
+                    :c2_chr_attrib68:ic2_chr_attrib68,
+                    :c2_chr_attrib69:ic2_chr_attrib69,
+                    :c2_chr_attrib70:ic2_chr_attrib70,
+                    :c2_chr_attrib71:ic2_chr_attrib71,
+                    :c2_chr_attrib72:ic2_chr_attrib72,
+                    :c2_chr_attrib73:ic2_chr_attrib73,
+                    :c2_chr_attrib74:ic2_chr_attrib74,
+                    :c2_chr_attrib75:ic2_chr_attrib75,
+                    :c2_num_attrib76:ic2_num_attrib76,
+                    :c2_num_attrib77:ic2_num_attrib77,
+                    :c2_num_attrib78:ic2_num_attrib78,
+                    :c2_num_attrib79:ic2_num_attrib79,
+                    :c2_num_attrib80:ic2_num_attrib80,
+                    :c2_num_attrib81:ic2_num_attrib81,
+                    :c2_num_attrib82:ic2_num_attrib82,
+                    :c2_num_attrib83:ic2_num_attrib83,
+                    :c2_num_attrib84:ic2_num_attrib84,
+                    :c2_num_attrib85:ic2_num_attrib85,
+                    :c2_date_attrib86:ic2_date_attrib86,
+                    :c2_date_attrib87:ic2_date_attrib87,
+                    :c2_date_attrib88:ic2_date_attrib88,
+                    :c2_date_attrib89:ic2_date_attrib89,
+                    :c2_date_attrib90:ic2_date_attrib90,
+                    :c2_date_attrib91:ic2_date_attrib91,
+                    :c2_date_attrib92:ic2_date_attrib92,
+                    :c2_date_attrib93:ic2_date_attrib93,
+                    :c2_date_attrib94:ic2_date_attrib94,
+                    :c2_date_attrib95:ic2_date_attrib95,
+                    :c2_tot_watt:ic2_tot_watt,
+                    :c2_d_patt:ic2_d_patt,
+                    :c2_lt_1:ic2_lt_1,
+                    :c2_lt_2:ic2_lt_2,
+                    :c2_lt_3:ic2_lt_3,
+                    :c2_no_1:ic2_no_1,
+                    :c2_no_2:ic2_no_2,
+                    :c2_no_3:ic2_no_3,
+                    :c2_wo_1:ic2_wo_1,
+                    :c2_wo_2:ic2_wo_2,
+                    :c2_wo_3:ic2_wo_3;
+
+
+  oraerror("inv_qry : cursor 1");
+
+  c2_this_fetch = sqlca.sqlerrd[2] - c2_so_far;
+  c2_so_far     = sqlca.sqlerrd[2];
+  c2_count      = 0;
+  c2_eof        = (sqlca.sqlcode == EOFTCH ) ? -1 : 1;
+}
+
+
+
+
+
+
+

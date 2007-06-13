@@ -1,0 +1,150 @@
+
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r5util.pc	1.1 09/16/03";
+/*
+   CHANGE HISTORY :-
+   DATE         : 01-SEP-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : 1.7 > 2.1 database conversion
+
+   DATE         : 31-10-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : client-server conversion
+*/
+
+/************************************************************ 
+* Standard I/O definition and rmms header file.             *
+************************************************************/ 
+#include <stdio.h>
+#include "rmms.h"
+
+EXEC SQL INCLUDE sqlext.h;
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+     int     rmms_flag;
+     int     he_id;
+     VARCHAR sys_flag[2];
+     VARCHAR userid[66];
+EXEC SQL END DECLARE SECTION;
+
+extern char pipe_msg[254];
+
+/************************************************************ 
+* Function Declaration area                                 *
+************************************************************/ 
+
+/* rmcaseup
+   
+  This file replaces the standard toupper as defined in ctype.h
+  this was necessary since the macro on the SUN only worked if the
+  character being converted was not already uppercase.
+
+  Ignore non alphabetic characters
+*/
+
+
+int rmcaseup(character)
+int character;
+{
+     if (character >= 'A' && character <= 'Z')  
+           return(character);
+     else if (character >= 'a' && character <= 'z')  
+           return(character - 'a' + 'A');
+     else
+           return(character);
+          
+}
+
+/************************************************************ 
+* Function : oraerror()                                     *
+*                                                           *
+*  * Detect Oracle Error                                    *    
+*                                                           *
+*  * If error  put SQL error message and exit               *
+*    else return false.                                     *
+*  Parameter fname should be the name of the calling        *
+*  function                                                 *
+************************************************************/
+
+BOOLEAN oraerror(fname)
+char *fname;
+{                                                          
+   if (sqlca.sqlcode < 0)
+   {
+      sql_err(fname);
+   }
+   else
+      return(FALSE);
+}
+
+
+/*************************************************************
+* Function : trace_on()                                      *
+* Purpose  : obvious !                                       *
+*************************************************************/
+
+void trace_on()
+{ EXEC SQL alter session set sql_trace true ;  
+  oraerror("trace_on()");    
+}
+
+/************************************************************ 
+ *Function : chkabv()                                       *
+ *                                                          *
+ * One string against another % in abv string matches       *
+ * any char                                                 *
+ *                                                          *
+ ************************************************************/ 
+
+BOOLEAN chkabv(abv,str)
+char *abv,*str;
+{
+int i;
+
+while (*abv == ' ') {abv++;}
+
+if (strcmp(abv,"%") == 0)
+{return(TRUE);}
+
+if (strlen(abv) !=  strlen(str)) 
+{return(FALSE);} 
+
+for (i=0;i<strlen(abv);i++)
+{ if ((abv[i] != str[i]) && 
+      (abv[i] != '%')    &&
+      (abv[i] != '?')) 
+     {return(FALSE);}  
+}
+
+return(TRUE);
+}
+
+int dbase_type()
+{
+   EXEC SQL SELECT TO_NUMBER(HOP_VALUE)
+            INTO   :rmms_flag
+            FROM HIG_OPTIONS
+			WHERE HOP_ID='RMMSFLAG'	
+			AND   HOP_PRODUCT='HIG';
+
+   oraerror("dbase_type() : cursor 1");
+   return(rmms_flag);
+}
+
+void set_sys_flag(heid)
+int heid;
+{
+   he_id = heid;
+
+   EXEC SQL SELECT rse_sys_flag
+   into :sys_flag
+   from  road_segments
+   where rse_he_id = :he_id;
+
+   oraerror("set_sys_flag");
+
+   sys_flag.arr[2] = '\0';
+}
