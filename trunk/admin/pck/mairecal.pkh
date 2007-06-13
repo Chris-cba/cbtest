@@ -1,0 +1,115 @@
+create or replace package mairecal as
+--<PACKAGE>
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       Module Name      : $Workfile:   mairecal.pkh  $
+--       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
+--       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
+--       SCCS Version     : $Revision:   2.0  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--
+--	This package contains procedures and functions which are required by
+--	the Shift / Recalibrate process within Network Manager.
+--
+--	Maintenance Manager specific functionality can be found here,
+--	whilst the core functionality of the network processes can be found
+--	in the HIGRECAL package.
+--
+--  Originally taken from '@(#)mairecal.pck 1.4 08/07/98';
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.0  $"';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--
+-----------------------------------------------------------------------------
+--**** SHIFT PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_data">
+  procedure check_data
+	(p_rse_he_id	  in number,   	-- section to shift
+	 p_new_length  	  in number, 	-- new shift length
+	 p_from_chain	  in number,	-- chainage from which to shift
+       p_chain_adjust	  in number,	-- chainage to shift by
+	 p_errors    	  in out number,
+	 p_error_string	  in out varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="shift_data">
+--
+  procedure shift_data
+	(p_rse_he_id	  in number,   	-- section to shift
+	 p_new_length  	  in number, 	-- not required here
+	 p_from_chain	  in number,	-- chainage from which to shift
+       p_chain_adjust	  in number);	-- chainage to shift by
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="recal_data">
+--
+-----------------------------------------------------------------------------
+--**** RECALIBRATE PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+  procedure recal_data
+	(p_rse_he_id	  in number,   	-- section to recalibrate
+	 p_orig_length  	  in number, 	-- original length
+	 p_new_length	  in number); 	-- new length
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="mai_reversal">
+PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT nm3context.get_effective_date);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="mai_reclassify">
+PROCEDURE mai_reclassify
+                    (pi_old_ne_id      nm_elements.ne_id%TYPE
+                    ,pi_new_ne_id      nm_elements.ne_id%TYPE
+                    ,pi_effective_date DATE
+                    );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+end mairecal;
+/
