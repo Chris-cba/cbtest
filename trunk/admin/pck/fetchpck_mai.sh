@@ -1,0 +1,52 @@
+#
+# sccs tag "$Revision:   2.0  $"
+#
+fetch blackburn.pkh
+fetch blackburn.pkb
+fetch int_utility.pkh
+fetch int_utility.pkb
+fetch interfaces.pkh
+fetch interfaces.pkb
+fetch inv.pkh
+fetch inv.pkb
+fetch inv_copy.pkh
+fetch inv_copy.pkb
+fetch mai.pkh
+fetch mai.pkb
+fetch mai_audit.pkh
+fetch mai_audit.pkb
+fetch mai_budgets.pkh
+fetch mai_budgets.pkb
+fetch mai_reports.pkh
+fetch mai_reports.pkb
+fetch mai2325.pkh
+fetch mai2325.pkb
+fetch mai3863.pkh
+fetch mai3863.pkb
+fetch maiclose.pkh
+fetch maiclose.pkb
+fetch maifinm.pkh
+fetch maifinm.pkb
+fetch maigis.pkh
+fetch maigis.pkb
+fetch maimerge.pkh
+fetch maimerge.pkb
+fetch maipbi.pkh
+fetch maipbi.pkb
+fetch mairecal.pkh
+fetch mairecal.pkb
+fetch mairepl.pkh
+fetch mairepl.pkb
+fetch maisplit.pkh
+fetch maisplit.pkb
+fetch maiwo.pkh
+fetch maiwo.pkb
+fetch pinterface.pkh
+fetch pinterface.pkb
+fetch pmslayer.pkh
+fetch pmslayer.pkb
+fetch wo_budget_check.pkh
+fetch wo_budget_check.pkb
+fetch works_func.pkh
+fetch works_func.pkb
+
