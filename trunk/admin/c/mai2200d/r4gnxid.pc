@@ -1,0 +1,61 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4gnxid.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4gnxid.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+/* getnextid.pc  29 April 88 */
+/* ============================================================================
+ *
+ *     int getnextid( domain, commit );
+ *
+ * Purpose: Get the next unique id from CODE_CONTROLS for the specified
+ *          domain.
+ *
+ *   Input: char *domain String containing name of domain of
+ *                       interest.
+ *
+ *  Output: int  getnextid Next id or 0 if invalid column name or
+ *                         ORACLE error hit.
+ *  Author: Alan Goddard 4 May 88
+ *
+ * CHANGE HISTORY :-
+ * DATE         : 01-SEP-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : 1.7 > 2.1 database conversion
+ *  Use sequence number rather than table. This makes the commit flag redundant
+ *  and it also means we have to hard code the domains we are going to deal with
+ *  which is only two different ones at the moment so no point in converting
+ *  to dynamic sql at this time.
+ *
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ * ============================================================================
+ */
+#include <stdio.h>
+#include <string.h>
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern 
+EXEC SQL INCLUDE sqlext.h;
+
+long int getnextid( domain, commit )
+char   *domain;
+BOOLEAN        commit;
+{ EXEC SQL BEGIN DECLARE SECTION;
+       long int c_next,                 /* CC_NEXT_VALUE                */
+                newid;                  /* updated id                   */
+  EXEC SQL END DECLARE SECTION;
+ void oraerror();
+/* ------------------------------------------------------------------  */
+
+	if (strcmp(domain,"ARE_REPORT_ID")==0)
+   		EXEC SQL SELECT are_report_id_seq.nextval into :c_next from dual;
+	else
+   		EXEC SQL SELECT def_defect_id_seq.nextval into :c_next from dual;
+                                                
+        oraerror("getnextid");
+	return( c_next );
+}
