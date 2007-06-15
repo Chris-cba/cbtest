@@ -1,0 +1,766 @@
+/* ============================================================================ 
+ * Program : r4prosrec.pc
+ * Descr   : To get and process the next 'S' record containing complaint details
+ *           addressed during the current inspection.
+ * Author  : H.Buckley
+ * Date    : 24-Nov-1995
+ *
+ * The 'S' record is the complaints record and is made up of the following
+ * fields : 
+ *            a) Record Type       Character 1       Value = 'S' 
+ *            b) Linkcode          Character 10    
+ *            c) Section           Character 5       Space padded       
+ *            d) Streetname        Character 80
+ *            e) Location          Character 40
+ *            f) Date              Character 6       Format 99999
+ *            g) Time              Character 4       Format 9999
+ *            h) Complainant       Character 60
+ *            i) Address 1         Character 60
+ *            j) Address 2         Character 60
+ *            k) Address 3         Character 60
+ *            l) Address 4         Character 60
+ *            m) Address 5         Character 60
+ *            n) telephone         Character 15
+ *            n) Source            Character 1 
+ *            o) Type              Character 2
+ *            p) Text              Character 240
+ *
+ * Processing : Obtain all 'S' record details into specified variables.
+ *              Validate the link and section.
+ * 
+ * Change history :-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ * =============================[ P R O S R E C ]============================  
+ *
+ * Type    :  boolean process_complaints() 
+ * Calling :
+ * Sequence: prohrec(reportid,&error)
+ * Input   : int     reportid   Report ID allocated by progrec to 
+ *                           the current section's inspection report.
+ *
+ * Output  : boolean prohrec TRUE  = 'S' record found and processed
+ *                        FALSE = Error, see error code.
+ *
+ *      int     error  1    = S record found & processed OK
+ *                     2    = ORACLE error occured.
+ *                     2000 = No 'S' record found
+ *                     1040 = Invalid activity code on 'S'
+ *                            record.
+ *
+ *=============================================================================
+ */
+
+/* static char *sccsid = "@(#)r4prosrec.pc	1.2 11/05/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4prosrec.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+
+#include <stdio.h>                   /* Include standard header file    */
+#include <ctype.h>                   /* Include standard header file    */
+#include "rmms.h"                    /* Standard rmms header file       */
+
+#define SQLCA_STORAGE_CLASS extern   /* Externally defined storage class*/ 
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;      /* SQL Required Pro*C statement    */
+varchar    s_rectype[2]              /* Record type                     */
+          ,s_linkcode[11]            /* Sections linkcode               */
+          ,s_section[6]              /* Section number                  */
+          ,s_streetname[81]          /* Streetname                      */
+          ,s_location[41]            /* Location                        */
+          ,s_date[12]                /* Date of complaint indicator var */
+          ,s_time[5]                 /* Time of complaint indicator var */
+          ,s_complainant[61]         /* Person who issued the complaint */
+          ,s_address1[61]            /* Array of 5 address lines        */
+          ,s_address2[61]            /* Address line number 2           */
+          ,s_address3[61]            /* Address line number 3           */
+          ,s_address4[61]            /* Address line number 4           */
+          ,s_address5[61]            /* Address line number 5           */
+          ,s_telephone[15]           /* Complkaint phone number         */
+          ,s_source[2]               /* Source of the complaint         */
+          ,s_type[3]                 /* Type of complaint               */
+          ,s_text[241]               /* Text of te complaint            */
+          ,s_link[11]                /* Linkcode                        */
+          ,s_agency[5]               /* Agency                          */
+          ,s_doc_title[61]           /* Document title                  */
+          ,s_doc_category[9]         /* Document category               */
+          ,s_doc_dtp_code[5]         /* Document type                   */
+          ,s_contact_type[20]        /* Contact Type                    */
+          ,s_doc_status_code[10]
+          ,s_enqclass[100]
+;
+static char date[10]                 /* Current date                    */
+           ,county[40]               /* Authorization                   */
+;
+short int  i_rectype                 /* Record type indicator variable  */
+          ,i_agency   
+          ,i_linkcode                /* Linkcode indicator variable     */
+          ,i_section                 /* Section indicator variable      */
+          ,i_streetname              /* Streetname indicator variable   */
+          ,i_location                /* Location indicator variable     */
+          ,i_date                    /* Date of complaint indicator var */
+          ,i_time                    /* Time of complaint indicator var */
+          ,i_complainant             /* Complainant indicator variable  */
+          ,i_address1                /* Address line1 indicator variable*/
+          ,i_address2                /* Address line2 indicator variable*/
+          ,i_address3                /* Address line3 indicator variable*/
+          ,i_address4                /* Address line4 indicator variable*/
+          ,i_address5                /* Address line5 indicator variable*/
+          ,i_telephone               /* Phone number indicator variable */
+          ,i_source                  /* Complaint source indicator var  */
+          ,i_type                    /* Complaint type indicator var    */
+          ,i_text                    /* Complaint text indicator var    */
+          ,i_doc_title               /* Document title indicator var    */
+          ,i_insp_admin              /* Inspector admin unit indicator  */
+          ,i_doc_category            /* Doc category indicator variable */
+          ,i_rse_he_id               /* Section indicator variable      */
+          ,i_contact_type
+          ,i_doc_status_code
+					,i_enqclass
+;     
+static   long int noargs             /* Number of arguments             */
+                 ,sqlrep             /* Report identification number    */
+                 ,sqlheid            /* Highways element                */
+                 ,id                 /* Section identifier              */
+                 ,doc_id             /* Document identification number  */
+;
+         long int s_insp_admin       /* Inspectors admin unit number    */ 
+                 ,s_inspector        /* Inspector                       */
+                 ,s_batchid          /* Batch number                    */
+                 ,s_doc_id           /* Document identifier             */
+                 ,s_rse_he_id        /* Section id                      */
+                 ,novalue            /* Null or dummy value             */
+                 ,seqid              /* Sequence identification number  */
+                 ,v_had_id_seq       /* sequence number for had_id      */
+                 ,v_hct_id_seq       /* sequence number for had_id      */
+; 
+
+int type_err ;
+
+EXEC SQL END DECLARE SECTION;
+
+extern short EXDebug;
+
+BOOLEAN process_complaints(batchid,inspector,inspdate,noe,nor,error,enseq)
+/********************** Argument Definition Area ****************************/
+long int batchid                                 /* Current inspection batch*/ 
+        ,inspector                               /* Inspector               */
+        ,*noe                                    /* Number of errors        */
+        ,*nor                                    /* Number of records       */
+        ,*error                                  /* Error number            */
+        ,*enseq
+;
+char     inspdate[7]                             /* Date of batch inspection*/
+;
+/****************************************************************************/
+{ /* .................................................   Prosrec Start Brace*/
+
+char *strs[30]                    /* Array of string pointers               */
+    ,text[1000]                   /* Text array buffer                      */
+    ,doc_title[61]                /* Road section description               */
+    ,sys_flag[1]                  /* Highway element system flag (Not Used) */
+    ,v_unique[21]
+    ,v_agency[5]
+    ,v_link[11]
+    ,v_section[5]
+;
+char pipe_msg[255];
+int  count                        /* Array element counter                  */
+    ,rtype                        /* Record type                            */
+;
+
+   *noe = *nor = *error=0;        /* IInitialize variiables                 */
+    
+   if (EXDebug && S_REC)
+       printf("\nprohrec .... r4prosrec.pc .... processing S records.\n"); 
+
+   rtype=gethhrec('\0',0,&seqid,text);
+
+   if ( rtype != 'S' )        
+   { 
+     if (isascii(rtype) && (rtype!='\0'))
+     {
+      pushhhrec();                         
+      return(FALSE);
+     }
+     else
+      return(FALSE);
+   }
+   else
+      nor++;                                    /* Comlaint Record counter */
+
+   *enseq=seqid;
+   noargs = getstrs(text,strs);                 /* Obtain complaint fields */
+
+ 
+   if (EXDebug && S_REC)
+       printf("The number of fields for the 'S' record are : %d\n",noargs);
+
+/* ===========================================================================
+ * All of the main complaint record processing goes in here 
+ * ===========================================================================
+ */
+   s_batchid=batchid;
+   s_inspector=inspector;
+
+
+   EXEC SQL WHENEVER SQLERROR   CONTINUE;
+   EXEC SQL WHENEVER SQLWARNING CONTINUE;
+      exec sql execute
+         begin
+            :s_doc_dtp_code := hig.get_useopt('ENQCAT',user);
+						IF :s_doc_dtp_code IS NULL 
+						THEN 
+						   :s_doc_dtp_code := hig.get_sysopt('ENQCAT');
+						END IF;
+
+            :s_contact_type := hig.get_useopt('ENQCONTYPE',user);
+						IF :s_contact_type IS NULL 
+						THEN 
+						   :s_contact_type := hig.get_sysopt('ENQCONTYPE');
+						END IF;
+            
+            :s_enqclass := hig.get_useopt('ENQCLASS',user);
+						IF :s_enqclass IS NULL 
+						THEN 
+						   :s_enqclass := hig.get_sysopt('ENQCLASS');
+						END IF;
+
+         end;
+      end-exec;
+
+   slen_varchar(s_doc_dtp_code);
+   term_varchar(s_doc_dtp_code);
+
+   slen_varchar(s_contact_type);
+   term_varchar(s_contact_type);
+    
+   if (get_person_admin(s_inspector,&s_insp_admin,inspdate)!=SUCCESS)
+   {
+      s_insp_admin=0;
+   }
+
+   for (count = 0;count < noargs; count++)
+   {
+      switch (count)
+      {
+          case 0: strcpy(s_linkcode.arr,strs[count]);
+                  slen_varchar(s_linkcode);
+                  term_varchar(s_linkcode);
+
+                  switch (rmmstype(date,county))
+                  {
+                      case 4: strcpy(s_link.arr,(strs[0]));        
+                              slen_varchar(s_link);
+                              term_varchar(s_link);
+                              break;
+                     default: strcpy(s_link.arr,(strs[0]+4));      
+                              slen_varchar(s_link);
+                              term_varchar(s_link);
+                              strncpy(s_agency.arr,strs[0],4);  
+                              slen_varchar(s_agency);
+                              term_varchar(s_agency);
+                              break;
+                  }
+                  break;
+          case 1: strcpy(s_section.arr,strs[count]);
+                  slen_varchar(s_section);
+                  term_varchar(s_section);
+                  break;
+          case 2: strcpy(s_streetname.arr,strs[count]);
+                  slen_varchar(s_streetname);
+                  term_varchar(s_streetname);
+                  if (s_streetname.len == 0)
+                     i_streetname = -1;
+                  else
+                     i_streetname = 0;
+                  break;
+          case 3: strcpy(s_location.arr,strs[count]);
+                  slen_varchar(s_location);
+                  term_varchar(s_location);
+                  if (s_location.len == 0)
+                     i_location = -1;
+                  else
+                     i_location = 0;
+                  break;
+          case 4: strcpy(s_date.arr,strs[count]);
+                  slen_varchar(s_date);
+                  term_varchar(s_date);
+                  break;
+          case 5: strcpy(s_time.arr,strs[count]);
+                  slen_varchar(s_time);
+                  term_varchar(s_time);
+                  break;
+          case 6: strcpy(s_complainant.arr,strs[count]);
+                  slen_varchar(s_complainant);
+                  term_varchar(s_complainant);
+                  if (s_complainant.len == 0)
+                     i_complainant = -1;
+                  else
+                     i_complainant = 0;
+                  break;
+          case 7: strcpy(s_address1.arr,strs[count]);
+                  slen_varchar(s_address1);
+                  term_varchar(s_address1);
+                  if (s_address1.len == 0)
+                     i_address1 = -1;
+                  else
+                     i_address1 = 0;
+                  break;
+          case 8: strcpy(s_address2.arr,strs[count]);
+                  slen_varchar(s_address2);
+                  term_varchar(s_address2);
+                  if (s_address2.len == 0)
+                     i_address2 = -1;
+                  else
+                     i_address2 = 0;
+                  break;
+          case 9: strcpy(s_address3.arr,strs[count]);
+                  slen_varchar(s_address3);
+                  term_varchar(s_address3);
+                  if (s_address3.len == 0)
+                     i_address3 = -1;
+                  else
+                     i_address3 = 0;
+                  break;
+          case 10:strcpy(s_address4.arr,strs[count]);
+                  slen_varchar(s_address4);
+                  term_varchar(s_address4);
+                  if (s_address4.len == 0)
+                     i_address4 = -1;
+                  else
+                     i_address4 = 0;
+                  break;
+          case 11:strcpy(s_address5.arr,strs[count]);
+                  slen_varchar(s_address5);
+                  term_varchar(s_address5);
+                  if (s_address5.len == 0)
+                     i_address5 = -1;
+                  else
+                     i_address5 = 0;
+                  break;
+          case 12:strcpy(s_telephone.arr,strs[count]);
+                  slen_varchar(s_telephone);
+                  term_varchar(s_telephone);
+                  if (s_telephone.len == 0)
+                     i_telephone = -1;
+                  else
+                     i_telephone = 0;
+                  break;
+          case 13:strcpy(s_source.arr,strs[count]);
+                  slen_varchar(s_source);
+                  term_varchar(s_source);
+                  break;
+          case 14:strcpy(s_type.arr,strs[count]);
+                  slen_varchar(s_type);
+                  term_varchar(s_type);
+                  break;
+          case 15:strcpy(s_text.arr,strs[count]);
+                  slen_varchar(s_text);
+                  term_varchar(s_text);
+                  break;
+          default:break;
+      }
+   }
+
+/* ============================================================================
+ * Get the road segments record for this section     
+ * ============================================================================
+ */
+
+   strcpy(v_agency,s_agency.arr);
+   strcpy(v_link,s_link.arr);
+   strcpy(v_section,s_section.arr);
+   
+   strcpy(v_unique,s_linkcode.arr);               /* unique.                */
+   strncat(v_unique,"/");                         /* Concatenate '/'        */
+   strncat(v_unique,s_section.arr);               /* Append section         */
+
+   s_doc_title.arr[0] = '\0';
+   s_doc_title.len = 0;
+
+   id=-1;
+   validate_section(s_agency.arr              /* Agency variable    [In] */
+                   ,s_link.arr                /* Link variable      [In] */
+                   ,s_section.arr             /* Section variable   [In] */
+                   ,&id                       /* Highways element   [Out]*/
+                   ,&novalue                  /* Dummy length value [Out]*/
+                   ,&novalue                  /* Dummy length value [Out]*/
+                   ,s_doc_title.arr           /* Document title     [Out]*/
+                   ,sys_flag);                /* Validate survey    [Out]*/
+
+   if (id < 0)
+   {
+      s_agency.arr[0] = '\0';
+      s_agency.len = 0;
+      i_agency = -1;
+
+      s_link.arr[0] = '\0';
+      s_link.len = 0;
+      i_linkcode = -1;
+
+      s_section.arr[0] = '\0';
+      s_section.len = 0;
+      i_section = -1;
+
+      strcpy(s_doc_title.arr,"AUTO LOADED FROM INSPECTION LOADER");
+      s_doc_title.len = 34;
+      i_doc_title = 0;
+   }
+   else
+   {
+      i_agency = 0;
+      i_linkcode = 0;
+      i_section = 0;
+
+      slen_varchar(s_doc_title);
+      if(s_doc_title.len > 60)
+        {
+        s_doc_title.len = 60;
+        }
+      term_varchar(s_doc_title);
+      i_doc_title = 0;
+   }
+
+/* The following no longer valid - replaced by code above  */
+/* This is not an error condition. Complaints should be allowed without section details */
+
+/*
+   if (validate_section(s_agency.arr
+                       ,s_link.arr
+                       ,s_section.arr
+                       ,&id
+                       ,&novalue
+                       ,&novalue
+                       ,s_doc_title.arr
+                       ,sys_flag)!=SUCCESS)
+   {                      
+     pusherror(seqid,8207);
+     nor++;
+     return(FALSE);
+   }
+*/
+ 
+/* ===============================================================
+ * Validate the date and time, complaint source and complaint type.
+ * ===============================================================
+ */ 
+
+            if (s_date.len > 0)
+            {
+               if ( date_check(s_date.arr)!=SUCCESS )
+               {
+                  pusherror(seqid,8701);
+                  nor++;                      /* Increment the error counter */
+               }
+            }
+
+            if (s_time.len > 0)
+            {
+               if ( time_check(s_time.arr)!=SUCCESS )
+               {
+                  pusherror(seqid,8702);
+                  nor++;                      /* Increment the error counter */
+               } 
+            }
+
+            if ( (s_date.len > 0)  || (s_time.len > 0) )
+            {
+               strcat(s_date.arr,s_time.arr); /* Concatenate the time to date*/
+               slen_varchar(s_date);          /* Set the date length         */
+               term_varchar(s_date);          /* Terminate the date          */ 
+            }
+                                           /* Validate complaint source   */
+            if ( validate_code(8,s_source.arr,&novalue)!=SUCCESS )
+            {
+               pusherror(seqid,8703);
+               nor++;                      /* Increment the error counter */
+            }
+
+            /* Validate complaint type     */
+      
+            EXEC SQL WHENEVER SQLWARNING GOTO type_err;
+            EXEC SQL WHENEVER SQLERROR   GOTO type_err;
+
+             
+
+            EXEC SQL SELECT 1 
+                     INTO  :type_err
+                     FROM  doc_enquiry_types,
+                           doc_types
+                     WHERE det_dtp_code = dtp_code
+                     AND   det_dtp_code = :s_doc_dtp_code
+                     AND   det_code = :s_type
+                     AND   dtp_allow_complaints = 'Y'
+                     AND   trunc(sysdate)
+                         BETWEEN trunc(nvl(dtp_start_date,sysdate))
+                         AND     trunc(nvl(dtp_end_date,sysdate))
+                     AND   trunc(sysdate)
+                         BETWEEN trunc(nvl(det_start_date,sysdate))
+                         AND     trunc(nvl(det_end_date,sysdate))
+										 AND det_dcl_code = :s_enqclass;
+
+            
+            if ( type_err != 1 ) 
+            {
+               pusherror(seqid,8704);
+               nor++;                      /* Increment the error counter */
+            }
+
+
+            EXEC SQL select min(hsc_status_code)
+                     into :s_doc_status_code:i_doc_status_code
+                     from hig_status_codes
+                     where hsc_domain_code = 'COMPLAINTS'
+                     and hsc_allow_feature1 = 'Y'
+                     and trunc(sysdate)
+                         BETWEEN  trunc(nvl(hsc_start_date,sysdate))
+                         AND      trunc(nvl(hsc_end_date,sysdate));
+            oraerror("Get Default Complaint Status");
+
+            if (i_doc_status_code < 0)
+            {
+               pusherror(seqid,8706);
+               nor++;
+            }
+
+
+            if (get_next_doc_id(&s_doc_id) != SUCCESS )
+            {
+               pusherror(seqid,8215);     /* Unable to obtain document   */
+               nor++;                      /* sequence number             */
+            }
+  
+
+     if(EXDebug && S_REC)
+       {
+       printf("Doc id                    : [%d]\n",s_doc_id);
+       printf("Doc title                 : [%s]\n",s_doc_title.arr);
+       printf("Doc title len             : [%d]\n",s_doc_title.len);
+       printf("Batch id                  : [%d]\n",s_batchid);
+       printf("Security Class            : NULL\n");
+       printf("Complaint Linkcode        : [%s]\n",s_linkcode.arr);
+       printf("Complaint Linkcode len    : [%d]\n",s_linkcode.len);
+       printf("Complaint Section         : [%s]\n",s_section.arr);
+       printf("Complaint Section len     : [%d]\n",s_section.len);
+       printf("Complaint Streetname      : [%s]\n",s_streetname.arr);
+       printf("Complaint Streetname len  : [%d]\n",s_streetname.len);
+       printf("Complaint Location        : [%s]\n",s_location.arr);
+       printf("Complaint Location len    : [%d]\n",s_location.len);
+       printf("Complaint Date            : [%s]\n",s_date.arr);
+       printf("Complaint Date len        : [%d]\n",s_date.len);
+       printf("Complaint Time            : [%s]\n",s_time.arr);
+       printf("Complaint Time len        : [%d]\n",s_time.len);
+       printf("Complaint Complainant     : [%s]\n",s_complainant.arr);
+       printf("Complaint Complainant len : [%d]\n",s_complainant.len);
+       printf("Complaint Address 1       : [%s]\n",s_address1.arr);
+       printf("Complaint Address 1 len   : [%d]\n",s_address1.len);
+       printf("Complaint Address 2       : [%s]\n",s_address2.arr);
+       printf("Complaint Address 2 len   : [%d]\n",s_address2.len);
+       printf("Complaint Address 3       : [%s]\n",s_address3.arr);
+       printf("Complaint Address 3 len   : [%d]\n",s_address3.len);
+       printf("Complaint Address 4       : [%s]\n",s_address4.arr);
+       printf("Complaint Address 4 len   : [%d]\n",s_address4.len);
+       printf("Complaint Address 5       : [%s]\n",s_address5.arr);
+       printf("Complaint Address 5 len   : [%d]\n",s_address5.len);
+       printf("Complaint Phone           : [%s]\n",s_telephone.arr);
+       printf("Complaint Phone len       : [%d]\n",s_telephone.len);
+       printf("Complaint Source          : [%s]\n",s_source.arr);
+       printf("Complaint Source len      : [%d]\n",s_source.len);
+       printf("Complaint Type            : [%s]\n",s_type.arr);
+       printf("Complaint Type len        : [%d]\n",s_type.len);
+       printf("Complaint Text            : [%s]\n",s_text.arr);
+       printf("Complaint Text len        : [%d]\n",s_text.len);
+       }
+   
+            EXEC SQL WHENEVER SQLWARNING GOTO doc_err;
+            EXEC SQL WHENEVER SQLERROR   GOTO doc_err;
+             EXEC SQL INSERT INTO DOCS
+                            ( DOC_ID
+                             ,DOC_TITLE
+                             ,DOC_DTP_CODE
+                             ,DOC_DATE_ISSUED
+                             ,DOC_REFERENCE_CODE
+                             ,DOC_ISSUE_NUMBER
+                             ,DOC_DESCR
+                             ,DOC_USER_ID
+                             ,DOC_ADMIN_UNIT
+                             ,DOC_STATUS_CODE
+                             ,DOC_STATUS_DATE
+                             ,DOC_COMPL_TYPE 
+                             ,DOC_COMPL_SOURCE
+                             ,DOC_COMPL_LOCATION
+														 ,DOC_DCL_CODE
+                        ) VALUES
+                        (     :s_doc_id                /* Document id        */
+                             ,nvl(:s_doc_title,'FROM INSPECTION LOADER')             /* Document title     */
+                             ,:s_doc_dtp_code          /* Document dtp code  */
+                                                       /* Date issued       */
+                             ,nvl(to_date(:s_date,'RRMMDDHH24MI'),sysdate)
+                             ,:s_batchid               /* Batch id           */
+                             ,1                        /* Issue number       */
+                             ,:s_text:i_text           /* Complaint text     */
+                             ,:s_inspector             /* Recorded by        */ 
+                             ,:s_insp_admin            /* Admin unit         */
+                             ,:s_doc_status_code       /* Status type        */
+                             ,sysdate                  /* Status date        */
+                             ,:s_type                  /* Complaint type     */ 
+                             ,:s_source                /* Complaint source   */
+                             ,:s_location              /* Complaint location */
+                             ,:s_enqclass
+                          );
+   if (EXDebug && S_REC)
+     {
+     printf("Record Inserted Into DOCS\n");
+     }
+     
+/* ===========================================================================
+ * Insert a document association record for the associated section.   
+ * ===========================================================================
+ */
+
+          if (id > 0)
+          {
+             s_rse_he_id=id;
+
+             EXEC SQL WHENEVER SQLWARNING GOTO assoc_err;
+             EXEC SQL WHENEVER SQLERROR   GOTO assoc_err;
+
+             EXEC SQL INSERT INTO DOC_ASSOCS
+                               ( DAS_TABLE_NAME
+                                ,DAS_REC_ID
+                                ,DAS_DOC_ID
+                               ) VALUES
+                               ( 'ROAD_SEGMENTS_ALL'
+                                ,:s_rse_he_id
+                                ,:s_doc_id
+                               ); 
+          }
+
+
+/* ===========================================================================
+ * get next had_id sequence and hct_id sequence
+ * ===========================================================================
+ */
+
+ 
+ EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(10)");
+ EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(10)");
+ EXEC SQL SELECT had_id_seq.nextval 
+          INTO   :v_had_id_seq
+		  FROM DUAL;
+ 
+ EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(11)");
+ EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(11)");
+ EXEC SQL SELECT hct_id_seq.nextval 
+          INTO   :v_hct_id_seq
+		  FROM DUAL;
+ 
+/* ===========================================================================
+ * Insert into hig_address
+ * ===========================================================================
+ */
+ 
+ EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(12)");
+ EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(12)");
+ EXEC SQL INSERT INTO hig_address
+                     (had_id
+                     ,had_building_name
+                     ,had_dependent_locality_name
+                     ,had_post_town
+                     ,had_county
+                     ,had_postcode)
+              VALUES (:v_had_id_seq
+                     ,:s_address1:i_address1
+                     ,:s_address2:i_address2
+                     ,:s_address3:i_address3
+                     ,:s_address4:i_address4
+                     ,:s_address5:i_address5
+); 
+/* ===========================================================================
+ * Insert into hig_contacts
+ * ===========================================================================
+ */
+ 
+ EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(13)");
+ EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(13)");
+             EXEC SQL INSERT INTO hig_contacts
+                               ( hct_id
+			        ,hct_org_or_person_flag
+                                ,hct_surname
+		         	,hct_home_phone
+                               ) VALUES
+                               ( :v_hct_id_seq
+			        ,'P'
+                                ,:s_complainant:i_complainant
+			        ,:s_telephone:i_telephone
+                               ); 
+/* ===========================================================================
+ * Insert into hig_contact_address
+ * ===========================================================================
+ */
+
+EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(14)");
+EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(14)");		    
+             EXEC SQL INSERT INTO hig_contact_address
+                               ( hca_hct_id
+                                ,hca_had_id
+                               ) VALUES
+                               ( :v_hct_id_seq
+                                ,:v_had_id_seq
+                               ); 
+
+/* ===========================================================================
+ * Insert into doc_enquiry_contacts
+ * ===========================================================================
+ */
+
+EXEC SQL WHENEVER SQLWARNING do sql_err("process_complaints(15)");
+EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(15)");
+             EXEC SQL INSERT INTO doc_enquiry_contacts
+                               ( dec_hct_id
+                                ,dec_doc_id
+					  ,dec_type
+                               ) VALUES
+                               ( :v_hct_id_seq
+                                ,:s_doc_id
+                                ,:s_contact_type
+                               ); 
+
+
+    EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(1)");
+
+    return(TRUE);
+
+    doc_err:
+    {
+         pusherror(seqid,8217);      /* Unable to insert into the DOCS table */
+         noe++;                      /* Increment the error counter          */
+         oraerror("process_complaints(2)");
+         EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(2)");
+         return(FALSE);              /*                                      */
+    }
+
+    assoc_err:
+    {
+         pusherror(seqid,8218);      /* Unable to insert into the DOC_ASSOCS */
+         noe++;                      /* Increment the number of errors       */
+         oraerror("process_complaints(3)");
+         EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(3)");
+         return(FALSE);              /*                                      */
+    }
+	
+    type_err:
+    {
+         pusherror(seqid,8704);
+         noe++;                      /* Increment the number of errors       */
+         oraerror("process_complaints(4)");
+         EXEC SQL WHENEVER SQLERROR do sql_err("process_complaints(4)");
+         return(FALSE);              /*                                      */
+    }
+} /* .................................................     Prosrec End Brace */
+    
+

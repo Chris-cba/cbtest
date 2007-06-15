@@ -1,0 +1,475 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4putrep.pc	1.4 01/11/07"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4putrep.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+/* putrepair.pc */
+/* ============================================================================
+ * purpose: To insert a row into the REPAIRS table.
+ *
+ * Calling Sequence:
+ *
+ *       putrepair(actioncat,actcode,datedue,ldatedue,supflag,datecomp,defcode
+ *                ,descr,treatcode,heid,comphrs,compmins,defectid,responsible
+ *                ,attr1,attr2,attr3,attr4)
+ *
+ * Input:
+ *
+ *  char     actioncat[2],      REP_ACTION_CAT
+ *           actcode[3],        REP_ATV_ACTY_AREA_CODE
+ *           datedue[7],        REP_DATE_DUE
+ *           ldatedue[7],       REP_LOCAL_DATE_DUE
+ *           supflag[2],        REP_SUPERSEDED_FLAG
+ *           datecomp[7],       REP_DATE_COMPLETED
+ *           descr[241],        REP_DESCR
+ *           treatcode[5];      REP_TRE_TREAT_CODE
+ *
+ *  int      heid,              REP_RSE_HE_ID
+ *           comphrs,           REP_COMPLETED_HRS
+ *           compmins;          REP_COMPLETED_MINS
+ *           defectid           REP_DEF_DEFECT_ID
+ * ============================================================================
+ *
+ * Output:
+ *
+ * BOOLEAN putrepairs      TRUE  - row inserted OK
+ *                         FALSE - Error on insert.
+ *
+ * Notes:
+ *
+ *  This function does not do a commit.
+ *
+ * ============================================================================
+ *   CHANGE HISTORY :-                                               
+ *   DATE         : 10-MAY-90                                        
+ *   CHANGED BY   : Steve Voller                                    
+ *   DESCRIPTION  : Enhancements iro RMMS Amendment Set VI changes.  
+ *                  Amend code to insert local date due into repairs
+ *                  table.                                          
+ *
+ *   DATE         : 01-SEP-97                                           
+ *   CHANGED BY   : Garry Fletcher                                      
+ *   DESCRIPTION  : 1.7 > 2.1 Database Conversion
+ * ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "rmms.h"
+
+
+extern          TREAT_MODELD;              /* Dot   treatment model usage    */
+extern          TREAT_MODELL;              /* Local treatment model usage    */
+extern long int TREMODLEV;                 /* Treatment model level          */
+extern          DTP_ROAD;                  /* Boolean indicator for DOT road */
+extern char     sys_flag;                  /* External road type flag        */
+extern BOOLEAN  REPAIRCOMPLETE;      /* Boolean to define if repair complete */
+extern short    EXDebug;
+extern FILE     *fi;
+#define SQLCA_STORAGE_CLASS extern 
+EXEC SQL INCLUDE sqlext.h;
+
+                 
+EXEC SQL BEGIN DECLARE SECTION;
+EXEC SQL INCLUDE repairs.h;
+
+varchar t_code[5]                        /* Dummy treatment code             */
+       ,default_code[5]                  /* Default treatment code           */
+       ,d_acode[5]                       /* Activity code                    */
+       ,dd_defcode[5]                    /* Defect code                      */
+       ,d_priority[5]                    /* Priority code                    */
+       ,d_sys_flag[1]                   /* Section system flag              */
+       ,t_defcode[5]
+       ,full_date[19]                    /* Current date in full format      */
+       ,v_actioncat[2]
+       ,v_treatcode[5]
+       ,v_actcode[3]
+       ,r_attr1[256]                      /* Attribute value 1                */
+       ,r_attr2[256]                      /* Attribute value 2                */
+       ,r_attr3[256]                      /* Attribute value 3                */
+       ,r_attr4[256]                      /* Attribute value 4                */
+;
+long int r_responsible                   /* Agent responsible for section    */
+        ,error                           /* Error number                     */
+        ,seqid                           /* Passed in sequence number        */
+        ,v_error                         /* Error number for BOQ creation    */
+        ,v_defectid
+        ,tremodlev                       /* Treatment model level            */
+;
+
+EXEC SQL END DECLARE SECTION;
+EXEC SQL WHENEVER SQLERROR GO TO fail;
+
+
+BOOLEAN putrepair(actioncat,actcode,datedue,ldatedue,supflag,datecomp,defcode
+                 ,descr,treatcode,heid,comphrs,compmins,defectid,responsible
+                 ,attr1,attr2,attr3,attr4,seqid,boq_items)
+  char *actioncat,*actcode,*datedue,*ldatedue,*supflag,*datecomp,*descr,
+       *treatcode,*attr1,*attr2,*attr3,*attr4,*defcode;
+  long int heid,comphrs,compmins,defectid,responsible,seqid,boq_items;
+{
+
+  strcpy((char*)t_defcode.arr,defcode);
+  t_defcode.len = strlen(defcode);
+  t_defcode.arr[t_defcode.len]='\0';
+
+  *(d_sys_flag.arr)=sys_flag;
+  d_sys_flag.len=1;
+  d_sys_flag.arr[d_sys_flag.len]='\0';
+
+  strcpy((char*)r_attr1.arr,attr1);           /* Set the attribute 1 value  */
+  r_attr1.len = strlen(attr1);
+  r_attr1.arr[r_attr1.len]='\0';
+
+  strcpy((char*)r_attr2.arr,attr2);           /* Set the attribute 2 value  */
+  r_attr2.len = strlen(attr2);
+  r_attr2.arr[r_attr2.len]='\0';
+
+  strcpy((char*)r_attr3.arr,attr3);           /* Set the attribute 3 value  */
+  r_attr3.len = strlen(attr3);
+  r_attr3.arr[r_attr3.len]='\0';
+
+  strcpy((char*)r_attr4.arr,attr4);           /* Set the attribute 4 value  */
+  r_attr4.len = strlen(attr4);
+  r_attr4.arr[r_attr4.len]='\0';
+
+  strcpy((char*)r_actioncat.arr,actioncat);   /* Set action category value  */
+  r_actioncat.len = strlen(actioncat);
+  r_actioncat.arr[r_actioncat.len]='\0';
+
+  strcpy((char*)r_actcode.arr,actcode);       /* Set activity code value    */
+  r_actcode.len = strlen(actcode);
+  r_actcode.arr[r_actcode.len]='\0';
+
+  strcpy((char*)r_datedue.arr,datedue);       /* Set duedate value          */
+  r_datedue.len = strlen(datedue);
+  r_datedue.arr[r_datedue.len]='\0';
+
+  strcpy((char*)r_ldatedue.arr,ldatedue);     /* Set local date value       */
+  r_ldatedue.len = strlen(ldatedue);
+  r_ldatedue.arr[r_ldatedue.len]='\0';
+
+#ifdef MSDOS
+  ir_datedue  = (atol((char*)r_datedue.arr) > 0) ? 0 : -1;
+  ir_ldatedue = (atol((char*)r_datedue.arr) > 0) ? 0 : -1;
+#else
+  ir_datedue  = (atoi((char*)r_datedue.arr) > 0) ? 0 : -1;
+  ir_ldatedue = (atoi((char*)r_datedue.arr) > 0) ? 0 : -1;
+#endif
+
+  strcpy((char*)r_supflag.arr,supflag);      /* Set superceding flag value  */
+  r_supflag.len = strlen(supflag);
+  r_supflag.arr[r_supflag.len]='\0';
+
+  strcpy((char*)r_datecomp.arr,datecomp);    /* Set completed date value    */
+  r_datecomp.len = strlen(datecomp);
+  r_datecomp.arr[r_datecomp.len]='\0';
+
+#ifdef MSDOS
+  ir_datecomp = (atol((char*)r_datecomp.arr) > 0) ? 0 : -1;
+#else
+  ir_datecomp = (atoi((char*)r_datecomp.arr) > 0) ? 0 : -1;
+#endif
+
+/*
+  if(ir_datecomp == -1)
+    strcpy(datecomp,"010101");
+*/
+
+  strcpy((char*)r_descr.arr,descr);
+  r_descr.len = strlen(descr);
+  r_descr.arr[r_descr.len]='\0';
+
+  strcpy((char*)r_treatcode.arr,treatcode);
+  r_treatcode.len = strlen(treatcode);
+  r_treatcode.arr[r_treatcode.len]='\0';
+
+  r_comphrs =comphrs; 
+  r_compmins=compmins; 
+
+  if(((comphrs == 0)&&(compmins == 0))
+     ||(!REPAIRCOMPLETE))
+    {
+    ir_comphrs = -1;
+    ir_compmins = -1;
+    }
+  else
+    {
+    ir_comphrs = 0;
+    ir_compmins = 0;
+    }
+
+  r_heid    =heid; 
+  r_defectid=defectid;
+  v_defectid=defectid;
+
+  ir_actioncat = 0;     
+  ir_actcode   = 0;     
+  ir_heid      = 0;      
+  ir_defectid  = 0;
+  ir_supflag   = 0;       
+
+/*  if(EXDebug && (K_REC || L_REC || M_REC || N_REC ))
+    {*/
+    puts("====================================================================");
+    puts("Repair Records ..........................[ r4putrep.pc ]............");
+    puts("====================================================================");
+    printf("Action Category       : %s\n",(char*)r_actioncat.arr);
+    printf("Activity Area         : %s\n",(char*)r_actcode.arr);
+    printf("Date due              : %s\n",(char*)r_datedue.arr);
+    printf("Local Date            : %s\n",(char*)r_ldatedue.arr);
+    printf("Superceding flag      : %s\n",(char*)r_supflag.arr);
+    printf("Date completed        : %s\n",(char*)r_datecomp.arr);
+    printf("Repair Descr.         : %s\n",(char*)r_descr.arr);
+    printf("Repair Treatment      : %s\n",(char*)r_treatcode.arr);
+    printf("Rse he id             : %d\n",r_heid);
+    printf("Completed hrs         : %d\n",r_comphrs);
+    printf("Completed mins        : %d\n",r_compmins);
+    printf("Defect id             : %d\n",r_defectid);
+    printf("Create date           : %s\n",(char*)full_date.arr);
+    printf("Last updated          : %s\n",(char*)full_date.arr);
+    printf("Attribute value 1     : %s\n",attr1);
+    printf("Attribute value 2     : %s\n",attr2);
+    printf("Attribute value 3     : %s\n",attr3);
+    printf("Attribute value 4     : %s\n",attr4);
+    puts("====================================================================");
+/*    }*/
+
+  EXEC SQL
+  INSERT
+    INTO REPAIRS
+        (REP_ACTION_CAT
+        ,REP_ATV_ACTY_AREA_CODE
+        ,REP_DATE_DUE                                     
+        ,REP_LOCAL_DATE_DUE                                    
+        ,REP_SUPERSEDED_FLAG
+        ,REP_DATE_COMPLETED                             
+        ,REP_DESCR
+        ,REP_TRE_TREAT_CODE
+        ,REP_RSE_HE_ID
+        ,REP_COMPLETED_HRS
+        ,REP_COMPLETED_MINS
+        ,REP_DEF_DEFECT_ID
+        ,REP_CREATED_DATE 
+        ,REP_LAST_UPDATED_DATE)
+  VALUES(:r_actioncat:ir_actioncat
+        ,:r_actcode:ir_actcode
+        ,to_date(:r_datedue:ir_datedue  ,'RRMMDD')      
+        ,to_date(:r_ldatedue:ir_ldatedue,'RRMMDD')      
+        ,:r_supflag:ir_supflag
+        ,to_date(:r_datecomp:ir_datecomp,'RRMMDD')    
+        ,:r_descr
+        ,:r_treatcode
+        ,:r_heid:ir_heid 
+        ,:r_comphrs:ir_comphrs
+        ,:r_compmins:ir_compmins
+        ,:r_defectid:ir_defectid
+        ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+        ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS'));
+
+  /* =========================================================================
+   * Population of the BOQ items is actioned by the CRE_BOQ_ITEMS database
+   * package. BOQ items are populated via TREATMENT MODELS and these are 
+   * maintained vi the Maintain Treatment Models ( mai3814 ) form. Treatment
+   * models are maintained by DTP/LOCAL indicator by Admin Unit level for a
+   * specified Activity code for a Defect Type for a Treatment Code.
+   * It is for thhis reason that the BOQ items must be populated once the 
+   * repair details have been established.
+   * If the repair that is being recorded is an Immediate repair then BOQ 
+   * population is not allowed. If the repair type is Temporay or Permanent then
+   * boq population is allowed providing that there are no boq items recorded 
+   * wihtin the HH file for that repair. This is governed by the boq_items 
+   * variable which should have the following values :
+   * Immediate = -1 , Temp/Perm = 1 if no boqs from HH else > 1 where boq's are
+   * present in the HH
+   * =========================================================================
+   */ 
+
+  r_responsible=responsible;
+  tremodlev=TREMODLEV;
+
+  strcpy((char*)v_actioncat.arr,(char*)r_actioncat.arr);
+  v_actioncat.len = r_actioncat.len;
+  v_actioncat.arr[v_actioncat.len]='\0';
+
+  strcpy((char*)v_treatcode.arr,(char*)r_treatcode.arr);
+  v_treatcode.len = r_treatcode.len;
+  v_treatcode.arr[v_treatcode.len]='\0';
+
+  strcpy((char*)v_actcode.arr,(char*)r_actcode.arr);
+  v_actcode.len = r_actcode.len;
+  v_actcode.arr[v_actcode.len]='\0';
+  
+  if(EXDebug && (K_REC || L_REC || M_REC || N_REC))
+    {
+    printf("Defect id   : %d\n",v_defectid);
+    printf("Actioncat   : %s\n",(char*)v_actioncat.arr);
+    printf("Responsible : %d\n",r_responsible);
+    printf("Treatment   : %s\n",(char*)v_treatcode.arr);
+    printf("Defcode     : %s\n",(char*)t_defcode.arr);
+    printf("Sys Flag    : %s\n",(char*)d_sys_flag.arr);
+    printf("Actcode     : %s\n",(char*)v_actcode.arr);
+    printf("Tremodlev   : %d\n",tremodlev);
+    printf("Attribute   : %s\n",(char*)r_attr1.arr);
+    printf("Seqid       : %d\n",seqid);
+    if(DTP_ROAD)
+    printf("DTP_ROAD    : [TRUE]\n");
+    else
+    printf("DTP_ROAD    : [FALSE]\n");
+    if(TREAT_MODELD)
+    printf("TREAT_MODELD: [TRUE]\n");
+    else
+    printf("TREAT_MODELD: [FALSE]\n");
+    if(TREAT_MODELL)
+    printf("TREAT_MODELL: [TRUE]\n");
+    else
+    printf("TREAT_MODELL: [FALSE]\n");
+    }
+  
+  if((( DTP_ROAD )  && ( TREAT_MODELD )) 
+  || ((!DTP_ROAD )  && ( TREAT_MODELL )))
+    {
+    /* ----------------------------------------------------------------
+    || The creation of BOQ items should return one of three results.
+    || a) Result = 1  ( ie. Success )
+    || b) Result = 0  ( ie. Nothing found but Success )
+    || c) Result = -1 ( ie. Failure - Should deposit an error )
+    ||----------------------------------------------------------------
+    */ 
+    exec sql whenever sqlerror   continue;
+    exec sql whenever sqlwarning continue;
+    
+    exec sql execute
+    declare
+      lv_err     number; 
+      lv_r_attr1 number;
+    begin
+      --
+      begin
+        lv_r_attr1 := to_number(:r_attr1);
+      exception
+        when others
+         then
+            lv_r_attr1 := 0;
+      end;
+      --
+      lv_err := mai.cre_boq_items(:v_defectid 
+                                 ,:v_actioncat
+                                 ,:r_responsible
+                                 ,:v_treatcode
+                                 ,:t_defcode
+                                 ,:d_sys_flag
+                                 ,:v_actcode
+                                 ,:tremodlev
+                                 ,lv_r_attr1);
+      :v_error := lv_err;
+      --
+      exception
+        when others
+         then
+            :v_error := sqlcode;
+    end;
+    end-exec;
+    
+    if(v_error < 0)
+      {   /* The CRE_BOQ_ITEMS database package failed with an error */
+      fprintf(fi,"\nmai.cre_boq_items Returned Error No : [%d]\n",v_error); 
+      pusherror(seqid,error=8705);
+      return(FALSE);
+      }
+    }
+
+  return(TRUE);
+
+fail:
+  oraerror("putrepair");
+  return(FALSE);
+}
+
+/* =============================================================================
+ * Function : chktcode()
+ * Purpose  : This function should be used to validate the specified treatment
+ *            code.
+ * =============================================================================
+ */
+
+BOOLEAN chktcode(code)
+  char *code;
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+    varchar v_dummy[2];             /* Dummy variable for existance check */ 
+  EXEC SQL END DECLARE SECTION;
+
+  strcpy((char*)t_code.arr,code);
+  t_code.len = strlen(code);
+  t_code.arr[t_code.len]='\0';
+
+  EXEC SQL
+  SELECT 'X'
+    INTO :v_dummy
+    FROM TREATMENTS
+   WHERE TRE_TREAT_CODE = :t_code
+       ;
+
+   if(ORANOREC)
+     return(FALSE);
+   else
+     return(TRUE);
+
+fail:
+  oraerror("putrepair-chktcode");
+  return(FALSE);
+}
+
+
+
+/* =============================================================================
+ * Function : getdeftcode()
+ * Purpose  : Obtain a default treatment for a specified defect.
+ *            This function uses a user maintained DEFEULT_TREATS table.
+ *            If this function does  not return success then the treatment 
+ *            code should not be set.
+ * =============================================================================
+ */
+BOOLEAN getdeftcode(code,defcode,priority,acode)
+  char *code,*defcode,*priority,*acode;
+{
+
+  default_code.len=0;
+  default_code.arr[default_code.len]='\0';
+  
+  strcpy((char*)dd_defcode.arr,defcode); 
+  dd_defcode.len = strlen(defcode);
+  dd_defcode.arr[dd_defcode.len]='\0';
+  
+  strcpy((char*)d_priority.arr,priority); 
+  d_priority.len = strlen(priority);
+  d_priority.arr[d_priority.len]='\0';
+  
+  strcpy((char*)d_acode.arr,acode); 
+  d_acode.len = strlen(acode);
+  d_acode.arr[d_acode.len]='\0';
+  
+  EXEC SQL
+  SELECT DFT_TRE_TREAT_CODE 
+    INTO :default_code
+    FROM DEFAULT_TREATS
+   WHERE DFT_DEF_DEFECT_CODE    = :dd_defcode
+     AND DFT_DPR_PRIORITY       = :d_priority
+     AND DFT_ATV_ACTY_AREA_CODE = :d_acode
+       ;
+   
+  default_code.arr[default_code.len]='\0';
+  strcpy(code,(char*)default_code.arr); 
+
+  if(ORANOREC)
+    return(FALSE);
+  else
+    return(TRUE);
+
+fail:
+  oraerror("putrepair-getdeftcode");
+  return(FALSE);
+}

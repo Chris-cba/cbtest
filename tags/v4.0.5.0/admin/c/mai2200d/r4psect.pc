@@ -1,0 +1,963 @@
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4psect.pc	1.7 01/19/07"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4psect.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+#include <stdio.h>
+
+/* =========================================================================
+ *   CHANGE HISTORY :-                                                 
+ *   DATE         : 10-MAY-90                                          
+ *   CHANGED BY   : Steve Voller                                       
+ *   DESCRIPTION  : Enhancements iro RMMS Amendment Set VI changes.    
+ *                  Amend code to handle roadstud calculations.        
+ *                  Amend call to rmmstype to include new parameters   
+ *                  which are used by def_rs_rep.                      
+ *                  Add ARE_SCHED_ACT_FLAG to insert into ACTIVITIES_  
+ *                  REPORT and default to 'Y' ie the record can be    
+ *                  considered in calculations for the insp. date.     
+ *   CHANGE HISTORY :-                                                
+ *   DATE         : 01-AUG-94                                         
+ *   CHANGED BY   : Steve Voller                                     
+ *   DESCRIPTION  : Fix bug in update to defects and repairs tables 
+ *                  for defects which are not re-found.                 
+ *                  Removed check which prevented update if the defect  
+ *                  was on an uncomplete WO since this meant the update 
+ *                  was performed for CLOSED WO's.  Now simply prevents 
+ *                  update of any defect/repair on a WO.               
+ *                  Add check to ensure that only repairs and defects   
+ *                  are updated which have a NULL def_date_compl since  
+ *                  a defect may be completed without a WO.             
+ *
+ *   Changed By   : H.Buckley
+ *   Date         : 06-Sep-96
+ *   Description  : The Defective Roadstud report should NOT be produced for
+ *                  Safety Inspections.
+ *
+ *   DATE         : 01-SEP-97                                           
+ *   CHANGED BY   : Garry Fletcher                                      
+ *   DESCRIPTION  : 1.7 > 2.1 Database Conversion
+ *
+ *   DATE         : 31-10-97
+ *   CHANGED BY   : G Fletcher
+ *   DESCRIPTION  : client-server conversion
+ *============================================================================
+ =================[ Application Specific Preprocessor Commands ]============= 
+*/
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern 
+extern  BOOLEAN NO_DUMMY;
+extern  MAXENDCHAIN;  /* Maximum chainage value                     */
+extern  short EXDebug;
+extern  char pipe_msg[254];
+extern  double defrecalup;
+extern  double defrecallo;
+EXEC SQL INCLUDE sqlext.h;
+BOOLEAN RECAL_DONE = FALSE; /* Recalibration Applied To The Survey  */
+
+
+/**************** External definition of length and reverse *******************/
+/**************** and inspection type. and section.         *******************/
+static BOOLEAN reverse;                 /* Rverse direction inspection var    */
+static long int slength;                /* Section length                     */
+static char itype;                      /*                                    */
+static char section[17];                /* Section variable                   */
+static char date[10];                   /* Current date                       */
+static char county[41];                 /* Maintaining Authority              */
+static char streetname[80];             /* Street name (not used but included */
+char inspdate[7];                       /* define externally for later use in */
+                                        /* putdefect.pc                       */
+char        attribute[2];               /* Attribute                          */
+static char insptime[5];                /* Time of inspection                 */
+static char notrefound[101] = {'\0'};
+
+void get_notrefound();
+
+/*============================================================================
+ *Function : Get_chainage
+ *Purpose  : To check that the chainage is not greater than the 
+ *           section length + 5% or return a reverse chainage value
+ *           if reverse chainage is required.
+ *
+ *============================================================================
+ */
+get_chain(chainage)
+long int chainage;
+{
+  long int retval;
+  if(chainage > (slength + ((slength/100) * defrecalup))) /* Chainage may be over the slength by the */
+    retval = -1;                                          /* %age held in product option defrecalup. */
+  else
+    {
+    if(reverse)
+      retval = slength-chainage;                          /* Reverse the chainage. */
+    else
+      retval = chainage;
+    }
+  return(retval);
+}
+
+/* ============================================================================
+ * External definition of recalibrate flag 
+ *          set if strlen(section) = 5 
+ *
+ * ============================================================================
+ */
+BOOLEAN romsec()
+{
+    if (rmmstype(&date,&county) == 3)               /* Maintenance manager */
+    {  
+        if (strlen(strchr(section,'/') + 1)==5) 
+        {
+           return(TRUE);
+        } 
+        else 
+        {  
+           return(FALSE);
+        }
+    } 
+    else 
+    {
+      return(FALSE);
+    }
+}
+
+/* ===========================================================================
+ * Function : Recalibrate
+ * This procedure should be re-written. 
+ *
+ * ===========================================================================
+*/
+static int long st,end; /*start chainage,end chainage as recorded by inspector*/
+
+int  recalibrate(len,seqid)
+int long *len,seqid;
+{
+  extern FILE *fi;
+  double perc_slength;
+
+  if(romsec() == TRUE)                                      /* If MM is being used      */
+    {
+    perc_slength = ((double)end/(double)slength)*100;
+    if((perc_slength > defrecallo) && (st == 0))            /* and not a partial survey */
+      {
+      *len=((double) *len * (double) slength) / (double) end;
+      RECAL_DONE = TRUE;
+      fprintf(fi,"Recalibration Applied\n\tOriginal Survey Length : %ld\n\tNew Survey Length      : %ld\n\n",end,slength);
+      }
+    else
+      fprintf(fi,"Recalibration NOT applied\n");
+    }  
+
+  return(*len);
+} 
+    
+/* ===========================================================================
+ * Function : insptype
+ * ===========================================================================
+ */
+char insptype()
+{
+     return(itype);
+}
+/* ===========================================================================
+ * Function : get_notrefound
+ * ===========================================================================
+ */
+void get_notrefound()
+  {
+  /*
+  || If The Product Option Has Not Yet Been Fetched Then Get It's Value.
+  */
+  if(notrefound[0] == '\0')
+    {
+    EXEC SQL BEGIN DECLARE SECTION;
+      VARCHAR r_notrefound[101];
+    EXEC SQL END DECLARE SECTION;
+    /*
+    || Initialise VARCHAR in case Product Option Is
+    || Not Defined Or Is NULL.
+    */
+    r_notrefound.len = 0;
+    r_notrefound.arr[r_notrefound.len] = '\0';
+    /*
+    || Get The Option Value
+    */
+    EXEC SQL SELECT hop_value
+               INTO :r_notrefound
+               FROM hig_options
+              WHERE hop_id      = 'NOTREFOUND'
+                AND hop_product = 'MAI'
+                  ;
+    oraerror("get_notrefound");
+
+    r_notrefound.arr[r_notrefound.len] = '\0';
+    strcpy(notrefound,(char*)r_notrefound.arr);
+
+    if(EXDebug)
+      printf("\nProduct Option NOTREFOUND = [%s]\n\n",(char*)r_notrefound.arr);
+    }
+  } /* get_notrefound */
+
+/* ===========================================================================
+ * Function : prosection
+ * ===========================================================================
+ */
+BOOLEAN prosection(batchid,err,stseq,enseq)
+long int batchid;               /* Batch id of the current batch            */
+BOOLEAN *err;                   /* error indicator indicates if errors have */
+                                /* occured processing batch                 */
+int   *stseq                    /* Start sequence number                    */
+     ,*enseq                    /* End sequence number                      */
+;
+{
+  void arl_insert()
+      ,arl_set_stat();
+
+  FILE *def_rs_rep();
+
+  long int error 
+      ,no                      /* no of errors found in the error stack         */
+      ,nor                     /* no of records processed by prolocation        */
+      ,noe                     /* no. of records marked in error in prolocation */
+      ,norec   = 0             /* no of records retrieved                       */
+      ,noerror = 0             /* no of errors                                  */ 
+     ;
+  extern BOOLEAN USE_CHAINAGE;
+                              /* Boolean variable for chainage usage           */
+  extern BOOLEAN AUTO_SAFETY; /* Bollean variable for auto_safety on           */
+  BOOLEAN status;             /* Status indicator boolean value                */
+  extern char sys_flag;
+
+  extern FILE *fi;
+  FILE *fp;
+
+  char temp[10];
+  char msg[100];
+
+  EXEC SQL BEGIN DECLARE SECTION;
+    long int reportid           /* Activities report id                           */
+            ,endchain  = 0      /* End chainage                                   */
+            ,heid               /* Section identifier                             */
+            ,stchain   = 0      /* Start chainage                                 */
+            ,c_next_defectid    /* Next defect id                                 */
+            ,c_next_batch_id    /* Next activities report batch id                */
+           ;
+                                /* New variables for use in roadstud calculations */
+    int pc_def_rs    = 0   /* percentage defective roadstuds (rounded)       */
+       ,tot_def_rs   = 0   /* total defective roadstuds                      */
+       ,tot_rs       = 0   /* total number of roadstuds                      */
+       ,pc_def_trunc = 0   /* percentage defective roadstuds (truncated)     */
+      ;
+    char init[4]            /* Initiation type                                */
+        ,inspflag[2]        /* Inspection flag                                */
+        ,direction[2]       /* Survey direction                               */
+        ,surface[5]         /* Road surface condition code                    */
+        ,weather[5]         /* Road weather condition code                    */
+       ;
+    long int i_reportid         /* Report number                                  */
+            ,i_endchain      /* End chainage                                   */
+            ,i_inspector     /* Primary inspector indicator variable           */
+            ,i_inspector2    /* Secondary inspector indicator variable         */
+            ,i_heid          /* Road identifier ( rse he id )                  */
+            ,i_stchain      /* Start chainage                                 */
+            ,i_c_next_defectid /* Next defect id                                */
+            ,i_c_next_batch_id /* Next batch identification                     */
+            ,i_batchid           /* Batch variable                                */
+            ,responsible=0       /* Agency responsible for the section            */
+            ,inspector=0         /* Primary inspector                             */
+            ,inspector2=0        /* Secondary inspector                           */
+           ;
+    varchar i_init[4]       /* Inspectors initials                            */
+           ,i_inspdate[7]   /* Inspection date                                */
+           ,i_insptime[5]   /* Inspection Time                                */
+           ,i_inspflag[2]   /* Inspection flag                                */
+           ,i_streetname[81]/* Street name variable                           */
+           ,i_surface[5]       /* Road surface condition code                    */
+           ,i_weather[5]       /* Weather condition code.                        */
+           ,d_stat_code[11]    /* Hold defect status for complete                */
+          ;
+    extern varchar full_date[19]/* Full date variable                             */
+         ;
+    short int ii_endchain    /* End chainage indicator variable                */
+             ,ii_inspector   /* Inspectors indicator variable                  */
+             ,ii_inspector2  /* Secondary inspector indicator variable         */
+             ,ii_heid        /* Road section indicator variable                */
+             ,ii_stchain     /* Start chainage indicator variable              */
+             ,ii_c_next_defectid /* Next defect id indicator variable           */
+             ,ii_init        /* Inspectors initials indicator variable         */
+             ,ii_inspdate    /* Inspection date indicator variable             */
+             ,ii_inspflag    /* Inspection flag indicator variable             */
+             ,ii_batchid        /* Batch indicator variable                       */
+             ,ii_streetname  /* Street name indicator variable                 */
+             ,ii_surface        /* Road surface indicator variable                */
+             ,ii_weather        /* Weather condition indicator variable           */
+            ;
+  EXEC SQL END DECLARE SECTION;
+
+  long int chkchain;
+  long int endsequence;
+
+  if(EXDebug)
+    puts("Function - prosection - r4psect.pc");
+ 
+  /**********  intialise the host variables for the insert statement **********/
+  ii_endchain       = 0;
+  ii_inspector      = 0;
+  ii_inspector2     = 0;
+  ii_heid           = 0;
+  ii_stchain        = 0;
+  ii_c_next_defectid= 0;
+  ii_init           = 0;
+  ii_inspdate       = 0;
+  ii_inspflag       = 0;
+  ii_weather           = 0;
+  ii_surface           = 0;
+  ii_batchid           = 0;
+  i_endchain        = 0;
+  i_inspector       = 0;
+  i_inspector2      = 0;
+  i_stchain         = 0;
+  i_batchid            = batchid;
+
+  /* ===========================================================================
+   * Intialise the error stack for this section 
+   * ===========================================================================
+   */
+  initerror(batchid);
+
+  /* =========================================================================== 
+   * Get next G record and process values.
+   * ===========================================================================
+   */
+  switch(progrec(&reportid,section,&heid,inspdate,insptime,&inspector,&inspector2
+                ,stseq,&slength,&reverse,init,inspflag,&sys_flag,direction,surface
+                ,weather,&responsible))
+    {
+    case EOF   : return(FALSE);
+    case FALSE : puterror();
+                 return(TRUE);
+    }
+
+  st=0;                              /* Initialize start chainage value */
+  end=slength;                       /* Note end cannot be set to 0     */
+    
+  if(getnextp(&st,&end)==EOF)        /* Obtain the next 'P' record and  */ 
+    {                                /* obtain the start/end chainages. */
+    pusherror(*stseq,8602);          /* Cannot find P record to carry   */
+    }                                /* out recalibration.              */
+
+  /* ============================================================================
+   * HB: This line was placed here because the end chainage value was not
+   *     being correctly set once the start and end chainage values have
+   *     been obtained by the previous line.
+   * ============================================================================
+   */
+  end=((end==MAXENDCHAIN) ? slength : end);
+
+  strcpy((char*)i_inspdate.arr,inspdate);        /* set inspection date  */
+  i_inspdate.len=strlen(inspdate);               /* set length insp date */
+
+  if(insptime[0]=='\0')
+    {
+    strcpy((char*)i_insptime.arr,"0000");        /* set default insptime */
+    i_insptime.len=4;                            /* set length insptime  */
+    }
+  else
+    {
+    strcpy((char*)i_insptime.arr,insptime);      /* set inspection time  */
+    i_insptime.len=strlen(insptime);             /* set length insptime  */
+    }
+
+
+  fprintf(fi,"\n%20s*** Loading Section : %s ***\n\n"," ",section);
+
+  itype=inspflag[0];
+
+  /*============================================================================
+   *   Get next H record and process values 
+   *============================================================================
+   */
+
+  if(!prohrec(reportid,&error,heid,slength,sys_flag))
+    {
+    return(FALSE);
+    }
+
+  /* ===========================================================================
+   *   At this point te activity will have been selected. For the rline350
+   *   product this activity should be 'IN'  
+   * ===========================================================================
+   */
+
+  /* ===========================================================================
+   *   Process location values 
+   * ===========================================================================
+   */
+    
+  if(rmcaseup(inspflag[0]) == 'D')
+    {
+		EXEC SQL SELECT nvl(max(def_defect_id),0) + 1
+               INTO  :c_next_defectid
+               FROM  DEFECTS
+                  ;
+    }
+
+  do{   /* ................................... for each defect location */
+    status = prolocation(heid
+                        ,inspdate
+                        ,reportid
+                        ,init
+                        ,inspflag
+                        ,responsible
+                        ,&nor
+                        ,&noe
+                        ,&error);
+    norec   += nor;
+    noerror += noe;
+    } while((error==0 ) && (status==TRUE));
+    
+  /* =============================================================================
+   * If there are any comments records then process the records.
+   * Comments may be added to the Roadline 350 software and are not related
+   * to a road section.
+   * A comment record should be attributed to a specified road section therefore 
+   * the position of the 'R' record should be prior to the 'P' record in the
+   * Roadline 350 datafile.
+   * =============================================================================
+   */ 
+
+  do{   /* ................................... for each comment record*/
+    status=procomment(heid
+                     ,inspdate
+                     ,batchid
+                     ,reportid
+                     ,&nor
+                     ,&noe
+                     ,&error);
+    norec+=nor;
+    noerror+=noe;
+    } while((error==0) && (status==TRUE));
+
+  /* =============================================================================
+   * Obtain the next 'P' record.
+   * =============================================================================
+   */
+  if(!proprec(heid,&stchain,&endchain,enseq,&error,reverse))
+    return(FALSE);
+  else
+    {
+    if(romsec()==TRUE)
+      {
+      endchain = ((endchain == MAXENDCHAIN) || RECAL_DONE ? slength : endchain);
+      }
+    }
+  /* ===========================================================================
+   * 
+   * ===========================================================================
+   */
+  arl_set_stat(heid,slength,stchain,endchain,reportid,inspdate,init);
+  /* ===========================================================================
+   * Insert activity report lines
+   * ===========================================================================
+   */
+  arl_insert();    
+
+  /* ===========================================================================
+   * Update those repairs and defects which have not been re-found  
+   * ===========================================================================
+   */
+  /* if ( ((USE_CHAINAGE) && (sys_flag == 'D')) && (NO_DUMMY)) */ /* ... [1] */ 
+
+  if((get_ch_option(sys_flag)) && (NO_DUMMY))  /* ... [1] */ 
+	  { 
+    if(rmcaseup(inspflag[0])=='D')             /* ...... [2] */ 
+      {
+      if(strcmp(init,"NRM")==0)                /* ..... [3] */
+        {
+        get_notrefound();
+        if(strcmp(notrefound,"ALL")==0) /* Process ALL Defects Not Refound */
+          {
+          EXEC SQL update repairs
+                      set rep_date_completed    = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,rep_completed_hrs     = TO_NUMBER(SUBSTR(:i_insptime,1,2))
+                         ,rep_completed_mins    = TO_NUMBER(SUBSTR(:i_insptime,3,2))
+                         ,rep_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                    where rep_def_defect_id in(select def_defect_id 
+                                                 from defects
+                                                where def_superseded_flag = 'N'
+                                                  and def_rse_he_id = :heid
+                                                  and def_date_compl is null
+                                                  and def_st_chain between nvl(:stchain,0) 
+                                                                       and nvl(:endchain,0)
+                                                  and nvl(def_defect_id,0) < :c_next_defectid
+                                                  and def_atv_acty_area_code in(select arl_atv_acty_area_code
+                                                                                  from act_report_lines
+                                                                                 where arl_are_report_id = :reportid)
+                                                  and not exists(select wol_def_defect_id
+                                                                   from work_order_lines
+                                                                  where wol_def_defect_id = def_defect_id))
+                      ;
+          oraerror("PROSECTION ALL");
+          /* Call get status code : 16 Should be code for Completed */
+          if(get_status_code(16,d_stat_code.arr)!=SUCCESS)
+            {
+            pusherror(0,8219);
+            printf ("\nERROR : Could not get Status Code\n");
+            write_pipe(fi,"ERROR : Could not get Status Code");
+            }
+          slen_varchar(d_stat_code);
+
+          EXEC SQL UPDATE defects
+                      SET def_date_compl          = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,def_status_code         = :d_stat_code
+                         ,def_are_id_not_found    = :reportid
+                         ,def_date_not_found      = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,def_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                    WHERE def_superseded_flag = 'N'
+                      AND def_rse_he_id = :heid
+                      AND def_st_chain BETWEEN NVL(:stchain,0) 
+                                           AND NVL(:endchain,0)
+                      AND NVL(def_defect_id,0) < :c_next_defectid
+                      AND def_date_compl IS NULL
+                      AND def_atv_acty_area_code IN(SELECT arl_atv_acty_area_code
+                                                      FROM act_report_lines
+                                                     WHERE arl_are_report_id = :reportid)
+                      AND NOT EXISTS(SELECT wol_def_defect_id
+                                       FROM work_order_lines
+                                      WHERE wol_def_defect_id = DEF_DEFECT_ID)
+                        ;
+          oraerror("PROSECTION ALL - 1");
+          }
+        else if(strcmp(notrefound,"PRI")==0) /* Process All Not Refound Defects EXCEPT Priority 1s */
+          {
+          EXEC SQL update repairs
+                      set rep_date_completed    = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,rep_completed_hrs     = TO_NUMBER(SUBSTR(:i_insptime,1,2))
+                         ,rep_completed_mins    = TO_NUMBER(SUBSTR(:i_insptime,3,2))
+                         ,rep_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                    where rep_def_defect_id in(select def_defect_id 
+                                                 from defects
+                                                where substr(def_priority,1,1) != '1'
+                                                  and def_superseded_flag = 'N'
+                                                  and def_rse_he_id = :heid
+                                                  and def_date_compl is null
+                                                  and def_st_chain between nvl(:stchain,0) 
+                                                                       and nvl(:endchain,0)
+                                                  and nvl(def_defect_id,0) < :c_next_defectid
+                                                  and def_atv_acty_area_code in(select arl_atv_acty_area_code
+                                                                                  from act_report_lines
+                                                                                 where arl_are_report_id = :reportid)
+                                                  and not exists(select wol_def_defect_id
+                                                                   from work_order_lines
+                                                                  where wol_def_defect_id = def_defect_id))
+                      ;
+          oraerror("PROSECTION PRI");
+    
+          /* Call get status code : 16 Should be code for Completed */
+          if(get_status_code(16,d_stat_code.arr)!=SUCCESS)
+            {
+            pusherror(0,8219);
+            printf ("\nERROR : Could not get Status Code\n");
+            write_pipe(fi,"ERROR : Could not get Status Code");
+            }
+          slen_varchar(d_stat_code);
+    
+          EXEC SQL UPDATE defects
+                      SET def_date_compl          = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,def_status_code         = :d_stat_code
+                         ,def_are_id_not_found    = :reportid
+                         ,def_date_not_found      = TO_DATE(:i_inspdate,'RRMMDD')
+                         ,def_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                    WHERE substr(def_priority,1,1) != '1'
+                      AND def_superseded_flag = 'N'
+                      AND def_rse_he_id = :heid
+                      AND def_st_chain BETWEEN NVL(:stchain,0) 
+                                           AND NVL(:endchain,0)
+                      AND NVL(def_defect_id,0) < :c_next_defectid
+                      AND def_date_compl IS NULL
+                      AND def_atv_acty_area_code IN(SELECT arl_atv_acty_area_code
+                                                      FROM act_report_lines
+                                                     WHERE arl_are_report_id = :reportid)
+                      AND NOT EXISTS(SELECT wol_def_defect_id
+                                       FROM work_order_lines
+                                      WHERE wol_def_defect_id = DEF_DEFECT_ID)
+                        ;
+          oraerror("PROSECTION PRI - 1");
+          }
+        }   /* ...... [3] */
+      } /* ...... [2] */
+    } /* ...... [1] */
+
+  /* =======================================================================
+   * Calculate percentage of defective roadstuds and set dates appropriately 
+   * If the percentage is < 25 pct then the date due is 31.12.99 else it is  
+   * 3 months from the inspection date.  
+	 *
+	 * When this was written 1990?, 1999 was a long way in the future, 
+	 * but today its in the past so i have set the date once again to 
+	 * be a long way into the future 31-dec-2049			                                    
+   * =======================================================================
+   */
+
+  EXEC SQL select nvl(sum(nvl(d.def_number,1)),0)
+             into :tot_def_rs  
+             from defects d
+            where d.def_rse_he_id          = :heid
+              and d.def_atv_acty_area_code = 'RS'
+              and d.def_mand_adv           = 'A'
+              and d.def_date_compl is null
+              and d.def_superseded_flag    = 'N'
+              and d.def_ity_sys_flag       = 'D' 
+              and not exists(select 'On works order' 
+                               from work_order_lines w
+                              where w.wol_def_defect_id = d.def_defect_id)
+                ;
+  oraerror("sec_qry : cursor 2");
+
+  EXEC SQL select nvl(sum((iit_end_chain - iit_st_chain) / nvl(iit_gap,1)),0) + 1
+             into :tot_rs
+             from inv_items i
+            where i.iit_ity_inv_code = 'RS'
+              and i.iit_rse_he_id    = :heid
+              and i.iit_class        = '2'
+              and i.iit_ity_sys_flag = 'D' 
+              and i.iit_end_date is null
+                ;
+
+  pc_def_trunc=pc_def_rs=tot_def_rs == 0 ? 0 : (int)((float)tot_def_rs)/((float)tot_rs)*100;
+
+  oraerror("PROSECTION - 2");
+
+  exec sql update repairs rep
+              set (rep.rep_date_due
+                  ,rep.rep_local_date_due
+                  ,rep.rep_last_updated_date) =
+                    (select decode(sign(:pc_def_trunc-25),-1,to_date('31-DEC-48','DD-MON-RR'),
+                            add_months(TO_DATE(:i_inspdate,'RRmmdd'),3)),
+                            decode(sign(:pc_def_trunc - 25), -1,
+                            to_date('31-DEC-48','DD-MON-RR'),
+                            add_months(to_date(:i_inspdate,'RRmmdd'),3)),
+                            to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                       from dual)
+            where rep.rep_rse_he_id          = :heid
+              and rep.rep_atv_acty_area_code = 'RS'
+              and rep.rep_action_cat         = 'P'
+              and exists (select 'advisory defect'
+                            from defects def
+                           where def.def_defect_id = rep.rep_def_defect_id
+                             and def.def_mand_adv  = 'A'
+                             and def.def_date_compl IS NULL)
+                             and not exists(select 'On works order'
+                                              from work_order_lines wol
+                                             where wol.wol_def_defect_id=rep.rep_def_defect_id)
+                ;
+  oraerror("PROSECTION - 3");
+
+  if(pc_def_trunc >= 10 && get_rs_option())
+    {
+    printf("\nINFO: Generating Defective Road Stud Report BPR-0565\n\n");
+    printf("INFO: Percentage defective roadstuds on section is %d\n\n",pc_def_rs);
+    i_toa(pc_def_rs,temp);
+    strcpy(pipe_msg,"INFO: Generating Defective Road Stud Report BPR-0565");
+    write_pipe(fi,pipe_msg);
+    strcpy(pipe_msg,"INFO: Percentage defective roadstuds on section is ");
+    strcat(pipe_msg,temp);
+    write_pipe(fi,pipe_msg);
+    fp = def_rs_rep(heid,section,tot_def_rs,tot_rs,pc_def_rs);
+    }
+  /* =====================================================================
+   * Note : This next function shhoud be used for Roadline 350 only. 
+   *        For each complaint record located. Process each complaint. 
+   *        A complaint record should be ndependant of a specific section and
+   *        will in general be appended to the end of the roadline datafile.
+   * =====================================================================
+   */
+  do{   /* ................................... for each complaint record*/
+    status= process_complaints(batchid      /* In,spection batch    */
+                              ,inspector    /* Primary inspector    */
+                              ,inspdate     /* Inspection date      */
+                              ,&nor         /* Number of records    */
+                              ,&noe         /* Number of errors     */
+                              ,&error       /* Error number         */
+                              ,&endsequence);
+    if(status) /* If complaint records have been found then ...    */
+      {
+      *enseq=endsequence;
+      norec+=nor;
+      noerror+=noe;
+      }
+    } while(( error==0 ) && (status==TRUE));
+
+  printerror();                                         /* Print any error */
+
+  fprintf(fi,"\n\nSection Summary\n");
+  fprintf(fi,"_______________\n\n");
+  fprintf(fi,"Link/            Batch  Insp    Insp   Insp  Prim  Sec   St.  End  Input  No. of \n");
+  fprintf(fi,"Section Id       Id     Date    Time   Type  Insp  Insp  Seq  Seq  Recs   Errors Status");
+  fprintf(fi,"\n______________________________________________________________________________\n");
+
+  /* ============================================================================
+   * Check error stack for errors 
+   * ============================================================================
+   */
+
+  norec += 3;
+
+  if(iserror(&no))
+    {
+    *err = TRUE;
+    rollback();
+    puterror();
+    fprintf(fi,"\n%-16s %-6ld %-8s %-5s %-5c %-5d %-5d %-4d %-4d %-6d %-7d Not Loaded \n" 
+              ,section     /* 14 character string */ 
+              ,batchid     /*  7 digit number     */
+              ,inspdate    /*  7 character date   */
+              ,insptime    /*  4 character time   */
+              ,inspflag[0] /*  1 character flag   */
+              ,inspector   /*  4 dig prim inspect */  
+              ,inspector2  /*  4 dig sec  inspect */
+              ,*stseq      /*  4 dig start seqno  */
+              ,*enseq      /*  4 dig end   seqno  */
+              ,norec       /*  6 dig num records  */
+              ,no);        /*  6 dig num errors   */
+    }
+  else
+    {
+    i_reportid           = reportid;
+    i_endchain        = ((endchain == MAXENDCHAIN) ? slength : endchain);    
+    i_inspector       = inspector;       
+    i_inspector2      = inspector2;
+    i_heid            = heid;    
+    i_stchain         = stchain;
+    i_c_next_defectid = c_next_defectid;
+
+    strcpy((char*)i_init.arr,init);
+    slen_varchar(i_init);
+    term_varchar(i_init);
+    strcpy((char*)i_inspflag.arr,inspflag);
+    i_inspflag.len    = 1;
+    strcpy((char*)i_streetname.arr,streetname);
+    slen_varchar(i_streetname);
+    term_varchar(i_streetname);
+    strcpy((char*)i_surface.arr,surface);
+    slen_varchar(i_surface);
+    term_varchar(i_surface);
+    strcpy((char*)i_weather.arr,weather);
+    slen_varchar(i_weather);
+    term_varchar(i_weather);
+  
+    /* ============================================================================
+     * Prior to inserting into the activities report table it would be best if the
+     * user were to have the varuabless displayed in EXDebug Mode.
+     * ============================================================================
+     */
+    
+    if(EXDebug && I_REC) 
+      {
+      printf("Flag        : %s\n",(char*)i_inspflag.arr);  /* OK */
+      printf("Report Id   : %d\n",i_reportid);
+      printf("Work Done   : %s\n",(char*)i_inspdate.arr);
+      printf("Start Chain : %d\n",i_stchain);
+      printf("End   Chain : %d\n",i_endchain);
+      printf("Init        : %s\n",(char*)i_init.arr);
+      printf("Inspector 1 : %d\n",i_inspector);
+      printf("Inspector 2 : %d\n",i_inspector2);
+      printf("Rse he id   : %d\n",i_heid);
+      printf("Date created: %s\n",(char*)full_date.arr);
+      printf("Last Update : %s\n",(char*)full_date.arr);
+      printf("Batch id    : %d\n",i_batchid);
+      printf("Surface     : %s\n",(char*)i_surface.arr);
+      printf("Weather     : %s\n",(char*)i_weather.arr);
+
+      } 
+    
+    EXEC SQL INSERT
+               INTO ACTIVITIES_REPORT
+                   (ARE_MAINT_INSP_FLAG          /* Inspection flag    */
+                   ,ARE_REPORT_ID                /* Report id          */
+                   ,ARE_DATE_WORK_DONE           /* Date work done     */
+                   ,ARE_END_CHAIN                /* End chainage       */
+                   ,ARE_INITIATION_TYPE          /* Initiation type    */
+                   ,ARE_PEO_PERSON_ID_ACTIONED   /* Actioned by        */
+                   ,ARE_PEO_PERSON_ID_INSP2      /* Second inspector   */
+                   ,ARE_RSE_HE_ID                /* Highways id        */
+                   ,ARE_ST_CHAIN                 /* Start chainage     */
+                   ,ARE_INSP_LOAD_DATE           /* Date loaded        */
+                   ,ARE_SCHED_ACT_FLAG           /* Activity flag      */
+                   ,ARE_CREATED_DATE             /* Date created       */
+                   ,ARE_LAST_UPDATED_DATE        /* Date last updated  */
+                   ,ARE_WOL_WORKS_ORDER_NO       /* Works order no.    */
+                   ,ARE_BATCH_ID                 /* Batch id           */
+                   ,ARE_WEATHER_CONDITION        /* Weather condition  */
+                   ,ARE_SURFACE_CONDITION        /* Road Surface cond. */
+                   )                             /* Street name        */
+             VALUES(:i_inspflag:ii_inspflag
+                   ,:i_reportid
+                   ,to_date(:i_inspdate:ii_inspdate,'RRmmdd')
+                   ,:i_endchain:ii_endchain
+                   ,:i_init:ii_init
+                   ,:i_inspector:ii_inspector
+                   ,:i_inspector2:ii_inspector2
+                   ,:i_heid:ii_heid
+                   ,:i_stchain:ii_stchain
+                   ,sysdate
+                   ,'Y'
+                   ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                   ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                   ,0
+                   ,:i_batchid:ii_batchid
+                   ,:i_weather:ii_weather
+                   ,:i_surface:ii_surface
+                   );
+    oraerror("PROSECTION - 1");
+
+    fprintf(fi,"\n%-16s %-6ld %-8s %-5s %-5c %-5d %-5d %-4d %-4d %-7d Loaded \n"
+              , section
+              , batchid
+              , inspdate
+              , insptime
+              , inspflag[0]
+              , inspector
+              , inspector2
+              , *stseq
+              , *enseq
+              , norec
+              , noerror);
+
+    /* ============================================================================
+     * If auto safety inspections have been selected and the inspection type is
+     * Detailed and if the road type is Local then generate the safety inspection.
+     * This should only be done for Local roads since the DOT will not recognise a
+     * inspection unless the actual inspection had taken place, in this instance
+     * we are stating that a safety inspection was carried out because a detailed
+     * inspection of the road had been performed.
+     * ===========================================================================
+     */
+
+    if(AUTO_SAFETY && (sys_flag == 'L') && (rmcaseup(inspflag[0]) == 'D'))
+      {
+      i_reportid = getnextid("ARE_REPORT_ID",TRUE); 
+      EXEC SQL INSERT
+                 INTO activities_report
+                     (are_maint_insp_flag
+                     ,are_report_id
+                     ,are_date_work_done
+                     ,are_end_chain
+                     ,are_initiation_type
+                     ,are_peo_person_id_actioned
+                     ,are_peo_person_id_insp2
+                     ,are_rse_he_id
+                     ,are_st_chain
+                     ,are_insp_load_date
+                     ,are_sched_act_flag
+                     ,are_created_date
+                     ,are_last_updated_date 
+                     ,are_wol_works_order_no
+                     ,are_batch_id
+                     ,are_weather_condition   
+                     ,are_surface_condition  )
+               VALUES('S'
+                     ,:i_reportid 
+                     ,to_date(:i_inspdate:ii_inspdate,'RRmmdd')
+                     ,:i_endchain:ii_endchain
+                     ,:i_init:ii_init
+                     ,:i_inspector:ii_inspector
+                     ,:i_inspector2:ii_inspector2
+                     ,:i_heid:ii_heid
+                     ,:i_stchain:ii_stchain
+                     ,sysdate
+                     ,'Y'
+                     ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                     ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                     ,0
+                     ,:i_batchid:ii_batchid
+                     ,:i_weather:ii_weather
+                     ,:i_surface:ii_surface)
+                    ;
+      oraerror("PROSECTION - 2");
+    
+      EXEC SQL INSERT
+                 INTO act_report_lines
+                     (arl_not_seq_flag
+                     ,arl_atv_acty_area_code
+                     ,arl_are_report_id
+                     ,arl_act_status
+                     ,arl_report_id_part_of
+                     ,arl_created_date
+                     ,arl_last_updated_date)
+               VALUES(''
+                     ,'SI'
+                     ,:i_reportid
+                     ,'C'
+                     ,''
+                     ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS') 
+                     ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS'))
+                    ;
+      oraerror("PROSECTION - 3");
+      }
+    
+    /* ============================================================================
+     * Set the section last inspected date to that of the date of inspection,
+     * obtained from the 'G' record within the inspection file for the specified 
+     * section. This function should be available from within the util file and
+     * should have the highhways element and the date passed ( in the format of
+     * YYMMDD )
+     * This function should be available to both RMMS and NON-RMMS users.
+     * ============================================================================
+     */
+    if(update_sect_last_updated(heid,inspdate)!=SUCCESS)
+      {
+      fprintf(fi,"\nWarning : Unable To Update Section Last Inspected Date\n\n");
+      /* Commented out as only a warning is required.
+      pusherror(enseq,8214);          /o Unable to locate specified section o/
+      noe++;
+      */  
+      }
+    killloadrows(*stseq,*enseq,error);
+    }
+
+  if(fflush(fi)==EOF)
+    {
+    printf("ERROR: Unable to flush information to log file BPR-8204");
+    write_pipe(NULL,"ERROR: Unable to flush information to log file BPR-8204");
+	  EXEC SQL ROLLBACK WORK;
+	  jobend(EXJobId,1,"Unable to flush information to log file BPR-8204");
+	  EXEC SQL COMMIT WORK;
+	  dblogoff();
+    }
+
+  return(TRUE);
+
+} /* prosection */
+
+BOOLEAN get_rs_option()
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+    varchar create_rs_rep[2];
+  EXEC SQL END DECLARE SECTION;
+
+  EXEC SQL WHENEVER SQLERROR   GOTO err;
+  EXEC SQL WHENEVER SQLWARNING GOTO err;
+  EXEC SQL WHENEVER NOT FOUND  GOTO err;
+
+  EXEC SQL SELECT HOP_VALUE
+             INTO :create_rs_rep
+             FROM HIG_OPTIONS
+            WHERE HOP_ID='USERSREP'
+              AND HOP_PRODUCT='MAI'
+                ;
+
+  oraerror("get_rs_option");
+
+  if(create_rs_rep.arr[0] == 'Y')
+    return(TRUE);
+  else
+    return(FALSE);
+
+err:
+  EXEC SQL WHENEVER SQLERROR do sql_err("get_rs_option");
+  return(FAIL);
+}

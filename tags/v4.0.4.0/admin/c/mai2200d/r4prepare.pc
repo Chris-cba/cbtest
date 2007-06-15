@@ -1,0 +1,1243 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4prepare.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4prepare.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+/* ===========================================================================
+ *
+ *  Program      : r4prepare.pc 
+ *
+ * Author       : H.Buckley 
+ * Version      : 1.0
+ * Date         : 02-01-1996 
+ * Description  : This program has been designed to extract a series of
+ *                code_values into an array so that the program may use this 
+ *                array to validate coded data obtained from an ASCII flat file.
+ *                The array should be dynamically defined so that it deals
+ *                with any number of codes from the system. For this purpose
+ *                the program will have to make use of memory management
+ *                functions such as malloc, calloc and realloc.
+ *                The value MAXCODES is defined withhin the rmms.h file and
+ *                this will be used as the initial size to the program.
+ *
+ *   DATE         : 01-SEP-97                                           
+ *   CHANGED BY   : Garry Fletcher                                      
+ *   DESCRIPTION  : 1.7 > 2.1 Database Conversion
+ *
+ *   DATE         : 31-10-97
+ *   CHANGED BY   : G Fletcher
+ *   DESCRIPTION  : client-server conversion
+ *
+ * The code_values that are selected into the code_values array are as follows:
+ *                   
+ *                1. Non-rechargeable organisations     Rl
+ *                2. Rechargeable organisations         Rl 
+ *                3. Standard item sub sections         Rl
+ *                4. Defect priorities                  Rl
+ *                5. Initiation types                   BOTH 
+ *                6. Survey method                      Rl
+ *                7. Complaint type                     Rl
+ *                8. Complaint source                   Rl
+ *                9. Comment Types                      Rl
+ *               10. People initials                    BOTH 
+ *               11. Document Types                     Rl
+ *               12. Road Surface Condition             BOTH    
+ *               13. Weather Condition                  BOTH 
+ *               14. Complaint Type Document
+ *               15. Initial   defect status code       Both
+ *               16. Completed defect status code       Both
+ *               17. Superseded defect status code      Both
+ *               18. ?????????? defect status code      Both
+ *               19. Defect response category           Enhanced 
+ *
+ *  This function should all be executed for the Roadline 350 software but
+ *  only parts of this should be eecuted otherwise.
+ *
+ *  This function is executed after the first 'G' ( header ) record has been
+ *  located. The position of the execution of this function is critical since
+ *  the program requires to know the inspection date and the product used for
+ *  inspection ( ie. standard inspection file or Roadline 350 ).
+ *
+ *  VMAXCODES := This value represente the size of the array and the number
+ *               of code elements. This value is initially set at MAXCODES
+ *               whijch is a value defined within 'rmms.h'. The VMAXCODES
+ *               value should be set to MAXCODES initially within 'main' and
+ *               the variable should then be used to setup the initial code
+ *               array.   
+ *               If there are more codes selected than can fit into the array
+ *               then the prepare function should fail and an error code 
+ *               should be returned to inform main that there were too many
+ *               codes selected and the main function should then reset the
+ *               size of the array to VMAXCODES+50 .
+ *               Ideally, the value of MAXCODES should be replaced by a system
+ *               option. If the system option value is exceeded then the 
+ *               value should be dynamically updated and thus the initial
+ *               metadata specified value at each site may be overwritten
+ *               with a site specific value.
+ *
+ * Functions         Description
+ * ================= ========================================================
+ * prepare()         Main code preparation function. 
+ * display_records() Display the number of queried records. ( EXDebugging ) 
+ * display_array()   Display the code array values.         ( EXDebugging )
+ * get_org_units()   Obtain organisational unit values.     
+ * get_init_condition() Obtain initiation,weather/surface condition codes. 
+ * get_std_items()   Obtain all SISS codes.
+ * get_people()      Obtain all of the people id's ( inspectors ).
+ * get_doc_types()   Obtain document types for Comments and Complaints.
+ * allocate_array()  Allocate sufficient memory for the codes array.
+ * reallocate_aray() Reallocate memory for array.
+ *
+ *
+ * Status Codes      Description 
+ * ================= =======================================================
+ * 0                 Failure
+ * 1                 Success
+ * 998               Insufficient memory or memory allocation error.
+ * 999               Insufficient array size.
+ *
+ * System Options
+ * ==============
+ * The following system option values are obtained within this program.
+ *
+ * USEDEFCHNL : Use defect chainage value on Local roads.
+ * USEDEFCHND : Use defect chainage values on DTP roads.
+ * USETREMODD : Use treatment models for DTP  roads.
+ * USETREMODL : Use treatment models for Local roads.
+ * GENAUTOSAF : Generate safety inspections automatically ( only for Local )
+ * TREMODLEV  : Obtain the treatment model level value.
+ *
+ * ============================================================================
+ */
+
+#include <stdio.h>
+#include "rmms.h"
+
+/* ====================[ External References  ] ========================== */
+extern PREPARED;                           /* External Array Prep. boolean */ 
+extern LOCAL_CHAINAGE;                     /* External Local Chainage      */
+extern DTP_CHAINAGE;                       /* External DTp Chainage        */
+extern TREAT_MODELD;                       /* Dot   treatment model usage  */
+extern TREAT_MODELL;                       /* Local treatment model usage  */
+extern TREMODLEV;                          /* Treatment model level        */
+extern AUTO_SAFETY;                        /* Generaate safety inspactions */
+extern REPSETPERD;
+extern short EXDebug;
+extern char pipe_msg[254];
+/* =================== [ Structure Definition ] ========================== */
+
+struct code_types
+      { int        code_type;               /* Code type                    */
+        char       code_value[10];          /* Code value                   */
+        long  int  code_code_value;         /* Secondary code value         */
+      };
+
+/* =================== [ Function Prototypes ] =========================== */ 
+
+void display_array();                      /* Display the codes from array */ 
+BOOLEAN allocate_array();                  /* Allocate memory for array    */
+BOOLEAN reallocate_array();                /* Reallocate memory for array  */
+
+/* =================== [ Declared variables  ] =========================== */ 
+
+EXEC SQL BEGIN DECLARE SECTION;
+int        rmms_flag                       /* Database type                */
+          ,rec_type[50]                    /* Record type                  */
+;
+varchar    full_date[19]                   /* The current date             */
+          ,userid[66]                      /* User logon id                */
+          ,oun_unit_code[50][11]           /* Org unit code                */
+          ,siss_id[50][4]                  /* Standard item identifier     */
+          ,siss_name[50][41]               /* Standard item name           */
+          ,rba_ref_value[50][21]           /* Ref base value               */
+          ,peo_initials[50][4]             /* Person initials              */
+          ,peo_name[50][40]                /* Person name                  */
+          ,peo_person_id[50][10]           /* Person identification        */
+          ,dtp_code[50][5]                 /* Comment/Complaint type       */
+          ,v_status_code[50][11]           /* Status code                  */
+          ,v_date[7]                       /* Current in,spection date     */
+;
+
+short     oun_unit_codei[50]               /* Unit code indicator          */
+         ,siss_idi[50]                     /* Standard item id indicator   */
+         ,peo_namei[50]                    /* Person name indicator        */
+         ,peo_person_idi[50]               /* Person id indicator          */
+         ,peo_initialsi[50]                /* Person initials indicator    */
+         ,dtp_codei[50]                    /* Comment/complaint indicator  */
+         ,oun_org_idi[50]                  /* Organisational unit indicator*/
+         ,i_code[50]
+         ,i_value                          /* System option value indicator*/
+;
+long int  oun_org_id[50]                   /* Organisational unit id       */
+         ,tremodlev                        /* Treatment model level        */   
+;
+
+EXEC SQL END DECLARE SECTION;
+
+int        status=0                       /* Program status indicator     */
+          ,maxunits                       /* Maximum number of org units  */
+;
+struct code_types code_values[MAXCODES]   /* Array of type code_types     */
+                 ,*c_ptr                  /* Array pointer                */
+;
+
+char       *strchr();                                                       
+char       v_value[2];                     /* System option value          */
+char       oun_unit_code_str[50]          /* Unit code string variable    */
+          ,*d_ptr                         /* Pointer to specified data    */
+;
+char GBErrMsg[255];
+
+/* ==========================================================================
+ * Standard I/O definition header file.                      
+ * ==========================================================================
+ */
+
+EXEC SQL INCLUDE sqlext.h;
+/* ==========================================================================
+ * Function : Prepare
+ * Purpose  : This function should prepare an array that will be used for the
+ *            validation of various codes used within the system. Ths codes
+ *            array will be defined as a structural array which will be 
+ *            allocated memory dynamically as and when required.
+ *===========================================================================
+ */
+int prepare(inspdate)
+char inspdate[7];
+ {
+
+  static     FILE *fp;        
+  int        i;
+  char       d_data[20];
+
+
+/* ===========================================================================
+ * Copy the passed inspection date and end terminate the variable value.
+ * ===========================================================================
+ */
+
+  strcpy(v_date.arr,inspdate);          
+  slen_varchar(v_date);
+  term_varchar(v_date);
+
+  if (PREP)
+     printf("The value of the passed inspection date is : %s\n",v_date.arr);
+
+  if (( status=allocate_array())!=SUCCESS)
+  {
+         write_pipe(NULL,"allocate_array() returned FAIL status.");
+         write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 EXEC SQL ROLLBACK WORK;
+	 jobend(EXJobId,1,"allocate_array() return fail");
+	 EXEC SQL COMMIT WORK;
+	 dblogoff();
+     exit(FAIL);
+  }
+
+     if ( ( status = get_org_units(fp) ) != SUCCESS ) 
+     {                                     /* Obtain Rechargeable Organisation*/
+       if ( status == 999 )                /* Insufficient array size.        */
+       {
+         write_pipe(NULL,"get_org_units() returned 999 status.");
+         write_pipe(NULL,"This is a fatal error and the module has aborted.");
+         return(status);                   /* Return back to main             */
+       }
+       else
+       {
+                write_pipe(NULL,"get_org_units() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_org_units() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+        exit(FAIL);
+       }
+     }
+                           
+     if ( ( status = get_std_items(fp) ) != SUCCESS ) 
+     {                                     /* Obtain Standard Item Sub-Section*/
+       if ( status == 999 )                /* Insufficient array size.        */
+       {
+         write_pipe(NULL,"get_std_items() returned 999 status.");
+         write_pipe(NULL,"This is a fatal error and the module has aborted.");
+         return(status);
+       }
+       else
+       {
+                write_pipe(NULL,"get_std_items() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_std_items() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+          exit(FAIL);
+       }
+     }
+  
+     if ( ( status = get_rba_roadline(fp) ) != SUCCESS ) 
+     {                                     /* Obtain Defect Priorities       */ 
+       if ( status == 999 )
+       {
+         write_pipe(NULL,"get_rba_roadline() returned 999 status.");
+         write_pipe(NULL,"This is a fatal error and the module has aborted.");
+         return(status);
+       }
+       else 
+       {
+                write_pipe(NULL,"get_rba_roadline() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_rba_roadline() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+          exit(FAIL);                         /* Obtain Survey Method        */
+       }
+     }                                     /* Obtain Complaint Source        */
+                                           /* Obtain Document Categories     */
+     
+     if ( ( status = get_people(fp) ) != SUCCESS ) 
+     {                                     /* Obtain People records.         */
+       if ( status == 999 )
+       {
+          write_pipe(NULL,"get_people() returned 999 status.");
+          write_pipe(NULL,"This is a fatal error and the module has aborted.");
+          return(status);
+       }
+       else
+       {
+                write_pipe(NULL,"get_people() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_people() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+          exit(FAIL);
+       }
+     }
+  
+     if ( ( status = get_doc_types(fp) ) != SUCCESS ) 
+     {                                     /* Obtain Document Type Codes.    */
+       if ( status == 999 )
+       {
+          write_pipe(NULL,"get_doc_types() returned 999 status.");
+          write_pipe(NULL,"This is a fatal error and the module has aborted.");
+         return(status);
+       }
+       else
+       {
+                write_pipe(NULL,"get_doc_types() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_doc_types() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+         exit(FAIL);
+       }
+     }
+     
+     if (( status = get_status_codes(fp))!=SUCCESS)
+     {                                     /* Obtain DEFECT status code     */
+       if (status==999)
+       {
+          write_pipe(NULL,"get_status_codes() returned 999 status.");
+          write_pipe(NULL,"This is a fatal error and the module has aborted.");
+          return(status);
+       }
+       else
+       {
+                write_pipe(NULL,"get_status_codes() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_status_codes() return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+          exit(FAIL);
+       }
+    }
+
+  if (( status = get_system_option_value(fp))!=SUCCESS)
+  {
+                write_pipe(NULL,"get_system_option_value() returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"get_system_option_value return fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+    exit(FAIL);
+  }
+    
+  if (PREP)
+     display_array(); 
+
+                                         /* Once the array has been loaded   */
+                                         /* then the prepared variable should*/
+  PREPARED=TRUE;                         /* be set so that the array prepara-*/ 
+                                         /* tion occurs only at the start of */
+                                         /* the program ( or at the first G  */
+                                         /* record type )                    */
+
+   return(SUCCESS);
+}
+
+/*
+ *==============================================================================
+ * Function : display_records
+ *
+ * Description : This function should be used to display the selected records
+ *               for a s.elected record type.
+ *==============================================================================
+ */
+
+int display_records(r_type,f_n,c_c,n_r )
+int *r_type
+   ,*f_n
+   ,*c_c
+   ,*n_r
+;
+{
+    if (PREP)
+    {                            
+       puts("");
+       printf("\n[%d] Type Records\n",r_type);
+	   printf("Fin_yn : %d\n",f_n);
+	   printf("c_count: %d\n",c_c);
+	   printf("norecs : %d\n",n_r);
+	   puts("");
+    } 
+    return(SUCCESS);
+}
+
+       
+/*
+ *=============================================================================
+ * This function should provide the user wit the facility to view the entire code array
+ * from top to bottom.
+ *=============================================================================
+ */       
+void display_array()
+{
+   int i;
+
+   puts("");
+   printf("Displaying Array\n");
+   printf("================\n");
+   puts("");
+   puts("Code Type  Code Value.......... Code Code Code");                               
+                               
+   c_ptr=&code_values[0];
+
+   for (i=0;i<=maxunits;i++)
+   {
+     printf("%-10d  %-20s %10d\n",c_ptr->code_type
+                                       ,c_ptr->code_value
+                                       ,c_ptr->code_code_value
+                                       );
+    *c_ptr++;                                  
+   }
+   puts("");
+}
+
+
+/* ===========================================================================
+ * Function: get_org_units
+ * Purpose : To obtain all organisational units for Notifiable and
+ *           Rechargeable  organisation types.        
+ * ===========================================================================
+ */
+
+int get_org_units(fp)
+FILE *fp;
+{
+ long    norecs = 0
+	    ,i      = 0
+        ,t      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;     
+
+    if (PREP)
+        printf("\nExecuting Get_org_units\t\t....EXDebugging");
+
+    EXEC SQL DECLARE C1 CURSOR FOR
+           SELECT   oun_unit_code
+                   ,oun_org_id
+                   ,decode(oun_org_unit_type,'NO',1
+                                            ,'RE',2,0)
+           FROM     org_units 
+           WHERE    to_date(nvl(:v_date,sysdate),'RRMMDD')
+           BETWEEN  nvl(oun_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+           AND      nvl(oun_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+           AND      oun_org_unit_type   in ('NO','RE') 
+           ORDER BY oun_org_unit_type 
+                   ,oun_unit_code;
+            
+	EXEC SQL OPEN C1;
+
+    while (! fin_yn )
+    {
+
+	    EXEC SQL FETCH C1 INTO :oun_unit_code:oun_unit_codei
+                              ,:oun_org_id:oun_org_idi
+                              ,:rec_type;
+                                                  
+                                           
+        fin_yn  = (sqlca.sqlcode==1403 ) ? 1 : 0 ;  
+	    c_count = sqlca.sqlerrd[2] -norecs;       
+	    norecs  = sqlca.sqlerrd[2];                                 
+      
+       if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+
+       if (PREP)	
+       		display_records(1,fin_yn,c_count,norecs);
+       
+       c_ptr=&code_values[t]; 
+    
+	   for ( i=0; i < c_count; ++i )
+	   {
+         term_varchar(oun_unit_code[i]);
+         strcpy(c_ptr->code_value,oun_unit_code[i].arr);
+         c_ptr->code_code_value=oun_org_id[i];
+         c_ptr->code_type=rec_type[i];
+         t++;
+         *c_ptr++;
+       }
+    }
+
+	EXEC SQL CLOSE C1;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+
+/* ===========================================================================
+ * Function: get_init_condition
+ *                                                                          
+ * Obtain all 'B' type records from the database and format them into a     
+ * buffer ready to be output to a specified datafile.                       
+ *                                                                          
+ * 'B' type records are initiation type records. 
+ * These records are required for both inspection products.
+ *
+ * ===========================================================================
+ */
+
+int get_init_condition(fp)
+FILE *fp;
+{
+ long    norecs = 0
+	    ,i      = 0
+        ,t      = 0
+	    ,fin_yn = 0
+   	    ,c_count= 0;     
+
+    if (PREP)
+        printf("\nExecuting Get_init_condition\t\t....EXDebugging");
+
+    EXEC SQL DECLARE C9 CURSOR FOR
+    SELECT   hco_code 
+            ,decode(hco_domain,'INITIATION_TYPE'  ,5
+                              ,'SURFACE_CONDITION',12
+                              ,'WEATHER_CONDITION',13,0)
+    FROM     hig_codes
+    WHERE    hco_domain in ('INITIATION_TYPE'
+                           ,'WEATHER_CONDITION'
+                           ,'SURFACE_CONDITION')
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    ORDER BY hco_domain
+            ,hco_code;
+
+    EXEC SQL OPEN C9;
+
+    while (!fin_yn)
+    {
+	  EXEC SQL FETCH C9 INTO :rba_ref_value
+                            ,:rec_type;
+
+	  fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	  c_count = sqlca.sqlerrd[2] -norecs;       
+	  norecs  = sqlca.sqlerrd[2];
+
+     if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+
+   if (PREP)
+      display_records(5,fin_yn,c_count,norecs);
+
+    c_ptr=&code_values[t];
+	for ( i=0; i < c_count; ++i )
+	{
+      term_varchar(rba_ref_value[i]);
+      c_ptr->code_type=rec_type[i];
+      strcpy(c_ptr->code_value,rba_ref_value[i].arr);
+      c_ptr->code_code_value=0;
+      t++;          
+     *c_ptr++;
+    }
+    }
+
+	EXEC SQL CLOSE C9;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+/* ===========================================================================
+ * Function: get_std_items
+ *                                                                         
+ * Obtain all 'C' type records from the database and format them into a    
+ * buffer ready to be output to a specified datafile.                      
+ *                                                                        
+ * ===========================================================================
+ */
+
+int get_std_items(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+        ,t      = maxunits+1 
+	    ,fin_yn = 0
+   	    ,c_count= 0;                
+
+    if (PREP)
+        printf("\nExecuting Get_std_items\t\t....EXDebugging");
+
+    EXEC SQL DECLARE C3 CURSOR FOR
+    SELECT   siss_id
+            ,substr(siss_name,1,40)
+            ,3
+    FROM     standard_item_sub_sections 
+    WHERE    to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(siss_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(siss_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      siss_id > '1';  
+
+	EXEC SQL OPEN C3;
+
+    while (!fin_yn) 
+    {
+
+	    EXEC SQL FETCH C3 INTO :siss_id
+	                          ,:siss_name
+                              ,:rec_type;
+  
+	    fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	    c_count = sqlca.sqlerrd[2] -norecs;       
+	    norecs  = sqlca.sqlerrd[2];
+
+        if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+
+       if (PREP) 
+            status=display_records(3,fin_yn,c_count,norecs);
+    
+       c_ptr=&code_values[t];
+	   for ( i=0; i < c_count; ++i )
+	   {
+         term_varchar(siss_id[i]);
+         term_varchar(siss_name[i]);
+         c_ptr->code_type=rec_type[i];
+         strcpy(c_ptr->code_value,siss_id[i].arr);
+         c_ptr->code_code_value=0;
+         t++;
+         *c_ptr++;
+       }
+    }
+
+	EXEC SQL CLOSE C3;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+
+/* =========================================================================
+ * Function: get_rba_roadline
+ *                                                                          
+ * Obtain all 'D' type records from the database and format them into a     
+ * buffer ready to be output to a specified datafile.                       
+ *                                                                          
+ * =========================================================================
+ */
+
+int get_rba_roadline(fp)
+FILE *fp;
+{
+    int  norecs = 0
+	    ,i      = 0
+        ,t      = maxunits+1
+	    ,fin_yn = 0
+   	    ,c_count= 0;                       
+
+    if (PREP)
+        printf("\nExecuting Get_D_type_records\t\t....EXDebugging");
+
+    EXEC SQL DECLARE C4 CURSOR FOR
+    SELECT   hco_code
+            ,4
+    FROM     hig_codes
+    WHERE    hco_domain  = 'DEFECT_PRIORITIES'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,5
+    FROM     hig_codes
+    WHERE    hco_domain  = 'INITIATION_TYPE'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,6
+    FROM     hig_codes
+    WHERE    hco_domain  = 'SURVEY_METHOD'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,7
+    FROM     hig_codes
+    WHERE    hco_domain  = 'COMPLAINT_TYPE'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,8
+    FROM     hig_codes
+    WHERE    hco_domain  = 'COMPLAINT_SOURCE'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,9
+    FROM     hig_codes
+    WHERE    hco_domain  = 'DOC_CATEGORIES'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,12
+    FROM     hig_codes
+    WHERE    hco_domain = 'SURFACE_CONDITION'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,13
+    FROM     hig_codes
+    WHERE    hco_domain = 'WEATHER_CONDITION'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    UNION
+    SELECT   hco_code
+            ,19
+    FROM     hig_codes
+    WHERE    hco_domain = 'DEFECT_RESPONSE_CAT'
+    AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hco_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hco_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    ORDER BY 2,1; 
+
+	EXEC SQL OPEN C4;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C4 INTO :rba_ref_value
+                          ,:rec_type;
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];
+
+    if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+
+   if (PREP)
+       display_records(4,fin_yn,c_count,norecs);
+
+    *c_ptr=code_values[t];
+	for ( i=0; i < c_count; ++i )
+	{
+      term_varchar(rba_ref_value[i]);
+      c_ptr->code_type=rec_type[i];
+      strcpy(c_ptr->code_value,rba_ref_value[i].arr);
+      c_ptr->code_code_value=0;
+      t++;          
+     *c_ptr++;
+    }
+    }
+
+	EXEC SQL CLOSE C4;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+
+/* =========================================================================
+ * Function: get_people
+ *                                                                          
+ * Obtain all 'J' type records from the database and format them into a     
+ * buffer ready to be output to a specified datafile.                       
+ *                                                                          
+ * =========================================================================
+ */
+
+int get_people(fp)
+FILE *fp;
+{
+    int  norecs  = 0
+	    ,i       = 0
+        ,t       = maxunits+1
+	    ,fin_yn  = 0
+   	    ,c_count = 0;
+                                               
+    if (PREP)
+        printf("\nExecuting Get_people\t\t.... EXDebugging");
+
+    EXEC SQL DECLARE C10 CURSOR FOR
+    SELECT   hus_initials
+            ,hus_name
+            ,hus_user_id
+            ,10
+    FROM     hig_users
+    WHERE    to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(hus_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(hus_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      hus_user_id > 0;
+    
+/* ============================================================================
+ * The order in which these records are stored in the array is not important
+ * to the query. The replacement of the 'Order By' clause with a 'Where >' 
+ * should ensure that the retrieved rows are returned in the correct order 
+ * providing that an index on the person id is in place.
+ * ============================================================================
+ */      
+
+	EXEC SQL OPEN C10;
+
+    while (!fin_yn)
+    {
+	EXEC SQL FETCH C10 INTO :peo_initials:peo_initialsi
+	                       ,:peo_name:peo_namei
+	                       ,:peo_person_id:peo_person_idi
+                           ,:rec_type;
+
+	fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	c_count = sqlca.sqlerrd[2] -norecs;       
+	norecs  = sqlca.sqlerrd[2];
+
+    if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+
+   if (PREP)
+	display_records(10,fin_yn,c_count,norecs);
+
+    c_ptr=&code_values[t];
+	for ( i=0; i < c_count; ++i )
+	{
+      term_varchar(peo_initials[i]);
+      term_varchar(peo_name[i]);         
+      term_varchar(peo_person_id[i]);
+      c_ptr->code_type=rec_type[i];      
+      strcpy(c_ptr->code_value,peo_initials[i].arr);
+      c_ptr->code_code_value=atoi(peo_person_id[i].arr);
+      t++;   
+      *c_ptr++;
+    }
+    }
+	EXEC SQL CLOSE C10;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+/* =========================================================================
+ * Function to display Oracle errors. Display only NOT print to file.
+ * ========================================================================= 
+ */
+
+int d_sql_err(func)
+char *func;
+ {
+   char temp[10];
+
+  printf("\n%.70s (%d)\n",sqlca.sqlerrm.sqlerrmc, -sqlca.sqlcode);
+  printf("\nError Occurred in function :%s \n",func);
+
+  strcpy(pipe_msg,sqlca.sqlerrm.sqlerrmc);
+  strcat(pipe_msg,"(");
+  i_toa(-sqlca.sqlcode,temp);
+  strcat(pipe_msg,temp);
+  strcat(pipe_msg,")");
+  write_pipe(NULL,pipe_msg);
+  strcpy(pipe_msg,"Error Occurred in function : ");
+  strcat(pipe_msg,func);
+  write_pipe(NULL,pipe_msg);
+
+ }
+
+/* ===========================================================================
+ * Function : reallocate_array()
+ * Purpose  : This function should attempt to obtain memory for an existing 
+ *            array and should take as its input parameters an initial array
+ *            pointer and should return a new array pointer as the second 
+ *            argument. The function should return a BOOLEAN value to denote
+ *            that the function was successful.
+ * ===========================================================================
+*/ 
+BOOLEAN reallocate_array()
+{
+   return(SUCCESS);
+}
+
+/* ===========================================================================
+ * Function : allocate_array()
+ * Purpose  : This function should attempt to obtain memory for an existing 
+ *            array and should take as its input parameters an initial array
+ *            pointer and should return an array pointer as the second argument
+ *            The function should return a BOOLEAN value to denote that the 
+ *            function was successful.
+ * ===========================================================================
+*/ 
+BOOLEAN allocate_array()
+{
+   char *s;
+
+   if ((s=(char *)calloc(MAXCODES,sizeof(code_values)))==NULL)
+   {
+                write_pipe(NULL,"calloc memory alloc returned FAIL status.");
+                write_pipe(NULL,"This is a fatal error and the module has aborted.");
+	 	EXEC SQL ROLLBACK WORK;
+	 	jobend(EXJobId,1,"calloc memory alloc fail");
+	 	EXEC SQL COMMIT WORK;
+	 	dblogoff();
+      exit(1);
+   }
+   else
+   {
+     if (PREP)
+        printf("The total memory allocated to array is : %d\n",
+                                            MAXCODES*sizeof(code_values));
+   }
+   return(SUCCESS);
+}
+
+/* =========================================================================
+ * Function: get_doc_types                                                 *
+ *                                                                         *
+ * Obtain all document type records where the dtp allow complaints.        *
+ * Obtain all document type records where the dtp allow comments.          *
+ *                                                                         *
+ * =========================================================================
+ */
+
+int get_doc_types(fp)
+FILE *fp;
+{
+    int  norecs  = 0
+	    ,i       = 0
+        ,t       = maxunits+1
+	    ,fin_yn  = 0
+   	    ,c_count = 0;
+                                               
+    if (PREP)
+        printf("\nExecuting Get_document_type_records\t\t....EXDebuggng");
+
+
+    EXEC SQL DECLARE C11 CURSOR FOR
+    SELECT   dtp_code 
+            ,11
+    FROM     doc_types 
+    WHERE    to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(dtp_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(dtp_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      dtp_allow_comments='Y'
+    UNION
+    SELECT   dtp_code
+            ,13
+    FROM     doc_types
+    WHERE    to_date(nvl(:v_date,sysdate),'RRMMDD')
+    BETWEEN  nvl(dtp_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      nvl(dtp_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+    AND      dtp_allow_complaints='Y'
+    ORDER BY 2,1; 
+
+	EXEC SQL OPEN C11;
+
+    while (!fin_yn)
+    {
+	   EXEC SQL FETCH C11 INTO :dtp_code:dtp_codei
+                              ,:rec_type;
+
+	   fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ; 
+	   c_count = sqlca.sqlerrd[2] -norecs;       
+	   norecs  = sqlca.sqlerrd[2];
+
+       if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+   
+   if (PREP)
+       display_records(11,fin_yn,c_count,norecs);
+
+    c_ptr=&code_values[t];
+	for ( i=0; i < c_count; ++i )
+	{
+      term_varchar(dtp_code[i]);
+      c_ptr->code_type=rec_type[i];      
+      strcpy(c_ptr->code_value,dtp_code[i].arr);
+      c_ptr->code_code_value=0;
+      t++;   
+      *c_ptr++;
+    }
+    }
+	EXEC SQL CLOSE C11;
+
+    maxunits=t-1;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+
+
+/* ===========================================================================
+ * Function: check_maxcodes() 
+ * Purpose : To ensure that the codes fetched from the database does not   
+ *           exceed the number of rows in the array.
+ * ===========================================================================
+ */
+ int check_maxcodes(returned_rows)
+ {
+     if (returned_rows<=MAXCODES )
+       return(SUCCESS);
+     else
+       return(FALSE);
+ }
+
+
+/* ============================================================================
+ * Function : get_status_codes(fp)
+ * Purpose  : Obtain all status codes defined for specified domains.
+ * ============================================================================
+ */
+int get_status_codes(fp)
+FILE *fp;
+{
+    int  norecs  = 0
+	    ,i       = 0
+        ,t       = maxunits+1
+	    ,fin_yn  = 0
+   	    ,c_count = 0;
+
+     EXEC SQL DECLARE C12 CURSOR FOR
+     SELECT   hsc_status_code
+             ,15
+     FROM     hig_status_codes   
+     WHERE    hsc_domain_code    = 'DEFECTS'
+     AND      hsc_allow_feature1 = 'Y'
+     AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+     BETWEEN  nvl(hsc_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     AND      nvl(hsc_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     UNION
+     SELECT   hsc_status_code
+             ,16
+     FROM     hig_status_codes
+     WHERE    hsc_domain_code    = 'DEFECTS'
+     AND      hsc_allow_feature4 = 'Y'
+     AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+     BETWEEN  nvl(hsc_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     AND      nvl(hsc_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     UNION
+     SELECT   hsc_status_code
+             ,17
+     FROM     hig_status_codes
+     WHERE    hsc_domain_code    = 'DEFECTS'
+     AND      hsc_allow_feature6 = 'Y'
+     AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+     BETWEEN  nvl(hsc_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     AND      nvl(hsc_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     UNION
+     SELECT   hsc_status_code
+             ,18
+     FROM     hig_status_codes
+     WHERE    hsc_domain_code    = 'DEFECTS'
+     AND      hsc_allow_feature8 = 'Y'
+     AND      to_date(nvl(:v_date,sysdate),'RRMMDD')
+     BETWEEN  nvl(hsc_start_date  ,to_date(nvl(:v_date,sysdate),'RRMMDD'))
+     AND      nvl(hsc_end_date    ,to_date(nvl(:v_date,sysdate),'RRMMDD'));
+
+     EXEC SQL OPEN C12;
+
+     while (!fin_yn)
+     {
+          EXEC SQL FETCH C12 INTO :v_status_code:i_code
+                                 ,:rec_type;
+
+          fin_yn  = (sqlca.sqlcode == EOFTCH) ? 1 : 0 ;
+          c_count = sqlca.sqlerrd[2] -norecs;
+          norecs  = sqlca.sqlerrd[2];
+
+          if (check_maxcodes(t+c_count)!=SUCCESS) return(999);
+   
+     if (PREP)
+        display_records(15,fin_yn,c_count,norecs);
+
+     c_ptr=&code_values[t]; 
+     for (i=0;i<c_count;++i)
+     {
+        term_varchar(v_status_code[i]);  
+        c_ptr->code_type=rec_type[i];    
+        strcpy(c_ptr->code_value,v_status_code[i].arr); 
+        c_ptr->code_code_value=0;
+        t++;   
+        *c_ptr++;
+     }
+    }
+ 
+    EXEC SQL CLOSE C12;
+
+    maxunits=t-c_count;
+
+    if (PREP)
+      printf("There are %d codes allocated.\n",t);
+
+    return(SUCCESS);
+}
+
+/* ============================================================================
+ * Function : get_system_option_value(fp)
+ * Purpose  : This function should obtain the values that have been set by
+ *            the system options : USEDEFCHNL { Use Defect Chainage Local }
+ *                               : USEDEFCHND { Use Defect Chainage DTp   } 
+ *            The values should be Y or N and at present there is no real
+ *            check on these values.
+ * ============================================================================
+ */
+int get_system_option_value(fp)
+FILE *fp;
+{
+
+    EXEC SQL BEGIN DECLARE SECTION;
+      varchar    l_value[1]    /* Local chainage usage indicator        */
+                ,d_value[1]    /* Dot   chainage usage indicator        */
+                ,t_value[1]    /* Dtp   treatment model usage indicator */
+                ,u_value[1]    /* Local treatment model usage indicator */
+                ,a_value[1]    /* Auto Safety inspections TM  indicator */
+                ,s_value[1]    /* Set Permanent Date based on TEMP Rules */
+;
+      short int  i_value
+;
+    EXEC SQL END DECLARE SECTION;
+  
+    EXEC SQL WHENEVER SQLERROR CONTINUE;
+    EXEC SQL WHENEVER SQLWARNING CONTINUE;
+    EXEC SQL WHENEVER NOT FOUND  CONTINUE;
+
+    l_value.len=1;
+    d_value.len=1;
+    t_value.len=1;
+    u_value.len=1;
+    a_value.len=1;
+    s_value.len=1;
+
+    EXEC SQL EXECUTE
+    BEGIN
+       :l_value:=hig.get_sysopt('USEDEFCHNL'); /* Use chainage on LOCAL def's */
+       :d_value:=hig.get_sysopt('USEDEFCHND'); /* Use chainage on DOT defects */
+       :t_value:=hig.get_sysopt('USETREMODD'); /* Use treatment models        */
+       :u_value:=hig.get_sysopt('USETREMODL'); /* Use treatment models        */
+       :a_value:=hig.get_sysopt('GENAUTOSAF'); /* Generate Auto Safeties      */
+       :s_value:=hig.get_sysopt('REPSETPERD'); /* User TEMP rules for PERM    */
+    END;
+    END-EXEC;
+
+
+    term_varchar(l_value);
+    term_varchar(d_value);
+    term_varchar(t_value);
+    term_varchar(u_value);
+    term_varchar(a_value);
+    term_varchar(s_value);
+
+    LOCAL_CHAINAGE=(*l_value.arr=='Y') ? TRUE : FALSE ;
+    DTP_CHAINAGE  =(*d_value.arr=='Y') ? TRUE : FALSE ;
+    TREAT_MODELD  =(*t_value.arr=='Y') ? TRUE : FALSE ;
+    TREAT_MODELL  =(*u_value.arr=='Y') ? TRUE : FALSE ;
+    AUTO_SAFETY   =(*a_value.arr=='Y') ? TRUE : FALSE ;
+    REPSETPERD    =(*s_value.arr=='Y') ? TRUE : FALSE ;
+
+    if (( TREAT_MODELD )  || ( TREAT_MODELL ))
+    {
+       EXEC SQL EXECUTE
+       BEGIN             /* Obtain the admin unit lvl val */
+          :tremodlev:=hig.get_sysopt('TREMODLEV'); 
+       END;
+       END-EXEC;
+
+       TREMODLEV=tremodlev;
+    }
+
+    EXEC SQL WHENEVER SQLERROR do sql_err("get_system_option_value");
+
+    if ((EXDebug) && (PREP))
+    {
+       if (LOCAL_CHAINAGE)
+          puts("INFO: Chainage REQUIRED on defects for LOCAL roads.");
+       else
+          puts("INFO: Chainage NOT REQUIRED on defects for LOCAL roads.");
+      
+       if (DTP_CHAINAGE)
+          puts("INFO: Chainage REQUIRED on defects for DTP roads.");
+       else
+          puts("INFO: Chainage NOT REQUIRED on defects for DTP roads.");
+   
+       if (TREAT_MODELL)
+          puts("INFO: The system DOES use LOCAL TREATMENT MODELS");
+       else
+          puts("INFO: The system DOES NOT use LOCAL TREATMENT MODELS"); 
+
+       if (TREAT_MODELD)
+          puts("INFO: The system DOES use DOT TREATMENT MODELS");
+       else
+          puts("INFO: The system DOES NOT use DOT TREATMENT MODELS"); 
+
+       if (AUTO_SAFETY)
+        puts("INFO: The system DOES generate safety inspections automatically");
+       else
+    puts("INFO: The system DOES NOT generate safety inspections automatically");
+
+    }
+ 
+    return(SUCCESS);
+
+}

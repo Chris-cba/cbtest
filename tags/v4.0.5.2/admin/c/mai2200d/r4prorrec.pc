@@ -1,0 +1,246 @@
+/* ===========================================================================  
+ * Program : r4prorrec.pc
+ * Descr   : To get and process the next 'R' record containing comment details
+ *           addressed during the current inspection.
+ *
+ * Author  : H.Buckley
+ * Date    : 24-Nov-1995
+ *
+ * The 'R' record is the comments record and is made up of the following
+ * fields : 
+ *            a) Record Type       Character 1       Value = 'R' 
+ *            b) Comment class     Character 8 
+ *            c) Comments          Character 240  
+ *
+ * Comment records are not associated to a road section as such they are
+ * independent documents in their own right.
+ *
+ * Processing : Obtain all 'R' record details into specified variables.
+ *
+ * Change history:-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ * ===========================================================================
+ */ 
+/* static char *sccsid = "@(#)r4prorrec.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4prorrec.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+   
+#include <stdio.h>                   /* Include standard header file    */
+#include "rmms.h"                    /* Standard rmms header file       */
+
+#define SQLCA_STORAGE_CLASS extern   /* Externally defined storage class*/ 
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;      /* SQL Required Pro*C statement    */
+long int   r_doc_id               /* Document id                     */
+;
+varchar    r_rectype[2]              /* Record type                     */
+          ,r_class[5]                /* Comment Class                   */
+          ,r_comment[241]            /* Comment text                    */
+          ,r_sect_descr[61]          /* Road section description        */
+          ,r_doc_date[7]             /* Document insertion date         */
+          ,r_category[9]             /* Document category               */
+;
+short int  i_rectype                 /* Record type indicator variable  */
+          ,i_class                   /* Comment class indicator         */
+          ,i_comment                 /* Comment text record indicator   */
+          ,i_doc_id                  /* Doc Id indicator variable       */
+          ,i_sect_descr              /* Section description indicator   */
+          ,i_doc_date                /* Document date indicator         */
+;     
+static   long int noargs             /* Number of arguments             */
+                 ,seqid              /* Sequence identification number  */
+                 ,r_rse_he_id        /* Comment road section id         */
+;
+long int   r_inspbatch               /* Inspection batch variable       */
+          ,r_reportid                /* Activities report id            */
+;
+EXEC SQL END DECLARE SECTION;
+
+extern short EXDebug;
+
+BOOLEAN procomment(heid,inspdate,inspbatch,reportid,nor,noe,error)
+/* ===================[ Argument Definition Area ]========================= */
+long int heid                     /* Highway element id                     */
+        ,inspbatch                /* Inspection batch                       */
+        ,reportid                 /* report id allocated by progrec to the  */
+                                  /* current sections inspection report     */
+        ,nor                      /* Number of records                      */
+        ,noe                      /* Number of errors                       */
+        ,*error                   /* Returned error code                    */
+;
+char inspdate[7]                  /* Inspection date                        */
+;
+/* ======================================================================== */
+{ 
+
+char *strs[30]                    /* Array of string pointers               */
+    ,text[1001]                   /* Text array buffer                      */
+;
+int  count                        /* Array element counter                  */
+    ,rtype                        /* Record type                            */
+    ,novalue                      /* Dummy argument required for validation */
+;
+   r_rse_he_id=heid;              /* Set the road section for insert        */
+   r_inspbatch=inspbatch;         /* Set the inspection batch id            */
+   r_reportid=reportid;           /* Set the activities report id           */
+
+   strcpy(r_class.arr,"COMM");    /* Set the comment class to COMM          */
+   slen_varchar(r_class);         /* Set the variable length                */
+   term_varchar(r_class);         /* End terminate the variable             */
+
+   *error = 0;
+
+   rtype=gethhrec('\0',0,&seqid,text); /* Obtain next record.               */
+
+   if ( rtype != 'R' )            /* If the record type is not COMMENT      */ 
+   { 
+      pushhhrec();                /* Put the record back on the stack       */ 
+      *error=8514;                /* Comment type record expected           */ 
+      return(FALSE);              /* but not found.                         */
+   }
+
+   noargs = getstrs(text,strs);   /* Obtain the text fields                 */
+
+   if (EXDebug && R_REC)
+       printf("The number of fields for the 'R' record are : %d\n",noargs);
+
+   for (count = 0;count < noargs; count++)
+   {
+      switch (count)
+      {
+          case 0: strcpy(r_category.arr,strs[count]);
+                  slen_varchar(r_category);
+                  term_varchar(r_category); 
+                  break;
+          case 1: strcpy(r_comment.arr,strs[count]);
+                  slen_varchar(r_comment);
+                  term_varchar(r_comment);
+                  break;
+      }
+   }
+
+   strcpy(r_doc_date.arr,inspdate);       /* Copy the inspection date      */
+   slen_varchar(r_doc_date);              /* Set the variable length       */
+   term_varchar(r_doc_date);              /* Terminate the variable        */
+
+   if (get_section_descr(heid,r_sect_descr.arr)!=SUCCESS)
+   {   *error=8105;
+       pusherror(seqid,*error);
+   }
+
+   slen_varchar(r_sect_descr);            /* Set the variable length       */
+   term_varchar(r_sect_descr);            /* Terminate the variable        */
+
+   if (EXDebug && R_REC)
+   {
+       printf("Comment Type         : %s\n" ,r_class.arr);
+       printf("Comment Text         : %s\n" ,r_comment.arr);
+       printf("Road section         : %ld\n",r_rse_he_id);
+       printf("Section name         : %s\n" ,r_sect_descr.arr);
+       printf("Inspection date      : %s\n" ,r_doc_date.arr);;
+   }
+
+   /* =======================================================================
+    * Validate comment type
+    * Since the comment class is maintained against the domain DOC_CATEGORIES 
+    * the length of the class may be upto 20 characters. The DOC_CATEGORY
+    * column is defined as varchar(8) and so the length of the inserted value
+    * should be checked so that it is not greater than 8 characters.
+    * =======================================================================
+    */
+
+    if ((validate_code(9,r_category.arr,&novalue)!=SUCCESS) 
+       || (strlen(r_category.arr)>8))
+    {
+       *error = 8105;                            /* Invalid comment class */
+        pusherror(seqid,*error);                 /* Length > 8            */
+    }
+
+    if (get_next_doc_id(&r_doc_id) != SUCCESS )
+    {
+        return(EX_FAIL); 
+    }
+
+/* ===========================================================================
+ * The specification for the document title of a comment record is that the
+ * title must be ,consistent with that of doc0120.inp . The title should
+ * therefore contain the current date ( format dd-mon-yy ) concatenated to the
+ * username.
+ * ===========================================================================
+ */
+
+    
+    if (EXDebug && R_REC )
+    {
+        printf("Doc id   : %d\n",r_doc_id);
+        printf("Title    : %s\n",r_sect_descr.arr);
+        printf("Class    : %s\n",r_class.arr);
+        printf("Category : %s\n",r_category.arr);
+        printf("Issued   : %s\n",r_doc_date.arr);
+        printf("Comment  : %s\n",r_comment.arr);
+        printf("Batch    : %d\n",r_inspbatch);
+    }
+
+    EXEC SQL INSERT INTO DOCS
+   ( DOC_ID                                      /* Document id          */
+    ,DOC_TITLE                                   /* Document title       */
+    ,DOC_CATEGORY                                /* Document category    */
+    ,DOC_DTP_CODE                                /* DTP code             */
+    ,DOC_DATE_ISSUED                             /* Date raised          */
+    ,DOC_DESCR                                   /* Document description */
+    ,DOC_REFERENCE_CODE                          /* Document reference   */
+   ) VALUES
+   (
+     :r_doc_id                                   /* Document id          */
+    ,:r_sect_descr                               /* Document title       */
+    ,:r_category                                 /* Document type code   */
+    ,:r_class                                    /* Document dtp code    */
+    ,to_date(:r_doc_date,'RRMMDD')               /* Date issued          */ 
+    ,:r_comment                                  /* Comment text         */
+    ,to_char(:r_inspbatch)                       /* Inspection batch id  */
+   );
+
+   oraerror("COMMENTS-R4PRORREC-1");
+
+/* ===========================================================================
+ * Insert a document association record into the DOC_ASSOCS to
+ * associate the comment record with the selected road section.
+ * ===========================================================================
+ */
+    EXEC SQL INSERT INTO DOC_ASSOCS
+    ( DAS_TABLE_NAME
+     ,DAS_REC_ID
+     ,DAS_DOC_ID
+    ) VALUES
+    ( 'ROAD_SEGMENTS_ALL'
+     ,:r_rse_he_id
+     ,:r_doc_id
+    ); 
+
+   oraerror("COMMENTS-R4PRORREC-2");
+
+     /* ==================================================================
+      * Insert a document association record for the associated section. 
+      * ==================================================================
+      */
+
+      EXEC SQL INSERT INTO DOC_ASSOCS
+      ( DAS_TABLE_NAME
+       ,DAS_REC_ID
+       ,DAS_DOC_ID
+      ) VALUES
+      ( 'ACTIVITIES_REPORT'
+        ,:r_reportid
+        ,:r_doc_id
+      ); 
+
+   oraerror("COMMENTS-R4PRORREC-3");
+
+return(TRUE);
+
+} 
+

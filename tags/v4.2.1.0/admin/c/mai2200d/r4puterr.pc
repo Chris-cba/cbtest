@@ -1,0 +1,193 @@
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4puterr.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4puterr.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+#include <stdio.h>
+#include "rmms.h"
+
+void display_stack();
+   
+#define SQLCA_STORAGE_CLASS extern 
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+    static long int batchid
+                   ,tseqno;
+    static int      terror;
+    static int      verror;
+    varchar         l_error[80];
+EXEC SQL END DECLARE SECTION;
+
+#define MAXERRORS  100            /* Why is this not in rmms.h ?  */
+
+struct { long int seqno;          /* Error stack structure.       */
+         int      error;
+       } estack[MAXERRORS];       /* error stack                  */
+
+static long int stacktop;         /* first empty location in estack */
+
+extern FILE *fi;
+extern short EXDebug;
+extern BOOLEAN ERRORSFOUND;
+
+/*===========================================================================
+ * Tiis sets the top of the stack and initializes the batch number.
+ *===========================================================================
+ */
+BOOLEAN initerror(batid)
+long int batid;
+{   
+    stacktop = 0;
+    batchid  = batid;
+
+    return(TRUE);
+}
+
+/*
+ *===========================================================================
+ * This function should put the supplied error onto an error stack.
+ * The constant MAXERRORS is used to ensure that the stack does not overflow.
+ *===========================================================================
+ */
+BOOLEAN pusherror( seqno, error )
+long int seqno;
+int      error;
+{   
+
+    ERRORSFOUND = TRUE;
+
+    if ( stacktop >= MAXERRORS )
+       return(FALSE);
+    else 
+    {
+         estack[stacktop  ].seqno = seqno;
+         estack[stacktop++].error = (error+1000);
+         return(TRUE);
+    }
+}
+
+/*
+ *===========================================================================
+ * This function should print errors that have been placed on the stack. 
+ *===========================================================================
+ */
+BOOLEAN printerror()
+{ 
+   int i;
+
+   if(stacktop == 0)
+      return(TRUE);
+
+    for( i=0; i<stacktop ; i++ )
+         fprintf(fi,
+            "ERROR: %d Occured for Load Record (sequence No.) : %d BPR-8208\n",
+                 estack[i].error, estack[i].seqno );
+    return (TRUE);
+}
+
+/*
+ *====================================================================
+ * This function takes the errors that have been placed on the stack
+ * and upadted the HH_LOAD_RECS table with those error codes for the
+ * specified batch number and error sequence.
+ *====================================================================
+ */
+BOOLEAN puterror()
+{   int i;
+
+    EXEC SQL WHENEVER SQLERROR GO TO fail;
+
+    for(i=0;i<stacktop;i++) 
+    {
+       tseqno = estack[i].seqno;
+       terror = estack[i].error;
+       
+         EXEC SQL UPDATE HH_LOAD_RECS
+                  SET   ERROR_NO   = :terror
+                  WHERE BATCH_ID   = :batchid
+                  AND   SEQUENCE_NO= :tseqno;
+
+    }
+
+    EXEC SQL COMMIT WORK;
+    
+    if (EXDebug)
+    display_stack();
+
+    return(TRUE);
+
+fail: EXEC SQL ROLLBACK WORK;
+      oraerror("PUTERROR");
+      return(FALSE);
+}
+
+/*
+ *======================================================================
+ * This function checks the top of the stack to see if there are any
+ * error messages to process.
+ *======================================================================
+ */
+BOOLEAN iserror(noerrs)
+long int *noerrs;
+{
+   *noerrs = stacktop;
+
+   if (stacktop != 0)
+      return(TRUE);
+   else
+      return(FALSE);
+}
+
+/*
+ *========================================================================
+ * This is a new function that has been edded to allow the developer of
+ * this application with the facility to display the error stack at any
+ * point of program execution. Should be used in conjunction with the
+ * EXDebug constant.
+ *========================================================================
+ */
+void display_stack()
+{
+   int i=0;
+
+   puts("");
+   puts("Error Stack");
+   puts("===========");
+   puts("");
+   puts("Sequence Error Number");
+   puts("=====================");
+
+   while ( estack[i].seqno != 0 )
+   {
+     if ( estack[i].error != 9200 )
+     {
+         verror=estack[i].error;
+
+         EXEC SQL WHENEVER NOT FOUND CONTINUE;
+         EXEC SQL WHENEVER SQLERROR GO TO fail;
+
+         EXEC SQL SELECT ler_descr
+                  INTO   :l_error
+                  FROM   load_errors
+                  WHERE  ler_error_no = :verror;
+       
+         term_varchar(l_error);
+ 
+         printf("%-8d %-12d %s\n",estack[i].seqno
+                                 ,estack[i].error
+                                 ,l_error.arr);
+
+     }
+     else
+        printf("%-8d %-12d\n",estack[i].seqno
+                             ,estack[i].error);
+     i++;
+   }
+
+fail: EXEC SQL ROLLBACK WORK;
+      oraerror("PUTERROR");
+} 
+
+  

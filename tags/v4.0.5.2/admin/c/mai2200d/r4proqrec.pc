@@ -1,0 +1,283 @@
+/* =============================================================================
+ * Program : r4proqrec.pc
+ * Descr   : To get and process the next 'Q' record containing Job Item details 
+ *           addressed during the current inspection.
+ * Author  : H.Buckley
+ * Date    : 24-Nov-1995
+ *
+ * The 'Q' records detail all job items that are required for defects and
+ * one or more of these records are required per defect. The 'Q' record will
+ * follow an 'M' ( defect ) record.
+ * This section should create a  new BOQ ( Bill Of Quantities ) record.
+ *
+ * The 'Q' record is the Job Items record and is made up of the following
+ * fields : 
+ *            a) Record Type       Character 1       Value = 'Q' 
+ *            b) Job Item          Character 10
+ *            c) Dimension 1       Number    8.2     format 9999999.99
+ *            d) Dimension 2       Number    8.2     format 9999999.99
+ *            e) Dimension 3       Number    8.2     format 9999999.99
+ *            f) Total             Number    8.2     format 9999999.99
+ *            g) Labour Units      Number    8,2     format 9999999.99
+ *            h) Labour Rate       Number    8,2     format 9999999.99
+ *
+ *==============================[ P R O Q R E C ] ==============================
+ */
+
+/*================[Application Specific Preprocessor Commands]==================
+ *                       
+ *   Change History :-    
+ *   Date         : 5-Sep-96
+ *   Changed By   : H.Buckley         
+ *   Description  : RM has raised an SPR that requires the boq item name to be 
+ *                  set to null on insert of a BOQ.    
+ *==============================================================================
+ */
+/* static char *sccsid = "@(#)r4proqrec.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4proqrec.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+#include <stdio.h>                   /* Include gstandard header file   */
+#include "rmms.h"                    /* Standard rmms header file       */
+
+#define SQLCA_STORAGE_CLASS extern   /* Externally defined storage class*/ 
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;      /* SQL Required Pro*C statement    */
+float      s_sta_rate                /* Standard job rate               */
+          ,s_sta_labour_unit         /* Standard item estimated labour  */
+;
+varchar    s_rectype[2]              /* Record type                     */
+          ,s_jobitem[11]             /* Job Item code                   */
+          ,s_dimension1[11]          /* Job Item dimension 1            */
+          ,s_dimension2[11]          /* Job Item dimension 2            */
+          ,s_dimension3[11]          /* Job Item dimension 3            */
+          ,s_total[11]               /* Dimension total value           */
+          ,s_sta_item_name[41]       /* Standard Item name              */
+          ,s_job_item[12]            /* Standard Job item               */
+          ,s_job_id[12]              /* Job id                          */
+          ,s_actioncat[2]            /* Defect action category          */
+;
+
+long int   s_boq_id
+;
+
+short int  i_rectype                 /* Record type indicator variable  */
+          ,i_jobitem                 /* Jobitem  indicator variable     */
+          ,i_dimension1              /* Dimension 1 indicator variable  */
+          ,i_dimension2              /* Dimension 2 indicator variable  */
+          ,i_dimension3              /* Dimension 3 indicator variable  */
+          ,i_total                   /* Total dimension value           */
+          ,i_sta_item_name           /* Standard item name indicator    */
+          ,i_sta_rate                /* Standard item rate indicator    */
+          ,i_actioncat               /* Defect action category indicator*/
+          ,i_sta_labour              /* Estimated labour costs          */
+          ,i_defect_id
+;     
+static   long int noargs             /* Number of arguments             */
+                 ,sqlrep             /* Report identification number    */
+                 ,seqid              /* Sequence identification number  */
+                 ,sqlheid            /* Section identifier              */
+;
+long int s_defect_id                 /* Defect id                       */
+;
+EXEC SQL END DECLARE SECTION;
+
+extern short EXDebug;
+
+
+BOOLEAN proqrec(error,heid,seqid,defectid,actioncat)
+/*=====================[Argument Definition Area]============================*/
+long int *error                   /* Error code                             */
+        ,heid                     /* Previously retrieved highway element id*/
+        ,*seqid                   /* Sequence number                        */
+        ,defectid                 /* Selected defect id                     */
+;
+char     *actioncat               /* Selected action category               */
+;
+/*==========================================================================*/
+{ /* .................................................   Prosrec Start Brace*/
+
+char *strs[30]                    /* Array of string pointers               */
+    ,text[1001]                   /* Text array buffer                      */
+;
+int  count                        /* Array element counter                  */
+    ,rtype;                       /* Fgetched record type.                  */
+
+   sqlheid    = heid;             /* Set the highways element variable      */
+   s_defect_id= defectid;         /* Set the defect id variable             */
+   strcpy(s_actioncat.arr,actioncat);
+
+   i_rectype   =0;        
+   i_jobitem   =0;        
+   i_dimension1=0;         
+   i_dimension2=0;         
+   i_dimension3=0;         
+   i_total     =0;         
+   i_sta_item_name=0;      
+   i_sta_rate  =0;         
+   i_actioncat =0;         
+   i_sta_labour=0;         
+
+   slen_varchar(s_actioncat);
+   term_varchar(s_actioncat);
+
+   if (EXDebug)
+       printf("\nprohrec .... r4proqrec.pc .... processing Q records.\n"); 
+
+   rtype = gethhrec( '\0', 0, &seqid, text );
+
+   if ( rtype != 'Q' )        
+   { 
+      pushhhrec();                       /* Location (I) record type         */
+      *error = 8504;                     /* Error 8504 is used to inform the */ 
+      return(TRUE);                      /* program of there being no more   */
+   }                                     /* job item records.                */
+
+   if ((rtype=='Q') && (actioncat[0]=='I'))
+   {
+      /* pushhhrec(); */
+      pusherror(seqid,*error=8517);      /* An immediate (COMPLETED) repair  */
+      return(FALSE);                     /* may not have BOQ items.          */
+   }
+
+   noargs = getstrs(text,strs);
+
+/* ============================================================================
+ * ALL OF JOB ITEMS RECORD PROCESSING GOES IN HERE 
+ * ============================================================================
+ */
+
+   for (count=0;count<noargs;count++)
+   {
+      switch (count)
+      {
+          case 0: strcpy(s_job_item.arr,strs[count]);
+                  slen_varchar(s_job_item);
+                  term_varchar(s_job_item);
+                  break;
+          case 1: strcpy(s_dimension1.arr,strs[count]);
+                  slen_varchar(s_dimension1);
+                  term_varchar(s_dimension1);
+                  break;
+          case 2: strcpy(s_dimension2.arr,strs[count]);
+                  slen_varchar(s_dimension2);
+                  term_varchar(s_dimension2);
+                  break;
+          case 3: strcpy(s_dimension3.arr,strs[count]);
+                  slen_varchar(s_dimension3);
+                  term_varchar(s_dimension3);
+                  break;
+          case 4: strcpy(s_total.arr,strs[count]);
+                  slen_varchar(s_total);
+                  term_varchar(s_total);
+                  break;
+          default:break;
+      }
+   }
+
+/* ============================================================================
+ * For each standard item there is a standard item name and a standard item   
+ * rate. The name and rate should be obtained from the STANDARD ITEMS table.  
+ * The total quantity has to be passed as a parameter and must be validated
+ * against the standard item quantity range for the selected standard item.
+ * ============================================================================
+ */
+     if (!validate_job_item(s_job_item.arr
+                          ,s_total.arr
+                          ,&s_sta_item_name.arr
+                          ,&s_sta_rate 
+                          ,&s_sta_labour_unit))
+     {
+        pusherror(seqid,8512);  /* Job item location error OR total quantity. */
+        return(FALSE);          /* exceeds limits.                            */
+     }
+           
+     slen_varchar(s_sta_item_name);
+     term_varchar(s_sta_item_name);
+
+     if (EXDebug && Q_REC )
+     {
+        puts("=======================================================");
+        puts("proqrec - r4proqrec.pc - Standard Item Details");
+        puts("======================================================="); 
+        printf(" BOQ Defect id      : %d\n",s_defect_id);
+        printf(" BOQ Action Cat     : %s\n",s_actioncat.arr);
+        printf(" BOQ Job Item       : %s\n",s_job_item.arr);
+        printf(" BOQ Item Name      : %s\n",s_sta_item_name.arr);
+        printf(" BOQ Dimension1     : %s\n",s_dimension1.arr);
+        printf(" BOQ Dimensoin2     : %s\n",s_dimension2.arr);
+        printf(" BOQ Dimension3     : %s\n",s_dimension3.arr);
+        printf(" BOQ Item Rate      : %f\n",s_sta_rate);
+        printf(" BOQ Labour Unit    : %f\n",s_sta_labour_unit); 
+     }
+
+     EXEC SQL select boq_id_seq.nextval
+     into     :s_boq_id
+     from     dual;
+
+     oraerror ("PROQREC : Get BOQ Sequence");
+
+
+     EXEC SQL INSERT INTO BOQ_ITEMS             /* Create a BOQ entry.      */
+                ( BOQ_ID
+                 ,BOQ_WORK_FLAG
+                 ,BOQ_DEFECT_ID
+                 ,BOQ_REP_ACTION_CAT
+                 ,BOQ_WOL_ID
+                 ,BOQ_STA_ITEM_CODE
+                 ,BOQ_ITEM_NAME
+                 ,BOQ_DATE_CREATED
+                 ,BOQ_ICB_WORK_CODE
+                 ,BOQ_EST_DIM1
+                 ,BOQ_EST_DIM2
+                 ,BOQ_EST_DIM3
+                 ,BOQ_EST_QUANTITY
+                 ,BOQ_EST_RATE
+                 ,BOQ_EST_DISCOUNT
+                 ,BOQ_EST_COST
+                 ,BOQ_EST_LABOUR
+                 ,BOQ_ACT_DIM1
+                 ,BOQ_ACT_DIM2
+                 ,BOQ_ACT_DIM3
+                 ,BOQ_ACT_QUANTITY
+                 ,BOQ_ACT_COST
+                 ,BOQ_ACT_LABOUR
+                 ,BOQ_ACT_RATE
+                 ,BOQ_ACT_DISCOUNT
+                ) VALUES
+                ( :s_boq_id
+              ,'D'                    /* Values are 'D'ef,'M'aint,'S'cheme */
+              ,:s_defect_id:i_defect_id  /* Defect identification             */
+              ,:s_actioncat:i_actioncat  /* Repair action category            */
+              ,0                         /* Work order number                 */
+              ,:s_job_item:i_jobitem     /* Standard Item within BOQ          */
+              ,null                      /* Standard Item name                */
+              ,sysdate                   /* Date that the BOQ was created     */
+              ,null                      /* Work Category Code ... required ? */
+              ,:s_dimension1:i_dimension1/* 1st Estimated dimension for BOQ   */
+              ,:s_dimension2:i_dimension2/* 2nd Estimated dimension for BOQ   */
+              ,:s_dimension3:i_dimension3/* 3rd Estimated dimension for BOQ   */
+              ,:s_total:i_total          /* Estimated quantity for job item   */
+              ,:s_sta_rate:i_sta_rate    /* Standard item rate                */
+              ,null                      /* Estimated percentage discount     */
+    ,nvl(:s_sta_rate,0)*nvl(to_number(:s_total),0)     
+                                         /* Estimated cost for job            */
+    ,nvl(:s_sta_labour_unit,0)*nvl(to_number(:s_total),0) 
+                                         /* Estimated labour unit             */
+              ,null                      /* 1st actual dimension              */
+              ,null                      /* 2nd actual dimension              */
+              ,null                      /* 3rd actual dimension              */
+              ,null                      /* Actual total quantity             */
+              ,null                      /* Actual cost                       */
+              ,null                      /* Actual labour cost                */
+              ,null                      /* Actual contracted rate            */
+              ,null                      /* Actual discount ..... Not Used    */
+               );
+
+           oraerror("PROQREC 2");
+
+    return(TRUE);
+
+} /* .................................................     Proqrec End Brace */
