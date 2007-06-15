@@ -1,0 +1,474 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4hhrows.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4hhrows.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+/*============================================================================
+ * Changed By: Steve Voller
+ *       Date: 14-OCT-91
+ *     Reason: Amend function getnextp to solve bug whereby > 33
+ *             inspections could not be loaded. The routine was not
+ *             handling consecutive arrays full of 100 input records
+ *             at a time. Bug fix advised by Rod Strong following
+ *             problems at Wilts CC.
+ *  if ( c1_seq_no[c1_count] > c2_seq_no[c2_count] ) should be:
+ *  if ( c1_seq_no[c1_count -1] > c2_seq_no[c2_count] )
+ *
+ * CHANGED BY   : G Fletcher
+ * DATE         : 31-10-97
+ * DESCRIPTION  : client-server conversion
+ *============================================================================
+ */
+
+#include <stdio.h>
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern 
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+     static long int batchid                    /* Batch id variable         */
+                    ,seqno                      /* Sequence number variable  */
+                    ,c1_err_no[5000]            /* Array record error numb   */
+                    ,c1_seq_no[5000]            /* Array record seq number   */
+                    ,c2_err_no[5000]            /* Array record error numb   */
+                    ,c2_seq_no[5000]            /* Array record seq number   */
+                    ,sqlstseq                   /* Start sequence            */
+                    ,sqlenseq                   /* End sequence              */
+;
+     static short    irectype                   /* Record type indicator     */
+                    ,irectext                   /* Record text indicator     */
+                    ,ierr_no                    /* Error number indicator    */
+                    ,iseq_no                    /* Sequence number indicator */
+                    ,c1_rectypei[5000]          /* Record type indicator     */
+                    ,c1_texti[5000]             /* Text indicator            */
+                    ,c1_err_noi[5000]           /* Error indicator           */
+                    ,c1_seq_noi[5000]           /* Sequence number indicator */
+                    ,c2_rectypei[5000]          /* Record type indicator     */
+                    ,c2_texti[5000]             /* Text indicator            */
+                    ,c2_err_noi[5000]           /* Error indicator           */
+                    ,c2_seq_noi[5000]           /* Sequence number indicator */
+;
+     static VARCHAR c1_rectype[5000][2]         /* Record type field         */ 
+                   ,c1_text[5000][1001]         /* Record text field         */ 
+                   ,c2_rectype[5000][2]         /* Record type field 'P'     */
+                   ,c2_text[5000][80]           /* Record text field 'P'     */
+;
+EXEC SQL END DECLARE SECTION;
+
+EXEC SQL DECLARE C1 CURSOR FOR
+   SELECT record_type
+         ,record_text
+         ,error_no
+         ,sequence_no
+   FROM   hh_load_recs 
+   WHERE  batch_id = :batchid
+   ORDER  BY sequence_no;
+
+
+EXEC SQL DECLARE C2 CURSOR FOR
+   SELECT record_type
+         ,record_text
+         ,error_no
+         ,sequence_no
+   FROM   hh_load_recs
+   WHERE  batch_id    = :batchid
+   AND    record_type = 'P'
+   ORDER  BY sequence_no;
+
+
+static long int  c1_count, c1_so_far,c1_this_fetch;
+static BOOLEAN c1_eof;
+
+static long int  c2_count, c2_so_far,c2_this_fetch;
+static BOOLEAN c2_eof;
+
+
+BOOLEAN reset()
+{
+   initerror(batchid);
+   return(TRUE);
+}
+
+BOOLEAN sethhbatch(batch)
+long int batch;
+{
+   EXEC SQL BEGIN DECLARE SECTION;
+   short int v_dummy
+   ;
+   EXEC SQL END DECLARE SECTION;
+
+   void qryhhrecs();
+   void qryprecs();
+        
+   batchid =batch;
+
+   EXEC ORACLE OPTION (SELECT_ERROR = NO);
+
+   EXEC SQL SELECT 1
+            INTO   :v_dummy
+            FROM   HH_LOAD_RECS
+            WHERE  BATCH_ID = :batchid;
+   if ((ORANOREC) || oraerror("SETHHBATCH #1"))
+   {
+      return(FALSE);
+   }
+
+   EXEC ORACLE OPTION (SELECT_ERROR = YES);
+        
+   EXEC SQL UPDATE HH_LOAD_RECS
+            SET    ERROR_NO = NULL
+            WHERE  BATCH_ID = :batchid;
+    oraerror("SETHHBATCH #2");
+
+   commit();
+
+   EXEC SQL OPEN C1;
+
+   if (oraerror("SETHHBATCH #3"))
+      return(FALSE);
+
+   c1_count      = -1;
+   c1_so_far     = 0;
+   c1_this_fetch = 0;
+   c1_eof        = FALSE;
+   qryhhrecs();
+
+   EXEC SQL OPEN C2;
+
+   if (oraerror("SETHHBATCH C2"))
+      return(FALSE);
+
+   c2_count      = -1;
+   c2_so_far     = 0;
+   c2_this_fetch = 0;
+   c2_eof        = FALSE;
+   qryprecs();
+
+   return(TRUE);
+}
+
+/* =============================================================================
+ * This function obtains all rows for the specified batch into an array. This
+ * function should be executed once per batch.
+ * =============================================================================
+ */
+void qryhhrecs()
+{
+   EXEC SQL FETCH C1 INTO :c1_rectype:c1_rectypei,
+                          :c1_text:c1_texti,
+                          :c1_err_no:c1_err_noi,
+                          :c1_seq_no:c1_seq_noi;
+
+   oraerror("qryhhrecs");
+   if (sqlca.sqlcode == 1403)                      /* No records found       */
+      c1_eof = TRUE;
+    
+   c1_count      = 0;                              /* Reset c1 counter value */
+   c1_this_fetch = sqlca.sqlerrd[2] - c1_so_far;   /* Number fetched this tme*/
+   c1_so_far     = sqlca.sqlerrd[2];               /* Total records fetched  */
+}
+
+/* ============================================================================
+ * This function queries all chainage records for the specified batch.
+ * ============================================================================
+ */
+void qryprecs()
+{
+        EXEC SQL FETCH C2 INTO :c2_rectype:c2_rectypei,
+                               :c2_text:c2_texti,
+                               :c2_err_no:c2_err_noi,
+                               :c2_seq_no:c2_seq_noi;
+
+   oraerror("qryprecs");
+   if (sqlca.sqlcode == EOFTCH)
+      c2_eof = TRUE;
+
+   c2_count = 0;
+   c2_this_fetch = sqlca.sqlerrd[2] - c2_so_far;
+   c2_so_far = sqlca.sqlerrd[2];
+}
+
+/* =============================================================================
+ *
+ * =============================================================================
+ */
+BOOLEAN pushhhrec()
+{
+    if (c1_count != 0)
+    {
+       c1_count --;
+       return(TRUE);
+    }
+    else
+       return(FALSE);
+}
+
+BOOLEAN pushprec()
+{
+   if ((c2_count != 0)&&(c2_count != -1))
+   {
+      c2_count --;
+      return(TRUE);
+   }
+   else
+      return(FALSE);
+   
+}
+
+
+int getseqno()
+{
+    return(c1_seq_no[c1_count]);
+}
+
+/* ============================================================================
+ * Function : gethhrectype
+ * Descr    : This function is called from r4prog and is used to detect the record
+ *            type of the specified record number. There is one argument to this 
+ *            function and that is the record number to be checked.
+ * ============================================================================
+ */
+int gethhrectype(int recno )
+{
+   char rtp;                                   /* Returned Record type        */
+
+
+   recno=recno-1;                              /* Compensate for array[0]     */
+   while (TRUE && c1_count<=recno)              /* Continue                    */
+   {
+       *(c1_text[c1_count].arr + c1_text[c1_count].len) = '\0';
+
+       if (c1_count==c1_this_fetch )
+       {
+          if (c1_eof)
+            return(EOF);
+       }
+       if (c1_count==recno)
+           rtp = c1_rectype[c1_count].arr[0];
+
+       c1_count++;
+    }
+    c1_count=0;   /* Reset the counter back to the first entry */ 
+    return(rtp);
+}
+
+
+
+/* ============================================================================
+ * Function : gethhrec
+ * Descr    : This function is called from many places withinm the program
+ *            and is used to obtain records of a specified type.
+ * ============================================================================
+ */
+int gethhrec(char rtype, long int eror, long int *seqid, char *rtext)
+{
+   char rtp;                                   /* Record type                 */
+
+   while (TRUE)                                /* Continue                    */
+   {
+       *(c1_text[c1_count].arr + c1_text[c1_count].len) = '\0';
+
+/* ============================================================================
+ * SRV this next printf should be commented out for live versions     
+ * get more records if finished with array                                 
+ * or return EOF if no more recs to get                                   
+ * ============================================================================
+ */
+
+    if (c1_count == c1_this_fetch)
+    {
+      if (c1_eof)
+         return(EOF);
+      else
+         qryhhrecs();               /* Fetch some more records                */
+    }
+
+    /* if error pusherror and continue if OK return values                    */
+
+       if (DBUG && H_REC)
+       {
+          puts("");
+          puts("Batch  Type Text                           Error Seqno Type\n");
+          puts("------------------------------------------------------------\n\n");
+          printf(" %5u   %c  %-30s %5u %5u   %c\n" ,batchid
+                                                   ,c1_rectype[c1_count].arr[0]
+                                                   ,c1_text[c1_count].arr
+                                                   ,c1_err_no[c1_count]
+                                                   ,c1_seq_no[c1_count]
+                                                   ,rtype);
+       }
+
+    if ((rtype != rmcaseup(c1_rectype[c1_count].arr[0])) && (rtype != '\0'))
+    {
+       pusherror(c1_seq_no[c1_count],eror);
+       c1_count++;
+    }
+    else
+    {
+       *(c1_text[c1_count].arr + c1_text[c1_count].len) = '\0';
+       strcpy(rtext,c1_text[c1_count].arr);
+       *seqid = c1_seq_no[c1_count];
+       rtp = c1_rectype[c1_count].arr[0];
+       c1_count++;
+
+       return(rtp);
+    }
+  }
+}
+
+/* =========================================================================== 
+ * Function : getnextp()
+ * Purpose  : Obtain the next chainage record.
+ * ===========================================================================
+ */
+int getnextp(stchain,endchain)
+int *stchain,*endchain;
+{                            
+char rtp,*args[10];
+           
+/* ===========================================================================
+ * Get more records if finished with array or return EOF if no more recs to 
+ * get return the next P record after the current sequence number 
+ * ===========================================================================
+ */
+
+    while (TRUE)
+    {
+        if (c2_count == c2_this_fetch)
+        {
+          if (c2_eof)
+             return(EOF);
+          else
+             qryprecs();
+        }
+
+        if ( c1_seq_no[c1_count -1] > c2_seq_no[c2_count] )
+          c2_count++; 
+        else
+          break; 
+
+    }
+
+    *(c2_text[c2_count].arr + c2_text[c2_count].len) = '\0';
+    getstrs(c2_text[c2_count].arr,args);
+    *stchain  = atoi(args[0]);                  /* Set te start chainage */
+    *endchain = atoi(args[1]);                  /* Set the end chainage  */
+    rtp = c2_rectype[c2_count].arr[0];
+    c2_count++;
+
+ return(rtp);
+
+}
+
+
+
+/* ============================================================================
+ *                             K I L L L O A D R O W S
+ * ============================================================================
+ * Purpose:       To delete rows from HHINSP_LOAD that have been 
+ *                successfully loaded into the RMMS tables.
+ *    Type:  boolean killloadrows();
+ *
+ * Calling
+ * Sequence:      killloadrows( stseq, endseq, &error )
+ *
+ * Input: int     stseq   First row in sequence to delete.
+ *
+ *        int     endseq  Last row in sequence to delete.
+ *
+ * Output:        boolean killloadrows TRUE  = rows deleted OK.
+ *                       FALSE = Error see error code.
+ *
+ *     int     error      2 = Oracle error occured whilst
+ *                            trying to delete.
+ *
+ * Effects:       Rows in table HHINSP_LOAD deleted between the 
+ *                sequence numbers and COMMIT done.
+ * ===========================================================================
+ */
+
+
+BOOLEAN killloadrows(stseq,enseq,error)
+/* ===========================================================================
+ * Argument definition area  
+ * ===========================================================================
+ */
+long int stseq;               /* Start sequence number for row kill         */
+long int enseq;               /* End sequence number for row kill           */
+long int *error;              /* Error status flag if Orcale error return 2 */
+{ /*  ..............................................Killloadrows Start Brace*/
+
+/* ===========================================================================
+ * Intialise Pro*C variables  
+ * ===========================================================================
+ */
+   sqlstseq = stseq;          /* Set start ssequence value                  */
+   sqlenseq = enseq;          /* Set end sequence value                     */
+
+
+/* ===========================================================================
+ * Kill the rows from the load_errors2 table for the selected batch. 
+ * ===========================================================================
+ */
+/*
+   EXEC SQL WHENEVER SQLERROR CONTINUE;
+
+   EXEC SQL DELETE 
+            FROM  LOAD_ERRORS2
+            WHERE LER2_SEQUENCE_NO BETWEEN NVL(:sqlstseq,0) AND nvl(:sqlenseq,0)
+            AND   LER2_BATCHNO = :batchid;
+   
+*/
+/* ===========================================================================
+ * Kill the rows from the load_recs table for the selected batch. 
+ * ===========================================================================
+ */
+   EXEC SQL DELETE 
+            FROM    HH_LOAD_RECS
+            WHERE   SEQUENCE_NO
+            BETWEEN NVL(:sqlstseq,0) AND NVL(:sqlenseq,0)
+            AND BATCH_ID = :batchid;
+
+   EXEC SQL DELETE FROM HH_LOAD_RECS
+            WHERE BATCH_ID=:batchid
+            AND RECORD_TYPE='1'
+            AND EXISTS (
+                         SELECT 'x'
+                         FROM HH_LOAD_RECS
+                         WHERE BATCH_ID=:batchid
+                         GROUP BY BATCH_ID
+                         HAVING COUNT(*) = 1
+                       );
+
+/* ===========================================================================
+ * Check for & flag Oracle error else return   
+ * ===========================================================================
+ */
+   if (oraerror("KILLLOADROWS"))
+   {
+      rollback();
+      *error = 2;
+      return(FALSE);
+   }
+   else
+   {
+     commit();
+     return(TRUE);
+   }
+} /* KILLLOADROWS END BRACE*/
+
+
+
+
+
+
+
+
+
+
+
+
+

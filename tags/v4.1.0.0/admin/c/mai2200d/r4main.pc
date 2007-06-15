@@ -1,0 +1,234 @@
+/* ===========================================================================
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 10-MAY-91                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : Enhancements iro RMMS Amendment Set VI changes.     
+ *                  Amend call to rmmstype to include date and county   
+ *                  which are needed in def_rs_rep.                     
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 10-JUL-91                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : Correct bug for PC versions. Ensure that when the   
+ *                  code is run on a PC then atol is used instead of    
+ *                  atoi. Bug advised by R. Strong 26/6/91 following    
+ *                  problems at Parkman Associates.                     
+ *
+ *   DATE         : 22-Dec-92                                          
+ *   CHANGED BY   : Rod Strong                                         
+ *   DESCRIPTION  : getdate call changed to get_date to avoid name     
+ *                   clash with standard C subroutine                  
+ *
+ *   DATE         : 08-Feb-93                                         
+ *   CHANGED BY   : Rod Strong                                        
+ *   DESCRIPTION  : Added logoff from Oracle before abort exit.       
+ *
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ *============================================================================
+*/
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4main.pc	1.2 07/13/06"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4main.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "rmms.h"       
+
+EXEC SQL INCLUDE sqlext.h;
+
+extern rmmstype();
+short EXDebug=1;
+char *EXRepOutpath;
+char pipe_msg[254];
+
+char GBErrMsg[255];
+
+FILE *fi;
+#ifndef ibm
+FILE *fopen();
+#endif
+BOOLEAN ENHANCED     = FALSE;               /* TRUE if enhanced record found */
+BOOLEAN FIRSTREC     = TRUE;                /* TRUE if first record not yet processed */
+BOOLEAN PREPARED     = FALSE;               /* Boolean for validation array */
+BOOLEAN AUTO_SAFETY  = FALSE;               /* Boolean for auto safety insp */
+BOOLEAN USE_CHAINAGE = TRUE;                /* Boolean for the use of chain */
+BOOLEAN NO_DUMMY     = TRUE;                /* Boolean for dummy inspection */
+BOOLEAN l_exists     = FALSE;               /* Existance boolean.           */
+BOOLEAN LOCAL_CHAINAGE=FALSE;               /* Chainage for local roads rqd'*/
+BOOLEAN DTP_CHAINAGE  =FALSE;               /* Chainage for dtp roads rqd'  */
+BOOLEAN DTP_ROAD      =FALSE;               /* Is the current road DTP ?    */
+BOOLEAN TREAT_MODELD  =FALSE;               /* Use dot   treatment models   */
+BOOLEAN TREAT_MODELL  =FALSE;               /* Use local treatment models   */
+BOOLEAN REPSETPERD    =FALSE;
+long int TREMODLEV    =0;                   /* Treatment model level        */
+BOOLEAN REPAIRCOMPLETE=FALSE;               /* Default value for comp defect*/
+
+BOOLEAN ERRORSFOUND = FALSE;                /* This will be set to TRUE if an error is placed on the stack */
+
+long int MAXENDCHAIN = 9999;
+char sys_flag;                              
+
+int g_rseheid;
+int g_link;
+int g_section;
+int g_firstinsp;
+int g_date;
+int g_time;
+int g_inspection;
+int g_init_fld;
+int g_direction;
+int g_secinsp;
+int g_weather;
+int g_surfcond;
+int g_sectdesc;
+int i_activity;
+int i_xsp;
+int i_chainage;
+int i_location;
+int i_time;
+int i_identcode;
+int i_diagnum;
+int i_equivinv;
+int i_invchange;
+int i_subhead;
+int i_notifcode;
+int i_recharge;
+int i_specinst;
+int j_defmnemonic;
+int j_defpriority;
+int j_defcat;
+int j_itemid;
+float j_easting;
+float j_northing;
+int j_attr1;
+int j_attr2;
+int j_attr3;
+int j_attr4;
+int j_roadstudind;
+float j_easting;
+float j_northing;
+double defrecalup, defrecallo;
+void get_int_option();
+
+/*
+ *===========================================================================
+ * Function : main()
+ * Purpose  : Main area of program and program start point.
+ * ===========================================================================
+ */
+main (argc,argv)
+int argc;
+char *argv[];
+{
+long int batchid;                 /* Batch to be processed */
+register int i;
+
+char date[10],                    /* Date variable                            */
+     str[79];                     /* String buffer variable                   */
+char county[40];                  /* County variable                          */
+
+	jobmain(argc,argv);
+	
+  	get_params(1); /* Get 2 params 1= Use chainage flag 2=insp batch id */
+
+	batchid=strtol((char *)EXParam[0].arr,(char **)0,10);
+  
+   rmmstype(date,county);
+
+  /* Get tolerance product options for survey recalibration */
+  get_int_option("DEFRECALUP",&defrecalup);
+  get_int_option("DEFRECALLO",&defrecallo);
+
+ /*
+ *==========================================================================
+ * We have already changed directory to the user specified reports directory 
+ * when jobmain was called above. Create log file in this dir.
+ *==========================================================================
+ */
+        if((fi = fopen(EXRepOutpath,"w")) == NULL)
+         {
+			sprintf(GBErrMsg,"%s %s",EXRepOutpath,strerror(errno));
+		    printf("%s\n",GBErrMsg);
+                    write_pipe(fi,"ERROR: Failed to open report for writing.");
+                    write_pipe(fi,GBErrMsg);
+	    	  EXEC SQL ROLLBACK WORK;
+			  jobend(EXJobId,1,GBErrMsg);
+			  EXEC SQL COMMIT WORK;
+			  dblogoff();
+			  exit(1);
+         }
+         else
+         {
+            printf("INFO: log file is : %s BPR-8602\n",EXRepOutpath);
+            strcpy(pipe_msg,"INFO: log file is : ");
+            strcat(pipe_msg,(char *)EXRepOutpath);
+            strcat(pipe_msg," BPR-8602");
+            write_pipe(fi,pipe_msg);
+         }
+
+
+   get_date(date);
+   fprintf(fi,"\n%20s*** Inspection Load Run on : %s ***\n\n"," ",date);
+
+   proinsp(batchid);
+
+   fclose(fi);
+
+        write_pipe(NULL,"INFO: Inspection Load Process Complete.");
+
+
+        if (ERRORSFOUND)
+        {
+           write_pipe(NULL,"INFO: ERRORS FOUND DURING LOAD PROCESS.");
+           write_pipe(NULL,"INFO: Use Correct Inspection Load Errors Module (MAI2250) to check and correct the errors.");
+           write_pipe(NULL,"INFO: Load NOT successful.");
+        }
+        else
+        {
+           write_pipe(NULL,"INFO: No errors were encountered during this load.");
+           write_pipe(NULL,"INFO: Load successful.");
+        }
+
+	jobend(EXJobId,0,"");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+
+   exit(EX_SUCC);
+}
+void usersigfunc(sig)
+int sig;
+{
+        write_pipe(NULL,"ERROR: Abnormal signal received. Aborting.");
+	printf("Signal %d received. Aborting ...",sig);
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}
+
+void get_int_option(pi_hop_id,retval)
+char   *pi_hop_id;
+double *retval;
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+    varchar hop_id[11];
+  EXEC SQL END DECLARE SECTION;
+
+  strcpy((char*)hop_id.arr,pi_hop_id);
+  hop_id.len=strlen(pi_hop_id);
+
+  EXEC SQL SELECT TO_NUMBER(hop_value)
+             INTO :retval
+             FROM hig_options
+            WHERE hop_id = :hop_id
+                ;
+  oraerror("get_int_option");
+  printf("get_int_option returning : [%f] for Product Option : %s\n",*retval,pi_hop_id);
+}
+

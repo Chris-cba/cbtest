@@ -1,0 +1,65 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4gbatid.pc	1.1 09/08/03"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4gbatid.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+
+/* Change history :-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+*/
+
+#include <stdio.h>
+
+/* ============================================================================
+ *              Application Specific Preprocessor Commands 
+ * ============================================================================
+ */
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+
+/*
+ *====================================================================
+ * Function : findbatch
+ * Descr    : Select all batch id's from the inspection batches load 
+ *            table into an inspection batch array.
+ *====================================================================
+ */
+
+int findbatch(pos)
+int pos;
+{
+    EXEC SQL BEGIN DECLARE SECTION;
+       static long int batchid[250];
+                   int bat_count;
+    EXEC SQL END DECLARE SECTION;
+
+    int i;
+
+    if (pos == 0)
+    {
+       EXEC SQL SELECT count(distinct batch_id)
+                INTO :bat_count
+                FROM hh_load_recs;
+      oraerror("COUNT BATCH");
+     
+     for (i = 0;i < 250;i++)
+          batchid[i] = 0;
+          
+     EXEC SQL SELECT DISTINCT BATCH_ID
+              INTO :batchid
+              FROM HH_LOAD_RECS;
+              
+     if (oraerror("FINDBATCH"))
+         return(0);
+         
+   }
+
+return(batchid[pos]);
+
+}
