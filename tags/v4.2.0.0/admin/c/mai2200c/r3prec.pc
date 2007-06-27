@@ -1,0 +1,189 @@
+
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r3prec.pc	1.1 09/08/03";
+
+/* ============================================================================
+ * Name : PUTREC
+ *
+ * Purpose : To insert records into the database, consisting of batch id
+ *           sequence_no,rectype,record text.
+ *
+ * Type : BOOLEAN  putrec()
+ *
+ * Usage :
+ *
+ *    return = putbatrec(batch id,seqno,rectype,rectext,erfi)
+ *
+ * Input :
+ *       Name      Type      Meaning
+ *       ----      ----      -------
+ *       (Argument List)
+ *       batch id  int       id record for this batch load.
+ *
+ *       record    char[]    text of the load record.
+ *       text
+ *
+ *       record
+ *       type      char      type of record. current eg.s G section header
+ *                                                        J defect info.
+ * Output :
+ *       Name      Type      Meaning
+ *       ----      ----      -------
+ *       (Argument List)
+ *       erfi      pointer  to file   pointer to the currently open error file.
+ *
+ *       Function returned value : 0 or 1 for SUCCESS or FAILURE.
+ *       (Return Value)
+ *
+ *
+ * Author : G. Dutton 26-APR-88
+ *
+ * Effects : RMMS table inserts as appropriate.
+ *           Logs encountered errors.
+ *           No commit done.
+ *
+ * Change history :-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ * ============================================================================
+ */
+
+#include <stdio.h>
+#include "rmms.h"
+
+extern short EXDebug;
+extern char pipe_msg[254];
+
+#define SQLCA_STORAGE_CLASS  extern
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+       int bid[100]                                    /* Batch id            */
+          ,sno[100]                                    /* Sequence number     */
+          ,count                                       /* Counter             */
+;
+static VARCHAR rtyp[100][2]                            /* Record type         */
+              ,txt[100][MAXLLINE+1]                    /* Record text         */
+;
+EXEC SQL END DECLARE SECTION;
+
+
+/* Function setcount     
+
+   Set the value of a counter.
+
+*/
+void setcount()
+{
+    count = 0;
+}
+
+
+BOOLEAN putrec(batch,seqno,rectype,rectext,erfi)
+int batch                                            /* Batch id number      */
+   ,seqno                                            /* Load sequence number */
+;        
+char rectype                                         /* Record type          */
+    ,rectext[]                                       /* Record text          */ 
+;
+FILE *erfi;                                          /* Pointer to currently */
+{                                                    /* open error file      */
+
+   char temp[10];
+
+   bid[count]         = batch;                       /* Set batch id counter */
+   rtyp[count].arr[0] = rectype;                     /* Set record type      */
+   rtyp[count].arr[1] = '\0';                        /* Term record type     */
+   rtyp[count].len    = 1;                           /* Set rec type length  */
+   sno[count]         = seqno;                       /* Set sequence number  */
+   strcpy(txt[count].arr,rectext);                   /* Copy text string     */
+   txt[count].len=strlen(txt[count].arr);
+   txt[count].arr[txt[count].len]='\0';
+
+   if (EXDebug)
+   {
+       printf("Function : Putrec - r3prec.pc\n");
+       write_pipe(erfi,"Function : Putrec - r3prec.pc");
+
+       printf("Counter  : %d\n",count);
+       i_toa(count,temp);
+       strcpy(pipe_msg,"Counter  : ");
+       strcat(pipe_msg,temp);
+       write_pipe(erfi,pipe_msg);
+       
+       printf("Batch    : %d\n",bid[count]);
+       i_toa(bid[count],temp);
+       strcpy(pipe_msg,"Batch  : ");
+       strcat(pipe_msg,temp);
+       write_pipe(erfi,pipe_msg);
+       
+       printf("Rectype  : %s\n",rtyp[count].arr);
+       strcpy(pipe_msg,"Rectype  : ");
+       strcat(pipe_msg,(char *)rtyp[count].arr);
+       write_pipe(erfi,pipe_msg);
+       
+       printf("Sequence : %d\n",sno[count]);
+       i_toa(sno[count],temp);
+       strcpy(pipe_msg,"Sequence : ");
+       strcat(pipe_msg,temp);
+       write_pipe(erfi,pipe_msg);
+       
+       printf("Txt      : %s\n",txt[count].arr);
+       strcpy(pipe_msg,"Txt  : ");
+       strcat(pipe_msg,(char *)txt[count].arr);
+       write_pipe(erfi,pipe_msg);
+       
+   }
+
+   count++;                                          /* Increment counter    */
+   if (count == 100)                                 /* If counter is 100    */
+      if (insertrecs(erfi) == FALSE)
+         return(FALSE);
+      else
+         return(TRUE);
+
+   return(TRUE);
+}
+
+
+BOOLEAN insertrecs(erfi)
+FILE *erfi;
+{
+  if (EXDebug)
+  {
+     printf("Function : Insertrecs - r3prec.pc\n");
+     write_pipe(erfi,"Function : Insertrecs - r3prec.pc");
+  }
+
+if (count != 0)
+{
+   EXEC SQL FOR :count INSERT INTO HH_LOAD_RECS       /* Insert load records  */
+        (
+         BATCH_ID
+        ,SEQUENCE_NO
+        ,RECORD_TYPE
+        ,RECORD_TEXT
+        )
+        VALUES 
+        (
+         :bid
+        ,:sno
+        ,:rtyp
+        ,:txt
+        );
+
+   count = 0;                                         /* Set counter to zero  */
+
+   if (sqlca.sqlcode < 0)                             /* If problem repported */
+   {
+      errorout(sqlca.sqlerrm.sqlerrmc,"PUTREC",erfi);
+      return(FALSE);
+   }
+   else
+      return(TRUE);
+}
+else
+  return(TRUE);
+
+}

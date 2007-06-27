@@ -1,0 +1,250 @@
+
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r3pbatr.pc	1.2 12/08/06";
+
+/* ============================================================================
+ * Name : PUTBATREC
+ *
+ * Purpose : To insert batch records into the database, consisting of batch id
+ *           batch type, batch terminator_record.
+ * 
+ * Type : BOOLEAN  putbatrec()
+ *
+ * Usage :
+ *
+ *    return = putbatrec(batch id,terminator record,load type,erfi)
+ *
+ * Input :
+ *       Name      Type      Meaning
+ *       ----      ----      -------
+ *       (Argument List)
+ *       batch id  int       id record for this batch load.
+ *
+ *       terminator
+ *       record    char[]    text of the terminator record from the batch.
+ *
+ *       load
+ *       type      char      type of load. current eg.s I inspection,
+ *                                                      V inventory
+ * Output :
+ *       Name      Type      Meaning
+ *       ----      ----      -------
+ *       (Argument List)
+ *       erfi      pointer
+ *                 to file   pointer to the currently open error file.
+ *
+ *       Function returned value : 0 or 1 for SUCCESS or FAILURE.
+ *       (Return Value)
+ *
+ *
+ * Author : G. Dutton 26-APR-88
+ *
+ * Effects : RMMS table inserts as appropriate.
+ *           Logs encountered errors.
+ *           No commit done.
+ *
+ * Change history :-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+ * ============================================================================
+ */
+
+#include <stdio.h>
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+extern short EXDebug;
+extern char pipe_msg[254];
+
+void ora_error_out();
+
+BOOLEAN putbatrec(batch,termrec,ltype,erfi,loadfile 
+                 ,section,date,time,insp,insp2,sectdesc)
+int batch;                             /* Batch id number                     */
+char ltype                             /* Load type                           */
+    ,termrec[]                         /* Terminator record                   */
+    ,loadfile[]                        /* Load OS filename                    */
+    ,sectdesc[]                        /* Section description                 */
+; 
+char *section,*date,*insp,*insp2       /* Pointers to section,date and insps  */
+    ,*time                             /* inspector2 and time                 */
+;
+FILE *erfi;                            /* pointer to currently open error file*/
+{
+
+   char temp[10];
+
+
+   EXEC SQL BEGIN DECLARE SECTION;
+   int count                           /* Counter                            */ 
+      ,bid[1]                          /* Batch id                           */
+   ;
+   varchar ltyp[1][2]                  /* Load type variable                 */ 
+          ,txt[1][MAXLLINE]            /* Record text                        */
+          ,lf[1][81]                   /* Load file variable. Size is in     */
+                                       /* line with hh_load_batches.os_file  */
+          ,sqldate[1][7]               /* Date of inspection                 */
+          ,sqltime[1][5]               /* Time of inspection                 */
+          ,sqlinsp[1][4]               /* Primary inspector                  */
+          ,sqlsect[1][17]              /* Section                            */
+          ,sqlinsp2[1][4]              /* Secondary inspector                */
+          ,sqldescr[1][81]             /* Section description                */
+   ;
+   EXEC SQL END DECLARE SECTION;
+
+if (EXDebug)
+{
+   printf("Function : putbatrec - r3pbatr.pc\n");
+   write_pipe(erfi,"Function : putbatrec - r3pbatr.pc");
+}
+
+   bid[0]         = batch;             /* Set batch id                       */
+   ltyp[0].arr[0] = ltype;             /* Set Record type                    */
+   ltyp[0].len    = 1;                 /* Set record type length             */
+   strcpy(txt[0].arr,termrec);         /* Copy termrecord to txt variable    */
+   slen_varchar(txt[0]);               /* Set the variable length            */
+   term_varchar(txt[0]);               /* Terminate the variable             */
+   strcpy(lf[0].arr,loadfile);         /* Set the lf variable                */
+   slen_varchar(lf[0]);                /* Set the variable length            */
+   term_varchar(lf[0]);                /* Terminate the variable             */
+   strcpy(sqlsect[0].arr,section);     /* Set section value                  */
+   slen_varchar(sqlsect[0]);           /* Set the variable length            */
+   term_varchar(sqlsect[0]);           /* Terminate the variable             */
+   strcpy(sqldate[0].arr,date);        /* Set the date value                 */
+   slen_varchar(sqldate[0]);           /* Set the variable length            */
+   term_varchar(sqldate[0]);           /* Terminate the variable             */
+   strcpy(sqltime[0].arr,time);        /* Set value of inspection time       */
+   slen_varchar(sqltime[0]);           /* Set length of time variable        */
+   term_varchar(sqltime[0]);           /* Terminate time variable            */
+   strcpy(sqlinsp[0].arr,insp);        /* Set inspection variable            */
+   slen_varchar(sqlinsp[0]);           /* Set the length of the variable     */
+   term_varchar(sqlinsp[0]);           /* Terminate the variable             */
+   strcpy(sqlinsp2[0].arr,insp2);      /* Set value of secondary inspector   */
+   slen_varchar(sqlinsp2[0]);          /* Set length of secondary inspector  */
+   term_varchar(sqlinsp2[0]);          /* Terminate secondary inspector      */
+   strcpy(sqldescr[0].arr,sectdesc);   /* Set value of secrtion description  */
+   slen_varchar(sqldescr[0]);          /* Set length of section description  */
+   term_varchar(sqldescr[0]);          /* Terminate section description      */
+
+   count = 1;                          /* Set counter to 1                   */
+
+   if (EXDebug)
+   {
+       printf("Batch Number    : %d\n",batch);
+       i_toa(batch,temp);
+       strcpy(pipe_msg,"INFO: Batch Number    : ");
+       strcat(pipe_msg,temp);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Batch Id        : %d\n",bid[0]);
+       i_toa(bid[0],temp);
+       strcpy(pipe_msg,"INFO: Load Type       : ");
+       strcat(pipe_msg,temp);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Load Type       : %s\n",ltyp[0].arr);
+       strcpy(pipe_msg,"INFO: Load Type       : ");
+       strcat(pipe_msg,ltyp[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Inspector       : %s\n",sqlinsp[0].arr);
+       strcpy(pipe_msg,"INFO: Inspector       : ");
+       strcat(pipe_msg,(char *)sqlinsp[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Inspector2      : %s\n",sqlinsp2[0].arr);
+       strcpy(pipe_msg,"INFO: Inspector2      : ");
+       strcat(pipe_msg,(char *)sqlinsp2[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Inspection Date : %s\n",sqldate[0].arr);
+       strcpy(pipe_msg,"INFO: Inspection Date : ");
+       strcat(pipe_msg,(char *)sqldate[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Inspection Time : %s\n",sqltime[0].arr);
+       strcpy(pipe_msg,"INFO: Inspection Time : ");
+       strcat(pipe_msg,(char *)sqltime[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("O/S File        : %s\n",lf[0].arr);
+       strcpy(pipe_msg,"INFO: O/S File        : ");
+       strcat(pipe_msg,(char *)lf[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Section         : %s\n",sqlsect[0].arr);
+       strcpy(pipe_msg,"INFO: Section         : ");
+       strcat(pipe_msg,(char *)sqlsect[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Section desc    : %s\n",sqldescr[0].arr);
+       strcpy(pipe_msg,"INFO: Section desc    : ");
+       strcat(pipe_msg,(char *)sqldescr[0].arr);
+       write_pipe(erfi,pipe_msg);
+
+       printf("Term Rec        : %s\n",txt[0].arr);
+       strcpy(pipe_msg,"INFO: Term Rec        : ");
+       strcat(pipe_msg,(char *)txt[0].arr);
+       write_pipe(erfi,pipe_msg);
+   }
+
+   EXEC SQL FOR :count INSERT INTO HH_LOAD_BATCHES
+      ( 
+        BATCH_ID
+       ,LOAD_TYPE
+       ,INSPECTOR
+       ,INSPECTOR2
+       ,INSP_DA_TE
+       ,INSP_TIME
+       ,OS_FILE
+       ,SECTION
+       ,SECT_DESC
+       ,TERM_RECORD
+      )
+      VALUES 
+      ( :bid 
+       ,:ltyp
+       ,:sqlinsp
+       ,:sqlinsp2
+       ,:sqldate
+       ,:sqltime
+       ,:lf
+       ,:sqlsect
+       ,:sqldescr
+       ,:txt);
+
+   if(sqlca.sqlcode != 0)
+     {
+     ora_error_out("ERROR: An Error Occured Inserting into hh_load_batches :-"
+                  ,erfi);
+     }
+   return((sqlca.sqlcode==0)?TRUE:FALSE);
+}
+
+void ora_error_out(msg_in,erfi)
+char msg_in;
+FILE *erfi; 
+{
+  char err_msg[512]
+      ,err_out[600]
+     ;
+  size_t buf_len
+        ,msg_len
+       ;
+
+  EXEC SQL WHENEVER SQLERROR CONTINUE;
+
+  /* Call sqlglm() to get the complete text of the error message */
+  buf_len = sizeof (err_msg);
+  sqlglm(err_msg, &buf_len, &msg_len);
+  sprintf(err_out,"%s\n\n%.*s\n\n"
+                 ,msg_in
+                 ,msg_len
+                 ,err_msg);
+  printf("%s",err_out);
+  fprintf(erfi,"%s",err_out);
+  write_pipe(NULL,err_out);
+}

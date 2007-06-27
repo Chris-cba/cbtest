@@ -1,0 +1,64 @@
+static char *sccsid = "@(#)r3main.pc	1.1 09/08/03";
+/* Change history:-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include "rmms.h"
+
+BOOLEAN RLINE350=FALSE ;         /* Use of Roadline 350 product               */
+BOOLEAN ENHANCED=FALSE ;         /* Use of Enhanced product                   */
+
+short EXDebug;
+char *EXRepOutpath;
+char pipe_msg[254];
+
+char GBErrMsg[255];
+
+char filetype; 			/* R - RMMS
+				   E - Enhanced */
+
+EXEC SQL INCLUDE sqlext.h;
+
+main (argc,argv)
+int argc;
+char *argv[];
+{
+   	int  i;
+
+	jobmain(argc,argv);
+	
+  	get_params(1);
+
+    if (!prohhfile(EXParam[0].arr))  /* Found in r3phfile.pc           */
+    {
+       printf("\nERROR: An error occured while processing : %s BPR-8201\n",
+             EXParam[0].arr);
+       strcpy(pipe_msg,"ERROR: An error occured while processing : ");
+       strcat(pipe_msg,(char *)EXParam[0].arr);
+       strcat(pipe_msg," BPR-8201");
+       write_pipe(NULL,pipe_msg);
+
+		EXEC SQL ROLLBACK WORK;
+		jobend(EXJobId,1,"Error returned from prohhfile()");
+		EXEC SQL COMMIT WORK;
+		dblogoff();
+        exit(EX_FAIL);       /* Exit with failure.               */
+    }
+
+	jobend(EXJobId,0,"");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(0);              /* Exit with success                */
+}
+void usersigfunc(sig)
+int sig;
+{
+	printf("Signal %d received. Aborting ...",sig);
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}

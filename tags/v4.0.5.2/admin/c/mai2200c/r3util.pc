@@ -1,0 +1,102 @@
+
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r3util.pc	1.1 09/08/03";
+
+/* Change history:-
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+*/
+#include <stdio.h>
+#include "rmms.h"
+
+EXEC SQL INCLUDE sqlext.h;
+
+/* ===========================================================================
+ * SQL common declaration area for PRO*C host variables
+ * ===========================================================================
+ */
+
+EXEC SQL BEGIN DECLARE SECTION;
+     VARCHAR sqldate[10]                /* Current date                    */
+            ,userid[66]                 /* User identification             */
+;
+EXEC SQL END DECLARE SECTION;
+
+/* ===========================================================================
+ * Function Declaration area
+ * ===========================================================================
+ */
+
+/* ===========================================================================
+ * getstrs
+ *
+ * returns the no of strings found (seperator = ',') in line
+ *
+ * input line
+ *
+ * output args - array of char pointers to line
+ *
+ * effects truncates line by inserting a 0 at pos of first comma
+ * ===========================================================================
+ */
+
+int getstrs( line, args )
+char *line,*args[];
+{ int noargs = 0;
+  int i = 0;
+  char *l;
+
+  /* if the last char in the record is a , then assume that there should be some data */
+  /* and fool the next bit of code into thinking that there is an extra field         */
+  if (line[strlen(line)-1] == ',' )
+    {
+      line[strlen(line)+1] = '\0'; /* add an extra null terminator at the end of the string */
+	   line[strlen(line)] = ',';    /* add the extra comma before the terminator */
+    }
+
+  while( line!= NULL && *line != '\0' )
+    {
+        args[noargs++]=line;
+
+        line=strchr(line,',');
+        if( line != NULL ) *line++ = '\0';
+    }
+
+    for(i=0;i<noargs;i++)
+    {
+       for(l=args[i],l+=strlen(l)-1; *l==' ' ;*l-- = '\0');
+    }
+
+
+   return(noargs);
+}
+
+/* ===========================================================================
+ * rmcaseup
+ *
+ * This file replaces the standard toupper as defined in ctype.h
+ * this was necessary since the macro on the SUN only worked if the
+ * character being converted was not already uppercase
+ *
+ * ===========================================================================
+ */
+
+int rmcaseup(character)
+int character;
+{
+     if (character >= 'A' && character <= 'Z')
+           return(character);
+     else
+           return(character - 'a' + 'A');
+}
+
+void nullfill(str,len)
+char *str;
+int  len;
+{
+int count;
+   for (count =0 ; count < len; count++)
+       str[count] = '\0';
+}
+
