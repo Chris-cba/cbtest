@@ -1,0 +1,518 @@
+static char *sccsid = "@(#)r3phfile.pc	1.2 12/08/06";
+
+/* ===========================================================================
+* Name : Prohhfile
+*
+* Purpose  :
+*
+*       1. To get the Husky Hunter Load file names.
+*       2. To get the Husky Hunter Error report file names. (STDERR ?)
+*       3. Load file contents into HHINSP_LOAD:
+*
+*                 I. Process detail records by calling module PROINSREC
+*                    for each detail record returned from Husky Hunter
+*                    Load File.
+*
+*                 II. Check record type counts against the information
+*                     against The information returned from the X record.
+*
+*                 III. If error encountered during module rollback work
+*                      from the database.
+*
+*                 IV. If no error encountered during module commit work to the
+*                     database.
+*
+*       4. Close Husky Hunter  File.
+*
+*       5. Close Error Report file.
+*          (STDERR)
+*
+* Type : BOOLEAN (int)
+*        Return 1 if sucessful, return 0 if unsucessfull.
+*
+* Usage :
+*
+*    return = prohhfile()
+*
+* Input :
+*       Name      Type      Meaning
+*       ----      ----      -------
+*       (Argument List)
+*        none.
+*
+* Output :
+*       Name      Type      Meaning
+*       ----      ----      -------
+*       (Argument List)
+*
+*       Function returned value : integer sucess value 0 or 1.
+*       (Return Value)
+*
+*
+* Externals
+* Used :
+*
+*       Reference
+*       (only)    : SQLCA.
+*
+*       Changed   : SQLCA.
+*
+*
+* Notes : Note the function uses both Pro*C or C.
+*
+* Author : G. Dutton 18-APR-88
+*
+* Effects : The function either commits pending work to the database or
+*           rollsback work from the database. The function should also take
+*           a read only lock on the operating system file containing the
+*           Husky Hunter Data and the Error report file (if this is not
+*           the standard error output), it is assumed that the operating
+*           system file management subsystem will take out these locks.
+* Changed : H.Buckley
+* Date    : 21-Jun-1996
+* Descr   : Made a small change to the program to allow users to load the
+*           inspections files which DO NOT have road condition data.
+*
+* Change history:-
+* DATE         : 31-10-97
+* CHANGED BY   : G Fletcher
+* DESCRIPTION  : client-server conversion
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+extern short EXDebug;
+extern char *EXRepOutpath;
+extern BOOLEAN RLINE350;
+extern BOOLEAN ENHANCED;
+extern char pipe_msg[254];
+
+extern char filetype; 		/* R - RMMS     */
+                          /* E - Enhanced */
+BOOLEAN prohhfile(loadfile)
+char *loadfile;
+{
+  BOOLEAN status  = SUCCESS;
+  BOOLEAN sysstat = SUCCESS;
+
+  char temp[13];
+
+  char heading[200]         /* Header variable                              */
+      ,footer[120]          /* Footer variable                              */
+      ,erline[120]          /* Error line buffer variable                   */
+      ,line[MAXLLINE]       /* Record buffer sized to maximum record length */
+      ,blank[2]             /* Blank character buffer                       */
+      ,rectext[MAXLLINE]    /* Record buffer sized to maximum record length */
+      ,rectype              /* Record type                                  */
+      ,*strs[13]            /* Array of 13 character pointers               */
+      ,rse_he_id[11]        /* RSE_HE_ID                                    */
+      ,section[17]          /* Section variable                             */
+      ,inspdate[21]          /* Date of inspection                           */
+      ,insptime[5]          /* Time of inspection                           */
+      ,inspector[4]         /* Inspectors initials variable                 */
+      ,inspector2[4]        /* Secondary inspector                          */
+      ,surface[5]           /* Road surface condition code                  */
+      ,weather[5]           /* Weather condition code                       */
+      ,sectdesc[81]         /* Section description                          */
+      ,null_pointer[2]
+      ;
+  int count                 /* Counter variable                             */
+     ,i                     /* Counter variable                             */
+     ,k                     /* Counter variable                             */
+     ,batchid               /* Batch identification number                  */
+     ,fld_cnt               /* Field counter variable                       */
+     ;
+  FILE *erfi                /* File pointer to error file                   */
+      ,*fi                  /* Data file pointer                            */
+      ;
+
+  #ifndef ibm
+    FILE *fopen();
+  #endif
+
+  void setcount();
+
+  /*
+  Initialises status/sysstat to SUCCESS all subsequent references
+  to status/sysstat should only change them to FAIL. Flags used
+  to : status  : indicates load error to called program.
+  sysstat : indicates OS or ORACLE error to calling program.
+  */
+
+  if(EXDebug)
+    {
+    printf("Function : prohhfile - r3phfile.pc\n");
+    }
+
+  status  = sysstat = SUCCESS;
+
+  strcpy(blank," ");    /*Initalise blank string for padding output         */
+
+  if((erfi = fopen(EXRepOutpath,"w")) == NULL)  /* If error file not write */
+    {
+    errorout(BPR8001,"PROHHFILE1",stdout);
+    return(FAIL);
+    }
+
+  if((fi = fopen(loadfile,"r")) == NULL)   /* If load file not readable     */
+    {                                      /* Provide error message         */
+    write_pipe(NULL,"ERROR: Inspection Load File Could not be opened.");
+    strcpy(pipe_msg,"ERROR: File Name supplied was : ");
+    strcat(pipe_msg,loadfile);
+    write_pipe(NULL,pipe_msg);
+    write_pipe(NULL,"ERROR: Either the file does not exist or does not have read access.");
+    write_pipe(NULL,"ERROR: Please rerun stage 1 and supply the correct filename.");
+    errorout( BPR8002,"PROHHFILE2",erfi);
+    sysstat = FAIL;
+    goto abortload;
+    }
+
+  sprintf(heading,"%20sERROR LOG REPORT\n%16sFOR HH LOAD FILE :  %0.40s\n\n",blank
+                                                                            ,blank
+                                                                            ,loadfile);
+  fprintf(erfi,"%20sERROR LOG REPORT\n%16sFOR HH LOAD FILE :  %0.40s\n\n",blank
+                                                                         ,blank
+                                                                         ,loadfile);
+  /*errorout(heading,"PROHHFILE3",erfi);*/
+
+  if((batchid = get_next_batch_number(erfi)) == 0) /* Obtain new batch id  */
+    {
+    status  = sysstat = FAIL;           /* Set system status to false       */
+    }
+
+  initcounts();                         /* Initialize counter values        */
+  setcount();                           /* Set the value count to 0         */
+  fgets(line,MAXLLINE,fi);              /* Loads from file in 80 chars at a */
+                                        /* time.                            */
+  rectype=line[1];                      /* Obtain record type               */
+
+  for(k=3;line[k]!='\"' && k<MAXLLINE; k++)
+    rectext[k-3] = line[k];             /* Strip off the record type        */
+  rectext[k-3] = '\0';                  /* Set the end of the string        */
+
+  if(toupper(rectype) == 'G')
+    {
+    filetype= 'R';
+    strcpy(pipe_msg,"INFO: Standard RMMS Inspection Format File Found (");
+    strcat(pipe_msg,loadfile);
+    strcat(pipe_msg,").");
+    write_pipe(NULL,pipe_msg);
+    }
+  else if(toupper(rectype) == '1')
+    {
+    filetype= 'E';
+    strcpy(pipe_msg,"INFO: ENHANCED Inspection Format File Found (");
+    strcat(pipe_msg,loadfile);
+    strcat(pipe_msg,").");
+    write_pipe(NULL,pipe_msg);
+    }
+  else
+    {
+    status = FAIL;			                  /* If the first record type is not  */
+    errorout(BPR8009,"PROHHFILE4",erfi);  /* 'G' or '1' then fail with message*/
+    }
+
+  for(count=10;TRUE;count+= 10)          /* Continue                        */
+    {
+    if((rectype=='X')||feof(fi))
+      break;
+
+    if(fgets(line,MAXLLINE,fi) != NULL) /* Load records                   */
+      {
+      if(status && (toupper(rectype) != 'X')) /* If NOT last record       */
+        {
+        if(putrec(batchid,count,rectype,rectext,erfi) == FAIL)
+          {
+          printf("FAIL 4\n");
+          status = FAIL;
+          }
+        }
+
+      if(count == 10 || (count == 20 && ENHANCED)) /* ........Header record.*/
+        {
+        strcpy(null_pointer,"");
+        strs[12] = null_pointer;
+        fld_cnt=getstrs(rectext,strs);
+        if(ENHANCED)
+          RLINE350=(fld_cnt==12) ? TRUE : FALSE;
+
+        /* confirm file type first time through */
+        if(count == 10)
+          {
+          if(filetype == 'E')
+            ENHANCED=(fld_cnt==4) ? TRUE : FALSE;
+
+          if(filetype == 'R')
+            RLINE350=(fld_cnt==12) ? TRUE : FALSE;
+          }
+
+        if((count == 10 && !ENHANCED) || count == 20)
+          {
+          if(fld_cnt < 7)
+            {                             /* minimum value of 9 for non RL350 */
+            errorout(BPR8012,"PROHHFILE5",erfi);
+            status = FAIL;
+            }
+          if((fld_cnt >= 7) && ( fld_cnt < 9 ))
+            {
+            printf ("\n\n");
+            printf ("***************************************************\n");
+            printf ("*                                                 *\n");
+            printf ("* WARNING: This file does not conform to the AS7  *\n");
+            printf ("*         specification. The file will be loaded  *\n");
+            printf ("*         to allow you to load your pre amendment *\n");
+            printf ("*         set 7 data.                             *\n");
+            printf ("*                                                 *\n");
+            printf ("***************************************************\n");
+            printf ("\n\n");
+           
+            write_pipe (NULL,"WARNING: ");
+            write_pipe (NULL,"This file does not conform to the AS7");
+            write_pipe (NULL,"specification. The file will be loaded");
+            write_pipe (NULL,"to allow you to load your pre amendment");
+            write_pipe (NULL,"set 7 data.                            ");
+            write_pipe (NULL,"");
+            }
+  
+          if(toupper(rectype)=='G')     /* If the first record type      */
+            {
+            if(ENHANCED)
+              {
+              strcpy(rse_he_id,strs[0]);    /* Set section variable to linkcode */
+              strcpy(section,strs[1]);    /* Set section variable to linkcode */
+              strcat(section,"/");        /* Append '/' to section            */
+              strcat(section,strs[2]);    /* Concatenate the section number   */
+              strcpy(inspector,strs[3]);  /* Set the primary inspector        */
+              strcpy(inspdate,strs[4]);   /* Set the inspection date          */
+              }
+            else
+              {
+              strcpy(section,strs[0]);    /* Set section variable to linkcode */
+              strcat(section,"/");        /* Append '/' to section            */
+              strcat(section,strs[1]);    /* Concatenate the section number   */
+              strcpy(inspector,strs[2]);  /* Set the primary inspector        */
+              strcpy(inspdate,strs[3]);   /* Set the inspection date          */
+              }
+  
+            if(EXDebug>=1)
+              {
+              puts("");
+              printf("Section   : %s\n",section);
+              strcpy(pipe_msg,"Section   : ");
+              strcat(pipe_msg,(char *)section);
+              write_pipe(erfi,pipe_msg);
+  
+              printf("Inspector : %s\n",inspector);
+              strcpy(pipe_msg,"Inspector   : ");
+              strcat(pipe_msg,(char *)inspector);
+              write_pipe(erfi,pipe_msg);
+  
+              printf("Insp Date : %s\n",inspdate);
+              strcpy(pipe_msg,"Insp Date  : ");
+              strcat(pipe_msg,(char *)inspdate);
+              write_pipe(erfi,pipe_msg);
+              }
+  
+            if(!RLINE350)
+              {
+              *(insptime)  ='\0';
+              *(inspector2)='\0';
+              *(sectdesc)  ='\0';
+              if( fld_cnt > 7 )
+                {
+                strcpy(surface,strs[8]);
+                strcpy(weather,strs[7]);
+                }
+              else
+                {
+                *(surface)='\0';
+                *(weather)='\0';
+                }
+              }
+            else
+              {
+              if(ENHANCED)
+                {
+                strcpy(insptime,strs[5]);  /* Set the inspection time   */
+                strcpy(inspector2,strs[9]);/* Set secondary inspector   */
+                strcpy(surface,strs[11]);  /* Set the road surface code */
+                strcpy(weather,strs[10]);  /* Set the weather condition */
+                strcpy(sectdesc,strs[12]); /* Set section description   */
+                }
+              else
+                {
+                strcpy(insptime,strs[4]);  /* Set the inspection time   */
+                strcpy(inspector2,strs[8]);/* Set secondary inspector   */
+                strcpy(surface,strs[10]);  /* Set the road surface code */
+                strcpy(weather,strs[9]);  /* Set the weather condition */
+                strcpy(sectdesc,strs[11]); /* Set section description   */
+                }
+              }
+  
+            if(EXDebug==1)
+              {
+              printf("Insp Time : %s\n",insptime);
+              strcpy(pipe_msg,"Insp Time  : ");
+              strcat(pipe_msg,(char *)insptime);
+              write_pipe(erfi,pipe_msg);
+              
+              printf("Inspector2: %s\n",inspector2);
+              strcpy(pipe_msg,"Inspector2 : ");
+              strcat(pipe_msg,(char *)inspector2);
+              write_pipe(erfi,pipe_msg);
+              
+              printf("Surface   : %s\n",surface);
+              strcpy(pipe_msg,"Surface   : ");
+              strcat(pipe_msg,(char *)surface);
+              write_pipe(erfi,pipe_msg);
+              
+              printf("Weather   : %s\n",weather);
+              strcpy(pipe_msg,"Weather : ");
+              strcat(pipe_msg,(char *)weather);
+              write_pipe(erfi,pipe_msg);
+              
+              printf("Section   : %s\n",sectdesc);
+              strcpy(pipe_msg,"Section : ");
+              strcat(pipe_msg,(char *)sectdesc);
+              write_pipe(erfi,pipe_msg);
+              }
+            } /* End of rectype == 'G' */
+          } /* End of if count==10      */
+        }
+      if(countrec(rectype) == FALSE)
+        {
+        status = FAIL;
+        sprintf(erline,"%s\n at line : %u\n",BPR8008,count);
+        errorout(erline,"PROHHFILE6",erfi);
+        }
+
+      rectype=line[1];                            /* Set record type   */
+      for(k=3; line[k]!='\"' && k<MAXLLINE;k++)
+        rectext[k-3] = line[k];                   /* Set record text   */
+      rectext[k-3] = '\0';                        /* Term record text  */
+      }
+    } /* end for */
+
+  if(toupper(rectype) != 'X')
+    {
+    errorout(BPR8003,"PROHHFILE7",erfi);
+    status = FAIL;
+    }
+  else
+    if(chktermrec(rectext,erfi)==FALSE)
+      status = FAIL;
+
+  if(strlen(inspdate)>6)
+    {
+    errorout(BPR8300,"PROHHFILE8",erfi);
+    write_pipe(NULL,BPR8300);
+    status = FAIL;
+    }
+
+  if(status)
+    {
+    if(putbatrec(batchid,rectext,'I',erfi,loadfile
+                ,section,inspdate,insptime,inspector
+                ,inspector2,sectdesc) == FALSE)
+      sysstat = FALSE;
+    else
+      if(insertrecs(erfi) == FALSE)
+        sysstat = FALSE;
+    }
+
+  /*-------------------------------------------------------------------------
+  Since the files loaded may have a CTRL&Z character at the end of the file
+  the next bit of code will always caue a failure . At present we will let
+  the messagee go into the logfile but omit failure.
+  -------------------------------------------------------------------------
+  */
+  #ifndef ibm
+    if(feof(fi) == 0)
+      {
+      errorout(BPR8005,"PROHHFILE9",erfi);
+      /* status = FAIL; */
+      }
+  #endif
+
+  if((fclose(fi)) != 0)
+    {
+    errorout(BPR8006,"PROHHFILE10",erfi);
+    sysstat = FAIL;
+    }
+
+  if((status == SUCCESS)&&(sysstat == SUCCESS))
+    {
+    EXEC SQL COMMIT WORK;
+    if(sqlca.sqlcode < 0)
+      {
+      errorout(sqlca.sqlerrm.sqlerrmc,"PROHHFILE11",erfi);
+      sysstat = FAIL;
+      }
+    else
+      {
+      sprintf(footer,"\n%20sBatch : %u\n%20sStage 1 Successful\r%20s___________________\n\n"
+                    ,blank
+                    ,batchid
+                    ,blank
+                    ,blank);
+      printf("%s ",footer);
+      fflush(stdout);
+      write_pipe(erfi,"INFO: Inspection Load Stage 1 in progress.");
+      i_toa(batchid,temp);
+      strcpy(pipe_msg,"INFO: Inspection Load Batch Number is ");
+      strcat(pipe_msg,temp);
+      strcat(pipe_msg,".");
+      write_pipe(erfi,pipe_msg);
+      write_pipe(erfi,"INFO: Inspection Load Stage 1 Successful");
+      write_pipe(erfi,"INFO: Please run Inspection Load Stage 2 (MAI2200D) to complete the load process.");
+      strcpy(pipe_msg,"INFO: You will need to supply the batch number from this run (");
+      strcat(pipe_msg,temp);
+      strcat(pipe_msg,").");
+      write_pipe(erfi,pipe_msg);
+      fprintf(erfi,"%s",footer);
+      fflush(erfi);
+      }
+    }
+  else
+    {
+    printf("\nUnsuccessful consult error log : %s\n",EXRepOutpath);
+    write_pipe(erfi,"ERROR: Inspection Load Stage 1 Unsuccessful.");
+    strcpy(pipe_msg,"ERROR: Inspection Load File causing errors was : ");
+    strcat(pipe_msg,loadfile);
+    strcat(pipe_msg,".");
+    write_pipe(erfi,pipe_msg);
+    strcpy(pipe_msg,"ERROR: Please consult the error log (");
+    strcat(pipe_msg,(char *)EXRepOutpath);
+    strcat(pipe_msg,") for details of the errors.");
+    write_pipe(erfi,pipe_msg);
+    write_pipe(erfi,"ERROR: Please correct the errors described in the log file and resubmit the file through stage 1.");
+    
+    EXEC SQL ROLLBACK WORK;
+    if(sqlca.sqlcode < 0)
+      {
+      errorout(sqlca.sqlerrm.sqlerrmc,"PROHHFILE12",erfi);
+      sysstat = FAIL;
+      }
+    }
+
+  if((fclose(erfi)) != 0)
+    {
+    errorout(BPR8007,"PROHHFILE13",stdout);
+    sysstat = FAIL;
+    }
+
+  return(sysstat);
+
+abortload:
+  if((fclose(erfi)) != 0)
+    {
+    errorout(BPR8007,"PROHHFILE14",stdout);
+    sysstat = FAIL;
+    }
+  return(sysstat);
+}
