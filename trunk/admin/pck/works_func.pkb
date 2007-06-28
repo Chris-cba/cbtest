@@ -3,11 +3,11 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.1   Jun 28 2007 12:14:10   malexander  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jun 28 2007 12:14:10  $
+--       Date fetched Out : $Modtime:   Jun 28 2007 11:09:10  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -837,7 +837,9 @@ IS
 	Cursor c1 is
 		SELECT WOL_ID
 		FROM WORK_ORDER_LINES
-		WHERE WOL_WORKS_ORDER_NO = WorkOrderNo;
+		WHERE WOL_WORKS_ORDER_NO = WorkOrderNo
+        ORDER BY wol_flag desc, wol_rse_he_id, wol_act_area_code, wol_are_st_chain;
+        -- MJA (28-Jun-07) added Order by - Log 708953
 BEGIN
 	For Recs in c1 LOOP
 		if intRecordCount = intLine then
