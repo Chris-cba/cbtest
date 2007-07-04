@@ -6,12 +6,12 @@ REM **************************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.0   Jun 13 2007 16:30:56   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.1   Jul 04 2007 14:21:26   jwadsworth  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:30:56  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:30:36  $
---       SCCS Version     : $Revision:   2.0  $
---       Based on SCCS Version     : 1.11
+--       Date into SCCS   : $Date:   Jul 04 2007 14:21:26  $
+--       Date fetched Out : $Modtime:   Jul 04 2007 13:32:48  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on 
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maiviews.sql	1.37 07/03/02'
@@ -355,7 +355,7 @@ CREATE OR REPLACE FORCE VIEW v_mai3806_def(are_date_work_done
                                           ,rep_date_completed
                                           ,rep_descr
                                           ,rep_tre_treat_code) AS
-SELECT /*+ RULE */
+SELECT /*+ FIRST_ROWS_N */
        are_date_work_done
       ,are_batch_id
       ,are_initiation_type
@@ -440,7 +440,7 @@ CREATE OR REPLACE FORCE VIEW V_MAI3806_DEF2
  REP_LOCAL_DATE_DUE, REP_OLD_DUE_DATE, REP_CREATED_DATE, REP_LAST_UPDATED_DATE, REP_ACTION_CAT,
  REP_ATV_ACTY_AREA_CODE, REP_COMPLETED_HRS, REP_COMPLETED_MINS, REP_RSE_HE_ID)
 AS
-SELECT /*+ RULE */
+SELECT /*+ FIRST_ROWS_N */
        wor.wor_works_order_no
       ,wol.wol_date_created
       ,wor.wor_est_complete
