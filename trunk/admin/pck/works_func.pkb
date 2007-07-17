@@ -3,11 +3,11 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.1   Jun 28 2007 12:14:10   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.2   Jul 17 2007 09:14:08   malexander  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jun 28 2007 12:14:10  $
---       Date fetched Out : $Modtime:   Jun 28 2007 11:09:10  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 17 2007 09:14:08  $
+--       Date fetched Out : $Modtime:   Jul 16 2007 16:10:18  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -1534,8 +1534,10 @@ WorkOrderNo IN VARCHAR2
 	Cursor c1 is
 		SELECT v_item_name
 		FROM V_WWO
-		WHERE V_WORKS_ORDER_NO = WorkOrderNo
-ORDER BY V_ITEM_CODE;
+		WHERE V_WORKS_ORDER_NO = WorkOrderNo;
+-- MJA log 708953: Commented order by out as was causing descriptions
+--                 to be out of sequence with non ordered functions
+--ORDER BY V_ITEM_CODE;
 
 	intRecordCount INTEGER :=1;
 	strLine	VARCHAR2(255):=NULL;
