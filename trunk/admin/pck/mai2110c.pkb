@@ -5,12 +5,12 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.1   Aug 17 2007 19:11:24   mhuitson  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
---       Based on SCCS Version     : 1.7
+--       Date into PVCS   : $Date:   Aug 17 2007 19:11:24  $
+--       Date fetched Out : $Modtime:   Aug 17 2007 18:16:52  $
+--       PVCS Version     : $Revision:   2.1  $
+--       Based on SCCS version :
 --
 --
 --   Author : M Huitson.
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.0  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.1  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -183,8 +183,8 @@ PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
   END flag_attr_error;
   --
 BEGIN
-  nm_debug.debug_on;
-  nm_debug.debug('Starting Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
+  --nm_debug.debug_on;
+  --nm_debug.debug('Starting Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
   /*
   || Initialise Output Error Indicator.
   */
@@ -234,8 +234,8 @@ BEGIN
     --
   END LOOP;
   --
-  nm_debug.debug('Finished Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
-  nm_debug.debug_off;
+  --nm_debug.debug('Finished Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
+  --nm_debug.debug_off;
 END set_attrib_values;
 --
 -----------------------------------------------------------------------------
@@ -442,7 +442,10 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
   EXCEPTION
     WHEN others
      THEN
-        nm3user.set_effective_date(lv_effective_date);
+        IF lv_effective_date IS NOT NULL
+         THEN
+            nm3user.set_effective_date(lv_effective_date);
+        END IF;
         RAISE;
   END create_asset;
   -------------------------------------------------------------------------------
@@ -797,6 +800,7 @@ BEGIN
     INTO lt_he_id
     FROM hhinv_sect_log
    WHERE lst_run_num = pi_run_num
+     AND he_id != -9999999
 --     AND error_msg IS NULL
        ;
   /*
@@ -838,7 +842,10 @@ BEGIN
 EXCEPTION
   WHEN OTHERS
   THEN
-      nm3user.set_effective_date(lv_effective_date);
+      IF lv_effective_date IS NOT NULL
+       THEN
+          nm3user.set_effective_date(lv_effective_date);
+      END IF;
       RAISE;
 END ins_assets;
 --
@@ -1032,7 +1039,7 @@ BEGIN
   --
   FOR i IN 1..lt_ne_id.COUNT LOOP
     --
-    Nm_Debug.DEBUG('Loop '||TO_CHAR(i)||' S_SLK = '||TO_CHAR( lt_s_slk(i) )||' E_SLK = '||TO_CHAR( lt_s_slk(i) )||' Dir = '||TO_CHAR(lt_card(i)));
+    --Nm_Debug.DEBUG('Loop '||TO_CHAR(i)||' S_SLK = '||TO_CHAR( lt_s_slk(i) )||' E_SLK = '||TO_CHAR( lt_s_slk(i) )||' Dir = '||TO_CHAR(lt_card(i)));
     --
     IF lt_s_slk(i) >= pi_start
      AND lt_e_slk(i) <= pi_end
