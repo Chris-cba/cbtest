@@ -2,7 +2,8 @@
 /* r2mainy.pc                      */
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
-static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07";
+/* static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07"; */
+static char *sccsid = "PVCS Version     : $Revision:$";
 
 #include <stdio.h>
 #include <string.h>
@@ -884,14 +885,14 @@ int ck_ch_vs_leng()
                      AND    ITY.ITY_INV_CODE = HHL2B.INV_CODE
                      AND   ( (RSE.RSE_SYS_FLAG = 'D'
                             AND  nvl(HHL2B.END_CHAIN,HHL2B.ST_CHAIN)
-                                 >= greatest(nvl(RSE.RSE_LENGTH,0) *
+                                 > greatest(nvl(RSE.RSE_LENGTH,0) *
                                  (100 + :endtoldtp) / 100,
                                  nvl(RSE.RSE_MAX_CHAIN,0)  ))
                             OR
                            (RSE.RSE_SCL_SECT_CLASS <> 'NL'
                             AND  RSE.RSE_SYS_FLAG = 'L'
                             AND  nvl(HHL2B.END_CHAIN,HHL2B.ST_CHAIN)
-                                 >= nvl(RSE.RSE_LENGTH,0) * ((100 + :endtollocl) / 100) ) )
+                                 > nvl(RSE.RSE_LENGTH,0) * ((100 + :endtollocl) / 100) ) )
                      AND   RSE.RSE_LENGTH || RSE.RSE_MAX_CHAIN is not null
                      and   hhl2b.survey_length is null)
                      AND   LST_RUN_NUM = :run_num
@@ -1048,7 +1049,7 @@ int ck_ch_vs_leng()
                      FROM   HHINV_LOAD_2 HHL2B, ROAD_SECTIONS RSE
                      WHERE  RSE.RSE_HE_ID = HHL2B.HE_ID
                      AND    nvl(HHL2B.END_CHAIN,HHL2B.ST_CHAIN)
-                            >= greatest(nvl(RSE.RSE_LENGTH,0) * 1.1,
+                            > greatest(nvl(RSE.RSE_LENGTH,0) * 1.1,
                                         nvl(RSE.RSE_MAX_CHAIN,0)    )
                      AND   RSE.RSE_LENGTH || RSE.RSE_MAX_CHAIN is not null  )
                      AND   LST_RUN_NUM = :run_num
@@ -1069,7 +1070,7 @@ int ck_ch_vs_leng()
                      FROM   HHINV_LOAD_2 HHL2B, ROAD_SEGMENTS RSE
                      WHERE  RSE.RSE_HE_ID = HHL2B.HE_ID
                      AND    nvl(HHL2B.END_CHAIN,HHL2B.ST_CHAIN)
-                            >= greatest(nvl(RSE.RSE_LENGTH,0) * 1.1,
+                            > greatest(nvl(RSE.RSE_LENGTH,0) * 1.1,
                                         nvl(RSE.RSE_MAX_CHAIN,0)    )
                      AND   RSE.RSE_LENGTH || RSE.RSE_MAX_CHAIN is not null  )
                      AND   LST_RUN_NUM = :run_num
@@ -4568,8 +4569,8 @@ int load_into_invent()
       :errors_occured:ierrors_occured  := lv_error;
     END;
   END-EXEC;
-        if (sqlca.sqlcode < 0)
-                sql_err("load_into_invent 1");
+  if(sqlca.sqlcode < 0)
+    sql_err("load_into_invent 1");
 
   C_cards += records_created;
   /*---------------------------*/
@@ -4583,9 +4584,9 @@ int load_into_invent()
     pull_inv_due_attr();
     upd_x_err_2();
     }
-        if (sqlca.sqlcode < 0)
-                sql_err("load_into_invent 2");
-        else
+  if(sqlca.sqlcode < 0)
+    sql_err("load_into_invent 2");
+  else
     return(SUCCESS);
 } /* load_into_invent */
 
