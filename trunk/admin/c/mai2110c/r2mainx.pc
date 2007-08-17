@@ -2,7 +2,8 @@
 /* r2mainx.pc                      */
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
-static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07";
+/* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
+static char *sccsid = "PVCS Version     : $Revision:$";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -445,10 +446,13 @@ char *argv[];
 		   WHERE HOP_ID='RMMSFLAG'
 		   AND   HOP_PRODUCT='HIG';
 
-  printf ("\nDate is %s\n",full_date.arr);
-  strcpy(pipe_msg,"Date is ");
-  strcat(pipe_msg,(char *)full_date.arr);
-  write_pipe(fi,pipe_msg);
+  if(EXDebug)
+    {
+    printf ("\nDate is %s\n",full_date.arr);
+    strcpy(pipe_msg,"Date is ");
+    strcat(pipe_msg,(char *)full_date.arr);
+    write_pipe(fi,pipe_msg);
+    }
 
   switch  (rmms_flag)
   {
@@ -2034,7 +2038,8 @@ int copy_data_1()
         c_sys_flag[i].arr[c_sys_flag[i].len]='\0';
         noargs = getstrs(c_text[i].arr,strs);
 
-printf ("noargs is %d\n",noargs);
+        if(EXDebug)
+          printf("noargs is %d\n",noargs);
 
         switch (noargs) {
 
