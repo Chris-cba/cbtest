@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.1   Aug 03 2007 16:41:32   sscanlon  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.2   Sep 05 2007 10:32:54   dyounger  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Aug 03 2007 16:41:32  $
---       Date fetched Out : $Modtime:   Aug 03 2007 16:28:06  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Sep 05 2007 10:32:54  $
+--       Date fetched Out : $Modtime:   Sep 05 2007 09:40:26  $
+--       Version          : $Revision:   2.2  $
 --
 --   Product metadata script
 --
@@ -83,7 +83,7 @@ INSERT INTO HIG_PRODUCTS
        ,HPR_KEY
        ,HPR_SEQUENCE
        )
-SELECT 
+SELECT
         'MAI'
        ,'maintenance manager'
        ,'3.1.1.0'
@@ -101,7 +101,7 @@ INSERT INTO HIG_PRODUCTS
        ,HPR_KEY
        ,HPR_SEQUENCE
        )
-SELECT 
+SELECT
         'PMS'
        ,'structural projects v2 - REDUNDANT'
        ,'3.1.1.0'
@@ -119,7 +119,7 @@ INSERT INTO HIG_PRODUCTS
        ,HPR_KEY
        ,HPR_SEQUENCE
        )
-SELECT 
+SELECT
         'STP'
        ,'structural projects'
        ,'3.1.1.0'
@@ -152,7 +152,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,133
        ,null
@@ -169,7 +169,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,900
        ,null
@@ -186,7 +186,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,901
        ,null
@@ -203,7 +203,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,902
        ,null
@@ -220,7 +220,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,903
        ,null
@@ -237,7 +237,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,904
        ,null
@@ -254,7 +254,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,905
        ,null
@@ -271,7 +271,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,906
        ,null
@@ -288,7 +288,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,907
        ,null
@@ -305,7 +305,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,910
        ,null
@@ -322,7 +322,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,911
        ,null
@@ -339,7 +339,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,912
        ,null
@@ -356,7 +356,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,913
        ,null
@@ -373,7 +373,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,914
        ,900
@@ -390,7 +390,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,915
        ,null
@@ -407,7 +407,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,916
        ,null
@@ -424,7 +424,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,917
        ,null
@@ -441,7 +441,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,918
        ,null
@@ -458,7 +458,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,919
        ,null
@@ -475,7 +475,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,920
        ,null
@@ -492,7 +492,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,921
        ,null
@@ -509,7 +509,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,922
        ,null
@@ -526,7 +526,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,923
        ,null
@@ -543,7 +543,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,924
        ,null
@@ -560,7 +560,7 @@ INSERT INTO NM_ERRORS
        ,NER_DESCR
        ,NER_CAUSE
        )
-SELECT 
+SELECT
         'MAI'
        ,925
        ,null
@@ -569,6 +569,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 925);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT
+        'MAI'
+       ,4
+       ,null
+       ,'Error Closing Element'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 4);
 --
 --
 --********** HIG_DOMAINS **********--
@@ -591,7 +608,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'MAI'
        ,'Road Section Attributes'
@@ -605,7 +622,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'MAI'
        ,'Assessment Codes'
@@ -619,7 +636,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ASSET_MODIFICATION'
        ,'MAI'
        ,'Asset Modification Flag'
@@ -633,7 +650,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ATV_CALC_TYPE'
        ,'MAI'
        ,'Calculation Method'
@@ -647,7 +664,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'MAI'
        ,'Unit of Measurement'
@@ -661,7 +678,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'MAI'
        ,'Quality Inspection Check Codes'
@@ -675,7 +692,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'CHECK_RESULT'
        ,'MAI'
        ,'Quality Inspection Results'
@@ -689,7 +706,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'CREDIT_TYPE'
        ,'MAI'
        ,'Credit Types'
@@ -703,7 +720,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'MAI'
        ,'Defect Attributes'
@@ -717,7 +734,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'DEFECT_PRIORITIES'
        ,'MAI'
        ,'Defect Priorities'
@@ -731,7 +748,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'DEFLECTOGRAPH_BANDS'
        ,'MAI'
        ,'Bands to aggregate Deflectograph Results'
@@ -745,7 +762,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'MAI'
        ,'Electricity Board Ids'
@@ -759,7 +776,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'MAI'
        ,'Electricity Board Codes'
@@ -773,7 +790,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'GANG'
        ,'MAI'
        ,'Gang Number Allocation'
@@ -787,7 +804,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'MAI'
        ,'Gang Work type'
@@ -801,7 +818,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'MAI'
        ,'Activity Reports Initiation Types'
@@ -815,7 +832,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'INS_CLAIMS_REPORT'
        ,'MAI'
        ,'Insurance Claims Report Formats'
@@ -829,7 +846,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'INTERIM_PAYMENT'
        ,'MAI'
        ,'Interim Payment Status'
@@ -843,7 +860,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'MAI'
        ,'Inventory Groupings'
@@ -857,7 +874,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'MAI'
        ,'Lamp Types'
@@ -871,7 +888,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'MAINT_INSP_FLAG'
        ,'MAI'
        ,'Maintenance Inspection Flag'
@@ -885,7 +902,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'MAI'
        ,'Organisation Unit Types'
@@ -899,7 +916,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'PARAMETER_TYPE'
        ,'MAI'
        ,'Parameter Type'
@@ -913,7 +930,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'MAI'
        ,'SQL Condition Types'
@@ -927,7 +944,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'PROGRAMME_TYPE'
        ,'MAI'
        ,'Scheme Programme Types'
@@ -941,7 +958,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'MAI'
        ,'Quality Codes'
@@ -955,7 +972,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'REPAIR_TYPE'
        ,'MAI'
        ,'Defect Repair Types'
@@ -969,7 +986,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'REQUIRED_TYPES'
        ,'MAI'
        ,'Work Category Required Types'
@@ -983,7 +1000,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'RESPONSE_TYPES'
        ,'MAI'
        ,'Defect Notice Response Types'
@@ -997,7 +1014,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'ROAD_CHARACTERISTIC'
        ,'MAI'
        ,'Inventory Type Characteristics'
@@ -1011,7 +1028,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'MAI'
        ,'Work Category Scheme Types'
@@ -1025,7 +1042,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'SUMMATION_TYPES'
        ,'MAI'
        ,'Road Condition Report - Summation Types'
@@ -1039,7 +1056,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'WOR_FLAG'
        ,'MAI'
        ,'Works Order Type'
@@ -1053,7 +1070,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'WOR_PRIORITY'
        ,'MAI'
        ,'Works Order Priority'
@@ -1067,7 +1084,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'WOR_REGISTER_STATUS'
        ,'MAI'
        ,'Works Order Register Status'
@@ -1081,7 +1098,7 @@ INSERT INTO HIG_DOMAINS
        ,HDO_TITLE
        ,HDO_CODE_LENGTH
        )
-SELECT 
+SELECT
         'XSP_TYPE'
        ,'MAI'
        ,'Cross Sectional Position Types'
@@ -1117,7 +1134,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'1'
        ,'RSE_ROAD_TYPE'
@@ -1138,7 +1155,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'2'
        ,'RSE_CARRIAGEWAY_TYPE'
@@ -1159,7 +1176,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'3'
        ,'RSE_ROAD_ENVIRONMENT'
@@ -1180,7 +1197,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'4'
        ,'RSE_MAINT_CATEGORY'
@@ -1201,7 +1218,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'5'
        ,'RSE_FOOTWAY_CATEGORY'
@@ -1222,7 +1239,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'6'
        ,'RSE_ROAD_CATEGORY'
@@ -1243,7 +1260,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'7'
        ,'RSE_TRAFFIC_LEVEL'
@@ -1264,7 +1281,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ADSP_RSE_ATTS'
        ,'8'
        ,'RSE_SCL_SECT_CLASS'
@@ -1285,7 +1302,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'DF'
        ,'Deflectograph'
@@ -1306,7 +1323,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'HL'
        ,'Longitudinal Profile'
@@ -1327,7 +1344,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'HR'
        ,'Rutting Depth'
@@ -1348,7 +1365,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'HT'
        ,'Macrotexture'
@@ -1369,7 +1386,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'MC'
        ,'March'
@@ -1390,7 +1407,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSESSMENT_CODE'
        ,'SR'
        ,'Skid'
@@ -1411,7 +1428,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSET_MODIFICATION'
        ,'A'
        ,'Add New'
@@ -1432,7 +1449,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSET_MODIFICATION'
        ,'D'
        ,'Decommission'
@@ -1453,7 +1470,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSET_MODIFICATION'
        ,'R'
        ,'Replace'
@@ -1474,7 +1491,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ASSET_MODIFICATION'
        ,'U'
        ,'Upgrade'
@@ -1495,7 +1512,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_CALC_TYPE'
        ,'A'
        ,'Area'
@@ -1516,7 +1533,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_CALC_TYPE'
        ,'L'
        ,'Length'
@@ -1537,7 +1554,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_CALC_TYPE'
        ,'N'
        ,'Number'
@@ -1558,7 +1575,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_CALC_TYPE'
        ,'T'
        ,'Trapezium Area Rule'
@@ -1579,7 +1596,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'GRIP'
        ,'Grip'
@@ -1600,7 +1617,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'GULLEY'
        ,'Gulley'
@@ -1621,7 +1638,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'ITEM'
        ,'Item'
@@ -1642,7 +1659,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'LIN.M'
        ,'Metres'
@@ -1663,7 +1680,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'PERCENT'
        ,'Percent'
@@ -1684,7 +1701,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'PIT'
        ,'Pit'
@@ -1705,7 +1722,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'POINT'
        ,'Point'
@@ -1726,7 +1743,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'SIGN'
        ,'Sign'
@@ -1747,7 +1764,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ATV_UNIT'
        ,'SQ.M'
        ,'Square Metres'
@@ -1768,7 +1785,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'BR'
        ,'Broken'
@@ -1789,7 +1806,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'CR'
        ,'Cracked'
@@ -1810,7 +1827,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'DF'
        ,'Defective'
@@ -1831,7 +1848,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'HI'
        ,'High'
@@ -1852,7 +1869,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'LO'
        ,'Low'
@@ -1873,7 +1890,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_CODE'
        ,'UN'
        ,'Uneven'
@@ -1894,7 +1911,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_RESULT'
        ,'B'
        ,'Borderline'
@@ -1915,7 +1932,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_RESULT'
        ,'F'
        ,'Fail'
@@ -1936,7 +1953,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CHECK_RESULT'
        ,'P'
        ,'Pass'
@@ -1957,7 +1974,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CREDIT_TYPE'
        ,'1'
        ,'1 month credit'
@@ -1978,7 +1995,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'CREDIT_TYPE'
        ,'2'
        ,'2 months credit'
@@ -1999,7 +2016,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_AREA'
        ,'Defect Area'
@@ -2020,7 +2037,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_COORD_FLAG'
        ,'Coord. Flag'
@@ -2041,7 +2058,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_DEFECT_DESCR'
        ,'Defect Descr'
@@ -2062,7 +2079,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_DIAGRAM_NO'
        ,'Diagram No'
@@ -2083,7 +2100,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_HEIGHT'
        ,'Height'
@@ -2104,7 +2121,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_IDENT_CODE'
        ,'Ident Code'
@@ -2125,7 +2142,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_LENGTH'
        ,'Length'
@@ -2146,7 +2163,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_NUMBER'
        ,'Number'
@@ -2167,7 +2184,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_PER_CENT'
        ,'Per Cent'
@@ -2188,7 +2205,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_SERIAL_NO'
        ,'Serial No'
@@ -2209,7 +2226,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_ATTRIBUTES'
        ,'DEF_SKID_COEFF'
        ,'Skid Coeff.'
@@ -2230,7 +2247,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_PRIORITIES'
        ,'1'
        ,'Category 1'
@@ -2251,7 +2268,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_PRIORITIES'
        ,'2.1'
        ,'Category 2.1'
@@ -2272,7 +2289,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_PRIORITIES'
        ,'2.2'
        ,'Category 2.2'
@@ -2293,7 +2310,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFECT_PRIORITIES'
        ,'2.3'
        ,'Category 2.3'
@@ -2314,7 +2331,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFLECTOGRAPH_BANDS'
        ,'-99'
        ,'Band A lower limit incl'
@@ -2335,7 +2352,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFLECTOGRAPH_BANDS'
        ,'05'
        ,'Band A upper limit incl - Band B lower limit'
@@ -2356,7 +2373,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFLECTOGRAPH_BANDS'
        ,'10'
        ,'Band B upper limit incl - Band C lower limit'
@@ -2377,7 +2394,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'DEFLECTOGRAPH_BANDS'
        ,'99'
        ,'Band C upper limit incl'
@@ -2398,7 +2415,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'1'
        ,'EMEL'
@@ -2419,7 +2436,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'2'
        ,'EAEL'
@@ -2440,7 +2457,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'3'
        ,'LOEL'
@@ -2461,7 +2478,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'4'
        ,'MANW'
@@ -2482,7 +2499,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'5'
        ,'MIEL'
@@ -2503,7 +2520,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'6'
        ,'NAPO'
@@ -2524,7 +2541,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'7'
        ,'NOEL'
@@ -2545,7 +2562,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'8'
        ,'NORW'
@@ -2566,7 +2583,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'9'
        ,'PGEN'
@@ -2587,7 +2604,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'A'
        ,'SEAB'
@@ -2608,7 +2625,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'B'
        ,'SWAL'
@@ -2629,7 +2646,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'C'
        ,'SOEL'
@@ -2650,7 +2667,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'D'
        ,'SWEL'
@@ -2671,7 +2688,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_BOARD'
        ,'E'
        ,'YOEL'
@@ -2692,7 +2709,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'EAEL'
        ,'Eastern Electricity'
@@ -2713,7 +2730,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'EMEL'
        ,'East Midlands Electricity'
@@ -2734,7 +2751,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'LOEL'
        ,'London Electricity PLC'
@@ -2755,7 +2772,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'MANW'
        ,'MANWEB'
@@ -2776,7 +2793,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'MIEL'
        ,'Midlands Electricity'
@@ -2797,7 +2814,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'NAPO'
        ,'National Power PLC'
@@ -2818,7 +2835,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'NOEL'
        ,'Northern Electric'
@@ -2839,7 +2856,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'NORW'
        ,'NORWEB'
@@ -2860,7 +2877,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'PGEN'
        ,'Powergen'
@@ -2881,7 +2898,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'SEAB'
        ,'SEABOARD'
@@ -2902,7 +2919,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'SOEL'
        ,'Southern Electric'
@@ -2923,7 +2940,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'SWAL'
        ,'South Wales Electricity'
@@ -2944,7 +2961,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'SWEL'
        ,'South Western Electricity'
@@ -2965,7 +2982,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ELEC_ID'
        ,'YOEL'
        ,'Yorkshire Electricity'
@@ -2986,7 +3003,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG'
        ,'1'
        ,'Gang 1'
@@ -3007,7 +3024,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG'
        ,'2'
        ,'Gang 2'
@@ -3028,7 +3045,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG'
        ,'3'
        ,'Gang 3'
@@ -3049,7 +3066,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG'
        ,'4'
        ,'Gang 4'
@@ -3070,7 +3087,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'ALL'
        ,'All items'
@@ -3091,7 +3108,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'CA'
        ,'Cash Value'
@@ -3112,7 +3129,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'JET'
        ,'Jetting'
@@ -3133,7 +3150,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'POT'
        ,'Pothole'
@@ -3154,7 +3171,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'GANG_WORK_TYPE'
        ,'TM'
        ,'Traffic Management'
@@ -3175,7 +3192,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'DUM'
        ,'Dummy'
@@ -3196,7 +3213,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'NRM'
        ,'Normal'
@@ -3217,7 +3234,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'OTH'
        ,'Other'
@@ -3238,7 +3255,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'PAT'
        ,'Safety Patrol'
@@ -3259,7 +3276,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'PBL'
        ,'Public'
@@ -3280,7 +3297,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'PE'
        ,'Public Enquiry'
@@ -3301,7 +3318,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INITIATION_TYPE'
        ,'POL'
        ,'Police'
@@ -3322,7 +3339,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INS_CLAIMS_REPORT'
        ,'1'
        ,'Summary of Inspections'
@@ -3343,7 +3360,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INS_CLAIMS_REPORT'
        ,'2'
        ,'Summary of Inspections and associated Defects'
@@ -3364,7 +3381,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INS_CLAIMS_REPORT'
        ,'3'
        ,'Full history of Inspections and associated Defects'
@@ -3385,7 +3402,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INTERIM_PAYMENT'
        ,'P'
        ,'Paid'
@@ -3406,7 +3423,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INTERIM_PAYMENT'
        ,'U'
        ,'Unpaid'
@@ -3427,7 +3444,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'C'
        ,'Carriageway'
@@ -3448,7 +3465,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'D'
        ,'Drainage'
@@ -3469,7 +3486,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'E'
        ,'Electrical'
@@ -3490,7 +3507,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'O'
        ,'Other'
@@ -3511,7 +3528,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'INVENTORY_GROUPS'
        ,'R'
        ,'Road Condition'
@@ -3532,7 +3549,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'MBF'
        ,'High pressure Mercury, tubular fluorescent'
@@ -3553,7 +3570,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'MBI'
        ,'Mercury Halide'
@@ -3574,7 +3591,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'MBTL'
        ,'Mercury Tungsten Halogen'
@@ -3595,7 +3612,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'MCF'
        ,'Low High pressure Mercury, tubular fluorescent'
@@ -3616,7 +3633,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'SLI'
        ,'Low presure Sodium, linear'
@@ -3637,7 +3654,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'SON'
        ,'High pressure Sodium, ellipical envelope'
@@ -3658,7 +3675,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'SOX'
        ,'Low pressure Sodium, U-bend on standard control gear'
@@ -3679,7 +3696,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'SOXE'
        ,'Low pressure Sodium, U-bend new_type low-loss gear'
@@ -3700,7 +3717,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'SOXL'
        ,'Low pressure Sodium, U-bend low-loss control gear'
@@ -3721,7 +3738,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'TF'
        ,'Tungsten'
@@ -3742,7 +3759,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'LAMP_CONFIGS'
        ,'TH'
        ,'Tungsten Halogen'
@@ -3763,7 +3780,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'MAINT_INSP_FLAG'
        ,'D'
        ,'Detailed'
@@ -3784,7 +3801,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'MAINT_INSP_FLAG'
        ,'S'
        ,'Safety'
@@ -3805,7 +3822,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'A'
        ,'Admin Unit'
@@ -3826,7 +3843,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'CO'
        ,'Contractor'
@@ -3847,7 +3864,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'EB'
        ,'Electricity Board'
@@ -3868,7 +3885,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'NO'
        ,'Notifiable Org'
@@ -3889,7 +3906,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'PA'
        ,'Parish'
@@ -3910,7 +3927,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ORG_UNIT_TYPE'
        ,'RE'
        ,'Rechargeable Org'
@@ -3931,7 +3948,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PARAMETER_TYPE'
        ,'CHAR'
        ,'Character'
@@ -3952,7 +3969,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PARAMETER_TYPE'
        ,'DATE'
        ,'Date'
@@ -3973,7 +3990,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PARAMETER_TYPE'
        ,'NUMB'
        ,'Number'
@@ -3994,7 +4011,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'<'
        ,'Less than'
@@ -4015,7 +4032,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'<='
        ,'<='
@@ -4036,7 +4053,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'='
        ,'Equal to'
@@ -4057,7 +4074,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'>'
        ,'Greater than'
@@ -4078,7 +4095,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'>='
        ,'>='
@@ -4099,7 +4116,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'BETWEEN'
        ,'between'
@@ -4120,7 +4137,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'IN'
        ,'In'
@@ -4141,7 +4158,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'IS NOT NULL'
        ,'is not null'
@@ -4162,7 +4179,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'IS NULL'
        ,'is null'
@@ -4183,7 +4200,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'LIKE'
        ,'Like'
@@ -4204,7 +4221,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'NOT IN'
        ,'Not in'
@@ -4225,7 +4242,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PBI_CONDITION'
        ,'NOT LIKE'
        ,'Not like'
@@ -4246,7 +4263,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PROGRAMME_TYPE'
        ,'C'
        ,'Current Scheme'
@@ -4267,7 +4284,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PROGRAMME_TYPE'
        ,'H'
        ,'Historic Scheme'
@@ -4288,7 +4305,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'PROGRAMME_TYPE'
        ,'R'
        ,'Rolling Scheme'
@@ -4309,7 +4326,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'G'
        ,'Good'
@@ -4330,7 +4347,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'M'
        ,'Medium'
@@ -4351,7 +4368,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'P'
        ,'Poor'
@@ -4372,7 +4389,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'VB'
        ,'Very Bad'
@@ -4393,7 +4410,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'QUALITY_CODE'
        ,'VG'
        ,'Very Good'
@@ -4414,7 +4431,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REPAIR_TYPE'
        ,'I'
        ,'Immediate'
@@ -4435,7 +4452,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REPAIR_TYPE'
        ,'P'
        ,'Permanent'
@@ -4456,7 +4473,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REPAIR_TYPE'
        ,'T'
        ,'Temporary'
@@ -4477,7 +4494,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REQUIRED_TYPES'
        ,'A'
        ,'Area'
@@ -4498,7 +4515,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REQUIRED_TYPES'
        ,'L'
        ,'Length'
@@ -4519,7 +4536,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'REQUIRED_TYPES'
        ,'N'
        ,'Number'
@@ -4540,7 +4557,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'RESPONSE_TYPES'
        ,'A'
        ,'Accepted'
@@ -4561,7 +4578,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'RESPONSE_TYPES'
        ,'N'
        ,'Not Accepted'
@@ -4582,7 +4599,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ROAD_CHARACTERISTIC'
        ,'I'
        ,'Inventory Data'
@@ -4603,7 +4620,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ROAD_CHARACTERISTIC'
        ,'M'
        ,'Machine Data'
@@ -4624,7 +4641,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ROAD_CHARACTERISTIC'
        ,'R'
        ,'Road Condition Data'
@@ -4645,7 +4662,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'ROAD_CHARACTERISTIC'
        ,'T'
        ,'Traffic Data'
@@ -4666,7 +4683,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'LR'
        ,'Local Road Bids'
@@ -4687,7 +4704,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'RD'
        ,'Road Bids'
@@ -4708,7 +4725,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'RN'
        ,'Renewal Bids'
@@ -4729,7 +4746,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'SC'
        ,'Summary Bids - Cat2'
@@ -4750,7 +4767,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SCHEME_TYPES'
        ,'SN'
        ,'Summary Bids - Non Cat2'
@@ -4771,7 +4788,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SUMMATION_TYPES'
        ,'Q'
        ,'Quarterly'
@@ -4792,7 +4809,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SUMMATION_TYPES'
        ,'QT'
        ,'Quarterly Trend'
@@ -4813,7 +4830,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SUMMATION_TYPES'
        ,'TD'
        ,'To Date'
@@ -4834,7 +4851,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'SUMMATION_TYPES'
        ,'Y'
        ,'Yearly'
@@ -4855,7 +4872,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_FLAG'
        ,'D'
        ,'Defect Clearance'
@@ -4876,7 +4893,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_FLAG'
        ,'M'
        ,'Cyclic Maintenance'
@@ -4897,7 +4914,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_FLAG'
        ,'S'
        ,'Small Schemes'
@@ -4918,7 +4935,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_PRIORITY'
        ,'1'
        ,'High Priority'
@@ -4939,7 +4956,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_PRIORITY'
        ,'2'
        ,'Medium Priority'
@@ -4960,7 +4977,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_PRIORITY'
        ,'3'
        ,'Low Priority'
@@ -4981,7 +4998,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_REGISTER_STATUS'
        ,'C'
        ,'Completed'
@@ -5002,7 +5019,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_REGISTER_STATUS'
        ,'N'
        ,'Nothing to register'
@@ -5023,7 +5040,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'WOR_REGISTER_STATUS'
        ,'O'
        ,'Outstanding'
@@ -5044,7 +5061,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'XSP_TYPE'
        ,'B'
        ,'Both CWay and FWay'
@@ -5065,7 +5082,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'XSP_TYPE'
        ,'C'
        ,'Carriageway'
@@ -5086,7 +5103,7 @@ INSERT INTO HIG_CODES
        ,HCO_START_DATE
        ,HCO_END_DATE
        )
-SELECT 
+SELECT
         'XSP_TYPE'
        ,'F'
        ,'Footway'
@@ -5128,7 +5145,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI0132'
        ,'Work Order Priorities'
        ,'mai0132'
@@ -5152,7 +5169,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1200'
        ,'Activities'
        ,'mai1200'
@@ -5176,7 +5193,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1205'
        ,'Activity Groups'
        ,'mai1205'
@@ -5200,7 +5217,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1210'
        ,'Local Activity Frequencies'
        ,'mai1210'
@@ -5224,7 +5241,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1230'
        ,'Default Section Intervals Calculation'
        ,'mai1230'
@@ -5248,7 +5265,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1240'
        ,'Default Section Intervals'
        ,'mai1240'
@@ -5272,7 +5289,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1280'
        ,'External Activities'
        ,'mai1280'
@@ -5296,7 +5313,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1300'
        ,'Defect Control Data'
        ,'mai1300'
@@ -5320,7 +5337,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1315'
        ,'Treatment Data'
        ,'mai1315'
@@ -5344,7 +5361,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1320'
        ,'Enquiry/Treatment Types'
        ,'mai1320'
@@ -5368,7 +5385,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1325'
        ,'Enquiry/Defect Priorities'
        ,'mai1325'
@@ -5392,7 +5409,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1400'
        ,'v2 Asset Type Translations'
        ,'mai1400'
@@ -5416,7 +5433,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1430'
        ,'Lamp Configurations'
        ,'mai1430'
@@ -5440,7 +5457,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1808'
        ,'List of Organisations'
        ,'mai1808'
@@ -5464,7 +5481,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1830'
        ,'People'
        ,'mai1830'
@@ -5488,7 +5505,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1840'
        ,'List of People'
        ,'mai1840'
@@ -5512,7 +5529,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1870'
        ,'Organisations'
        ,'mai1870'
@@ -5536,7 +5553,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1930'
        ,'IHMS Allocated Amounts'
        ,'mai1930'
@@ -5560,7 +5577,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI1940'
        ,'Item Code Breakdowns'
        ,'mai1940'
@@ -5584,7 +5601,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2100'
        ,'Load Inventory Data into Database - (Stage 1)'
        ,'mai2100'
@@ -5608,7 +5625,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2100C'
        ,'Inventory Loader (Part 1)'
        ,'mai2100c'
@@ -5632,7 +5649,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2100F'
        ,'Stage 1 Inventory Load (Validation only)'
        ,'mai2100f'
@@ -5656,7 +5673,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2105C'
        ,'Reformat Road Group Inventory Data'
        ,'mai2105c'
@@ -5680,7 +5697,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2110'
        ,'Load Inventory Data into Main Database - (Stage 2)'
        ,'mai2110'
@@ -5704,7 +5721,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2110C'
        ,'Inventory Loader (Part 2)'
        ,'mai2110c'
@@ -5728,7 +5745,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2115'
        ,'Print Potential Inventory Duplicates'
        ,'mai2115'
@@ -5752,7 +5769,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2120'
        ,'Correct Inventory Load Errors'
        ,'mai2120'
@@ -5776,7 +5793,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2140'
        ,'Query Network/Inventory Data'
        ,'mai2140'
@@ -5800,7 +5817,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200A'
        ,'Load Bulk Inspection Data - Phase 1'
        ,'mai2200a'
@@ -5824,7 +5841,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200B'
        ,'Load Bulk Inspection Data - Phase 2'
        ,'mai2200b'
@@ -5848,7 +5865,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200C'
        ,'Inspection Loader (Part 1)'
        ,'mai2200c'
@@ -5872,7 +5889,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200D'
        ,'Inspection Loader (Part 2)'
        ,'mai2200d'
@@ -5896,7 +5913,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200E'
        ,'Load Bulk Inspection Data - Phase 1 + 2'
        ,'mai2200e'
@@ -5920,7 +5937,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2200R'
        ,'Bulk Inspection Load - Stage 2 Report'
        ,'mai2200r'
@@ -5944,7 +5961,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2210'
        ,'Print Defective Advisory Roadstuds Report'
        ,'mai2210'
@@ -5968,7 +5985,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2220'
        ,'Download Static Ref Data for DCD Inspections'
        ,'mai2220'
@@ -5992,7 +6009,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2222'
        ,'Download Standard Item Data for DCD Inspections'
        ,'mai2222'
@@ -6016,7 +6033,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2224'
        ,'Download Network Data for DCD Inspections'
        ,'mai2224'
@@ -6040,7 +6057,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2250'
        ,'Correct Inspection Load Errors'
        ,'mai2250'
@@ -6064,7 +6081,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2305'
        ,'Query Assets'
        ,'mai2305'
@@ -6088,7 +6105,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2306'
        ,'Hierarchy Navigator'
        ,'mai2306'
@@ -6112,7 +6129,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2310A'
        ,'View Condition Data'
        ,'nm0590'
@@ -6136,7 +6153,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2315'
        ,'Print Inventory Items (matrix format)'
        ,'mai2315'
@@ -6160,7 +6177,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2320'
        ,'Print Inventory Map'
        ,'mai2320'
@@ -6184,7 +6201,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2325'
        ,'Print Inventory Summary'
        ,'mai2325'
@@ -6208,7 +6225,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2325A'
        ,'Print Inventory Summary'
        ,'mai2325a'
@@ -6232,7 +6249,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2330'
        ,'Print Summary of Inventory Changes'
        ,'mai2330'
@@ -6256,7 +6273,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2340'
        ,'Asset Strip Map'
        ,'mai2340'
@@ -6280,7 +6297,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2470'
        ,'Delete Inspections'
        ,'mai2470'
@@ -6304,7 +6321,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2500'
        ,'Download Data for Inventory Survey on DCD'
        ,'mai2500'
@@ -6328,7 +6345,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2500A'
        ,'Download Data for Inventory Survey on DCD'
        ,'mai2500a'
@@ -6352,7 +6369,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2501'
        ,'Inventory Interface'
        ,'mai2501'
@@ -6376,7 +6393,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2510'
        ,'Audit file extract'
        ,'MAI2510'
@@ -6400,7 +6417,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2520'
        ,'Routine Inspection Rules File Import'
        ,'MAI2520'
@@ -6424,7 +6441,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2521'
        ,'RIRF - Comparison report'
        ,'MAI2521'
@@ -6448,7 +6465,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2530'
        ,'Inspection Routes'
        ,'mai2530'
@@ -6472,7 +6489,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2550'
        ,'Review GMIS Inspection Loads'
        ,'mai2550'
@@ -6496,7 +6513,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2600'
        ,'Audit Analysis Interface'
        ,'mai2600'
@@ -6520,7 +6537,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2730'
        ,'Match Duplicate Defects'
        ,'mai2730'
@@ -6544,7 +6561,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2760'
        ,'Unmatch Duplicate Defects'
        ,'mai2760'
@@ -6568,7 +6585,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2775'
        ,'Batch Setting of Repair Dates'
        ,'mai2775'
@@ -6592,7 +6609,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2780'
        ,'Print Item Code Breakdowns'
        ,'mai2780'
@@ -6616,7 +6633,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI2790'
        ,'Insurance Claims Reporting'
        ,'mai2790'
@@ -6640,7 +6657,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI30060'
        ,'Print Historical Inventory Data'
        ,'mai30060'
@@ -6664,7 +6681,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3100'
        ,'Print Inspection Schedules'
        ,'mai3100'
@@ -6688,7 +6705,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3105'
        ,'Print: Cyclic Maintenance Activities'
        ,'mai3105'
@@ -6712,7 +6729,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3150'
        ,'Default Treatments'
        ,'mai3150'
@@ -6736,7 +6753,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3250'
        ,'Print Defect Movements'
        ,'mai3250'
@@ -6760,7 +6777,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3440'
        ,'Valid For Maintenance Rules'
        ,'mai3440'
@@ -6784,7 +6801,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3470'
        ,'Print Defect Details ( Work Orders )'
        ,'mai3470'
@@ -6808,7 +6825,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3480'
        ,'Print Works Order (Priced)'
        ,'mai3480'
@@ -6832,7 +6849,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3485'
        ,'Print Works Order (Unpriced)'
        ,'mai3485'
@@ -6856,7 +6873,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3490'
        ,'Review Raised Works Orders'
        ,'mai3490'
@@ -6880,7 +6897,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3500'
        ,'Print Works Orders Detail'
        ,'mai3500'
@@ -6904,7 +6921,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3505'
        ,'Print Works Orders (Summary)'
        ,'mai3505'
@@ -6928,7 +6945,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3515'
        ,'Print Work Orders ( Metro )'
        ,'mai3515'
@@ -6952,7 +6969,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3516'
        ,'Work Order Scheduling Report'
        ,'mai3516.rdf'
@@ -6976,7 +6993,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3517'
        ,'Cyclic Work Order Print (Metro)'
        ,'mai3517.rdf'
@@ -7000,7 +7017,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3518'
        ,'Road Network Report ( DRD )'
        ,'mai3518'
@@ -7024,7 +7041,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3610'
        ,'Cancel Work Orders'
        ,'mai3610'
@@ -7048,7 +7065,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3624'
        ,'Discount Groups'
        ,'mai3624'
@@ -7072,7 +7089,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3626'
        ,'Cyclic Maintenance Inventory Rules'
        ,'mai3626'
@@ -7096,7 +7113,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3628'
        ,'Related Maintenance Activities'
        ,'mai3628'
@@ -7120,7 +7137,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3630'
        ,'Budget Allocations'
        ,'mai3630'
@@ -7144,7 +7161,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3632'
        ,'Asset Activities'
        ,'mai3632'
@@ -7168,7 +7185,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3660'
        ,'Budgets'
        ,'mai3660'
@@ -7192,7 +7209,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3662'
        ,'Generate Budgets for Next Year'
        ,'mai3662'
@@ -7216,7 +7233,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3666'
        ,'Job Size Codes'
        ,'mai3666'
@@ -7240,7 +7257,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3690'
        ,'Print Budget Exceptions Report'
        ,'mai3690'
@@ -7264,7 +7281,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3691'
        ,'SQL Print Budget Exceptions Report'
        ,'mai3691'
@@ -7288,7 +7305,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3692'
        ,'Print Cost Code Exceptions Report'
        ,'mai3692'
@@ -7312,7 +7329,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3693'
        ,'SQL Print Cost Code Exceptions Report'
        ,'mai3693'
@@ -7336,7 +7353,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3800'
        ,'Work Orders (Defects)'
        ,'mai3800'
@@ -7360,7 +7377,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3800A'
        ,'Work Orders (Cyclic)'
        ,'mai3800'
@@ -7384,7 +7401,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3801'
        ,'Raise Work Order'
        ,'mai3801'
@@ -7408,7 +7425,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3802'
        ,'Maintain Work Orders - Contractor Interface'
        ,'mai3802'
@@ -7432,7 +7449,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3803'
        ,'Work Order Auditing Maintenance'
        ,'mai3803'
@@ -7456,7 +7473,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3804'
        ,'View Cyclic Maintenance Work'
        ,'mai3804'
@@ -7480,7 +7497,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3805'
        ,'Gang Allocation'
        ,'mai3805'
@@ -7504,7 +7521,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3806'
        ,'Defects'
        ,'mai3806'
@@ -7528,7 +7545,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3807'
        ,'Locator Create Defects'
        ,'mai3807'
@@ -7552,7 +7569,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3807_NET'
        ,'Locator Create Defect On Network'
        ,'mai3807'
@@ -7576,7 +7593,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3808'
        ,'Inspections'
        ,'mai3808'
@@ -7600,7 +7617,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3810'
        ,'View Defects'
        ,'mai3810'
@@ -7624,7 +7641,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3812'
        ,'Defect Priorities'
        ,'mai3812'
@@ -7648,7 +7665,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3813'
        ,'Maintain Automatic Defect Prioritisation'
        ,'mai3813'
@@ -7672,7 +7689,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3814'
        ,'Treatment Models'
        ,'mai3814'
@@ -7696,7 +7713,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3816'
        ,'Responses to Notices'
        ,'mai3816'
@@ -7720,7 +7737,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3820'
        ,'Quality Inspection Results'
        ,'mai3820'
@@ -7744,7 +7761,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3825'
        ,'Maintenance Report'
        ,'mai3825'
@@ -7768,7 +7785,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3830'
        ,'Works Order File Extract'
        ,'mai3830'
@@ -7792,7 +7809,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3834'
        ,'Financial Commitment File'
        ,'mai3834'
@@ -7816,7 +7833,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3840'
        ,'Payment Run'
        ,'mai3840'
@@ -7840,7 +7857,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3840A'
        ,'Payment Run Report A'
        ,'mai3840a'
@@ -7864,7 +7881,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3840B'
        ,'Payment Run Report B'
        ,'mai3840b'
@@ -7888,7 +7905,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3840C'
        ,'Payment Run Report C'
        ,'mai3840c'
@@ -7912,7 +7929,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3841'
        ,'Payment Run Report'
        ,'MAI3941'
@@ -7936,7 +7953,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3842'
        ,'Deselect Items for Payment'
        ,'mai3842'
@@ -7960,7 +7977,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3844'
        ,'Cost Centre Codes'
        ,'mai3844'
@@ -7984,7 +8001,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3846'
        ,'VAT Rates'
        ,'mai3846'
@@ -8008,7 +8025,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3848'
        ,'Work Orders Authorisation'
        ,'mai3848'
@@ -8032,7 +8049,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3850'
        ,'Completions file'
        ,'mai3850'
@@ -8056,7 +8073,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3852'
        ,'Invoice file'
        ,'mai3852'
@@ -8080,7 +8097,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3854'
        ,'Invoice Verification form'
        ,'mai3854'
@@ -8104,7 +8121,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3856'
        ,'Payment Approval form'
        ,'mai3856'
@@ -8128,7 +8145,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3858'
        ,'Payment Transaction file'
        ,'mai3858'
@@ -8152,7 +8169,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3859'
        ,'Blackburn Output File Formats'
        ,'mai3859'
@@ -8176,7 +8193,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3860'
        ,'Cyclic Maintenance Schedules'
        ,'mai3860'
@@ -8200,7 +8217,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3862'
        ,'Cyclic Maintenance Schedules by Road Section'
        ,'mai3862'
@@ -8224,7 +8241,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3863'
        ,'Download Inspection by Assets'
        ,'mai3863'
@@ -8248,7 +8265,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3865'
        ,'Inventory Audit Report'
        ,'mai3865'
@@ -8272,7 +8289,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3880'
        ,'Contracts'
        ,'mai3880'
@@ -8296,7 +8313,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3881'
        ,'Contractors'
        ,'mai3881'
@@ -8320,7 +8337,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3882'
        ,'Copy a Contract'
        ,'mai3882'
@@ -8344,7 +8361,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3884'
        ,'Bulk Update of Contract Items'
        ,'mai3884'
@@ -8368,7 +8385,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3886'
        ,'Standard Item Sections and Sub-Sections'
        ,'mai3886'
@@ -8392,7 +8409,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3888'
        ,'Standard Items'
        ,'mai3888'
@@ -8416,7 +8433,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3890'
        ,'Purge Historical Data'
        ,'mai3890'
@@ -8440,7 +8457,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3899'
        ,'Inspections by Group'
        ,'mai3899'
@@ -8464,7 +8481,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3900'
        ,'Print Inspection Report'
        ,'mai3900'
@@ -8488,7 +8505,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3902'
        ,'Print Defect Details'
        ,'mai3902'
@@ -8512,7 +8529,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3904'
        ,'Print Defect Notices'
        ,'mai3904'
@@ -8536,7 +8553,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3905'
        ,'Print Roadstud Defects not Set to Mandatory or Advisory'
        ,'mai3905'
@@ -8560,7 +8577,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3906'
        ,'Print BOQ Work Order (Defects)'
        ,'mai3906'
@@ -8584,7 +8601,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3907'
        ,'Print BOQ Work Order (Cyclic)'
        ,'mai3907'
@@ -8608,7 +8625,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3908'
        ,'Print Works Order'
        ,'mai3908'
@@ -8632,7 +8649,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3909'
        ,'Print Works Order (NMA)'
        ,'mai3909'
@@ -8656,7 +8673,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3910'
        ,'List of Defects by Inspection Date'
        ,'mai3910'
@@ -8680,7 +8697,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3911'
        ,'Print Works Order (BRG)'
        ,'mai3911'
@@ -8704,7 +8721,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3912'
        ,'List of Notifiable Defects'
        ,'mai3912'
@@ -8728,7 +8745,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3916'
        ,'Summary of Notifiable/Rechargeable Defects'
        ,'mai3916'
@@ -8752,7 +8769,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3919'
        ,'Print Works Order (Enhanced)'
        ,'mai3919'
@@ -8776,7 +8793,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3920'
        ,'Summary of Defects Not Yet Instructed'
        ,'mai3920'
@@ -8800,7 +8817,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3922'
        ,'List of Defects Not Yet Instructed'
        ,'mai3922'
@@ -8824,7 +8841,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3924'
        ,'List of Instructed Work by Status'
        ,'mai3924'
@@ -8848,7 +8865,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3926'
        ,'List of Instructed Defects due for Completion'
        ,'mai3926'
@@ -8872,7 +8889,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3930'
        ,'List of Inventory Updates'
        ,'mai3930'
@@ -8896,7 +8913,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3932'
        ,'Summary of Work Instructed by Standard Item'
        ,'mai3932'
@@ -8920,7 +8937,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3934'
        ,'Summary of Work Volumes by Standard Item'
        ,'mai3934'
@@ -8944,7 +8961,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3940'
        ,'Query Payment Run Details'
        ,'mai3940'
@@ -8968,7 +8985,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3942'
        ,'List of Items for Payment'
        ,'mai3942'
@@ -8992,7 +9009,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3943'
        ,'Billable Works Orders'
        ,'mai3943'
@@ -9016,7 +9033,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3944'
        ,'List of Completed Rechargeable Defects'
        ,'mai3944'
@@ -9040,7 +9057,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3946'
        ,'List of VAT Rates'
        ,'mai3946'
@@ -9064,7 +9081,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3948'
        ,'Summary of Expenditure by Contract'
        ,'mai3948'
@@ -9088,7 +9105,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3950'
        ,'List of Work for Quality Inspection'
        ,'mai3950'
@@ -9112,7 +9129,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3952'
        ,'Quality Inspection Performance Report'
        ,'mai3952'
@@ -9136,7 +9153,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3954'
        ,'Contractor Performance Report'
        ,'mai3954'
@@ -9160,7 +9177,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3956'
        ,'Admin Unit Performance Report'
        ,'mai3956'
@@ -9184,7 +9201,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3960'
        ,'Print Cyclic Maintenance Schedules'
        ,'mai3960'
@@ -9208,7 +9225,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3980'
        ,'Contract Details Report'
        ,'mai3980'
@@ -9232,7 +9249,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3981'
        ,'List of Contractors'
        ,'mai3981'
@@ -9256,7 +9273,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3982'
        ,'List of Contract Liabilities'
        ,'mai3982'
@@ -9280,7 +9297,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3984'
        ,'List of Contract Rates'
        ,'mai3984'
@@ -9304,7 +9321,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3986'
        ,'List of Standard Item Sections and Sub-Sections'
        ,'mai3986'
@@ -9328,7 +9345,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3988'
        ,'List of Standard Items'
        ,'mai3988'
@@ -9352,7 +9369,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3992'
        ,'Road Section Historical Report'
        ,'mai3992'
@@ -9376,7 +9393,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI3994'
        ,'Road Section Historical Statistics'
        ,'mai3994'
@@ -9400,7 +9417,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5001'
        ,'Inventory Item Details'
        ,'mai5001'
@@ -9424,7 +9441,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5010'
        ,'Print Road Markings - Hatched Type Area'
        ,'mai5010'
@@ -9448,7 +9465,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5011'
        ,'Print Road Markings - Longitudinal'
        ,'mai5011'
@@ -9472,7 +9489,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5015'
        ,'Print Road Markings - Transverse and Special'
        ,'mai5015'
@@ -9496,7 +9513,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5018'
        ,'Print Sign Areas'
        ,'mai5018'
@@ -9520,7 +9537,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5021'
        ,'Print Inventory Areas - Trapezium Rule'
        ,'mai5021'
@@ -9544,7 +9561,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5022'
        ,'Print Inspectors Pocket Book'
        ,'mai3900'
@@ -9568,7 +9585,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5024'
        ,'Print Local Frequencies and Intervals'
        ,'mai5024'
@@ -9592,7 +9609,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5025'
        ,'Print Detailed Inspection Work Done'
        ,'mai5025'
@@ -9616,7 +9633,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5027'
        ,'Print Defects by Defect Type'
        ,'mai5027'
@@ -9640,7 +9657,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5030'
        ,'Print Default Intervals and Frequencies'
        ,'mai5030'
@@ -9664,7 +9681,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5031'
        ,'Print Electrical Inventory'
        ,'mai5031'
@@ -9688,7 +9705,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5032'
        ,'Print Cyclic Maintenance Done'
        ,'mai5032'
@@ -9712,7 +9729,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5034A'
        ,'Print A Audit - Defects by Type, Activity and Time'
        ,'mai5034a'
@@ -9736,7 +9753,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5034B'
        ,'Print B Audit - Defects by Activity,Type and Time'
        ,'mai5034b'
@@ -9760,7 +9777,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5035A'
        ,'Print C Audit - Actions by Activity Area'
        ,'mai5035a'
@@ -9784,7 +9801,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5035B'
        ,'Print D Audit - Actions by Defect Type'
        ,'mai5035b'
@@ -9808,7 +9825,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5037'
        ,'Print E Audit - Electrical Report by Ownership'
        ,'mai5037'
@@ -9832,7 +9849,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5037A'
        ,'Print E Audit - Electrical Report by Link'
        ,'mai5037a'
@@ -9856,7 +9873,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5038'
        ,'Print T Audit - Audit Of Costs'
        ,'mai5038'
@@ -9880,7 +9897,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5050'
        ,'Print List of Inventory Item Types, Attributes and Values'
        ,'mai5050'
@@ -9904,7 +9921,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5050D'
        ,'Inventory Item Types, Attribute Values, Names Of Item Values'
        ,'mai5050'
@@ -9928,7 +9945,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5060'
        ,'Print F Audit - Defect for Point and Cont. Inv Items'
        ,'mai5060'
@@ -9952,7 +9969,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5065'
        ,'Print Batch with Downloaded Inventory Items'
        ,'mai5065'
@@ -9976,7 +9993,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5070'
        ,'Print M Audit - Analysis of Cyclic Maintenance Activities'
        ,'mai5070'
@@ -10000,7 +10017,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5075'
        ,'Print Inventory Item Report'
        ,'mai5075'
@@ -10024,7 +10041,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5080'
        ,'Print I Audit - 7 and 28 day Safety Inspection Statistics'
        ,'mai5080'
@@ -10048,7 +10065,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5090'
        ,'Remove Successfully Loaded Inventory Batches'
        ,'mai5090'
@@ -10072,7 +10089,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5091'
        ,'Remove Phase 1 Inspection Batches'
        ,'mai5091'
@@ -10096,7 +10113,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5100'
        ,'Print Defect Details (At-a-Glance)'
        ,'mai5100'
@@ -10120,7 +10137,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5125'
        ,'Print Defect Details (Strip Plan)'
        ,'mai5125'
@@ -10144,7 +10161,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5130'
        ,'Print Works Orders (Strip Plan)'
        ,'mai5130'
@@ -10168,7 +10185,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5200'
        ,'Print Lamp Configurations'
        ,'mai5200'
@@ -10192,7 +10209,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5205'
        ,'Print Activity Frequencies'
        ,'mai5205'
@@ -10216,7 +10233,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5210'
        ,'Print Electricity Boards'
        ,'mai5210'
@@ -10240,7 +10257,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5215'
        ,'Print Interval Codes'
        ,'mai5215'
@@ -10264,7 +10281,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5220'
        ,'Print Valid Defect Types'
        ,'mai5220'
@@ -10288,7 +10305,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5225'
        ,'Print Activities'
        ,'mai5225'
@@ -10312,7 +10329,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5235'
        ,'Print Defect Item Types'
        ,'mai5235'
@@ -10336,7 +10353,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI5240'
        ,'Print Treatment Codes'
        ,'mai5240'
@@ -10360,7 +10377,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI6100'
        ,'Print Inventory Statistics'
        ,'mai6100'
@@ -10384,7 +10401,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI6110'
        ,'Print Inventory Lengths'
        ,'mai6110'
@@ -10408,7 +10425,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI6120'
        ,'Bus Stop Report'
        ,'mai6120'
@@ -10432,7 +10449,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI7040'
        ,'Parameter Based Inquiry (PBI)'
        ,'mai7040'
@@ -10456,7 +10473,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI7080'
        ,'Chainage (Summary)'
        ,'mai7080'
@@ -10480,7 +10497,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI7082'
        ,'Count (Summary)'
        ,'mai7082'
@@ -10504,7 +10521,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI7086'
        ,'Count (Detail)'
        ,'mai7086'
@@ -10528,7 +10545,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI7088'
        ,'Parameters used in PBI'
        ,'mai7088'
@@ -10552,7 +10569,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI8000'
        ,'Batch Works Order Printing'
        ,'mai8000'
@@ -10576,7 +10593,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI9010'
        ,'Detect Inventory Gap/Overlap'
        ,'mai9010'
@@ -10600,7 +10617,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAI9020'
        ,'Print Inventory Gap/Overlap'
        ,'mai9020'
@@ -10624,7 +10641,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAICRVW'
        ,'Inventory Views'
        ,'maicrvw'
@@ -10648,7 +10665,7 @@ INSERT INTO HIG_MODULES
        ,HMO_APPLICATION
        ,HMO_MENU
        )
-SELECT 
+SELECT
         'MAIWEB2540'
        ,'GMIS Survey File Loader'
        ,'mai_gmis_load.load_survey_file'
@@ -10690,7 +10707,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ACTTOSCHEM'
        ,'PMS'
        ,'Activities relate to Schemes'
@@ -10712,7 +10729,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ADDINSTR'
        ,'MAI'
        ,'Add WOLs to Instructed WO'
@@ -10734,7 +10751,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ADDPRINT'
        ,'MAI'
        ,'Add BOQ items to printed WO'
@@ -10756,7 +10773,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ADMINLEVEL'
        ,'PMS'
        ,'Admin Level for Scheme Create'
@@ -10778,7 +10795,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ASSETBASED'
        ,'MAI'
        ,'Asset Based Option'
@@ -10800,7 +10817,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'AUDIT_ALL'
        ,'MAI'
        ,'Audit all WO changes'
@@ -10822,7 +10839,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'AUTH_OWN'
        ,'MAI'
        ,'Can user authorise a raised WO'
@@ -10844,7 +10861,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'BUDAUDT'
        ,'MAI'
        ,'Budget Audit trail'
@@ -10866,7 +10883,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'BUDGRPTYPD'
        ,'MAI'
        ,'Group Type For Dot Budgets'
@@ -10888,7 +10905,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'BUDGRPTYPL'
        ,'MAI'
        ,'Group Type For Local Budgets'
@@ -10910,7 +10927,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'BUD_SELECT'
        ,'MAI'
        ,'Budget Selection Process'
@@ -10932,7 +10949,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CLAIMDEF'
        ,'MAI'
        ,'Default status for new claims'
@@ -10954,7 +10971,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CLAIMREJT'
        ,'MAI'
        ,'Allow claim rejection'
@@ -10976,7 +10993,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'COMPWOLEL'
        ,'MAI'
        ,'Complete WOL when interface on'
@@ -10998,7 +11015,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CONINTRM'
        ,'MAI'
        ,'Allow Interim at Valuation'
@@ -11020,7 +11037,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CPAFORMAT'
        ,'MAI'
        ,'Format of Works Order Number'
@@ -11042,7 +11059,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CPAINTERIM'
        ,'MAI'
        ,'CPA Interims'
@@ -11064,7 +11081,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CSVSEPVAL'
        ,'MAI'
        ,'CSV File Separator'
@@ -11086,7 +11103,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CUM_PERC'
        ,'MAI'
        ,'Computation of Percentage item'
@@ -11108,7 +11125,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CYCGRPTYPD'
        ,'MAI'
        ,'Group Type For Dot Schedules'
@@ -11130,7 +11147,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'CYCGRPTYPL'
        ,'MAI'
        ,'Group Type For Local Schedules'
@@ -11152,7 +11169,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFAUTOPRI'
        ,'MAI'
        ,'Defect Automatic Priority'
@@ -11174,7 +11191,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFITEMTYP'
        ,'MAI'
        ,'Default referencing item'
@@ -11196,7 +11213,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFMATPAR'
        ,'MAI'
        ,'Default Matching Defect Param'
@@ -11218,7 +11235,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFPRIDATE'
        ,'MAI'
        ,'Set Rep Date On Change Of Pri.'
@@ -11240,7 +11257,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFQRYITY'
        ,'MAI'
        ,'Default Inventory Query Code'
@@ -11262,7 +11279,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFRECALLO'
        ,'MAI'
        ,'Lower Tolerance For Survey Len'
@@ -11284,7 +11301,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFRECALUP'
        ,'MAI'
        ,'Upper Tolerance For Survey Len'
@@ -11306,7 +11323,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFSCHTYPD'
        ,'MAI'
        ,'Default scheme type for DoT'
@@ -11328,7 +11345,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFSCHTYPL'
        ,'MAI'
        ,'Default scheme type for Local'
@@ -11350,7 +11367,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFSCHTYPU'
        ,'MAI'
        ,'Default Scheme Type Updateable'
@@ -11372,7 +11389,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEFSUPTYPE'
        ,'MAI'
        ,'Superseding Type'
@@ -11394,7 +11411,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DEF_SISS'
        ,'MAI'
        ,'Default SISS'
@@ -11416,7 +11433,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DETXSP'
        ,'MAI'
        ,'Detailed XSP to be used?'
@@ -11438,7 +11455,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DISPBID'
        ,'MAI'
        ,'Budget Bid Id'
@@ -11460,7 +11477,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DORECAL'
        ,'MAI'
        ,'Recalibration On/Off Switch'
@@ -11482,7 +11499,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'DUMCONCODE'
        ,'MAI'
        ,'Dummy Contract For Estimates'
@@ -11504,7 +11521,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ENDTOLDTP'
        ,'MAI'
        ,'Section End Tolerance, Dtp'
@@ -11526,7 +11543,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ENDTOLLOCL'
        ,'MAI'
        ,'Section End Tolerance, Local'
@@ -11548,7 +11565,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'FCFORMAT'
        ,'MAI'
        ,'Financial Commitment Format'
@@ -11570,7 +11587,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'FINAL_FLAG'
        ,'MAI'
        ,'Is Final flag to be shown'
@@ -11592,7 +11609,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GANGENABLE'
        ,'MAI'
        ,'Enable Gangs'
@@ -11614,7 +11631,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GENTREMODD'
        ,'MAI'
        ,'Generate Dot Treatment Models'
@@ -11636,7 +11653,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GENTREMODL'
        ,'MAI'
        ,'Generate Local Treatment Model'
@@ -11658,7 +11675,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GISGRPD'
        ,'MAI'
        ,'Road Group for DoT GIS Work'
@@ -11680,7 +11697,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GISGRPL'
        ,'MAI'
        ,'Road Group for Local GIS Work'
@@ -11702,7 +11719,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'GISGRPTYP'
        ,'MAI'
        ,'Group Type for all GIS Work'
@@ -11724,7 +11741,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'HIERASSNAV'
        ,'MAI'
        ,'Use Hierarchy Navigator'
@@ -11746,7 +11763,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ICBFGAC'
        ,'MAI'
        ,'Item code Breakdowns FGAC'
@@ -11768,7 +11785,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'IFUSEDEFXY'
        ,'MAI'
        ,'Interface Use Defect X,Y'
@@ -11790,7 +11807,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'IIF_SOURCE'
        ,'MAI'
        ,'Inventry Interface File Source'
@@ -11812,7 +11829,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'INCTOPCON'
        ,'MAI'
        ,'Include Top Level Contracts'
@@ -11834,7 +11851,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'INSP_INIT'
        ,'MAI'
        ,'Dflt Insp Initiation Type'
@@ -11856,7 +11873,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'INSP_SDF'
        ,'MAI'
        ,'Dflt Insp Safety Detailed Flag'
@@ -11878,7 +11895,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'LONG_LIST'
        ,'MAI'
        ,'Use List Restriction on LOV''s'
@@ -11900,7 +11917,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'LZSUBCODE'
        ,'MAI'
        ,'Interface, Leading zeros'
@@ -11922,7 +11939,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'MAIQRYINV'
        ,'MAI'
        ,'Inventory Query Mode'
@@ -11944,7 +11961,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'MANINSACT'
        ,'MAI'
        ,'Safety Inspection Act. Code'
@@ -11966,7 +11983,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'NOTREFOUND'
        ,'MAI'
        ,'Not Refound'
@@ -11988,7 +12005,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'PERC_ITEM'
        ,'MAI'
        ,'Name of Percentage items unit'
@@ -12010,7 +12027,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'REPAIRS'
        ,'MAI'
        ,'Overwrite Defect date'
@@ -12032,7 +12049,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'REPCOMDATE'
        ,'MAI'
        ,'Entry Of Repair Complete Date'
@@ -12054,7 +12071,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'REPSETPERD'
        ,'MAI'
        ,'Auto setting of perm. date due'
@@ -12076,7 +12093,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'REPSETPERL'
        ,'MAI'
        ,'Auto setting of perm. date due'
@@ -12098,7 +12115,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'RESTYPACC'
        ,'MAI'
        ,'Response Type For Accepted Def'
@@ -12120,7 +12137,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'ROGUEUPD'
        ,'MAI'
        ,'Enable Edit of Rogue Item Rate'
@@ -12142,7 +12159,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'SH_DTE_REP'
        ,'MAI'
        ,'Show Date Repaired'
@@ -12164,7 +12181,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'STADETAIL'
        ,'MAI'
        ,'Detailed Standard Item LOV'
@@ -12186,7 +12203,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'STATAMEND'
        ,'MAI'
        ,'WOL status codes amendable'
@@ -12208,7 +12225,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'STATVAL'
        ,'MAI'
        ,'mai3802 Status Complete'
@@ -12230,7 +12247,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'STRTOLDTP'
        ,'MAI'
        ,'Section Start Tolerance, Dtp'
@@ -12252,7 +12269,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'STRTOLLOCL'
        ,'MAI'
        ,'Section Start Tolerance, Local'
@@ -12274,7 +12291,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'TRECODEMAN'
        ,'MAI'
        ,'Is Treatment code mandatory'
@@ -12296,7 +12313,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'TREMODLEV'
        ,'MAI'
        ,'Treatment Model Admin Level'
@@ -12318,7 +12335,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'UNKNOWNORG'
        ,'MAI'
        ,'Code For Unknown Notify Orgs'
@@ -12340,7 +12357,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USECYCGRPD'
        ,'MAI'
        ,'Use Groups For Dot Cyclic'
@@ -12362,7 +12379,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USECYCGRPL'
        ,'MAI'
        ,'Use Groups For Local Cyclic'
@@ -12384,7 +12401,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USEDEFCHND'
        ,'MAI'
        ,'Use Chainage On Dot Defects'
@@ -12406,7 +12423,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USEDEFCHNL'
        ,'MAI'
        ,'Use Chainage On Local Defects'
@@ -12428,7 +12445,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USEDEFCRDS'
        ,'MAI'
        ,'Use Defect Coordinates'
@@ -12450,7 +12467,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USERSREP'
        ,'MAI'
        ,'Run RS Report from Insp. Ldr.'
@@ -12472,7 +12489,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USETREMODD'
        ,'MAI'
        ,'Use Dot Treatment Models'
@@ -12494,7 +12511,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'USETREMODL'
        ,'MAI'
        ,'Use Local Treatment Models'
@@ -12516,7 +12533,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'WORGRPTYP'
        ,'MAI'
        ,'Work Planng Reports Group Type'
@@ -12538,7 +12555,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'WORREFGEN'
        ,'MAI'
        ,'Work Order Ref No Generation'
@@ -12560,7 +12577,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'WORREPMOD'
        ,'MAI'
        ,'Def Work Order Print Module'
@@ -12582,7 +12599,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'WORREPMODC'
        ,'MAI'
        ,'Def Cyclic WO Print Module'
@@ -12604,7 +12621,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'WORSTDTXT'
        ,'MAI'
        ,'Works Order Standard Text'
@@ -12626,7 +12643,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'XSPMATLEN'
        ,'MAI'
        ,'XSP Material Length'
@@ -12648,7 +12665,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'XSPREVDIR'
        ,'MAI'
        ,'XSP In The Reverse  Direction'
@@ -12670,7 +12687,7 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_MIXED_CASE
        ,HOL_USER_OPTION
        )
-SELECT 
+SELECT
         'XSPSTDDIR'
        ,'MAI'
        ,'XSP In The Standard Direction'
@@ -12698,7 +12715,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ACTTOSCHEM'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12708,7 +12725,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ADDINSTR'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12718,7 +12735,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ADDPRINT'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12728,7 +12745,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ADMINLEVEL'
        ,'2' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12738,7 +12755,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ASSETBASED'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12748,7 +12765,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'AUDIT_ALL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12758,7 +12775,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'AUTH_OWN'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12768,7 +12785,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'BUDAUDT'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12778,7 +12795,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'BUDGRPTYPD'
        ,'RP' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12788,7 +12805,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'BUDGRPTYPL'
        ,'HIER' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12798,7 +12815,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'BUD_SELECT'
        ,'1' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12808,7 +12825,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CLAIMDEF'
        ,'A' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12818,7 +12835,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CLAIMREJT'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12828,7 +12845,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'COMPWOLEL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12838,7 +12855,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CONINTRM'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12848,7 +12865,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CPAFORMAT'
        ,'0' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12858,7 +12875,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CPAINTERIM'
        ,'0' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12868,7 +12885,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CSVSEPVAL'
        ,',' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12878,7 +12895,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CUM_PERC'
        ,'CUMULATIVE' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12888,7 +12905,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CYCGRPTYPD'
        ,'RP' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12898,7 +12915,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'CYCGRPTYPL'
        ,'HIER' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12908,7 +12925,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFAUTOPRI'
        ,'Z' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12918,7 +12935,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFITEMTYP'
        ,'CW' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12928,7 +12945,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFMATPAR'
        ,'5' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12938,7 +12955,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFPRIDATE'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12948,7 +12965,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFQRYITY'
        ,'BPR_DCW' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12958,7 +12975,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFRECALLO'
        ,'50' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12968,7 +12985,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFRECALUP'
        ,'5' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12978,7 +12995,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFSCHTYPD'
        ,'RD' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12988,7 +13005,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFSCHTYPL'
        ,'LD' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -12998,7 +13015,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFSCHTYPU'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13008,7 +13025,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEFSUPTYPE'
        ,'1' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13018,7 +13035,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DEF_SISS'
        ,'ALL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13028,7 +13045,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DETXSP'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13038,7 +13055,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DISPBID'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13048,7 +13065,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DORECAL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13058,7 +13075,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'DUMCONCODE'
        ,'DISABLED' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13068,7 +13085,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ENDTOLDTP'
        ,'10' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13078,7 +13095,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ENDTOLLOCL'
        ,'50' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13088,7 +13105,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'FCFORMAT'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13098,7 +13115,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'FINAL_FLAG'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13108,7 +13125,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GANGENABLE'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13118,7 +13135,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GENTREMODD'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13128,7 +13145,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GENTREMODL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13138,7 +13155,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GISGRPD'
        ,'ALL_DOT_SECTIONS' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13148,7 +13165,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GISGRPL'
        ,'ALL_LOCAL_SECTIONS' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13158,7 +13175,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'GISGRPTYP'
        ,'TOP' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13168,7 +13185,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'HIERASSNAV'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13178,7 +13195,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ICBFGAC'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13188,7 +13205,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'IFUSEDEFXY'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13198,7 +13215,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'IIF_SOURCE'
        ,'RMMSINV' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13208,7 +13225,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'INCTOPCON'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13218,7 +13235,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'INSP_INIT'
        ,'DUM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13228,7 +13245,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'INSP_SDF'
        ,'D' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13238,7 +13255,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'LONG_LIST'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13248,7 +13265,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'LZSUBCODE'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13258,7 +13275,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'MAIQRYINV'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13268,7 +13285,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'MANINSACT'
        ,'SI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13278,7 +13295,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'NOTREFOUND'
        ,'ALL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13288,7 +13305,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'PERC_ITEM'
        ,'X' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13298,7 +13315,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'REPAIRS'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13308,7 +13325,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'REPCOMDATE'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13318,7 +13335,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'REPSETPERD'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13328,7 +13345,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'REPSETPERL'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13338,7 +13355,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'RESTYPACC'
        ,'A' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13348,7 +13365,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'ROGUEUPD'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13358,7 +13375,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'SH_DTE_REP'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13368,7 +13385,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'STADETAIL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13378,7 +13395,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'STATAMEND'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13388,7 +13405,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'STATVAL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13398,7 +13415,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'STRTOLDTP'
        ,'0' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13408,7 +13425,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'STRTOLLOCL'
        ,'0' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13418,7 +13435,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'TRECODEMAN'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13428,7 +13445,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'TREMODLEV'
        ,'1' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13438,7 +13455,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'UNKNOWNORG'
        ,'UNKNOWN' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13448,7 +13465,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USECYCGRPD'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13458,7 +13475,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USECYCGRPL'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13468,7 +13485,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USEDEFCHND'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13478,7 +13495,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USEDEFCHNL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13488,7 +13505,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USEDEFCRDS'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13498,7 +13515,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USERSREP'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13508,7 +13525,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USETREMODD'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13518,7 +13535,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'USETREMODL'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13528,7 +13545,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'WORGRPTYP'
        ,'LINK' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13538,7 +13555,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'WORREFGEN'
        ,'A' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13548,7 +13565,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'WORREPMOD'
        ,'MAI3909' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13558,7 +13575,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'WORREPMODC'
        ,'MAI3907' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13568,7 +13585,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'WORSTDTXT'
        ,'IN ACCORDANCE WITH TERM MAINTENANCE CONTRACT' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13578,7 +13595,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'XSPMATLEN'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13588,7 +13605,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'XSPREVDIR'
        ,'5' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13598,7 +13615,7 @@ INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
        )
-SELECT 
+SELECT
         'XSPSTDDIR'
        ,'4' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13641,7 +13658,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE8
        ,HSD_FEATURE9
        )
-SELECT 
+SELECT
         'CLAIM STATUS'
        ,'MAI'
        ,'Interface claim status'
@@ -13671,7 +13688,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE8
        ,HSD_FEATURE9
        )
-SELECT 
+SELECT
         'CONTRACTS'
        ,'MAI'
        ,'Contract Status Codes'
@@ -13701,7 +13718,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE8
        ,HSD_FEATURE9
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'MAI'
        ,'Status Codes for an individual defect'
@@ -13731,7 +13748,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE8
        ,HSD_FEATURE9
        )
-SELECT 
+SELECT
         'PERC_ITEM_COMP'
        ,'MAI'
        ,'Percentage item computation'
@@ -13761,7 +13778,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE8
        ,HSD_FEATURE9
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'MAI'
        ,'Status codes for an individual repair or cyclic maintenance task'
@@ -13823,7 +13840,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'CLAIM STATUS'
        ,'A'
        ,'Approved'
@@ -13860,7 +13877,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'CLAIM STATUS'
        ,'H'
        ,'Held'
@@ -13897,7 +13914,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'CLAIM STATUS'
        ,'P'
        ,'Paid'
@@ -13934,7 +13951,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'CONTRACTS'
        ,'ACTIVE'
        ,'Active'
@@ -13971,7 +13988,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'CONTRACTS'
        ,'INACTIVE'
        ,'Inactive'
@@ -14008,7 +14025,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'AVAILABLE'
        ,'Available to be instructed'
@@ -14045,7 +14062,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'COMPLETED'
        ,'Completed'
@@ -14082,7 +14099,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'INSTRUCTED'
        ,'Instructed'
@@ -14119,7 +14136,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'STR MAINT'
        ,'Repaired by Structural Maint'
@@ -14156,7 +14173,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'DEFECTS'
        ,'SUPERSEDED'
        ,'Superseded, not instructed'
@@ -14193,7 +14210,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'PERC_ITEM_COMP'
        ,'CUMULATIVE'
        ,'Cumulative Computation'
@@ -14230,7 +14247,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'PERC_ITEM_COMP'
        ,'NORMAL'
        ,'Normal Computation'
@@ -14267,7 +14284,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'ACTIONED'
        ,'Work completed on site'
@@ -14304,7 +14321,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'COMPLETED'
        ,'Completed - Ready for Payment'
@@ -14341,7 +14358,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'HELD'
        ,'Completed - Hold Payment'
@@ -14378,7 +14395,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'INSTRUCTED'
        ,'Instructed - On Work Order'
@@ -14415,7 +14432,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'INTERIM'
        ,'Part Comp. - Ready for Payment'
@@ -14452,7 +14469,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'NOT DONE'
        ,'Work Not Done'
@@ -14489,7 +14506,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'PAID'
        ,'Completed - Payment made'
@@ -14526,7 +14543,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'PART COMP'
        ,'Interim Invoice Received'
@@ -14563,7 +14580,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'PART PAID'
        ,'Interim payment completed'
@@ -14600,7 +14617,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'UNAPPROVED'
        ,'Interim payment not approved'
@@ -14637,7 +14654,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_START_DATE
        ,HSC_END_DATE
        )
-SELECT 
+SELECT
         'WORK_ORDER_LINES'
        ,'VALUATION'
        ,'Valuation'
@@ -14695,7 +14712,7 @@ INSERT INTO HIG_CHECK_CONSTRAINT_ASSOCS
        ,HCCA_NER_APPL
        ,HCCA_NER_ID
        )
-SELECT 
+SELECT
         'WOR_PK'
        ,'WORK_ORDERS'
        ,'MAI'
