@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.1   Aug 08 2007 08:45:48   sscanlon  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.2   Sep 14 2007 11:29:40   sscanlon  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Aug 08 2007 08:45:48  $
---       Date fetched Out : $Modtime:   Aug 08 2007 08:41:36  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Sep 14 2007 11:29:40  $
+--       Date fetched Out : $Modtime:   Sep 14 2007 11:18:58  $
+--       Version          : $Revision:   2.2  $
 --
 --   Product metadata script
 --
@@ -24,7 +24,7 @@ As at Release 4.0.2.0
 
 GENERATION DATE
 ===============
-08-AUG-2007 08:41
+14-SEP-2007 11:18
 
 TABLES PROCESSED
 ================
@@ -5134,6 +5134,34 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM GRI_PARAMS
                    WHERE GP_PARAM = 'PBI_QRY');
+--
+INSERT INTO GRI_PARAMS
+       (GP_PARAM
+       ,GP_PARAM_TYPE
+       ,GP_TABLE
+       ,GP_COLUMN
+       ,GP_DESCR_COLUMN
+       ,GP_SHOWN_COLUMN
+       ,GP_SHOWN_TYPE
+       ,GP_DESCR_TYPE
+       ,GP_ORDER
+       ,GP_CASE
+       ,GP_GAZ_RESTRICTION
+       )
+SELECT 
+        'PEDFILE'
+       ,'CHAR'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_PARAMS
+                   WHERE GP_PARAM = 'PEDFILE');
 --
 INSERT INTO GRI_PARAMS
        (GP_PARAM
@@ -13318,6 +13346,57 @@ INSERT INTO GRI_MODULE_PARAMS
        )
 SELECT 
         'MAI3863'
+       ,'ANSWER2'
+       ,10
+       ,'Restrict Inspector by AU'
+       ,'Y'
+       ,1
+       ,'GPL_PARAM=''ANSWER'''
+       ,'N'
+       ,''
+       ,'GRI_PARAM_LOOKUP'
+       ,'GPL_VALUE'
+       ,'GPL_VALUE=''Y'' AND GPL_PARAM=''ANSWER'''
+       ,'N'
+       ,'N'
+       ,'Y'
+       ,''
+       ,'N'
+       ,'Restrict the inspector listing by Administration Unit ?'
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3863'
+                    AND  GMP_PARAM = 'ANSWER2');
+--
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3863'
        ,'DISCIPLINE'
        ,1
        ,'Discipline'
@@ -13393,6 +13472,57 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
                    WHERE GMP_MODULE = 'MAI3863'
                     AND  GMP_PARAM = 'INVENTORY_ITEM');
+--
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3863'
+       ,'PEDFILE'
+       ,9
+       ,'Specified Filename'
+       ,'Y'
+       ,1
+       ,''
+       ,'N'
+       ,''
+       ,'HIG_USER_OPTIONS'
+       ,'HUO_VALUE'
+       ,'HUO_ID=''PEDFILE'' AND HUO_HUS_USER_ID=( SELECT HUS_USER_ID FROM HIG_USERS WHERE HUS_USERNAME=USER)'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3863'
+                    AND  GMP_PARAM = 'PEDFILE');
 --
 INSERT INTO GRI_MODULE_PARAMS
        (GMP_MODULE
