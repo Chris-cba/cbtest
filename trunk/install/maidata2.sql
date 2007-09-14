@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.2   Sep 14 2007 11:29:40   sscanlon  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.3   Sep 14 2007 15:58:14   sscanlon  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Sep 14 2007 11:29:40  $
---       Date fetched Out : $Modtime:   Sep 14 2007 11:18:58  $
---       Version          : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Sep 14 2007 15:58:14  $
+--       Date fetched Out : $Modtime:   Sep 14 2007 15:55:40  $
+--       Version          : $Revision:   2.3  $
 --
 --   Product metadata script
 --
@@ -24,7 +24,7 @@ As at Release 4.0.2.0
 
 GENERATION DATE
 ===============
-14-SEP-2007 11:18
+14-SEP-2007 15:55
 
 TABLES PROCESSED
 ================
@@ -13356,7 +13356,7 @@ SELECT
        ,''
        ,'GRI_PARAM_LOOKUP'
        ,'GPL_VALUE'
-       ,'GPL_VALUE=''Y'' AND GPL_PARAM=''ANSWER'''
+       ,'GPL_VALUE=''N'' AND GPL_PARAM=''ANSWER'''
        ,'N'
        ,'N'
        ,'Y'
