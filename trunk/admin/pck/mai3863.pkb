@@ -2,20 +2,36 @@ CREATE OR REPLACE PACKAGE BODY Pedif
 AS
  -----------------------------------------------------------------------------
  --
---   PVCS Identifiers :-
---
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
---       Module Name      : $Workfile:   mai3863.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
---       Based on SCCS Version     : 1.3
+ --   PVCS Identifiers :-
+ --
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.1   Sep 14 2007 11:49:48   sscanlon  $
+ --       Module Name      : $Workfile:   mai3863.pkb  $
+ --       Date into SCCS   : $Date:   Sep 14 2007 11:49:48  $
+ --       Date fetched Out : $Modtime:   Sep 14 2007 09:19:58  $
+ --       SCCS Version     : $Revision:   2.1  $
+ --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
  --   Originally taken from '@(#)mai3863.pck    @(#)mai3863.pck	1.31 08/05/02';
  -----------------------------------------------------------------------------
  --	Copyright (c) exor corporation ltd, 2002
  -----------------------------------------------------------------------------
+  
+  -- sscanlon fix 709407 12SEP2007 
+  -- Please search for 'sscanlon fix 709407 12SEP2007' throughout this 
+  -- package to see the code changes releated to this fix...
+  -- The user may wish to specify a default output filename when a PED 
+  -- file is created and a new USER OPTION named PEDFILE holds this 
+  -- default filename. A report parameter named PEDFILE will be initially 
+  -- populated from the user option of the same name.  It can be overwritten 
+  -- by the user, but you need to set the parameter to visible first.
+  -- The list of inspectors should also be restricted to only show the 
+  -- inspectors within the current users admin unit.  The data in parameter  
+  -- ANSWER2 states if the user wishes to restrict by admin unit or not.
+  -- Again the ANSWER2 parameter is not visible, and could be changed at 
+  -- run time should you wish, but the parameter will need to be set to 
+  -- visible. 
+  
   --
   debug          BOOLEAN:=FALSE;
   v_module       VARCHAR2(7):='MAI3863';
@@ -24,8 +40,13 @@ AS
   File_Handle    utl_file.file_type;    -- File handle
   Output_File    utl_file.file_type;    -- File handle
   --
-  FDiscipline VARCHAR2(1);       -- Discipline
+  FDiscipline VARCHAR2(1);      -- Discipline
   FFile       VARCHAR2(80);     -- Input file name
+  -- sscanlon fix 709407 12SEP2007
+  -- Added new variable FAunit to hold the Y/N data from parameter ANSWER 2 
+  -- See top of package body code for problem description   
+     FAunit      Varchar2(1):='N'; -- Admin unit restriction  
+  -- end of sscanlon fix 709407 12SEP2007     
   FDest       VARCHAR2(80);     -- Input directory name
   Ftype       VARCHAR2(1);      -- File type
   FSuffix     VARCHAR2(3);      -- Entered file suffix
@@ -72,6 +93,13 @@ BEGIN
   FDest      := LOWER(Higgrirp.get_parameter_value(job_id,'TEXT'));
   FHeir      := NVL(Higgrirp.get_parameter_value(job_id,'ANSWER'),'Y');
   FXsp       := Higgrirp.get_parameter_value(job_id,'XSP');
+  
+  -- sscanlon fix 709497 12SEP2007 
+  -- get the values from the parameters PEDFILE and ANSWER2 
+     FFile      := Higgrirp.get_parameter_value(job_id,'PEDFILE');
+     FAunit     := Higgrirp.get_parameter_value(job_id,'ANSWER2');
+  --end of sscanlon fix 709497 12SEP2007 
+  
   -- Factivity is used for display when in debug mode only
   IF debug THEN
   --
@@ -118,6 +146,12 @@ BEGIN
   dbms_output.put_line('Parameter Use Hierarchy : '||FHeir);
   dbms_output.put_line('Parameter Inventory XSP : '||FXsp);
   dbms_output.put_line('Parameter Output Dir    : '||FDest);
+  -- sscanlon fix 709407 12SEP2007
+  -- additional debug output for the new variables added above. 
+  -- See top of package body code for problem description   
+     dbms_output.put_line('Parameter Output File   : '||FFile);
+     dbms_output.put_line('Parameter Restrict AU   : '||FAunit);  
+  -- end of sscanlon fix 709407 12SEP2007 
   dbms_output.put_line('');
   END IF;
   --
@@ -617,13 +651,41 @@ CURSOR c15 IS
       WHERE hco_domain = 'WEATHER_CONDITION'
       AND   hco_end_date IS NULL
       ORDER BY 1;
--- Inspector Details
-   CURSOR c31 IS
-      SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
-      FROM  hig_users
-      WHERE hus_job_title='INSP'
-      AND   hus_end_date IS NULL
-      ORDER BY 1;
+-- sscanlon fix 700407 12SEP2007
+-- Cursor 31 was the original cursor which would return the list of inspectors 
+-- to the user.  This cursor is fine if the parameter ANSWER2 = 'N'.
+-- If ANSWER2 = 'Y' then an additional restriction needed to be added to this 
+-- cursor.  For ease, the cursor was copied and recreated as cursor C31a, and 
+-- the restriction added.
+-- See top of package body code for problem description 
+    -- Inspector Details - no admin unit restriction 
+       CURSOR c31 IS
+          SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
+          FROM  hig_users
+          WHERE hus_job_title='INSP'
+          AND   hus_end_date IS NULL
+          ORDER BY 1;
+    -- Inspector Details - restricted by users admin unit       
+       CURSOR C31a IS
+          SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
+          FROM  hig_users
+          WHERE hus_job_title  = 'INSP'
+          AND   hus_end_date IS NULL
+          AND   hus_admin_unit in ( SELECT HAG_CHILD_ADMIN_UNIT
+                                    FROM   HIG_ADMIN_GROUPS
+                                    WHERE  HAG_DIRECT_LINK='Y'
+                                    START WITH HAG_PARENT_ADMIN_UNIT = ( SELECT HUS_ADMIN_UNIT 
+                                                                         FROM   HIG_USERS
+                                                                         WHERE  HUS_USERNAME=USER )                                                                     
+                                    CONNECT BY PRIOR HAG_CHILD_ADMIN_UNIT=HAG_PARENT_ADMIN_UNIT
+                                    AND HAG_DIRECT_LINK='Y'
+                                    UNION
+                                    SELECT HUS_ADMIN_UNIT
+                                    FROM HIG_USERS
+                                    WHERE HUS_USERNAME=USER)
+          ORDER BY 1;
+-- end of sscanlon fix 709407 12SEP2007  
+--     
 -- Standard Item Sections
    CURSOR c32 IS
      SELECT '32,*,'||sis_id  ||','||
@@ -834,7 +896,15 @@ BEGIN
     OPEN  get_name;
     FETCH get_name INTO user_init;
     CLOSE get_name;
-    v_filename := user_init||v_filename;
+    
+    -- sscanlon fix 709407 12SEP2007 
+    -- If the value of FFile (obtained from user option PEDFILE) is populated 
+    -- then it should be used, otherwise (for customers who don't wish to define 
+    -- a default filename) the current filename should be used. 
+    -- See top of package body code for problem description 
+       v_filename := nvl(FFile,user_init||v_filename);
+    -- end of sscanlon fix 709407 12SEP2007
+    
     IF  NOT FileExists(FDest,v_Filename)
     THEN create_file(FDest,v_filename,StartLine);
     ELSE create_file(FDest,v_filename,Startline);  -- [HB]: Overwrite the file anyway
@@ -844,7 +914,15 @@ BEGIN
        -- end if;
     END IF;
   ELSE
-    v_filename := TO_CHAR(job_id)||'.'||FFileext;
+  
+    -- sscanlon fix 709407 12SEP2007 
+    -- If the value of FFile (obtained from user option PEDFILE) is populated 
+    -- then it should be used, otherwise (for customers who don't wish to define 
+    -- a default filename) the current filename should be used. 
+    -- See top of package body code for problem description   
+       v_filename := nvl(FFILE,TO_CHAR(job_id)||'.'||FFileext);
+    -- end of sscanlon fix 709407 12SEP2007
+           
     IF  NOT FileExists(FDest,v_Filename)    THEN
       create_file(FDest,v_filename,StartLine);
     ELSE
@@ -1002,10 +1080,25 @@ BEGIN
     rec_count := rec_count + 1;
     cursor_recs(rec_count) := i_rec.rec;
   END LOOP;
-  FOR i_rec IN c31 LOOP
-    rec_count := rec_count + 1;
-    cursor_recs(rec_count) := i_rec.rec;
-  END LOOP;
+  
+  -- sscanlon fix 709497 12SEP2007 
+  -- check the contents of FAunit to see if the user wants to restrict the 
+  -- list of inspectors based on their Admin Unit, default = 'N' (no restriction).
+  -- The default value may be overwritten by the contents of the ANSWER2 
+  -- gri parameter further up in the code.
+  -- See top of package body code for problem description 
+      if FAunit='N'
+      then FOR i_rec IN c31   -- Unrestricted 
+           LOOP rec_count := rec_count + 1;
+                cursor_recs(rec_count) := i_rec.rec;
+           END LOOP;
+      else FOR i_rec IN c31a  -- Restricted by Admin Unit
+           LOOP rec_count := rec_count + 1;
+                cursor_recs(rec_count) := i_rec.rec;
+           END LOOP;
+      end if;
+  --end of sscanlon fix 709407 12SEP2007 
+  
   FOR i_rec IN c32 LOOP
     rec_count := rec_count + 1;
     cursor_recs(rec_count) := i_rec.rec;
