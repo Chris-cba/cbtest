@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.1   Sep 14 2007 11:49:48   sscanlon  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.2   Sep 21 2007 17:06:28   malexander  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Sep 14 2007 11:49:48  $
- --       Date fetched Out : $Modtime:   Sep 14 2007 09:19:58  $
- --       SCCS Version     : $Revision:   2.1  $
+ --       Date into SCCS   : $Date:   Sep 21 2007 17:06:28  $
+ --       Date fetched Out : $Modtime:   Sep 21 2007 16:10:42  $
+ --       SCCS Version     : $Revision:   2.2  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -660,17 +660,37 @@ CURSOR c15 IS
 -- See top of package body code for problem description 
     -- Inspector Details - no admin unit restriction 
        CURSOR c31 IS
-          SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
+          /*SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
           FROM  hig_users
           WHERE hus_job_title='INSP'
           AND   hus_end_date IS NULL
+          ORDER BY 1;*/
+          -- Added 21-Sep-07 by MJA
+          -- Product option EDIFDLROLE shipped to allow restriction by
+          -- role entered in here for users else allow all users
+          -- Changes included in the c31a cursor too
+          SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
+          FROM  hig_users
+          WHERE hus_end_date IS NULL
+          AND  (hig.get_sysopt('EDIFDLROLE') Is Null     
+           OR   hus_username IN (Select hur_username
+                                 From   hig_user_roles
+                                 Where  hur_role = hig.get_sysopt('EDIFDLROLE')
+                                )
+               )
           ORDER BY 1;
     -- Inspector Details - restricted by users admin unit       
        CURSOR C31a IS
           SELECT '31,*,'||hus_initials||','||replace(hus_name,',',':') rec
           FROM  hig_users
-          WHERE hus_job_title  = 'INSP'
-          AND   hus_end_date IS NULL
+          --WHERE hus_job_title  = 'INSP'
+          WHERE hus_end_date IS NULL
+          AND  (hig.get_sysopt('EDIFDLROLE') Is Null     
+           OR   hus_username IN (Select hur_username
+                                 From   hig_user_roles
+                                 Where  hur_role = hig.get_sysopt('EDIFDLROLE')
+                                )
+               )
           AND   hus_admin_unit in ( SELECT HAG_CHILD_ADMIN_UNIT
                                     FROM   HIG_ADMIN_GROUPS
                                     WHERE  HAG_DIRECT_LINK='Y'
