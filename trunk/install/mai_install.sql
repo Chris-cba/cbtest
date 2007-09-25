@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.0   Jun 13 2007 16:32:32   smarshall  $
+REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.1   Sep 25 2007 16:48:24   jwadsworth  $
 
 set echo off
 set linesize 120
@@ -368,8 +368,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.2.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.2.0');
 END;
 /
 COMMIT;
