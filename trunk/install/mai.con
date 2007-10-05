@@ -1,11 +1,11 @@
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.0   Jun 13 2007 16:32:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.1   Oct 05 2007 15:18:30   Chris Parkinson  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:34  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Oct 05 2007 15:18:30  $
+--       Date fetched Out : $Modtime:   Oct 05 2007 15:16:30  $
+--       SCCS Version     : $Revision:   2.1  $
 --       based on sccsid @(#)mai.con	1.18 04/02/07
 --
--- Generated for Oracle 9i on Mon Apr 02  15:55:06 2007 by Server Generator 9.0.2.94.12
+-- Generated for Oracle 9i on Fri Oct 05  15:09:55 2007 by Server Generator 9.0.2.94.12
   
 PROMPT Creating Primary Key on 'WORK_ORDER_PRIORITIES'
 ALTER TABLE WORK_ORDER_PRIORITIES
@@ -54,17 +54,17 @@ ALTER TABLE ACTIVITIES
 /
 
 
-                                           
+                                            
 PROMPT Creating Check Constraint on 'WORK_ORDERS'
 ALTER TABLE WORK_ORDERS
  ADD (CONSTRAINT WOR_REGISTER_FLAG_CHK CHECK (wor_register_flag IN ('N','Y')))
 /
-                                                
+                                                 
 PROMPT Creating Check Constraint on 'MAI_GMIS_LOAD_BATCHES'
 ALTER TABLE MAI_GMIS_LOAD_BATCHES
  ADD (CONSTRAINT GLB_LOAD_ERR_CHK1 CHECK (glb_load_errors IN ('Y', 'N')))
 /
-                                                          
+                                                        
 
 PROMPT Creating Foreign Key on 'MAI_INV_ACTIVITIES'
 ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
