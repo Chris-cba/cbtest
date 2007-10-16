@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.1   Sep 25 2007 16:48:24   jwadsworth  $
+REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.2   Oct 16 2007 17:01:32   sscanlon  $
 
 set echo off
 set linesize 120
@@ -27,7 +27,7 @@ spool &logfile1
 --
 ---------------------------------------------------------------------------------------------------
 --                    ********************* ACCEPT PARAMETERS *************************
-set term off 
+set term off
 undefine p_admin_type
 col      p_admin_type  new_value p_admin_type noprint
 set term on
@@ -42,7 +42,7 @@ order by 1
 prompt
 accept   p_admin_type    prompt "Enter the Admin Type Code to associate with Inventory Types: "
 set term off
-select upper('&p_admin_type') p_admin_type 
+select upper('&p_admin_type') p_admin_type
 from dual
 /
 set term on
@@ -69,7 +69,7 @@ END;
 WHENEVER SQLERROR CONTINUE
 --
 ---------------------------------------------------------------------------------------------------
---
+--                                     ********** CHECKS  ***********
 select 'Installation Date ' || to_char(sysdate, 'DD-MON-YYYY HH24:MM:SS') from dual;
 
 SELECT 'Install Running on ' ||LOWER(USER||'@'||instance_name||'.'||host_name)||' - DB ver : '||version
@@ -80,6 +80,19 @@ FROM hig_products
 WHERE hpr_product IN ('HIG','NET');
 
 WHENEVER SQLERROR EXIT
+
+--
+-- Check that the user isn't sys or system
+--
+BEGIN
+   --
+      IF USER IN ('SYS','SYSTEM')
+       THEN
+         RAISE_APPLICATION_ERROR(-20000,'You cannot install this product as ' || USER);
+      END IF;
+END;
+/
+
 --
 -- Check that MAI has not already been installed
 --
@@ -96,7 +109,19 @@ BEGIN
    END LOOP;
 END;
 /
+
+--
+-- Check that HIG has been installed @ v4.0.2.0, as MAI is dependent this
+--
+BEGIN
+ hig2.product_exists_at_version (p_product        => 'HIG'
+                                ,p_VERSION        => '4.0.2.0'
+                                );
+END;
+/
+
 WHENEVER SQLERROR CONTINUE
+
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   TABLES  *******************
