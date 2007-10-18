@@ -9,12 +9,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_ddl_upg.sql-arc   2.0   Jun 13 2007 16:32:36   smarshall  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_ddl_upg.sql-arc   2.1   Oct 18 2007 12:05:36   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:36  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
---       Based on SCCS Version     : 1.1
+--       Date into PVCS   : $Date:   Oct 18 2007 12:05:36  $
+--       Date fetched Out : $Modtime:   Oct 18 2007 11:52:22  $
+--       Version          : $Revision:   2.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2007
