@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.3   Oct 19 2007 10:10:08   jwadsworth  $
+REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.4   Oct 19 2007 13:15:12   jwadsworth  $
 
 set echo off
 set linesize 120
@@ -173,6 +173,20 @@ SET TERM OFF
 SET DEFINE ON
 select '&exor_base'||'mai'||'&terminator'||'install'||
         '&terminator'||'mai.sqs' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   UKP TABLES  *******************
+SET TERM ON
+PROMPT UKP Tables...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'install'||
+	'&terminator'||'ukp.tab' run_file
 from dual
 /
 SET FEEDBACK ON
