@@ -1,12 +1,30 @@
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.1   Oct 19 2007 13:39:20   jwadsworth  $
+--       Module Name      : $Workfile:   maidata4.sql  $
+--       Date into PVCS   : $Date:   Oct 19 2007 13:39:20  $
+--       Date fetched Out : $Modtime:   Oct 19 2007 13:37:50  $
+--       Version          : $Revision:   2.1  $
+--
+--   Product metadata script
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2007
+-----------------------------------------------------------------------------
+--
+--
 /***************************************************************************
 
 INFO
 ====
-As at Release 4.0
+As at Release 4.0.2.0
 
 GENERATION DATE
 ===============
-03-APR-2006 14:27
+19-OCT-2007 13:37
 
 TABLES PROCESSED
 ================
@@ -19,7 +37,7 @@ INV_TYPE_TRANSLATIONS
 
 TABLE OWNER
 ===========
-MAIDATA31
+MAI_METADATA
 
 MODE (A-Append R-Refresh)
 ========================
@@ -27,7 +45,6 @@ A
 
 ***************************************************************************/
 
-define sccsid = '$Revision:   2.0  $'
 set define off;
 set feedback off;
 
@@ -43,14 +60,17 @@ set define on
 
 --
 --********** COLOUR_LAYER_MAP **********--
+SET TERM ON
+PROMPT colour_layer_map
+SET TERM OFF
 --
 -- Columns
 -- COM_COLOUR                     NOT NULL VARCHAR2(30)
 --   COM_PK (Pos 1)
 -- COM_LAYER                      NOT NULL NUMBER(22)
---   COM_LAYER_MAX
 --   COM_PK (Pos 2)
 --   COM_UK (Pos 1)
+--   COM_LAYER_MAX
 --
 --
 INSERT INTO COLOUR_LAYER_MAP
@@ -58,11 +78,33 @@ INSERT INTO COLOUR_LAYER_MAP
        ,COM_LAYER
        )
 SELECT 
-        'Dark Grey'
-       ,1 FROM DUAL
+        'Blue'
+       ,6 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
-                   WHERE COM_COLOUR = 'Dark Grey'
-                    AND  COM_LAYER = 1);
+                   WHERE COM_COLOUR = 'Blue'
+                    AND  COM_LAYER = 6);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Brown'
+       ,4 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Brown'
+                    AND  COM_LAYER = 4);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Cyan'
+       ,9 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Cyan'
+                    AND  COM_LAYER = 9);
 --
 INSERT INTO COLOUR_LAYER_MAP
        (COM_COLOUR
@@ -91,11 +133,11 @@ INSERT INTO COLOUR_LAYER_MAP
        ,COM_LAYER
        )
 SELECT 
-        'Brown'
-       ,4 FROM DUAL
+        'Dark Grey'
+       ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
-                   WHERE COM_COLOUR = 'Brown'
-                    AND  COM_LAYER = 4);
+                   WHERE COM_COLOUR = 'Dark Grey'
+                    AND  COM_LAYER = 1);
 --
 INSERT INTO COLOUR_LAYER_MAP
        (COM_COLOUR
@@ -113,11 +155,11 @@ INSERT INTO COLOUR_LAYER_MAP
        ,COM_LAYER
        )
 SELECT 
-        'Blue'
-       ,6 FROM DUAL
+        'Green'
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
-                   WHERE COM_COLOUR = 'Blue'
-                    AND  COM_LAYER = 6);
+                   WHERE COM_COLOUR = 'Green'
+                    AND  COM_LAYER = 8);
 --
 INSERT INTO COLOUR_LAYER_MAP
        (COM_COLOUR
@@ -135,28 +177,6 @@ INSERT INTO COLOUR_LAYER_MAP
        ,COM_LAYER
        )
 SELECT 
-        'Green'
-       ,8 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
-                   WHERE COM_COLOUR = 'Green'
-                    AND  COM_LAYER = 8);
---
-INSERT INTO COLOUR_LAYER_MAP
-       (COM_COLOUR
-       ,COM_LAYER
-       )
-SELECT 
-        'Cyan'
-       ,9 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
-                   WHERE COM_COLOUR = 'Cyan'
-                    AND  COM_LAYER = 9);
---
-INSERT INTO COLOUR_LAYER_MAP
-       (COM_COLOUR
-       ,COM_LAYER
-       )
-SELECT 
         'Yellow'
        ,10 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
@@ -165,6 +185,9 @@ SELECT
 --
 --
 --********** NM_INV_DOMAINS_ALL **********--
+SET TERM ON
+PROMPT nm_inv_domains_all
+SET TERM OFF
 --
 -- Columns
 -- ID_DOMAIN                      NOT NULL VARCHAR2(30)
@@ -184,6 +207,9 @@ SELECT
 --
 --
 --********** NM_INV_TYPES_ALL **********--
+SET TERM ON
+PROMPT nm_inv_types_all
+SET TERM OFF
 --
 -- Columns
 -- NIT_INV_TYPE                   NOT NULL VARCHAR2(4)
@@ -853,18 +879,21 @@ SELECT
 --
 --
 --********** NM_INV_ATTRI_LOOKUP_ALL **********--
+SET TERM ON
+PROMPT nm_inv_attri_lookup_all
+SET TERM OFF
 --
 -- Columns
 -- IAL_DOMAIN                     NOT NULL VARCHAR2(30)
 --   IAL_PK (Pos 1)
 -- IAL_VALUE                      NOT NULL VARCHAR2(30)
---   IAL_PK (Pos 2)
 --   IAL_STOP_QUOTE_CHK
+--   IAL_PK (Pos 2)
 -- IAL_DTP_CODE                            VARCHAR2(4)
 -- IAL_MEANING                    NOT NULL VARCHAR2(80)
 -- IAL_START_DATE                 NOT NULL DATE
---   IAL_PK (Pos 3)
 --   IAL_START_DATE_TCHK
+--   IAL_PK (Pos 3)
 -- IAL_END_DATE                            DATE
 --   IAL_END_DATE_TCHK
 -- IAL_SEQ                        NOT NULL NUMBER(4)
@@ -877,12 +906,15 @@ SELECT
 --
 --
 --********** NM_INV_TYPE_ATTRIBS_ALL **********--
+SET TERM ON
+PROMPT nm_inv_type_attribs_all
+SET TERM OFF
 --
 -- Columns
 -- ITA_INV_TYPE                   NOT NULL VARCHAR2(4)
---   ITA_PK1 (Pos 1)
 --   ITA_UK_VIEW_ATTRI (Pos 1)
 --   ITA_UK_VIEW_COL (Pos 1)
+--   ITA_PK1 (Pos 1)
 -- ITA_ATTRIB_NAME                NOT NULL VARCHAR2(30)
 --   ITA_COL_IIT_PK_MAND_CHK
 --   ITA_COL_UPPER_CHK
@@ -934,75 +966,6 @@ SELECT
 --   ITA_DISPLAYED_CHK
 -- ITA_DISP_WIDTH                          NUMBER(3)
 --
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_DF'
-       ,'IIT_XTRA_DATE_1'
-       ,'Y'
-       ,1
-       ,'N'
-       ,'DATE'
-       ,7
-       ,0
-       ,'Survey Date'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'YEAR'
-       ,'YEAR'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113353','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_DF'
-                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -1176,7 +1139,7 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_DS'
+        'D_DF'
        ,'IIT_XTRA_DATE_1'
        ,'Y'
        ,1
@@ -1184,7 +1147,7 @@ SELECT
        ,'DATE'
        ,7
        ,0
-       ,'Year'
+       ,'Survey Date'
        ,''
        ,'N'
        ,''
@@ -1200,7 +1163,7 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20031028113740','YYYYMMDDHH24MISS')
+       ,to_date('20031028113353','YYYYMMDDHH24MISS')
        ,to_date('20060403140136','YYYYMMDDHH24MISS')
        ,'MAIDATA31'
        ,'MAIDATA31'
@@ -1208,7 +1171,7 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_DS'
+                   WHERE ITA_INV_TYPE = 'D_DF'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
@@ -1315,6 +1278,75 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_DS'
+       ,'IIT_HEIGHT'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Band B'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_BAND_B'
+       ,'DEF_BAND_B'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DS'
+                    AND  ITA_ATTRIB_NAME = 'IIT_HEIGHT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_DS'
        ,'IIT_WIDTH'
        ,'Y'
        ,4
@@ -1384,21 +1416,21 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_DS'
-       ,'IIT_HEIGHT'
+       ,'IIT_XTRA_DATE_1'
        ,'Y'
-       ,3
+       ,1
        ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Band B'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Year'
        ,''
        ,'N'
        ,''
        ,null
        ,null
-       ,'DEF_BAND_B'
-       ,'DEF_BAND_B'
+       ,'YEAR'
+       ,'YEAR'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -1407,7 +1439,7 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20031028113740','YYYYMMDDHH24MISS')
        ,to_date('20060403140136','YYYYMMDDHH24MISS')
        ,'MAIDATA31'
        ,'MAIDATA31'
@@ -1416,7 +1448,7 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_DS'
-                    AND  ITA_ATTRIB_NAME = 'IIT_HEIGHT');
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -1522,6 +1554,75 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_HL'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_HL'
        ,'IIT_GAP'
        ,'Y'
        ,5
@@ -1591,21 +1692,21 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_HL'
-       ,'IIT_DISTANCE'
+       ,'IIT_OPTIONS'
        ,'Y'
-       ,3
-       ,'N'
-       ,'NUMBER'
-       ,6
        ,2
-       ,'Reading'
-       ,''
        ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
        ,''
        ,null
        ,null
-       ,'READING'
-       ,'READING'
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -1623,7 +1724,7 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_HL'
-                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -1693,282 +1794,6 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_HL'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_HL'
-       ,'IIT_OPTIONS'
-       ,'Y'
-       ,2
-       ,'N'
-       ,'VARCHAR2'
-       ,2
-       ,0
-       ,'Direction'
-       ,''
-       ,'Y'
-       ,''
-       ,null
-       ,null
-       ,'DIRECTION_CODE'
-       ,'DIRECTION_CODE'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HL'
-                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_HR'
-       ,'IIT_XTRA_DATE_1'
-       ,'Y'
-       ,1
-       ,'N'
-       ,'DATE'
-       ,7
-       ,0
-       ,'Survey Date'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'YEAR'
-       ,'YEAR'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_HR'
-       ,'IIT_OPTIONS'
-       ,'Y'
-       ,2
-       ,'N'
-       ,'VARCHAR2'
-       ,2
-       ,0
-       ,'Direction'
-       ,''
-       ,'Y'
-       ,''
-       ,null
-       ,null
-       ,'DIRECTION_CODE'
-       ,'DIRECTION_CODE'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_HR'
-       ,'IIT_DISTANCE'
-       ,'Y'
-       ,3
-       ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Reading'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'READING'
-       ,'READING'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -2074,6 +1899,75 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_HR'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_HR'
        ,'IIT_GAP'
        ,'Y'
        ,5
@@ -2142,7 +2036,76 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_HT'
+        'D_HR'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_HR'
        ,'IIT_XTRA_DATE_1'
        ,'Y'
        ,1
@@ -2174,8 +2137,77 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HT'
+                   WHERE ITA_INV_TYPE = 'D_HR'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -2350,75 +2382,6 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_HT'
-       ,'IIT_ANGLE'
-       ,'Y'
-       ,4
-       ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Upper Limit'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'UPPER_LIMIT'
-       ,'UPPER_LIMIT'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_HT'
-                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_HT'
        ,'IIT_OPTIONS'
        ,'Y'
        ,2
@@ -2487,7 +2450,7 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_MI'
+        'D_HT'
        ,'IIT_XTRA_DATE_1'
        ,'Y'
        ,1
@@ -2519,8 +2482,77 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_MI'
+                   WHERE ITA_INV_TYPE = 'D_HT'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -2695,75 +2727,6 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_MI'
-       ,'IIT_ANGLE'
-       ,'Y'
-       ,4
-       ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Upper Limit'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'UPPER_LIMIT'
-       ,'UPPER_LIMIT'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_MI'
-                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_MI'
        ,'IIT_OPTIONS'
        ,'Y'
        ,2
@@ -2832,22 +2795,22 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_RC'
-       ,'IIT_NO_OF_UNITS'
+        'D_MI'
+       ,'IIT_XTRA_DATE_1'
        ,'Y'
        ,1
        ,'N'
-       ,'NUMBER'
-       ,3
+       ,'DATE'
+       ,7
        ,0
-       ,'Layer'
+       ,'Survey Date'
        ,''
        ,'N'
        ,''
        ,null
        ,null
-       ,'LAYER'
-       ,'LAYER'
+       ,'YEAR'
+       ,'YEAR'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -2864,77 +2827,8 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_RC'
-                    AND  ITA_ATTRIB_NAME = 'IIT_NO_OF_UNITS');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_RC'
-       ,'IIT_MATERIAL_TXT'
-       ,'Y'
-       ,2
-       ,'N'
-       ,'VARCHAR2'
-       ,8
-       ,0
-       ,'Material'
-       ,''
-       ,'Y'
-       ,''
-       ,null
-       ,null
-       ,'MATERIAL'
-       ,'MATERIAL'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_RC'
-                    AND  ITA_ATTRIB_NAME = 'IIT_MATERIAL_TXT');
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -3108,22 +3002,22 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_RI'
-       ,'IIT_XTRA_DATE_1'
+        'D_RC'
+       ,'IIT_MATERIAL_TXT'
        ,'Y'
-       ,1
+       ,2
        ,'N'
-       ,'DATE'
-       ,7
+       ,'VARCHAR2'
+       ,8
        ,0
-       ,'Survey Date'
+       ,'Material'
        ,''
-       ,'N'
+       ,'Y'
        ,''
        ,null
        ,null
-       ,'YEAR'
-       ,'YEAR'
+       ,'MATERIAL'
+       ,'MATERIAL'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -3140,7 +3034,145 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_RI'
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_MATERIAL_TXT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_NO_OF_UNITS'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'NUMBER'
+       ,3
+       ,0
+       ,'Layer'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LAYER'
+       ,'LAYER'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_NO_OF_UNITS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,5
+       ,'Y'
+       ,'DATE'
+       ,11
+       ,0
+       ,'Material Age'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'MATERIAL_AGE'
+       ,'MATERIAL_AGE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20071019133723','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
@@ -3178,21 +3210,21 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_RI'
-       ,'IIT_OPTIONS'
+       ,'IIT_ANGLE'
        ,'Y'
-       ,2
+       ,4
        ,'N'
-       ,'VARCHAR2'
+       ,'NUMBER'
+       ,6
        ,2
-       ,0
-       ,'Direction'
+       ,'Upper Limit'
        ,''
-       ,'Y'
+       ,'N'
        ,''
        ,null
        ,null
-       ,'DIRECTION_CODE'
-       ,'DIRECTION_CODE'
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -3201,7 +3233,7 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20031028114309','YYYYMMDDHH24MISS')
        ,to_date('20060403140136','YYYYMMDDHH24MISS')
        ,'MAIDATA31'
        ,'MAIDATA31'
@@ -3210,7 +3242,7 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_RI'
-                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -3384,7 +3416,76 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_SR'
+        'D_RI'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_RI'
        ,'IIT_XTRA_DATE_1'
        ,'Y'
        ,1
@@ -3408,7 +3509,7 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
        ,to_date('20060403140136','YYYYMMDDHH24MISS')
        ,'MAIDATA31'
        ,'MAIDATA31'
@@ -3416,7 +3517,7 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_SR'
+                   WHERE ITA_INV_TYPE = 'D_RI'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
@@ -3454,21 +3555,21 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_SR'
-       ,'IIT_WIDTH'
+       ,'IIT_DISTANCE'
        ,'Y'
-       ,5
+       ,3
        ,'N'
        ,'NUMBER'
        ,6
        ,2
-       ,'Reading 3'
+       ,'Reading 1'
        ,''
        ,'N'
        ,''
        ,null
        ,null
-       ,'READING_3'
-       ,'READING_3'
+       ,'READING_1'
+       ,'READING_1'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -3486,7 +3587,76 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_SR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_WIDTH');
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_GAP'
+       ,'Y'
+       ,6
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Average'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'SKID_AVERAGE'
+       ,'SKID_AVERAGE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20060403140136','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -3661,75 +3831,6 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_SR'
-       ,'IIT_GAP'
-       ,'Y'
-       ,6
-       ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Average'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'SKID_AVERAGE'
-       ,'SKID_AVERAGE'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028113920','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_SR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_SR'
        ,'IIT_OPTIONS'
        ,'Y'
        ,2
@@ -3799,21 +3900,21 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        )
 SELECT 
         'D_SR'
-       ,'IIT_DISTANCE'
+       ,'IIT_WIDTH'
        ,'Y'
-       ,3
+       ,5
        ,'N'
        ,'NUMBER'
        ,6
        ,2
-       ,'Reading 1'
+       ,'Reading 3'
        ,''
        ,'N'
        ,''
        ,null
        ,null
-       ,'READING_1'
-       ,'READING_1'
+       ,'READING_3'
+       ,'READING_3'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -3831,7 +3932,7 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
                    WHERE ITA_INV_TYPE = 'D_SR'
-                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+                    AND  ITA_ATTRIB_NAME = 'IIT_WIDTH');
 --
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
@@ -3867,22 +3968,22 @@ INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        ,ITA_DISP_WIDTH
        )
 SELECT 
-        'D_RC'
+        'D_SR'
        ,'IIT_XTRA_DATE_1'
        ,'Y'
-       ,5
-       ,'Y'
+       ,1
+       ,'N'
        ,'DATE'
-       ,11
+       ,7
        ,0
-       ,'Material Age'
+       ,'Survey Date'
        ,''
        ,'N'
        ,''
        ,null
        ,null
-       ,'MATERIAL AGE'
-       ,'MATERIAL AGE'
+       ,'YEAR'
+       ,'YEAR'
        ,to_date('19000101000000','YYYYMMDDHH24MISS')
        ,null
        ,'N'
@@ -3899,80 +4000,14 @@ SELECT
        ,'Y'
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_RC'
+                   WHERE ITA_INV_TYPE = 'D_SR'
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
---
-INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
-       (ITA_INV_TYPE
-       ,ITA_ATTRIB_NAME
-       ,ITA_DYNAMIC_ATTRIB
-       ,ITA_DISP_SEQ_NO
-       ,ITA_MANDATORY_YN
-       ,ITA_FORMAT
-       ,ITA_FLD_LENGTH
-       ,ITA_DEC_PLACES
-       ,ITA_SCRN_TEXT
-       ,ITA_ID_DOMAIN
-       ,ITA_VALIDATE_YN
-       ,ITA_DTP_CODE
-       ,ITA_MAX
-       ,ITA_MIN
-       ,ITA_VIEW_ATTRI
-       ,ITA_VIEW_COL_NAME
-       ,ITA_START_DATE
-       ,ITA_END_DATE
-       ,ITA_QUERYABLE
-       ,ITA_UKPMS_PARAM_NO
-       ,ITA_UNITS
-       ,ITA_FORMAT_MASK
-       ,ITA_EXCLUSIVE
-       ,ITA_KEEP_HISTORY_YN
-       ,ITA_DATE_CREATED
-       ,ITA_DATE_MODIFIED
-       ,ITA_MODIFIED_BY
-       ,ITA_CREATED_BY
-       ,ITA_QUERY
-       ,ITA_DISPLAYED
-       ,ITA_DISP_WIDTH
-       )
-SELECT 
-        'D_RI'
-       ,'IIT_ANGLE'
-       ,'Y'
-       ,4
-       ,'N'
-       ,'NUMBER'
-       ,6
-       ,2
-       ,'Upper Limit'
-       ,''
-       ,'N'
-       ,''
-       ,null
-       ,null
-       ,'UPPER_LIMIT'
-       ,'UPPER_LIMIT'
-       ,to_date('19000101000000','YYYYMMDDHH24MISS')
-       ,null
-       ,'N'
-       ,null
-       ,null
-       ,''
-       ,'N'
-       ,'N'
-       ,to_date('20031028114309','YYYYMMDDHH24MISS')
-       ,to_date('20060403140136','YYYYMMDDHH24MISS')
-       ,'MAIDATA31'
-       ,'MAIDATA31'
-       ,''
-       ,'Y'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
-                   WHERE ITA_INV_TYPE = 'D_RI'
-                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
 --
 --
 --********** INV_TYPE_TRANSLATIONS **********--
+SET TERM ON
+PROMPT inv_type_translations
+SET TERM OFF
 --
 -- Columns
 -- ITY_DTP_FLAG                   NOT NULL VARCHAR2(1)
