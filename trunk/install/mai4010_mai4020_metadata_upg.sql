@@ -9,11 +9,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.1   Oct 18 2007 12:05:36   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.2   Oct 19 2007 10:49:32   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 18 2007 12:05:36  $
---       Date fetched Out : $Modtime:   Oct 18 2007 11:52:22  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Oct 19 2007 10:49:32  $
+--       Date fetched Out : $Modtime:   Oct 19 2007 10:43:12  $
+--       Version          : $Revision:   2.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2007
@@ -580,6 +580,15 @@ SET TERM OFF
 -- DRD wanted to only show a list of inspectors restricted by the admin unit of the current user when they run mai3863.  This allows the user to specify if they want to see a list of all inspectors, or a list restricted by their own admin unit.
 -- Also DRD wanted to be able to specify a default file name when creating a PED file.  The new user option PEDFILE allows the user to do this.  See the log for more details...
 ------------------------------------------------------------------
+--
+--HIG_DOMAINS
+--
+Insert into HIG_DOMAINS
+   (HDO_DOMAIN, HDO_PRODUCT, HDO_TITLE, HDO_CODE_LENGTH)
+Select 'USER_OPTIONS', 'MAI', 'Highways User Options', 10
+from dual
+where not exists (select 1 from HIG_DOMAINS where HDO_DOMAIN = 'USER_OPTIONS');
+
 --
 --HIG_CODES
 --
