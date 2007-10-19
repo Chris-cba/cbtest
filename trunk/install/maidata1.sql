@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.3   Sep 14 2007 11:26:34   sscanlon  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.4   Oct 19 2007 08:42:16   sscanlon  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Sep 14 2007 11:26:34  $
---       Date fetched Out : $Modtime:   Sep 14 2007 11:15:38  $
---       Version          : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Oct 19 2007 08:42:16  $
+--       Date fetched Out : $Modtime:   Oct 19 2007 08:38:36  $
+--       Version          : $Revision:   2.4  $
 --
 --   Product metadata script
 --
@@ -24,7 +24,7 @@ As at Release 4.0.2.0
 
 GENERATION DATE
 ===============
-14-SEP-2007 11:15
+19-OCT-2007 08:38
 
 TABLES PROCESSED
 ================
@@ -1032,6 +1032,20 @@ SELECT
        ,10 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
                    WHERE HDO_DOMAIN = 'SUMMATION_TYPES');
+--
+INSERT INTO HIG_DOMAINS
+       (HDO_DOMAIN
+       ,HDO_PRODUCT
+       ,HDO_TITLE
+       ,HDO_CODE_LENGTH
+       )
+SELECT 
+        'USER_OPTIONS'
+       ,'MAI'
+       ,'Highways User Options'
+       ,10 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
+                   WHERE HDO_DOMAIN = 'USER_OPTIONS');
 --
 INSERT INTO HIG_DOMAINS
        (HDO_DOMAIN
