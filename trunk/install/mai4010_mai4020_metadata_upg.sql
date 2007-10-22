@@ -9,11 +9,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.2   Oct 19 2007 10:49:32   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.3   Oct 22 2007 16:40:38   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 19 2007 10:49:32  $
---       Date fetched Out : $Modtime:   Oct 19 2007 10:43:12  $
---       Version          : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Oct 22 2007 16:40:38  $
+--       Date fetched Out : $Modtime:   Oct 22 2007 16:17:06  $
+--       Version          : $Revision:   2.3  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2007
@@ -376,13 +376,6 @@ SET TERM OFF
 -- DEVELOPMENT COMMENTS
 -- Update incorrect where clause value stored in gri_module_params.gmp_where to the correct value
 ------------------------------------------------------------------
-/*
--- MAX Log 706707 (09-May-07 Fix)
--- Problem:  we are trying to select a Defect Type but which ever one we select, 
---           eg BCK, always returns SMTH
--- Solution: SQL for where clause not quite correct.  Requires brackets around the
---           statement
-*/
 update gri_module_params
 set    gmp_where = '((:A_OR_G = ''A'' AND :ACTIVITY IS NOT NULL AND DTY_ATV_ACTY_AREA_CODE'
                   ||' = :ACTIVITY) OR (:A_OR_G = ''G''  AND :ACTIVITY_GROUP IS NOT NULL '
