@@ -1,14 +1,14 @@
 --
 -----------------------------------------------------------------------------
 --
---   SCCS Identifiers :-
+--   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.0   Jun 13 2007 16:32:36   smarshall  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.1   Oct 22 2007 15:21:26   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_upg.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:36  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
---       Based on SCCS Version     : 1.1
+--       Date into PVCS   : $Date:   Oct 22 2007 15:21:26  $
+--       Date fetched Out : $Modtime:   Oct 22 2007 15:21:36  $
+--       PVCS Version     : $Revision:   2.1  $
+--       Based on SCCS version :
 --
 --   Product upgrade script
 --
@@ -57,36 +57,6 @@ SET TERM OFF
 SET DEFINE ON
 SELECT '&exor_base'||'mai'||'&terminator'||'install'||
         '&terminator'||'mai4010_mai4020_ddl_upg.sql' run_file
-FROM dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
----------------------------------------------------------------------------------------------------
---               ****************   RE-RUN INDEXES   *******************
-SET TERM ON
-PROMPT Re-running Indexes...
-PROMPT Ignore errors resulting from index already existing...
-SET TERM OFF
-SET DEFINE ON
-SELECT '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mai.ind' run_file
-FROM dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
----------------------------------------------------------------------------------------------------
---               ****************   RE-RUN CONSTRAINTS   *******************
-SET TERM ON
-PROMPT Re-running Constraints...
-PROMPT Ignore errors resulting from constraint already existing...
-SET TERM OFF
-SET DEFINE ON
-SELECT '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mai.con' run_file
 FROM dual
 /
 SET FEEDBACK ON
