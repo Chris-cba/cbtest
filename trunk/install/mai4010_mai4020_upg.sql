@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.1   Oct 22 2007 15:21:26   jwadsworth  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.2   Oct 25 2007 15:56:36   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_upg.sql  $
---       Date into PVCS   : $Date:   Oct 22 2007 15:21:26  $
---       Date fetched Out : $Modtime:   Oct 22 2007 15:21:36  $
---       PVCS Version     : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Oct 25 2007 15:56:36  $
+--       Date fetched Out : $Modtime:   Oct 25 2007 15:56:06  $
+--       PVCS Version     : $Revision:   2.2  $
 --       Based on SCCS version :
 --
 --   Product upgrade script
@@ -104,6 +104,19 @@ SET DEFINE ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
        '&terminator'||'pck'||'&terminator'||'maipkb.sql' run_file
 FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+---------------------------------------------------------------------------------------------------
+--                        ****************  TRANSLATION VIEWS  *******************
+SET TERM ON
+PROMPT Translation Views...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||
+        '&terminator'||'mai_transviews.sql' run_file
+from dual
 /
 SET FEEDBACK ON
 start &&run_file
