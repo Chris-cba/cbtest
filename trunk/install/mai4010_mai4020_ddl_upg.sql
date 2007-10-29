@@ -21,10 +21,16 @@ SET TERM OFF
 -- SSC  25-OCT-2007
 -- 
 -- DEVELOPMENT COMMENTS
--- Difference between Install and Upgrade scripts picked up during build.
--- On install the BUD_RSE_HE_ID column on the BUDGETS table accepts a null value, this was not the case i fyou upgraded.  This fix should solve this problem and ensure the tables match on install and upgrade.
+-- Checking that BUD_RSE_HE_ID is nullable.
 ------------------------------------------------------------------
-alter table BUDGETS modify BUD_RSE_HE_ID null;
+BEGIN
+ EXECUTE IMMEDIATE ('alter table BUDGETS modify BUD_RSE_HE_ID null');
+EXCEPTION
+  WHEN others THEN 
+   Null;
+END; 
+
+
 ------------------------------------------------------------------
 
 
