@@ -9,11 +9,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.3   Oct 22 2007 16:40:38   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_metadata_upg.sql-arc   2.4   Nov 07 2007 16:33:46   jwadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 22 2007 16:40:38  $
---       Date fetched Out : $Modtime:   Oct 22 2007 16:17:06  $
---       Version          : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Nov 07 2007 16:33:46  $
+--       Date fetched Out : $Modtime:   Nov 07 2007 16:32:28  $
+--       Version          : $Revision:   2.4  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2007
@@ -647,6 +647,34 @@ Select 'MAI3863', 'ANSWER2', 10, 'Restrict Inspector by AU', 'Y',
     NULL, NULL
 from dual
 where not exists (select 1 from GRI_MODULE_PARAMS where GMP_MODULE = 'MAI3863' and GMP_PARAM = 'ANSWER2');
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Remove MAI Modules from Menu
+SET TERM OFF
+
+-- JWA  07-NOV-2007
+-- 
+-- DEVELOPMENT COMMENTS
+-- Remove redundant modules from menu.
+------------------------------------------------------------------
+delete from hig_standard_favourites
+where hstf_parent = 'MAI_REF_INVENTORY'
+  and hstf_child  = 'MAI1440';
+
+delete from hig_standard_favourites
+where hstf_parent = 'MAI_REF_INVENTORY'
+  and hstf_child  = 'MAI1910';
+  
+delete from hig_standard_favourites
+where hstf_parent = 'MAI_REF_INVENTORY'
+  and hstf_child  = 'MAI1920';
+  
+delete from hig_standard_favourites
+where hstf_parent = 'MAI_INV'
+  and hstf_child  = 'MAI2310';
 ------------------------------------------------------------------
 
 
