@@ -3,11 +3,11 @@ CREATE OR REPLACE package body mai_audit as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.1   Nov 16 2007 16:07:12   dyounger  $
 --       Module Name      : $Workfile:   mai_audit.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Nov 16 2007 16:07:12  $
+--       Date fetched Out : $Modtime:   Nov 08 2007 10:26:28  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ CREATE OR REPLACE package body mai_audit as
                       ,p_wor_score           work_orders.wor_score%type
                       ,p_wor_peo_person_id   work_orders.wor_peo_person_id%type
                       ,p_wor_mod_by_id       work_orders.wor_mod_by_id%type) is
-                      
+
        p_user hig_users%ROWTYPE;
        p_user2 hig_users%ROWTYPE;
   begin
@@ -218,7 +218,7 @@ CREATE OR REPLACE package body mai_audit as
     end if;
     if (nvl(old_rec.wor_mod_by_id,'0') != nvl(p_wor_mod_by_id,'0') and is_audited('wor_mod_by_id')) then
        p_user := nm3get.get_hus(p_wor_peo_person_id);
-       p_user2 := nm3get.get_hus(old_rec.wor_peo_person_id);    
+       p_user2 := nm3get.get_hus(old_rec.wor_peo_person_id);
        write_log('wor_mod_by_id', p_user.hus_initials||' '||p_user.hus_name, p_user2.hus_initials||' '||p_user2.hus_name);
        write_log('wor_est_cost', p_wor_est_cost, old_rec.wor_est_cost);
     end if;
@@ -229,13 +229,13 @@ CREATE OR REPLACE package body mai_audit as
                         ,p_wor_peo_person_id  in work_orders.wor_peo_person_id%type
                         ,p_wor_mod_by_id      in work_orders.wor_mod_by_id%type) is
        p_user hig_users%ROWTYPE;
-       p_user2 hig_users%ROWTYPE;                       
+       p_user2 hig_users%ROWTYPE;
    begin
      old_rec.wor_works_order_no := p_wor_works_order_no;
      old_rec.wor_peo_person_id  := p_wor_peo_person_id;
      old_rec.wor_mod_by_id      := p_wor_mod_by_id;
      p_user := nm3get.get_hus(p_wor_peo_person_id);
-     p_user2 := nm3get.get_hus(old_rec.wor_peo_person_id);      
+     p_user2 := nm3get.get_hus(old_rec.wor_peo_person_id);
      write_log('wor_works_order_no', p_wor_works_order_no, null);
      write_log('wor_peo_person_id', p_user.hus_initials||' '||p_user.hus_name, null);
      write_log('wor_mod_by_id', p_user2.hus_initials||' '||p_user.hus_name, null);
@@ -287,7 +287,7 @@ CREATE OR REPLACE package body mai_audit as
     end if;
     if (old_rec.wol_gang != p_wol_gang and is_audited('wol_gang')) then
        write_log('wol_gang', p_wol_gang, old_rec.wol_gang);
-    end if;    
+    end if;
     old_rec := clear_rec; -- clear out changes
    end;
 
@@ -405,34 +405,34 @@ end;
      write_log('boq_id', '* CREATED *', null);
      old_rec := clear_rec; -- clear out changes
    end;
-   
+
    procedure cp_audit ( pi_wol_id         wo_audit.WAD_WOL_ID%TYPE
                       , pi_new_status     wo_audit.WAD_CHANGE%TYPE
                       , pi_old_status     wo_audit.WAD_CHANGE_FROM%TYPE
                       ) IS
-   
+   PRAGMA AUTONOMOUS_TRANSACTION;
    cursor c1 ( p_wol_id work_order_lines.wol_id%TYPE
              ) is
    select wol_works_order_no
    from work_order_lines
    where wol_id = p_wol_id;
-   
+
    l_works_order_no work_order_lines.wol_works_order_no%TYPE;
    begin
      open c1(pi_wol_id);
      fetch c1 into l_works_order_no;
      close c1;
 
-     insert into wo_audit 
+     insert into wo_audit
                ( WAD_WOR_WORKS_ORDER_NO
-               , WAD_WOL_ID             
-               , WAD_BOQ_ID             
-               , WAD_USER               
-               , WAD_DATE               
-               , WAD_COLUMN_NAME        
-               , WAD_CHANGE             
-               , WAD_CHANGE_FROM        
-               ) values 
+               , WAD_WOL_ID
+               , WAD_BOQ_ID
+               , WAD_USER
+               , WAD_DATE
+               , WAD_COLUMN_NAME
+               , WAD_CHANGE
+               , WAD_CHANGE_FROM
+               ) values
                ( l_works_order_no
                , pi_wol_id
                , ''
@@ -442,6 +442,8 @@ end;
                , pi_new_status
                , pi_old_status
                );
+
+     commit;
    end;
 
    procedure cpa_audit ( pi_cp_woc_claim_ref   in claim_payments.cp_woc_claim_ref%TYPE
@@ -461,12 +463,12 @@ end;
    cursor c1 is
    select CPA_ID_SEQ.NEXTVAL
    from dual;
-   
+
    begin
      open c1;
      fetch c1 into l_cpa_id;
      close c1;
-        	
+
      insert into claim_payments_audit ( CPA_ID
                                       , CPA_WOC_CLAIM_REF
                                       , CPA_WOC_CON_ID
@@ -481,22 +483,22 @@ end;
                                       , CPA_FYR_ID
                                       , CPA_INVOICE_NO
                                       )
-     values 
+     values
      ( l_cpa_id
      , pi_cp_woc_claim_ref
-     , pi_cp_woc_con_id          
-     , pi_cp_wol_id            
+     , pi_cp_woc_con_id
+     , pi_cp_wol_id
      , sysdate
-     , pi_cp_status              
-     , pi_cp_claim_value         
-     , pi_cp_payment_id          
-     , pi_cp_payment_value       
-     , pi_cp_payment_date        
+     , pi_cp_status
+     , pi_cp_claim_value
+     , pi_cp_payment_id
+     , pi_cp_payment_value
+     , pi_cp_payment_date
      , pi_cp_fis_payment_ref
-     , pi_cp_fyr_id              
-     , pi_cp_invoice_no          
+     , pi_cp_fyr_id
+     , pi_cp_invoice_no
      );
-   end;   
+   end;
 -----------------------------------------------------------------------------------------
 -- startup code
 
