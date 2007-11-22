@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07"; */
-static char *sccsid = "PVCS Version     : $Revision:$";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.2  $ $Modtime:   Nov 22 2007 11:12:52  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -18,8 +18,8 @@ int tmp_loop;
 int i_next_seq;
 VARCHAR recal_option[2];
 extern VARCHAR full_date[19];
-VARCHAR standard_xsp[1];
-VARCHAR reverse_xsp[1];
+VARCHAR standard_xsp[5];
+VARCHAR reverse_xsp[5];
 double strtoldtp;
 double strtollocl;
 double endtoldtp;
@@ -153,7 +153,7 @@ extern size_t buf_len, msg_len;
        peo_invent_by_id  number(8,0) ,
        invent_date       date,
        scl_class         varchar2(2),
-       x_sect            varchar2(1),
+       x_sect            varchar2(4),
        error_msg         varchar2(4000),
        error_flg         varchar2(1),
        hhfld1            varchar2(500),
@@ -321,7 +321,7 @@ extern size_t buf_len, msg_len;
        foreign_key           varchar2(50),
        peo_invent_by_id      number(8,0),
        invent_date           date,
-       x_sect                varchar2(1),
+       x_sect                varchar2(4),
        value                 varchar2(500),
        error_msg             varchar2(4000),
        error_flg             varchar2(1),
@@ -1251,14 +1251,14 @@ int validate_mc_data_direction()
    ************************************************************************* */
  {
 
-  EXEC SQL SELECT SUBSTR(hop_VALUE,1,1)
+  EXEC SQL SELECT hop_VALUE
            INTO   :standard_xsp
            FROM   hig_OPTIONS
            WHERE  hop_id = 'XSPSTDDIR';
   if (sqlca.sqlcode < 0)
     sql_err("validate_mc_data_direction(1)");
 
-  EXEC SQL SELECT SUBSTR(hop_VALUE,1,1)
+  EXEC SQL SELECT hop_VALUE
            INTO   :reverse_xsp
            FROM   hig_OPTIONS
            WHERE  hop_id = 'XSPREVDIR';
@@ -1860,6 +1860,113 @@ int upd_x_length()
   return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
  }
 
+int upd_last_surveyed()
+  {
+  EXEC SQL BEGIN DECLARE SECTION;
+    int v_error
+    ;
+  EXEC SQL END DECLARE SECTION;
+
+  v_error = 0;
+
+  EXEC SQL EXECUTE
+  DECLARE
+    --
+    TYPE he_id_tab IS TABLE OF hhinv_sect_log.he_id%TYPE;
+    --
+    lt_he_id        he_id_tab;
+    lt_invent_date  nm3type.tab_varchar30;
+    --
+    lv_attrib_name nm_inv_type_attribs_all.ita_attrib_name%TYPE;
+    lv_iit_ne_id   nm_inv_items_all.iit_ne_id%TYPE;
+    lv_string      nm3type.max_varchar2;
+    --
+  BEGIN
+    --
+nm_debug.debug_on;
+    BEGIN
+      --
+      SELECT hsl.he_id
+            ,to_char(hsl.invent_date,'DD-MON-YYYY')
+        BULK COLLECT
+        INTO lt_he_id
+            ,lt_invent_date
+        FROM hhinv_sect_log hsl
+       WHERE hsl.lst_run_num = :run_num
+         AND NOT EXISTS(SELECT 1
+                          FROM hhinv_load_2 hh2
+                         WHERE hh2.sect_hdr_seq_no = hsl.rec_seq_no
+                           AND NVL(error_flg,'N') = 'Y')
+           ;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          NULL;
+      WHEN others
+       THEN
+          RAISE;
+    END;
+    --
+    FOR i IN 1..lt_he_id.count LOOP
+      --
+      BEGIN
+        --
+        SELECT ita_attrib_name
+          INTO lv_attrib_name
+          FROM nm_inv_type_attribs
+         WHERE ita_inv_type = (SELECT nad_inv_type
+                                 FROM nm_nw_ad_types
+                                WHERE EXISTS(SELECT 1
+                                               FROM nm_elements_all
+                                              WHERE ne_id = lt_he_id(i)
+      				                                  AND ne_nt_type = nad_nt_type
+      					                                AND nvl(ne_gty_group_type,'$$$') = nvl(nad_gty_type,'$$$')
+    	  				                                AND nad_primary_ad = 'Y'))
+           AND UPPER(ita_view_col_name) = 'RSE_LAST_SURVEYED'
+             ;
+        --
+        SELECT nad_iit_ne_id
+          INTO lv_iit_ne_id
+          FROM nm_nw_ad_link
+         WHERE nad_ne_id = lt_he_id(i)
+           AND nad_primary_ad = 'Y'
+             ;
+        --
+        lv_string := 'UPDATE nm_inv_items SET '||lv_attrib_name||' = to_date('
+                  ||nm3flx.string(lt_invent_date(i))||','||nm3flx.string('DD-MON-YYYY')
+                  ||') WHERE iit_ne_id = '||lv_iit_ne_id;
+nm_debug.debug(lv_string);
+        --
+        execute immediate lv_string;
+        --
+      EXCEPTION
+        WHEN others
+         THEN
+            :v_error := 1;
+      END;
+      --
+    END LOOP;
+    --
+nm_debug.debug_off;
+  EXCEPTION
+   WHEN others
+    THEN
+       :v_error := 1;
+  END;
+  END-EXEC;
+
+  EXEC SQL WHENEVER SQLERROR do sql_err("update_sect_last_updated(1)");
+
+  if(v_error)
+    {
+    return(FAIL);
+    }
+  else
+    {
+    return(SUCCESS);
+    }
+  } /* upd_last_surveyed */
 
 int reverse_chainage()
 /* *************************************************************************
@@ -4953,7 +5060,7 @@ int dl_lo_3()
                      END_CHAIN             NUMBER        NOT NULL,
                      PEO_INVENT_BY_ID      NUMBER(8,0),
                      INVENT_DATE           DATE,
-                     X_SECT                VARCHAR2(1),
+                     X_SECT                VARCHAR2(4),
                      VALUE                 VARCHAR2(500),
                      ERROR_MSG             VARCHAR2(4000),
                      ERROR_FLG             VARCHAR2(1),
@@ -5118,7 +5225,7 @@ int dl_lo_3()
                      END_CHAIN             NUMBER        NOT NULL,
                      PEO_INVENT_BY_ID      NUMBER(8,0),
                      INVENT_DATE           DATE,
-                     X_SECT                VARCHAR2(1),
+                     X_SECT                VARCHAR2(4),
                      VALUE                 VARCHAR2(500),
                      ERROR_MSG             VARCHAR2(4000),
                      ERROR_FLG             VARCHAR2(1),
