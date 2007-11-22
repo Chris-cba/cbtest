@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "PVCS Version     : $Revision:$";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.2  $ $Modtime:   Nov 22 2007 11:12:48  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -69,7 +69,7 @@ VARCHAR c_sub_section_length[50][7];
 VARCHAR c_full_partial_ind[50][2];
 long int c_peo_id[50];
 VARCHAR c_date[50][9];
-VARCHAR c_xsect[50][2];
+VARCHAR c_xsect[50][5];
 VARCHAR c_stch[50][20];
 VARCHAR c_endch[50][20];
 VARCHAR c_pos1[50][33];
@@ -889,6 +889,12 @@ int stage_3()
     return(status);
    }
 */
+  if((status = upd_last_surveyed()) != SUCCESS)
+    {
+    fprintf(fi,"\nWarning : Unable To Update Section Last Surveyed Date\n\n");
+    fflush(fi);
+    }
+
   if ( ( status = check_first_sub_section() ) != SUCCESS)
   {
     return(status);
