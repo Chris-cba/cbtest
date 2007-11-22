@@ -1,12 +1,11 @@
+/* r1validc.h                                                                  */
+/* contains C functions for checking the format of husky hunter C load records */
 
 /* SCCS ID keywords, do not remove */
-/* "@(#)r1validc.h	1.2 05/20/04"                       */
+/* "@(#)r1validc.h	1.2 05/20/04"  */
 
-/* r1validc.h
-
-contains C functions for checking the format of husky hunter C load records
- 
-*/
+/* PVCS ID keywords, do not remove      */
+/* "$Workfile:   r1validc.h  $ $Revision:   2.1  $ $Modtime:   Nov 22 2007 11:15:56  $" */
 
 /* ---------------------------------------------------------------------- *
    Change History
@@ -44,9 +43,6 @@ end chain   : 6 numeric or ' '
 ** attributes : 40 printable characters or less
 
 */
-
-
-
 
 
 BOOLEAN c_validation(rtext,lineno,hermis_file)
@@ -194,7 +190,7 @@ BOOLEAN hermis_file;
 
 int i;
 
-if ((strlen(xsection) > 1) && (hermis_file == FALSE))
+if ((strlen(xsection) > 4) && (hermis_file == FALSE))
 { strcpy(err_msg,
 "ERROR: X Section - More than 1 characters BPR-8040");
   format_err(lineno,3);
