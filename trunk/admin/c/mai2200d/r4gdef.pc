@@ -2,7 +2,7 @@
 /* static char *sccsid = "@(#)r4gdef.pc	1.7 06/01/07"; */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4gdef.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4gdef.pc  $ $Revision:   2.1  $ $Modtime:   Nov 26 2007 12:05:48  $";
 
 /* ***********************************************************************
  * getdefect.pc           G E T D E F E C T   &  P U T D E F E C T     
@@ -1413,25 +1413,24 @@ void match_defects(char *repairs_processed
 
     u_defectid.arr[u_defectid.len]     = '\0';
     old_priority.arr[old_priority.len] = '\0';
-    }
-  else
-    {
-    intdefectid = 0;
-    *supflag='N';                         /* No defect found and so no  */
-    wolflag = FALSE;
-    }
-                                          /* superseding required.      */
 
-  if(!ORANOREC && !sup_later)             /* If defect matched          */
-    {
-    strcpy(str_defectid,(char*)u_defectid.arr);
-    intdefectid=atol(str_defectid);       /* Set intdefectid value      */
-    wolflag = chkwols();                  /* Check work order lines for */
-    }                                     /* selected defect.           */
+    if(!ORANOREC && !sup_later)             /* If defect matched          */
+      {
+      strcpy(str_defectid,(char*)u_defectid.arr);
+      intdefectid=atol(str_defectid);       /* Set intdefectid value      */
+      wolflag = chkwols();                  /* Check work order lines for */
+      }                                     /* selected defect.           */
+    else
+      {
+      intdefectid = 0;
+      *supflag='N';                         /* No defect found and so no  */
+      wolflag = FALSE;
+      }
+    }
   else
     {
-    intdefectid = 0;
-    *supflag='N';                         /* No defect found and so no  */
+    intdefectid = 0;                      /* Chainage Not In Use So No  */
+    *supflag='N';                         /* Matching Done.             */
     wolflag = FALSE;
     }
 
