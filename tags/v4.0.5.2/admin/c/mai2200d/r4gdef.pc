@@ -1,0 +1,1444 @@
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4gdef.pc	1.7 06/01/07"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4gdef.pc  $ $Revision:   2.1  $ $Modtime:   Nov 26 2007 12:05:48  $";
+
+/* ***********************************************************************
+ * getdefect.pc           G E T D E F E C T   &  P U T D E F E C T     
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 27-JUN-90                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : Classify defects as either 'L' (live) or 'U'        
+ *                  (unclassified) depending on defect category (1 or 2 
+ *                  respectively). This is iro the RoMIS database only. 
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 27-JUL-90                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : RMMS Amendment Set 5 enhancements. supdefect        
+ *                  function below has been enhanced to retain the      
+ *                  appropriate due date depending on the defect cats.  
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 10-MAY-91                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : RMMS Amendment Set 6 enhancements. Add in new       
+ *                  variables to cope with the processing of mandatory  
+ *                  and advisory roadstuds. The call to getargs then    
+ *                  initialises them to their appropriate values.       
+ *                  Add DEF_MAND_ADV to INSERT INTO DEFECTS code.       
+ *                  Set value of d_defcat to correct category since     
+ *                  valid values are now 1, 2.1 - 2.3 and TO_NUMBER cat 
+ *                  prior to insertion into DEFECTS table (var is now a 
+ *                  VARCHAR to handle floating point values).           
+ *                  Amend call to rmmstype to include date and county   
+ *                  since these are now needed in def_rs_rep.           
+ *                  Amend supdefect function to carry over rep_local_   
+ *                  date_due as well as rep_date_due.                   
+ *                  Define l_exists variable for use in checking if a   
+ *                  temp action has been done and initialise after each 
+ *                  new J record (used in processing cat 1 repairs).    
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 23-MAY-91                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : Amended function which gets an id for a superseded  
+ *                  defect (u_defectid). Roadstud defects can only      
+ *                  supersede an existing RS defect if they are of the  
+ *                  same type ie both M(andatory) or both A(dvisory).   
+ *                                                                      
+ *   CHANGE HISTORY :-                                                  
+ *   DATE         : 28-OCT-91                                           
+ *   CHANGED BY   : Steve Voller                                        
+ *   DESCRIPTION  : Fix bug introduced by new ANSI C compiler which     
+ *                  recognises a sequence of ?? as being a trigraph.    
+ *                  ?? was used in getdefect and led to a compiler error
+ *                  'missing right parenthesis'. ?? now set up as XX.   
+ *                                                                      
+ *                                                                      
+ *   CHANGE HISTORY :-                                                 
+ *   DATE         : 01-MAY-95                                           
+ *   CHANGED BY   : Andy Rowlinson                                      
+ *   DESCRIPTION  : PMS 491089                                          
+ *                  The function atof used to be declared as float..    
+ *                  It should however be declared using the include file
+ *                  stdlib.h.                                           
+ *
+ *   Changed By   : H.Buckley
+ *   Date         : 20-Jun-1996
+ *   Description  : Amended the format of the J record to the following
+ *                  structure.
+ *
+ *                  Record Type   : Char(1) = J
+ *
+ *   DATE         : 01-SEP-97                                           
+ *   CHANGED BY   : Garry Fletcher                                      
+ *   DESCRIPTION  : 1.7 > 2.1 Database Conversion
+ *
+ *   DATE         : 31-10-97
+ *   CHANGED BY   : G Fletcher
+ *   DESCRIPTION  : client-server conversion
+ * ************************************************************************
+ */
+
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "rmms.h"
+
+extern BOOLEAN NO_DUMMY;         /* Dummy inspections ?                   */
+extern BOOLEAN REPAIRCOMPLETE;   /* Is the defect repair complete ?       */
+extern BOOLEAN TREAT_MODELS;     /* Use treatment models ?                */
+extern short EXDebug;
+extern char pipe_msg[254];
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+
+  EXEC SQL INCLUDE defects.h;    /* Include defects header file           */
+  EXEC SQL INCLUDE deftypes.h;   /* Include defect types header file      */
+
+  static varchar u_defectid[10]  /* As for intdefectid                    */
+                ,u_invcode[3]    /* Inventory code variable               */
+                ,sqlcount[10]
+  ;
+  static long int intdefectid=0  /* Initial defect id selected from       */
+                 ,t_heid         /* defects system.                       */
+                 ,t_stchain      /* start chainage                        */
+  ;
+  static short int id_defclass   /* char value of defect classification   */
+                  ,iu_defectid   /* is initialised to this value.         */
+  ;
+  short int i_sys_flag           /* system flag indicator variable        */
+           ,id_adv_mand          /* Roadstud advisory/mandatory variable  */
+  ;
+  extern char inspdate[7];       /* Inspection date externally referenced */
+  varchar inspection[7]          /* inspection date variable              */
+         ,current_date[7]        /* Hold date of current inspection       */
+         ,old_priority[5]        /* Hold priority of superseded defect    */
+         ,d_stat_code[11]
+         ,d_adv_mand[1]          /* Set VI to cope with mand/adv roadstuds*/
+  ;
+  long int t_defectid            /* The new defectid being loaded         */
+          ,t_reportid            /* Temporary report id.                  */
+  ;
+  int adv_mand = 0;
+  static char date[10]           /* Full current date.                    */
+             ,county[40]         /* Authority                             */
+  ;
+  static varchar t_actcode[3]    /* Temporary activity code.              */
+                ,t_xsec[2]       /* Temporary xsp indicator.              */
+                ,t_defcode[5]    /* Temporary defect code.                */
+                ,t_priority[5]   /* Temporary defect priority.            */
+                ,t_init[4]       /* Temporary Initiation Type             */
+                ,t_inspflag[2]   /* Temporary Safety/Detailed Flag        */
+  ;
+  varchar d_sys_flag[2]          /* Section system flag                   */
+         ,d_defclass[1]          /* Defect classification                 */
+  ;
+  varchar full_date[19]          /* The current date to a specified format*/
+  ;
+EXEC SQL END DECLARE SECTION;
+
+static BOOLEAN wolflag=FALSE;    /* Static boolean works order indicator  */
+int    novalue                   /* Dummy value used for code validation  */
+;
+extern FILE *fi;                 /* File pointer                          */
+extern BOOLEAN l_exists;         /* Boolean variable used for existance   */
+                                 /* checking.                             */
+char   insptype();               /* Prototype function                    */
+char   str_defectid[20];         /* Defect identification as string value */
+char   str_datecomp[20];         /* Date defect completed as string value */
+char   str_sqlcount[20];         /* Counter value as string value         */
+extern char sys_flag;            /* Sys flag character variable           */
+extern BOOLEAN USE_CHAINAGE;     /* Boolean function if chainage for when */
+                                 /* chainage is not required              */
+extern BOOLEAN TREAT_MODELS;     /* Use treatment models ?                */
+extern BOOLEAN DTP_CHAINAGE;     /* Use defect chainage on DTP   roads    */
+extern BOOLEAN LOCAL_CHAINAGE;   /* Use defect chainage on LOCAL roads    */
+extern BOOLEAN ENHANCED;
+
+static char defsupres[101] = {'\0'};
+
+void get_defsupres();
+
+/*========================================================================*/
+/* Function : getdefect()                                                 */
+/* Purpose  : To obtain, validate and insert defect details.              */
+/*========================================================================*/
+BOOLEAN getdefect(char     *supflag
+                 ,char     *actcode
+                 ,long int stchain
+                 ,char     *xsec
+                 ,long int heid
+                 ,char     *defcode
+                 ,long int *seqid
+                 ,long int *error
+                 ,char     *invcode
+                 ,long int reportid
+                 ,char     *init
+                 ,char     *inspflag
+                 ,char     *def_priority
+                 ,char     *def_category
+                 ,long int *def_itemid
+                 ,double   *def_easting
+                 ,double   *def_northing
+                 ,char     *attr_1
+                 ,char     *attr_2
+                 ,char     *attr_3
+                 ,char     *attr_4)
+{
+/*========================================================================*/
+/* Local Variables                                                        */
+/*========================================================================*/
+  int noatts                  /* no. of attributes on HH record           */
+     ,i                       /* loop variables                           */
+     ,gethhrec()              /* function to get next hh record           */
+     ,rectype                 /* record type                              */
+  ;
+  char rtext[1001]            /* text of HH record ( Should not > 89 )    */
+      ,hhatt1[256]             /* char value  of attribute on HH record    */
+      ,hhatt2[256]             /* char values of attributes on HH record   */
+      ,hhatt3[256]             /* char values of attributes on HH record   */
+      ,hhatt4[256]             /* char values of attributes on HH record   */
+      ,str_easting[50]
+      ,str_northing[50]
+  ;
+
+  BOOLEAN pushhhrec()
+  ;
+  void putatts()
+      ,match_defects()
+  ;
+/*========================================================================*/
+
+  *error = 0;
+
+  if(EXDebug && J_REC)
+    printf("getdefect ... r4gdef.pc ... defect details\n");
+
+  rectype = gethhrec('\0',0,seqid,rtext);
+
+  if (rectype == 'J')                  /* If record type is defect record */
+     l_exists = FALSE;                 /* Initialise for new J record     */
+  else
+    {
+    pushhhrec();                       /* J record not found              */
+    *error = 8502;                     /* Invalid record type indicator   */
+    return( TRUE );
+    }
+
+  /*======================================================================*/
+  /* Get defect code & attributes 1 & 2 from J record                     */
+  /* If its a roadstud activity, chop the mandatory/advisory flag off     */
+  /* the end of rtext before processing it.                               */
+  /* The following text is specific to the standard inspection load       */
+  /* file and not to the roadline350 software.                            */
+  /*======================================================================*/
+  if(get_status_code(15,&d_defstat.arr)!=SUCCESS)
+    {
+    pusherror(*seqid,8219);
+    }
+
+  slen_varchar(d_defstat);
+
+  d_adv_mand.arr[0] = '\0';
+  id_adv_mand = -1;
+
+  /*======================================================================*/
+  /* At the moment, the Roadline 350 product does NOT have attribute      */
+  /* values attached to the J record but the non-Rline350 products do.    */
+  /* These values will be used (or at least the first value) in the       */
+  /* population of the BOQ items from within the inspection loader.       */
+  /*======================================================================*/
+  if(ENHANCED)
+    {
+    if((strcmp(actcode,"RS") == 0) || (strcmp(actcode,"RC") == 0))
+      {
+      d_adv_mand.arr[0] = rtext[strlen(rtext) - 1];
+      d_adv_mand.len = 1;
+      rtext[strlen(rtext) - 2] = '\0';         /* Reset the terminator to */
+      }                                        /* the new place           */
+
+    /* make sure values are null before we start */
+    hhatt1[0] = '\0';
+    hhatt2[0] = '\0';
+    hhatt3[0] = '\0';
+    hhatt4[0] = '\0';
+
+    noatts=getargs("sssdssssss",rtext           /* Record text            */
+                               ,defcode         /* Defect code            */
+                               ,def_priority    /* Defect priority code   */
+                               ,def_category    /* Defect Category        */
+                               ,def_itemid      /* Defect Item ID         */
+                               ,str_easting     /* Defect Easting         */
+                               ,str_northing    /* Defect Northing        */
+                               ,hhatt1          /* Defect attribute 1     */
+                               ,hhatt2          /* Defect attribute 2     */
+                               ,hhatt3          /* Defect attribute 3     */
+                               ,hhatt4          /* Defect attribute 4     */
+                  );
+
+    if((d_adv_mand.arr[0] == 'M') || (d_adv_mand.arr[0] == 'A'))
+      id_adv_mand = 0;
+    else
+      id_adv_mand = -1;
+
+    *def_easting = atof(str_easting);
+    *def_northing = atof(str_northing);
+    }
+  else
+    {                                               /* Standard RMMS file */
+    if((strcmp(actcode,"RS") == 0) || (strcmp(actcode,"RC") == 0))
+      {
+      d_adv_mand.arr[0] = rtext[strlen(rtext) - 1];
+      d_adv_mand.len = 1;
+      rtext[strlen(rtext) - 2] = '\0';
+      }
+
+    /* make sure values are null before we start */
+    hhatt1[0] = '\0';
+    hhatt2[0] = '\0';
+    noatts=getargs("sss",rtext                  /* Record text            */
+                        ,defcode                /* Defect code            */
+                        ,hhatt1                 /* Value of attribute 1   */
+                        ,hhatt2                 /* Value of attribute 2   */
+                  );
+
+    /* Initialise value of d_adv_mand depending on roadstud type */
+    if((d_adv_mand.arr[0] == 'M') || (d_adv_mand.arr[0] == 'A'))
+      id_adv_mand = 0;
+    else
+      id_adv_mand = -1;
+
+    def_priority[0] = '\0';
+    def_category[0] = '\0';
+    def_itemid      = 0;
+    def_easting     = 0;
+    def_northing    = 0;
+    hhatt3[0]       = '\0';
+    hhatt4[0]       = '\0';
+    d_response_category.len = 0;
+    d_response_category.arr[d_response_category.len] = '\0';
+    }
+
+  strcpy((char*)d_defcode.arr,defcode);
+  d_defcode.len=strlen(defcode);
+
+  /*======================================================================*/
+  /* Here the defect code is a mandatory value and as such should be      */
+  /* policed by the DCD and not by the inspection loader. However we have */
+  /* had some teething problems with the Survey + software at the DRD and */
+  /* we have the need to at least check that the defcte code has some     */
+  /* value (ie is NOT NULL) We will not validate the code at this point.  */
+  /*======================================================================*/
+  if(d_defcode.arr[0]=='\0')
+    pusherror(*seqid,8706);       /* Defect code required but not suplied */
+
+  d_priority.arr[0] = '\0';
+  id_priority = -1;
+
+  if(ENHANCED)
+    {
+    strcpy((char*)d_priority.arr,def_priority);
+    d_priority.len=strlen(def_priority);
+    id_priority = 0;
+
+    strcpy((char*)t_priority.arr,def_priority);  /* Used In match_defects */
+    t_priority.len=strlen(def_priority);
+    
+    strcpy((char*)d_response_category.arr,def_category);
+    d_response_category.len=strlen(def_category);
+
+    d_iit_item_id= *def_itemid;
+    d_easting    = *def_easting;
+    d_northing   = *def_northing;
+    }
+
+  id_iit_item_id= d_iit_item_id ? 0 : -1;
+  id_easting    = d_easting     ? 0 : -1;
+  id_northing   = d_northing    ? 0 : -1;
+
+  id_response_category= d_response_category.len ? 0 : -1;
+
+  /*======================================================================*/
+  /* Here we must check that the entered defect category is correct       */
+  /* This has meant the introduction of a new recore type into the        */
+  /* validation array                                                     */
+  /*======================================================================*/
+  if(d_response_category.arr[0]!='\0')
+    if(validate_code(19,d_response_category.arr,&novalue)!=SUCCESS)
+      {
+      pusherror(*seqid,8705);         /* Invalid defect response category */
+      }
+
+  /*======================================================================*/
+  /* Check for this being a duplicate defect                              */
+  /*======================================================================*/
+  *u_invcode.arr = isalpha(*invcode) ? (*invcode) : 'X';
+  *(u_invcode.arr+1) = isalpha(*(invcode+1)) ? (*(invcode+1)) : 'X';
+  u_invcode.len = 2;
+  u_invcode.arr[u_invcode.len] = '\0';
+
+  strcpy((char*)t_actcode.arr,actcode);
+  t_actcode.len = strlen(actcode);
+
+  strcpy((char*)t_xsec.arr,xsec);
+  t_xsec.len = strlen(xsec);
+
+  strcpy((char*)t_defcode.arr,defcode);
+  t_defcode.len = strlen(defcode);
+
+  strcpy((char*)d_actcode.arr,actcode);
+  d_actcode.len = strlen(actcode);
+
+  d_stchain = stchain;
+
+  strcpy((char*)d_xsec.arr,xsec);
+  d_xsec.len = strlen(xsec);
+
+  d_heid    = heid;
+
+  strcpy((char*)d_defcode.arr,defcode);
+  d_defcode.len=strlen(defcode);
+
+  /*nullfill((char*)u_defectid.arr,10);*/
+  u_defectid.len = 0;
+  u_defectid.arr[u_defectid.len] = '\0';
+
+  t_stchain  = d_stchain;
+  t_heid     = d_heid;
+  t_reportid = reportid;
+  
+  strcpy((char*)t_init.arr,init);
+  t_init.len=strlen(init);
+
+  strcpy((char*)t_inspflag.arr,inspflag);
+  t_inspflag.len=strlen(inspflag);
+
+  match_defects("FALSE",supflag);
+
+  /*======================================================================*/
+  /* Update DEFECTS host variables with defect code &                     */
+  /* attributes 1 & 2 & 3 & 4 set all attributes to zero and null         */
+  /*======================================================================*/
+  for(i=0;i<NOATTS;strcpy(att[i++].add,"000000000"))
+    *(att[i].iadd) = -1;
+
+  id_descr = -1;
+  strcpy((char*)f_actcode.arr,actcode);
+
+  f_actcode.len = strlen(actcode);
+  strcpy((char*)f_defcode.arr,defcode);
+  f_defcode.len = strlen(defcode);
+
+  f_hhatt1.len=f_hhatt2.len=f_hhatt3.len=f_hhatt4.len=0;
+
+  d_sys_flag.arr[0] = sys_flag;
+  d_sys_flag.arr[1] = '\0';
+  d_sys_flag.len = 1;
+  i_sys_flag = 0;
+
+  EXEC SQL SELECT dty_hh_attribute_1
+                 ,dty_hh_attribute_2
+                 ,dty_hh_attribute_3
+                 ,dty_hh_attribute_4
+             INTO :f_hhatt1:hhatt1_if
+                 ,:f_hhatt2:hhatt2_if
+                 ,:f_hhatt3:hhatt3_if
+                 ,:f_hhatt4:hhatt4_if
+             FROM  def_types
+            WHERE dty_atv_acty_area_code = :f_actcode
+              AND dty_defect_code        = :f_defcode
+              AND sysdate between nvl(dty_start_date,sysdate)
+                              and nvl(dty_end_date  ,sysdate)
+              AND dty_dtp_flag = :d_sys_flag:i_sys_flag
+                ;
+  oraerror("getdefect");
+
+  if(ORANOREC)
+    {
+    pusherror(*seqid,8300);
+    *error = 80;                /* Error : Invalid defect/attribute comb. */
+    }
+
+  f_hhatt1.arr[f_hhatt1.len] = '\0';
+  f_hhatt2.arr[f_hhatt2.len] = '\0';
+  f_hhatt3.arr[f_hhatt3.len] = '\0';
+  f_hhatt4.arr[f_hhatt4.len] = '\0';
+
+  strcpy(attr_1,hhatt1);
+  strcpy(attr_2,hhatt2);
+  strcpy(attr_3,hhatt3);
+  strcpy(attr_4,hhatt4);
+
+  if(hhatt1_if != -1) putatts(f_hhatt1.arr, hhatt1);
+  if(hhatt2_if != -1) putatts(f_hhatt2.arr, hhatt2);
+  if(hhatt3_if != -1) putatts(f_hhatt3.arr, hhatt3);
+  if(hhatt4_if != -1) putatts(f_hhatt4.arr, hhatt4);
+
+  if(EXDebug)
+    {
+    printf("Attribute : %s Value %s\n",hhatt1,(char*)f_hhatt1.arr);
+    printf("Attribute : %s Value %s\n",hhatt2,(char*)f_hhatt2.arr);
+    printf("Attribute : %s Value %s\n",hhatt3,(char*)f_hhatt3.arr);
+    printf("Attribute : %s Value %s\n",hhatt4,(char*)f_hhatt4.arr);
+    }
+
+  /*======================================================================*/
+  /* Copy the defect code.                                                */
+  /*======================================================================*/
+  strcpy((char*)d_defcode.arr,defcode);
+  d_defcode.len = strlen(defcode);
+
+  /*======================================================================*/
+  /* Copy the defect activity code.                                       */
+  /*======================================================================*/
+  strcpy((char*)d_actcode.arr,actcode);
+  d_actcode.len = strlen(actcode);
+  
+  /*======================================================================*/
+  /* Copy the XSP value.                                                  */
+  /*======================================================================*/
+  strcpy((char*)d_xsec.arr,xsec);
+  d_xsec.len=strlen(xsec);
+  
+  /*======================================================================*/
+  /* At this point we need to determine the activity.                     */
+  /* 1. Obtain all of the fields from the 'J' record.                     */
+  /* 2. Validate that the defect code exists.                             */
+  /* 3. Validate defect priority exists.                                  */
+  /*======================================================================*/
+  d_heid = heid;                             /* Copy the highways element */
+
+  /*======================================================================*/
+  /* Validate the defect priority code against priority array values.     */
+  /*======================================================================*/
+  if(d_priority.arr[0]!='\0')
+    if(validate_code(4,d_priority.arr,&novalue)!=SUCCESS)
+      {
+      pusherror(*seqid,8304);             /* Invalid defect priority code */
+      }
+
+  return( TRUE );
+
+} /* getdefect */
+
+/*========================================================================*/
+/* Function : putatts()                                                   */
+/* Purpose  : Put the selected attribute values into host array variables.*/
+/*========================================================================*/
+void putatts( attname, attval )
+char *attname;
+char *attval;
+{
+  int i;
+
+  for(i=0;i<NOATTS;i++)
+    {
+    if(strcmp(attname,att[i].name) == 0)
+      {
+      strcpy(att[i].add,attval);
+      *(att[i].iadd) = 0;
+      }
+    }
+
+  d_area.len        = (strlen((char*)d_area.arr)        > 10) ? 10 : strlen((char*)d_area.arr);
+  d_height.len      = (strlen((char*)d_height.arr)      > 10) ? 10 : strlen((char*)d_height.arr);
+  d_length.len      = (strlen((char*)d_length.arr)      > 10) ? 10 : strlen((char*)d_length.arr);
+  d_number.len      = (strlen((char*)d_number.arr)      > 10) ? 10 : strlen((char*)d_number.arr);
+  d_percent.len     = (strlen((char*)d_percent.arr)     > 10) ? 10 : strlen((char*)d_percent.arr);
+  d_origpercent.len = (strlen((char*)d_origpercent.arr) > 10) ? 10 : strlen((char*)d_origpercent.arr);
+  d_rempercent.len  = (strlen((char*)d_rempercent.arr)  > 10) ? 10 : strlen((char*)d_rempercent.arr);
+  d_skid.len        = (strlen((char*)d_skid.arr)        > 10) ? 10 : strlen((char*)d_skid.arr);
+  d_descr.len       = (strlen((char*)d_descr.arr)       > 240) ? 240 : strlen((char*)d_descr.arr);
+  strcpy((char*)d_diagram_no.arr,(char*)d_diagno.arr);
+  d_diagram_no.len  = d_diagno.len;
+  d_diagram_no.len  = (strlen((char*)d_diagram_no.arr)  >  6) ?  6 : strlen((char*)d_diagram_no.arr);
+  d_ident_code.len  = (strlen((char*)d_ident_code.arr)  >  8) ?  8 : strlen((char*)d_ident_code.arr);
+  d_serial_no.len   = (strlen((char*)d_serial_no.arr)   >  6) ?  6 : strlen((char*)d_serial_no.arr);
+  d_coord_flag.len  = (strlen((char*)d_coord_flag.arr)  >  1) ?  1 : strlen((char*)d_coord_flag.arr);
+} /* putatts */
+
+
+/*========================================================================*/
+/* Function : putdefect()                                                 */
+/* Purpose  : Put the defect details into the database and commit the     */
+/*            transaction.                                                */
+/*========================================================================*/
+
+BOOLEAN putdefect(supflag,datecomp,identcode,invcode,locn,reportid
+                 ,init,inspflag,defectid,defcat,diagno,timehrs,timemins
+                 ,siss,notifiable,recharge,special,description,defectcat)
+char *supflag,*datecomp,*identcode,*invcode,*locn,*init,*inspflag,*siss,*special,*description,*diagno;
+long int reportid,defectid,defcat,timehrs,timemins,*notifiable
+         ,*recharge,defectcat;
+{
+  /* External Function Declarations */
+  BOOLEAN chk_defsuptype_option()
+  ;
+  void    supdefect()
+         ,match_defects()
+  ;
+
+  char tmp_msg[500];
+  size_t buf_len, msg_len;
+
+  /*======================================================================*/
+  /* The defect status is set in the getdefect function but if the repair */
+  /* (which occurs AFTER the defect record) is complete then the defect   */
+  /* status will have to be reassigned as COMPLETED.                      */
+  /* The variable REPAIRCOMPLETE is set in the r4prep.c file and the      */
+  /* reassignment is done here.                                           */
+  /*======================================================================*/
+
+  if(REPAIRCOMPLETE)
+    {
+    /* Get status code 16 - Should be COMPLETED */
+    if(get_status_code(16,&d_defstat.arr) != SUCCESS)
+      {
+      pusherror(0,8220);
+      }
+    slen_varchar(d_defstat);
+    term_varchar(d_defstat);
+    }
+
+  strcpy((char*)d_invcode.arr,invcode);
+  slen_varchar(d_invcode);
+  term_varchar(d_invcode);
+
+  d_defectid=defectid;
+  t_defectid=defectid;
+
+  d_recharge=*recharge;
+  d_notifiable=*notifiable;
+
+  strcpy((char*)d_special.arr,special);
+  slen_varchar(d_special);
+  term_varchar(d_special);
+
+  /* If Defect Description Was Provided On The I Record */
+  /* Then Update d_descr Overwriting Any Desription     */
+  /* Provided In An Attribute.                          */
+  if(description[0] != '\0')
+    {
+    strcpy((char*)d_descr.arr,description);
+    d_descr.len = strlen(description);
+    term_varchar(d_descr);
+    id_descr = 0;
+    }
+  /* Populate the SISS Id */
+  strcpy((char*)d_siss.arr,siss);
+  slen_varchar(d_siss);
+
+  /* If the siss is null then default the SISS to ALL */
+  if(d_siss.len==0)
+    {
+    strcpy((char*)d_siss.arr,"ALL");
+    d_siss.len = 3;
+    }
+
+  strcpy((char*)d_supflag.arr,supflag);
+  d_supflag.len=1;
+
+  strcpy((char*)d_datecomp.arr,datecomp);
+  d_datecomp.len=6;
+
+  strcpy(str_datecomp,(char*)d_datecomp.arr);
+  id_datecomp = (atoi(str_datecomp) > 0) ? 0 : -1;
+
+  strcpy((char*)d_identcode.arr,identcode);
+  slen_varchar(d_identcode);
+
+  /*======================================================================*/
+  /* Copy the defect location.                                            */
+  /*======================================================================*/
+  strcpy((char*)d_locn.arr,locn);
+
+
+  slen_varchar(d_locn);
+
+  /*======================================================================*/
+  /* Copy the activities report id.                                       */
+  /*======================================================================*/
+
+  d_reportid=reportid;
+
+  /*======================================================================*/
+  /* Set the diagram number, time in hours, time in minutes               */
+  /*======================================================================*/
+  strcpy((char*)d_diagno.arr,diagno);
+  d_diagno.arr[strlen(diagno)] = '\0';
+
+  strcpy((char*)d_diagram_no.arr,diagno);
+  d_diagram_no.arr[strlen(diagno)] = '\0';
+
+  d_diagram_no.len = strlen(diagno);
+  d_diagram_no.len=(strlen(diagno)>7)?7:strlen(diagno);
+  id_diagram_no = (d_diagram_no.len) >0 ?1:-1;
+
+  d_timehrs =timehrs;
+  d_timemins=timemins;
+
+
+  d_supid   = 0;
+  id_supid  =-1;
+  id_defcat = 0;
+
+  /*======================================================================*/
+  /* Set d_defcat to appropriate value prior to insert into defects table */
+  /*======================================================================*/
+
+  if(!ENHANCED)
+    {
+    strcpy((char*)d_special.arr,"");
+
+    slen_varchar(d_special);
+    term_varchar(d_special);
+    strcpy((char*)d_siss.arr,"ALL");
+    slen_varchar(d_siss);
+    term_varchar(d_siss);
+
+    switch(defcat)
+      {
+      case  1: strcpy((char*)d_priority.arr,"1");
+               break;
+      case 21: strcpy((char*)d_priority.arr,"2.1");
+               break;
+      case 22: strcpy((char*)d_priority.arr,"2.2");
+               break;
+      case 23:
+      default: strcpy((char*)d_priority.arr,"2.3");
+               break;
+      }
+    slen_varchar(d_priority);
+    term_varchar(d_priority);
+    id_priority = 0;
+    /*====================================================================*/
+    /* Now We Have Priority Check For Matching Defects.                   */
+    /*====================================================================*/
+    strcpy((char*)t_priority.arr,(char*)d_priority.arr);
+    t_priority.len=d_priority.len;
+    t_heid = d_heid;
+    if(chk_defsuptype_option())
+      match_defects("TRUE",supflag);
+    }
+
+  /*======================================================================*/
+  /* set length of string in VARCHAR len variable                         */
+  /* Set the defect number value indicator variable.                      */
+  /*======================================================================*/
+  strcpy(str_defectid,(char*)d_number.arr);
+  id_number=(atoi(str_defectid)>0) ? 0 : -1;
+  d_defcat.len=strlen((char*)d_defcat.arr);
+
+  switch(rmmstype(date,county))
+    {
+    case 1:
+    case 2:
+    case 4: id_defclass=  -1;
+            i_sys_flag =   0;
+            *(d_sys_flag.arr)=sys_flag;
+            d_sys_flag.len=1;
+            d_sys_flag.arr[d_sys_flag.len]='\0';
+            break;
+    case 3: id_defclass=0;
+            i_sys_flag =0;
+            *(d_sys_flag.arr)=sys_flag;
+            d_sys_flag.len=1;
+            d_sys_flag.arr[d_sys_flag.len]='\0';
+            if(defcat == 1)
+              strcpy((char*)d_defclass.arr,"L");
+            else
+              strcpy((char*)d_defclass.arr,"U");
+            d_defclass.len=1;
+            d_defclass.arr[d_defclass.len]='\0';
+            break;
+    }
+
+  if(EXDebug && J_REC)
+    {
+    puts("r4gdef.pc MANDATORY DEFECTS=========");
+    printf("Defectid          : %d\n",d_defectid);
+    printf("He Id             : %d\n",d_heid);
+    printf("Reportid          : %d\n",d_reportid);
+    printf("Activity area     : %s\n",(char*)d_actcode.arr);
+    printf("             len  : %d\n",d_actcode.len);
+    printf("Date completed    : %s\n",(char*)d_datecomp.arr);
+    printf("             len  : %d\n",d_datecomp.len);
+    printf("Defect code       : %s\n",(char*)d_defcode.arr);
+    printf("             len  : %d\n",d_defcode.len);
+    printf("Orig Priority     : %s\n",(char*)d_priority.arr);
+    printf("             len  : %d\n",d_priority.len);
+    printf("Defect priority   : %s\n",(char*)d_priority.arr);
+    printf("             len  : %d\n",d_priority.len);
+    printf("Def status        : %s\n",(char*)d_defstat.arr);
+    printf("             len  : %d\n",d_defstat.len);
+    printf("Superceded        : %s\n",(char*)d_supflag.arr);
+    printf("             len  : %d\n",d_supflag.len);
+    puts("r4gdef.pc NOT-MANDATORY ============");
+    printf("XSP               : %s\n",(char*)d_xsec.arr);
+    printf("             len  : %d\n",d_xsec.len);
+    printf("Identcode         : %s\n",(char*)d_identcode.arr);
+    printf("             len  : %d\n",d_identcode.len);
+    printf("Invcode           : %s\n",(char*)d_invcode.arr);
+    printf("             len  : %d\n",d_invcode.len);
+    printf("Location          : %s\n",(char*)d_locn.arr);
+    printf("             len  : %d\n",d_locn.len);
+    printf("Area              : %s\n",(char*)d_area.arr);
+    printf("             len  : %d\n",d_area.len);
+    printf("Diagran No        : %s\n",(char*)d_diagram_no.arr);
+    printf("             len  : %d\n",d_diagram_no.len);
+    printf("Height            : %s\n",(char*)d_height.arr);
+    printf("             len  : %d\n",d_height.len);
+    printf("Length            : %s\n",(char*)d_length.arr);
+    printf("             len  : %d\n",d_length.len);
+    printf("Number            : %s\n",(char*)d_number.arr);
+    printf("             len  : %d\n",d_number.len);
+    printf("Percent           : %s\n",(char*)d_percent.arr);
+    printf("             len  : %d\n",d_percent.len);
+    printf("Origpercent       : %s\n",(char*)d_origpercent.arr);
+    printf("             len  : %d\n",d_origpercent.len);
+    printf("Rempercent        : %s\n",(char*)d_rempercent.arr);
+    printf("             len  : %d\n",d_rempercent.len);
+    printf("Heid              : %d\n",d_heid);
+    printf("Skid              : %s\n",(char*)d_skid.arr);
+    printf("             len  : %d\n",d_skid.len);
+    printf("Time              : %d\n",d_timehrs);
+    printf("Mins              : %d\n",d_timemins);
+    printf("Description       : %s\n",(char*)d_descr.arr);
+    printf("             len  : %d\n",d_descr.len);
+    printf("Supid             : %d\n",d_supid);
+    printf("Sys Flag          : %s\n",(char*)d_sys_flag.arr);
+    printf("             len  : %d\n",d_sys_flag.len);
+    printf("Defclass          : %s\n",(char*)d_defclass.arr);
+    printf("             len  : %d\n",d_defclass.len);
+    printf("Adv Mand          : %c\n",(char*)d_adv_mand.arr[0]);
+    printf("             len  : %d\n",d_adv_mand.len);
+    printf("Full date         : %s\n",(char*)full_date.arr);
+    printf("             len  : %d\n",full_date.len);
+    printf("Siss              : %s\n",(char*)d_siss.arr);
+    printf("             len  : %d\n",d_siss.len);
+    printf("Notifiable        : %d\n",d_notifiable);
+    printf("Rechargeable      : %d\n",d_recharge);
+    printf("Special           : %s\n",(char*)d_special.arr);
+    printf("             len  : %d\n",d_special.len);
+    printf("rep_descr         : %s\n",(char*)d_rep_descr.arr);
+    printf("             len  : %d\n",d_rep_descr.len);
+    printf("item_id           : %d\n",d_iit_item_id);
+    printf("easting           : %f\n",d_easting);
+    printf("northing          : %f\n",d_northing);
+    printf("response cat      : %s\n",(char*)d_response_category.arr);
+    printf("             len  : %d\n",d_response_category.len);
+    printf("serial no         : %s\n",(char*)d_serial_no.arr);
+    printf("             len  : %d\n",d_serial_no.len);
+    printf("d_coord_flag      : %s\n",(char*)d_coord_flag.arr);
+    printf("             len  : %d\n",d_coord_flag.len);
+    }
+
+  EXEC SQL INSERT INTO DEFECTS
+                      (DEF_ATV_ACTY_AREA_CODE
+                      ,DEF_DEFECT_CODE
+                      ,DEF_STATUS_CODE
+                      ,DEF_PRIORITY
+                      ,DEF_ORIG_PRIORITY
+                      ,DEF_COORD_FLAG
+                      ,DEF_SUPERSEDED_FLAG
+                      ,DEF_X_SECT
+                      ,DEF_DATE_COMPL
+                      ,DEF_IDENT_CODE
+                      ,DEF_ITY_INV_CODE
+                      ,DEF_LOCN_DESCR
+                      ,DEF_ARE_REPORT_ID
+                      ,DEF_DEFECT_ID
+                      ,DEF_ST_CHAIN
+                      ,DEF_AREA
+                      ,DEF_DIAGRAM_NO
+                      ,DEF_HEIGHT
+                      ,DEF_LENGTH
+                      ,DEF_NUMBER
+                      ,DEF_PER_CENT
+                      ,DEF_PER_CENT_ORIG
+                      ,DEF_PER_CENT_REM
+                      ,DEF_RSE_HE_ID
+                      ,DEF_SKID_COEFF
+                      ,DEF_TIME_HRS
+                      ,DEF_TIME_MINS
+                      ,DEF_DEFECT_DESCR
+                      ,DEF_SUPERSEDED_ID
+                      ,DEF_ITY_SYS_FLAG
+                      ,DEF_DEFECT_CLASS
+                      ,DEF_MAND_ADV
+                      ,DEF_CREATED_DATE
+                      ,DEF_LAST_UPDATED_DATE
+                      ,DEF_SISS_ID
+                      ,DEF_NOTIFY_ORG_ID
+                      ,DEF_RECHAR_ORG_ID
+                      ,DEF_SPECIAL_INSTR
+                      ,DEF_DEFECT_TYPE_DESCR
+                      ,DEF_IIT_ITEM_ID
+                      ,DEF_EASTING
+                      ,DEF_NORTHING
+                      ,DEF_RESPONSE_CATEGORY
+                      ,DEF_SERIAL_NO)
+                VALUES(:d_actcode:id_actcode
+                      ,:d_defcode:id_defcode
+                      ,:d_defstat:id_defstat
+                      ,:d_priority:id_priority
+                      ,:d_priority:id_priority
+                      ,:d_coord_flag:id_coord_flag
+                      ,:d_supflag:id_supflag
+                      ,:d_xsec:id_xsec
+                      ,to_date(:d_datecomp:id_datecomp,'RRMMDD')
+                      ,:d_ident_code:id_ident_code
+                      ,:d_invcode:id_invcode
+                      ,:d_locn:id_locn
+                      ,:d_reportid:id_reportid
+                      ,:d_defectid:id_defectid
+                      ,:d_stchain:id_stchain
+                      ,to_number(:d_area:id_area)
+                      ,:d_diagram_no:id_diagram_no
+                      ,to_number(:d_height:id_height)
+                      ,to_number(:d_length:id_length)
+                      ,to_number(:d_number:id_number)
+                      ,to_number(:d_percent:id_percent)
+                      ,to_number(:d_origpercent:id_origpercent)
+                      ,to_number(:d_rempercent:id_rempercent)
+                      ,:d_heid:id_heid
+                      ,to_number(:d_skid:id_skid)
+                      ,:d_timehrs:id_timehrs
+                      ,:d_timemins:id_timemins
+                      ,:d_descr:id_descr
+                      ,:d_supid:id_supid
+                      ,:d_sys_flag:i_sys_flag
+                      ,:d_defclass:id_defclass
+                      ,:d_adv_mand:id_adv_mand
+                      ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      ,to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      ,:d_siss:id_siss
+                      ,decode(:d_notifiable,0,null,:d_notifiable)
+                      ,decode(:d_recharge  ,0,null,:d_recharge)
+                      ,:d_special:id_special
+                      ,:d_rep_descr:id_rep_descr
+                      ,:d_iit_item_id:id_iit_item_id
+                      ,:d_easting:id_easting
+                      ,:d_northing:id_northing
+                      ,:d_response_category:id_response_category
+                      ,:d_serial_no:id_serial_no);
+  
+  if(sqlca.sqlcode < 0)
+    {
+    buf_len = sizeof(tmp_msg);
+    sqlglm(tmp_msg,&buf_len,&msg_len);
+    printf("\n%.*s\n\n",msg_len,tmp_msg);
+    fprintf(fi,"\n%.*s\n\n",msg_len,tmp_msg);
+    write_pipe(NULL,"Error Occured Inserting Defect Please Check The Log File For Details.");
+    }
+  oraerror("putdefect 1");
+
+  strcpy((char*)inspection.arr,inspdate);
+  inspection.len = strlen(inspdate);
+
+  if((intdefectid==0) && (defcat==1))  /* ie not superseded & def.cat 1 */
+    EXEC SQL UPDATE REPAIRS
+                SET rep_last_updated_date=to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+              WHERE rep_def_defect_id = :t_defectid
+                AND not exists(SELECT rep_action_cat
+                                 FROM repairs
+                                WHERE rep_def_defect_id = :t_defectid
+                                  AND rep_action_cat in('I','T'))
+                  ;
+  oraerror("putdefect 2");
+  /*======================================================================*/
+  /* The following lines read : If the original defect exists THEN        */
+  /*                            If the defect has been entered within a   */
+  /*                            works order (ie. the defect has been      */
+  /*                            catered for) THEN                         */
+  /*                            Exchange the velues of t_defectid (new)   */
+  /*                            with the original defect for update       */
+  /*                            purposes.                                 */
+  /*                                                                      */
+  /* t_defectid=Loaded defect, intdefectid=old defect.                    */
+  /* The following section deals with the superceding of defects.         */
+  /* The first section deals with defects that have been included in a    */
+  /* works order and if we attempt to supersede the defect then the new   */
+  /* superceding defect will be superceded by the original defect since   */
+  /* the system already knows about the defect and it is on a works       */
+  /* order (ie. the work for this defect has been assigned.)              */
+  /*======================================================================*/
+  if(intdefectid != 0)
+    if(*supflag == 'Y')
+      {
+      d_defectid = t_defectid;
+      d_supid    = intdefectid;
+
+      /*==================================================================*/
+      /* Switch the values of t_defectid and intdefectid for update       */
+      /* purposes this has to be done in order to make use of a common    */
+      /* update routine supdefect(). Should NOT be switched for MM.       */
+      /*==================================================================*/
+      t_defectid   = intdefectid;
+      intdefectid  = d_defectid;
+      /*==================================================================*/
+
+      id_supid  = 0;
+      supdefect();
+      fprintf(fi,"Load defect : %d superseded by previous defect %d\n",
+      d_defectid,d_supid);
+      }
+    else
+      {
+      supdefect();
+      fprintf(fi,"Load defect : %d has superseded defect %d\n",
+      d_defectid,intdefectid);
+      }
+
+  return( TRUE );
+
+} /* putdefect */
+
+/*========================================================================*/
+/* Function : Printdefect()                                               */
+/* Purpose  : Print the selected defect details.                          */
+/*========================================================================*/
+printdefect()
+{
+  printf("actcode=%s\ndefcode=%s\nxsec=%s\nstchain=%d\narea=%d\nlength=%d\nskid=%d\n"
+        ,d_actcode
+        ,d_defcode
+        ,d_xsec
+        ,d_stchain
+        ,d_area
+        ,d_length
+        ,d_skid);
+}
+
+/*========================================================================*/
+/* Function : chkwols()                                                   */
+/* Purpose  : To check the work order lines table for a specific defect   */
+/*            id that has been completed.                                 */
+/*========================================================================*/
+BOOLEAN chkwols()
+{
+  EXEC SQL WHENEVER SQLERROR CONTINUE;
+  
+  sqlcount.arr[0] = '0';
+  sqlcount.len = 1;
+  sqlcount.arr[sqlcount.len] = '\0';
+  
+  EXEC ORACLE OPTION (SELECT_ERROR = NO);
+  
+  EXEC SQL SELECT '1'
+             INTO :sqlcount
+             FROM work_order_lines
+            WHERE wol_def_defect_id = :intdefectid
+              AND nvl(wol_status_code,decode(wol_status,'C','COMPLETED','OPEN')) != 'COMPLETED'
+                ;
+  oraerror("chkwols");
+  
+  EXEC ORACLE OPTION (SELECT_ERROR = YES);
+  EXEC SQL WHENEVER SQLERROR do sql_err("chkwols");
+  
+  sqlcount.arr[sqlcount.len] = '\0';
+  
+  strcpy(str_sqlcount,(char*)sqlcount.arr);
+  if (atoi(str_sqlcount) == 0)
+    return(FALSE);
+  else
+    return(TRUE);
+}
+
+/* ===========================================================================
+ * Function : get_defsupres
+ * ===========================================================================
+ */
+void get_defsupres()
+{
+  /*
+  || If The Product Option Has Not Yet Been Fetched Then Get It's Value.
+  */
+  if(defsupres[0] == '\0')
+    {
+    EXEC SQL BEGIN DECLARE SECTION;
+      VARCHAR r_defsupres[101];
+    EXEC SQL END DECLARE SECTION;
+    /*
+    || Initialise VARCHAR in case Product Option Is
+    || Not Defined Or Is NULL.
+    */
+    r_defsupres.len = 0;
+    r_defsupres.arr[r_defsupres.len] = '\0';
+    /*
+    || Get The Option Value
+    */
+    EXEC SQL SELECT hop_value
+               INTO :r_defsupres
+               FROM hig_options
+              WHERE hop_id      = 'DEFSUPRES'
+                AND hop_product = 'MAI'
+                  ;
+    oraerror("get_defsupres");
+
+    r_defsupres.arr[r_defsupres.len] = '\0';
+    strcpy(defsupres,(char*)r_defsupres.arr);
+
+    if(EXDebug)
+      printf("\nProduct Option DEFSUPRES = [%s]\n\n",(char*)r_defsupres.arr);
+    }
+} /* get_defsupres */
+
+/*========================================================================*/
+/* Function : supdefect()                                                 */
+/* Descr    : Returns TRUE if defect not on works order and has been      */
+/*            superseded.                                                 */
+/*            Returns FALSE if defect on works order and has not been     */
+/*            superseded.                                                 */
+/*========================================================================*/
+void supdefect()
+  {
+
+  /* Call get status code : 18 Should be code for Superseded */
+  if(get_status_code(18,d_stat_code.arr)!=SUCCESS)
+    {
+    pusherror(0,8219);
+    printf ("\nERROR : Could not get Status Code\n");
+    write_pipe(fi,"ERROR : Could not get Status Code");
+    }
+  slen_varchar(d_stat_code);
+
+  switch(rmmstype(date,county))
+    {
+    case 1:
+    case 2:
+    case 4: EXEC SQL UPDATE DEFECTS
+                        SET DEF_SUPERSEDED_FLAG   = 'Y'
+                           ,DEF_STATUS_CODE       = :d_stat_code
+                           ,DEF_SUPERSEDED_ID     = :t_defectid
+                           ,DEF_LAST_UPDATED_DATE = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      WHERE DEF_DEFECT_ID = :intdefectid
+                          ;
+
+
+            oraerror("SUPDEFECT");
+
+
+            EXEC SQL UPDATE REPAIRS
+                        SET REP_SUPERSEDED_FLAG   = 'Y'
+                           ,REP_LAST_UPDATED_DATE = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      WHERE REP_DEF_DEFECT_ID = :intdefectid
+                          ;
+            oraerror("SUPDEFECT");
+            break;
+            
+    case 3: printf("\n case 3\n");
+
+            EXEC SQL UPDATE DEFECTS
+                        SET DEF_SUPERSEDED_FLAG = 'Y'
+                           ,DEF_STATUS_CODE = :d_stat_code
+                           ,DEF_COORD_FLAG = :d_coord_flag:id_coord_flag
+                           ,DEF_SUPERSEDED_ID = :t_defectid
+                           ,DEF_LAST_UPDATED_DATE = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      WHERE DEF_DEFECT_ID = :intdefectid
+                          ;
+
+            oraerror ("SUPDEFECT");
+
+            EXEC SQL UPDATE REPAIRS
+                        SET REP_SUPERSEDED_FLAG  = 'Y'
+                           ,REP_LAST_UPDATED_DATE = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+                      WHERE REP_DEF_DEFECT_ID = :intdefectid
+                          ;
+            oraerror("SUPDEFECT");
+            break;
+    }
+
+  get_defsupres();
+
+  if((strcmp(defsupres,"Y")==0)||(defsupres[0]=='\0'))
+    {
+    /*======================================================================*/
+    /* Following code is for RMMS Amendment Set 5 for superseding defects.  */
+    /* It ensures that for matching defects of the same category the        */
+    /* superseding defect will retain the due date of the superseded defect */
+    /* Where the categories do not match (eg going from 1 to 2) then the    */
+    /* new due date is retained.                                            */
+    /*======================================================================*/
+    EXEC SQL UPDATE REPAIRS a
+                SET a.rep_old_due_date = a.rep_date_due
+                   ,(a.rep_date_due,a.rep_local_date_due)=(SELECT b.rep_date_due
+                                                                 ,b.rep_local_date_due
+                                                             FROM repairs b
+                                                            WHERE b.rep_def_defect_id = :intdefectid
+                                                              AND b.rep_action_cat    = a.rep_action_cat)
+                   ,rep_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+              WHERE a.rep_def_defect_id = :t_defectid
+                AND a.rep_action_cat in(SELECT c.rep_action_cat
+                                          FROM   repairs c
+                                         WHERE  c.rep_def_defect_id = :intdefectid)
+                AND exists(SELECT 'Same Category'
+                             FROM defects c
+                                 ,defects d
+                            WHERE c.def_defect_id     = :intdefectid
+                              AND c.def_superseded_id = d.def_defect_id
+                              AND d.def_defect_id     = :t_defectid
+                              AND not exists(SELECT 'On Work Order'
+  
+                                               FROM work_order_lines
+                                              WHERE wol_status_code != 'COMPLETED'
+                                                AND wol_def_defect_id = :t_defectid)
+                AND substr(c.def_priority,1,1) = substr(d.def_priority,1,1))
+                  ;
+    oraerror("SUPDEFECT");
+  
+    if(d_priority.arr[0] != old_priority.arr[0])
+      {
+      EXEC SQL UPDATE repairs a
+                  SET a.rep_old_due_date = a.rep_date_due
+                WHERE a.rep_def_defect_id = :t_defectid
+                  AND a.rep_date_completed is null
+                    ;
+      oraerror("SUPDEFECT 2");
+      }
+  
+    strcpy((char*)current_date.arr,inspdate);
+    current_date.len = 6;
+    current_date.arr[current_date.len] = '\0';
+  
+    if(t_defectid > intdefectid)
+      {
+      EXEC SQL UPDATE repairs a
+                  set a.rep_old_due_date = a.rep_date_due
+                     ,(a.rep_date_due, a.rep_local_date_due)=(SELECT to_date( to_date(a.rep_date_due) -
+  
+                                                                       to_date(:current_date,'RRMMDD') +
+                                                                       to_date(d.are_date_work_done) )
+                                                                    ,to_date( to_date(a.rep_date_due) -
+                                                                       to_date(:current_date,'RRMMDD') +
+                                                                       to_date(d.are_date_work_done) )
+                                                                FROM repairs b
+                                                                    ,defects c
+                                                                    ,activities_report d
+                                                               WHERE c.def_defect_id = :intdefectid
+                                                                 AND b.rep_def_defect_id = c.def_defect_id
+                                                                 AND d.are_report_id = c.def_are_report_id
+                                                                 AND b.rep_action_cat != 'I'
+                                                                 AND a.rep_action_cat != b.rep_action_cat)
+                WHERE a.rep_def_defect_id = :t_defectid
+                  AND not exists(select 'Action Cat match'
+  
+                                   from repairs g
+                                  where g.rep_def_defect_id = :intdefectid
+                                    and a.rep_action_cat = g.rep_action_cat)
+                    ;
+      oraerror("SUPDEFECT 3");
+      }
+    EXEC SQL UPDATE repairs a
+                SET a.rep_old_due_date = a.rep_date_due
+                   ,a.rep_date_due=(SELECT b.rep_date_due
+  
+                                      FROM repairs b
+                                     WHERE b.rep_def_defect_id = :t_defectid
+                                       AND a.rep_action_cat    = b.rep_action_cat)
+              WHERE a.rep_def_defect_id = :intdefectid
+                AND a.rep_action_cat in(SELECT c.rep_action_cat
+                                          FROM repairs c
+                                         WHERE c.rep_def_defect_id = :t_defectid)
+                AND exists(SELECT 'On Work Order'
+                             FROM work_order_lines
+                            WHERE wol_def_defect_id = :t_defectid
+                              AND wol_status_code  != 'COMPLETED')
+                  ;
+    oraerror("SUPDEFECT 5");
+    }
+} /* supdefect */
+
+
+/*========================================================================*/
+/* Function : chk_defsuptype_option()                                         */
+/* Descr    : Returns TRUE If Product Option 'DORSET_SUP' Is Set To 'Y'   */
+/*========================================================================*/
+BOOLEAN chk_defsuptype_option()
+{
+  char tmp_msg[100];
+
+  EXEC SQL BEGIN DECLARE SECTION;
+    varchar defsuptype[2];
+  EXEC SQL END DECLARE SECTION;
+
+  EXEC SQL SELECT hop_value
+             INTO :defsuptype
+             FROM hig_options
+            WHERE hop_id      = 'DEFSUPTYPE'
+              AND hop_product = 'MAI'
+                ;
+  oraerror("chk_defsuptype_option");
+
+  defsuptype.arr[defsuptype.len] = '\0';
+
+  if(sqlca.sqlcode == 1403)
+    {
+    /* If Option Not Found Default To "1" */
+    strcpy((char*)defsuptype.arr,"1");
+    defsuptype.len = 1;
+    }
+
+  return((strcmp((char*)defsuptype.arr,"2")==0) ? TRUE : FALSE);
+} /* chk_defsuptype_option */
+
+/*========================================================================*/
+/* Function : match_defects()                                             */
+/* Descr    : Checks Whether The Defect Has Been Recorded On A Previous   */
+/*            Inspection.                                                 */
+/*========================================================================*/
+void match_defects(char *repairs_processed
+                  ,char *supflag)
+{
+  /* External Function Declarations */
+  BOOLEAN chk_defsuptype_option();
+  /* Local Variables */
+  BOOLEAN sup_later = FALSE;
+
+  if(get_ch_option(sys_flag))
+    {
+    EXEC ORACLE OPTION (SELECT_ERROR = NO);
+    if(chk_defsuptype_option())
+      {
+      /*==================================================================*/
+      /* Dorset Want To Match On Initiation Type, Safety/Detailed Flag    */
+      /* And Priority Code As Well As The Fields Normaly Matched          */
+      /* If The File Format Is Enhanced Then Superseding Can Take Place   */
+      /* Here As The Priority Is Supplied In The File.                    */
+      /* If The File Format Is Not Enhanced Then Superseding Will Be      */
+      /* Done Later As Priority Is Derived From The Repair Records        */
+      /*==================================================================*/
+      if(ENHANCED || repairs_processed=="TRUE")
+        {
+        if(EXDebug)
+          {
+          printf("Matching Defect On The Following Criteria :-\n");
+          printf("DEFSUPTYPE = 2\n");
+          printf("t_reportid        : [%d]\n",t_reportid);
+          printf("t_init            : [%s]\n",(char*)t_init.arr);
+          printf("t_inspflag        : [%s]\n",(char*)t_inspflag.arr); 
+          printf("Invcode           : [%s]\n",(char*)u_invcode.arr);
+          printf("Initiation Type   : [%s]\n",(char*)t_init.arr);
+          printf("Actcode           : [%s]\n",(char*)t_actcode.arr);
+          printf("Defcode           : [%s]\n",(char*)t_defcode.arr);
+          printf("He Id             : [%d]\n",t_heid);
+          printf("Priority          : [%s]\n",(char*)t_priority.arr);
+          printf("St chain          : [%d]\n",t_stchain);
+          printf("Xsp               : [%s]\n",(char*)t_xsec.arr);
+          printf("Adv Mand          : [%c]\n",(char*)d_adv_mand.arr[0]);
+          }
+
+        EXEC SQL SELECT def.def_defect_id
+                       ,def.def_priority
+                   INTO :u_defectid
+                       ,:old_priority
+                   FROM hig_options so
+                       ,defects     def
+                       ,activities_report are
+                  WHERE are.are_report_id         != :t_reportid
+                    AND are.are_initiation_type    = :t_init
+                    AND are.are_maint_insp_flag    = :t_inspflag
+                    AND are.are_report_id          = def.def_are_report_id
+                    AND ((def.def_ity_inv_code     = :u_invcode) OR
+                         (:u_invcode = 'XX' and def.def_ity_inv_code is null))
+                    AND def.def_atv_acty_area_code = :t_actcode
+                    AND def.def_defect_code        = :t_defcode
+                    AND def.def_rse_he_id          = :t_heid
+                    AND def.def_priority           = :t_priority
+                    AND def.def_st_chain BETWEEN   (:t_stchain - nvl(to_number(so.hop_value),5))
+                                             AND   (:t_stchain + nvl(to_number(so.hop_value),5))
+                    AND def.def_superseded_flag   != 'Y'
+                    AND nvl(def.def_x_sect,'@')    = nvl(:t_xsec,'@')
+                    AND def.def_date_compl         is nulL
+                    AND (def.def_mand_adv          = :d_adv_mand OR def.def_mand_adv is null)
+                    AND so.hop_id                  = 'DEFMATPAR'
+                    AND so.hop_product             = 'MAI'
+                  ORDER
+                     BY def.def_defect_id
+                      ;
+        }
+      else                                /* Match The Defects After The */
+        sup_later = TRUE;                 /* Repairs Have Been Processed */
+      }
+    else
+      {
+      if(EXDebug)
+        {
+        printf("Matching Defect On The Following Criteria :-\n");
+        printf("DEFSUPTYPE = 1\n");
+        printf("Invcode           : [%s]\n",(char*)u_invcode.arr);
+        printf("Treportid         : [%d]\n",t_reportid);
+        printf("Actcode           : [%s]\n",(char*)t_actcode.arr);
+        printf("Defcode           : [%s]\n",(char*)t_defcode.arr);
+        printf("He Id             : [%d]\n",t_heid);
+        printf("St chain          : [%d]\n",t_stchain);
+        printf("Xsp               : [%s]\n",(char*)t_xsec.arr);
+        printf("Adv Mand          : [%c]\n",(char*)d_adv_mand.arr[0]);
+        }
+
+      EXEC SQL SELECT def.def_defect_id
+                     ,def.def_priority
+                 INTO :u_defectid
+                     ,:old_priority
+                 FROM defects     def
+                     ,hig_options so
+                WHERE ((def.def_ity_inv_code = :u_invcode) OR
+                       (:u_invcode = 'XX' and def.def_ity_inv_code is null))
+                  AND def.def_are_report_id     != :t_reportid
+                  AND def.def_atv_acty_area_code = :t_actcode
+                  AND def.def_defect_code        = :t_defcode
+                  AND def.def_rse_he_id          = :t_heid
+                  AND def.def_st_chain BETWEEN   (:t_stchain - nvl(to_number(so.hop_value),5))
+                                           AND   (:t_stchain + nvl(to_number(so.hop_value),5))
+                  AND def.def_superseded_flag   != 'Y'
+                  AND nvl(def.def_x_sect,'@')    = nvl(:t_xsec,'@')
+                  AND def.def_date_compl IS NULL
+                  AND (def.def_mand_adv          = :d_adv_mand OR def.def_mand_adv is null)
+                  AND so.hop_id                  = 'DEFMATPAR'
+                  AND so.hop_product             = 'MAI'
+                ORDER
+                   BY def.def_defect_id
+                    ;
+      }
+    oraerror("MATCH_DEFECTS");
+
+    EXEC ORACLE OPTION (SELECT_ERROR = YES);
+
+    u_defectid.arr[u_defectid.len]     = '\0';
+    old_priority.arr[old_priority.len] = '\0';
+
+    if(!ORANOREC && !sup_later)             /* If defect matched          */
+      {
+      strcpy(str_defectid,(char*)u_defectid.arr);
+      intdefectid=atol(str_defectid);       /* Set intdefectid value      */
+      wolflag = chkwols();                  /* Check work order lines for */
+      }                                     /* selected defect.           */
+    else
+      {
+      intdefectid = 0;
+      *supflag='N';                         /* No defect found and so no  */
+      wolflag = FALSE;
+      }
+    }
+  else
+    {
+    intdefectid = 0;                      /* Chainage Not In Use So No  */
+    *supflag='N';                         /* Matching Done.             */
+    wolflag = FALSE;
+    }
+
+  if(EXDebug)
+    if(wolflag)
+      puts("Wolflag is YES");
+    else
+      puts("Wolflag is NO");
+
+  *supflag = wolflag ? 'Y' : 'N';         /* set the superseding flag     */
+} /* match_defects */
