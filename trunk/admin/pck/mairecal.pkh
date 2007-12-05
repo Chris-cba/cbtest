@@ -3,11 +3,11 @@ create or replace package mairecal as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.1   Dec 05 2007 15:34:42   ptanava  $
 --       Module Name      : $Workfile:   mairecal.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Dec 05 2007 15:34:42  $
+--       Date fetched Out : $Modtime:   Dec 05 2007 12:25:46  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ create or replace package mairecal as
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.0  $"';
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -80,10 +80,14 @@ FUNCTION get_body_version RETURN varchar2;
 --**** RECALIBRATE PROCEDURES *****
 -----------------------------------------------------------------------------
 --
-  procedure recal_data
-	(p_rse_he_id	  in number,   	-- section to recalibrate
-	 p_orig_length  	  in number, 	-- original length
-	 p_new_length	  in number); 	-- new length
+  procedure recal_data(
+     pi_ne_id in number
+    ,pi_recal_start_point in number
+    ,pi_length_ratio in number
+    ,pi_dec_places in number
+  );
+
+                        
 --</PROC>
 --
 -----------------------------------------------------------------------------
