@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.1   Dec 05 2007 15:33:56   ptanava  $
 --       Module Name      : $Workfile:   mairecal.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Dec 05 2007 15:33:56  $
+--       Date fetched Out : $Modtime:   Dec 05 2007 15:28:36  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.3
 --
 --	This package contains procedures and functions which are required by
@@ -24,12 +24,13 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
 -----------------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2002
 -----------------------------------------------------------------------------
---
---all global package variables here
---
-   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.0  $';
---  g_body_sccsid is the SCCS ID for the package body
---
+
+/* History
+  05.12.07 PT rewrite of recal_data() - now uses the recalibrate start point parameter like other products
+                this fixes the bug that start point was not considered in recalibrate
+*/
+
+   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.1  $';
    g_package_name    CONSTANT  varchar2(30)   := 'mairecal';
 --
    l_rmmsflag                  hig_options.hop_value%TYPE := hig.get_sysopt('RMMSFLAG');
@@ -43,6 +44,12 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
                            p_err_text     	in     	varchar2,
                            p_errors       	in out 	number,
                            p_error_string 	in out 	varchar2);
+                           
+  type placement_tbl_rec is record (
+     begin_mp nm3type.tab_number
+    ,end_mp nm3type.tab_number
+  );
+
 --
 -----------------------------------------------------------------------------
 --
@@ -324,41 +331,170 @@ END get_body_version;
 --**** RECALIBRATE PROCEDURES *****
 -----------------------------------------------------------------------------
 
-  procedure recal_data
-	(p_rse_he_id	  in number,   	-- section to recalibrate
-	 p_orig_length  	  in number, 	-- original length
-	 p_new_length	  in number) is	-- new length
 
-    l_recal_factor  number := p_new_length / p_orig_length;
-    l_actioned_date varchar2(22) := to_char(SYSDATE, 'DD-MON-YYYY,HH24:MI:SS');
+  procedure recalibrate_placements(
+     ptr_mp in out placement_tbl_rec
+    ,pi_recal_start_point in number
+    ,pi_length_ratio in number
+    ,pi_dec_places in number
+  )
+  is
+    l_new_begin_mp        number;
+    l_new_end_mp          number;
+    l_begin_mp_from_recal number;
+    l_end_mp_from_recal   number;
+    
+  begin
+    for i in 1 .. ptr_mp.begin_mp.count loop
+      l_begin_mp_from_recal := ptr_mp.begin_mp(i) - pi_recal_start_point;
+      
+      if ptr_mp.begin_mp(i) < pi_recal_start_point then
+         l_new_begin_mp := ptr_mp.begin_mp(i);
+         
+      else
+         l_new_begin_mp := pi_recal_start_point + (l_begin_mp_from_recal * pi_length_ratio);
+         
+      end if;
+      
+      l_end_mp_from_recal := ptr_mp.end_mp(i) - pi_recal_start_point;
+      
+      if ptr_mp.end_mp(i) < pi_recal_start_point then
+         l_new_end_mp := ptr_mp.end_mp(i);
+         
+      else
+         l_new_end_mp := pi_recal_start_point + (l_end_mp_from_recal * pi_length_ratio);
+         
+      end if;
+
+      ptr_mp.begin_mp(i)  := round(l_new_begin_mp, pi_dec_places);
+      ptr_mp.end_mp(i) := round(l_new_end_mp, pi_dec_places );
+    
+    end loop;
+    
+  end;
+
+
+  procedure recal_data(
+     pi_ne_id in number
+    ,pi_recal_start_point in number
+    ,pi_length_ratio in number
+    ,pi_dec_places in number
+  )
+  is
+    t_rowid     nm3type.tab_rowid;
+    tr_mp       placement_tbl_rec;
+    l_actioned_date constant date := sysdate;
 
   begin
+  
+    -- activities report
+    select rowid, are_st_chain, are_end_chain
+    bulk collect into t_rowid, tr_mp.begin_mp, tr_mp.end_mp
+    from activities_report
+      where are_rse_he_id = pi_ne_id
+        and are_end_chain >= pi_recal_start_point;
+    recalibrate_placements(
+       ptr_mp               => tr_mp
+      ,pi_recal_start_point => pi_recal_start_point
+      ,pi_length_ratio      => pi_length_ratio
+      ,pi_dec_places        => pi_dec_places
+    );
+    forall i in 1..t_rowid.count
+    update activities_report set
+       are_st_chain  = tr_mp.begin_mp(i)
+      ,are_end_chain = tr_mp.end_mp(i)
+      ,are_last_updated_date = l_actioned_date
+    where rowid = t_rowid(i);
+    
 
---    update inv_items_all
---    set    iit_st_chain  = round(iit_st_chain * l_recal_factor),
---           iit_end_chain = round(iit_end_chain * l_recal_factor),
---           iit_last_updated_date = to_date(l_actioned_date ,'DD-MON-YYYY,HH24:MI:SS')
---    where  iit_rse_he_id = p_rse_he_id;
+    -- defects
+    select rowid, def_st_chain, def_st_chain
+    bulk collect into t_rowid, tr_mp.begin_mp, tr_mp.end_mp
+    from defects
+      where def_rse_he_id = pi_ne_id
+        and def_st_chain >= pi_recal_start_point;
+    recalibrate_placements(
+       ptr_mp               => tr_mp
+      ,pi_recal_start_point => pi_recal_start_point
+      ,pi_length_ratio      => pi_length_ratio
+      ,pi_dec_places        => pi_dec_places
+    );
+    forall i in 1..t_rowid.count
+    update defects set
+       def_st_chain  = tr_mp.begin_mp(i)
+      ,def_last_updated_date = l_actioned_date
+    where rowid = t_rowid(i);
+    
+    
+    -- local_freqs
+    select rowid, lfr_start_chain, lfr_end_chain
+    bulk collect into t_rowid, tr_mp.begin_mp, tr_mp.end_mp
+    from local_freqs
+      where lfr_rse_he_id = pi_ne_id
+        and lfr_end_chain >= pi_recal_start_point;
+    recalibrate_placements(
+       ptr_mp               => tr_mp
+      ,pi_recal_start_point => pi_recal_start_point
+      ,pi_length_ratio      => pi_length_ratio
+      ,pi_dec_places        => pi_dec_places
+    );
+    forall i in 1..t_rowid.count
+    update local_freqs set
+       lfr_start_chain  = tr_mp.begin_mp(i)
+      ,lfr_end_chain = tr_mp.end_mp(i)
+    where rowid = t_rowid(i);
+    
+    
+    -- work_order_lines
+    select rowid, wol_are_st_chain, wol_are_st_chain
+    bulk collect into t_rowid, tr_mp.begin_mp, tr_mp.end_mp
+    from work_order_lines
+      where wol_rse_he_id = pi_ne_id
+        and wol_are_st_chain >= pi_recal_start_point;
+    recalibrate_placements(
+       ptr_mp               => tr_mp
+      ,pi_recal_start_point => pi_recal_start_point
+      ,pi_length_ratio      => pi_length_ratio
+      ,pi_dec_places        => pi_dec_places
+    );
+    forall i in 1..t_rowid.count
+    update work_order_lines set
+       wol_are_st_chain  = tr_mp.begin_mp(i)
+    where rowid = t_rowid(i);
+    
+    
+    -- scheme_roads
+    select rowid, start_point, end_point
+    bulk collect into t_rowid, tr_mp.begin_mp, tr_mp.end_mp
+    from scheme_roads
+      where rse_he_id = pi_ne_id
+        and end_point >= pi_recal_start_point;
+    recalibrate_placements(
+       ptr_mp               => tr_mp
+      ,pi_recal_start_point => pi_recal_start_point
+      ,pi_length_ratio      => pi_length_ratio
+      ,pi_dec_places        => pi_dec_places
+    );
+    forall i in 1..t_rowid.count
+    update scheme_roads set
+       start_point  = tr_mp.begin_mp(i)
+      ,end_point = tr_mp.end_mp(i)
+    where rowid = t_rowid(i);
+    
 
---    update road_sections
---    set    rse_max_chain = (
---             select greatest(max(nvl(iit_st_chain,0)), max(nvl(iit_end_chain,0)))
---             from   inv_items
---             where  iit_rse_he_id = p_rse_he_id),
---           rse_length = p_new_length
---    where  rse_he_id = p_rse_he_id;
+--     update activities_report
+--     set    are_st_chain  = round(are_st_chain * l_recal_factor),
+--            are_end_chain  = round(are_end_chain * l_recal_factor),
+--            are_last_updated_date = to_date(l_actioned_date ,'DD-MON-YYYY,HH24:MI:SS')
+--      where  are_rse_he_id = p_rse_he_id;
 
-    update activities_report
-    set    are_st_chain  = round(are_st_chain * l_recal_factor),
-           are_end_chain  = round(are_end_chain * l_recal_factor),
-           are_last_updated_date = to_date(l_actioned_date ,'DD-MON-YYYY,HH24:MI:SS')
-    where  are_rse_he_id = p_rse_he_id;
-
-    update defects
-    set     def_st_chain = round(def_st_chain * l_recal_factor),
-            def_last_updated_date = to_date(l_actioned_date ,'DD-MON-YYYY,HH24:MI:SS')
-    where   def_rse_he_id = p_rse_he_id;
-
+--     update defects
+--     set     def_st_chain = round(def_st_chain * l_recal_factor),
+--             def_last_updated_date = to_date(l_actioned_date ,'DD-MON-YYYY,HH24:MI:SS')
+--     where   def_rse_he_id = p_rse_he_id;
+    
+    
+-- PT all the hhinv_ tables were alerady commented out
 --    update hhinv_item_err_2
 --    set    st_chain = round(st_chain * l_recal_factor),
 --           end_chain = round(end_chain * l_recal_factor)
@@ -374,19 +510,20 @@ END get_body_version;
 --           end_chain = round(end_chain * l_recal_factor)
 --    where  he_id = p_rse_he_id;
 
-    update local_freqs
-    set   lfr_start_chain = round(lfr_start_chain * l_recal_factor),
-          lfr_end_chain   = round(lfr_end_chain * l_recal_factor)
-    where lfr_rse_he_id = p_rse_he_id;
+-- PT the active tables continue here
+--     update local_freqs
+--     set   lfr_start_chain = round(lfr_start_chain * l_recal_factor),
+--           lfr_end_chain   = round(lfr_end_chain * l_recal_factor)
+--     where lfr_rse_he_id = p_rse_he_id;
 
-    update work_order_lines
-    set   wol_are_st_chain = round(wol_are_st_chain * l_recal_factor)
-    where wol_rse_he_id = p_rse_he_id;
+--     update work_order_lines
+--     set   wol_are_st_chain = round(wol_are_st_chain * l_recal_factor)
+--     where wol_rse_he_id = p_rse_he_id;
 
-    update scheme_roads
-    set    start_point = round(start_point * l_recal_factor),
-           end_point = round(end_point * l_recal_factor)
-    where  rse_he_id = p_rse_he_id;
+--     update scheme_roads
+--     set    start_point = round(start_point * l_recal_factor),
+--            end_point = round(end_point * l_recal_factor)
+--     where  rse_he_id = p_rse_he_id;
 
   end recal_data;
 --
@@ -521,7 +658,7 @@ PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT nm3context.get_effective_
    		EXU_SIGN_OFF_DATE,
    		to_date( l_actioned_date,'DD-MON-YYYY,HH24:MI:SS'),
    		to_date( l_actioned_date,'DD-MON-YYYY,HH24:MI:SS')
-       from   	EXT_ACT_ROAD_USAGE
+       from   	ext_act_road_usage
        where  	EXU_RSE_HE_ID = l_ne_id
        and    	l_rmmsflag in ('3','4');
 
@@ -556,14 +693,14 @@ PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT nm3context.get_effective_
        where lfr_rse_he_id = l_ne_id;
 
      --section_freq
-       INSERT INTO SECTION_FREQS
+       INSERT INTO section_freqs
            (	 SFR_ATV_ACTY_AREA_CODE,
            	SFR_INT_CODE,
            	SFR_RSE_HE_ID )
        SELECT 	SFR_ATV_ACTY_AREA_CODE,
    		SFR_INT_CODE,
    		l_ne_id_new
-       FROM	SECTION_FREQS
+       FROM	section_freqs
        WHERE 	SFR_RSE_HE_ID = l_ne_id;
 
 
