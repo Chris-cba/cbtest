@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.5   Nov 16 2007 13:45:10   jwadsworth  $
+REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.6   Jan 07 2008 17:19:06   jwadsworth  $
 
 set echo off
 set linesize 120
@@ -111,11 +111,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.0.2.2, as MAI is dependent this
+-- Check that HIG has been installed @ v4.0.4.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.0.2.2'
+                                ,p_VERSION        => '4.0.4.0'
                                 );
 END;
 /
@@ -379,8 +379,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.2.2');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.2.2');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.4.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.4.0');
 END;
 /
 COMMIT;
