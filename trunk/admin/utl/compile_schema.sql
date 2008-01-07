@@ -1,3 +1,12 @@
+--   PVCS Identifiers :-
+--
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/utl/compile_schema.sql-arc   2.1   Jan 07 2008 10:08:12   jwadsworth  $
+--       Module Name      : $Workfile:   compile_schema.sql  $
+--       Date into PVCS   : $Date:   Jan 07 2008 10:08:12  $
+--       Date fetched Out : $Modtime:   Jan 07 2008 10:04:30  $
+--       PVCS Version     : $Revision:   2.1  $
+--       Based on SCCS version : 
+
 set verify off
 set head off
 set feed off
@@ -28,10 +37,13 @@ create table temp_depend as
 select d.d_obj# object_id
       ,d.p_obj# referenced_object_id
  from  sys.dependency$ d
-where  d.d_owner# in (select user#
-                       From  sys.user$
-                      where  name = USER
-                     )
+where  d.d_obj# in 
+       (select object_id
+          From sys.dba_objects
+             , sys.user$
+         where name = USER
+           and owner = name
+       )
 /
 CREATE INDEX IX1 ON
   TEMP_DEPEND(OBJECT_ID)
