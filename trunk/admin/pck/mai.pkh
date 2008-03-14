@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.1   Mar 14 2008 10:46:18   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Mar 14 2008 10:46:18  $
+--       Date fetched Out : $Modtime:   Mar 13 2008 16:14:34  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -889,14 +889,20 @@ PROCEDURE copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%
 -----------------------------------------------------------------------------
 --
 --<PROC NAME="count_wols_for_register">
--- Get count of lines on a works order that are instructed but not send to streetworks register - called in MAI3800
+-- Get count of lines on a works order that are instructed but not sent to streetworks/tma register - called in MAI3800
 FUNCTION count_wols_for_register (pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
---<PROC NAME="count_notices_for_works_order">
+--<PROC NAME="count_swm_notices_for_wo">
 -- Get count of streetworks notices for a given works order - called in MAI3800
-FUNCTION count_notices_for_works_order(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+FUNCTION count_swm_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_tma_notices_for_wo">
+-- Get count of tma notices for a given works order - called in MAI3800
+FUNCTION count_tma_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
@@ -990,13 +996,13 @@ PROCEDURE get_child_assets(po_child_assets IN OUT child_asset_tab);
 -----------------------------------------------------------------------------
 --
 -- <PRAGMA>
-     PRAGMA RESTRICT_REFERENCES(get_hco_seq           , wnds);
-     PRAGMA RESTRICT_REFERENCES(get_version           , wnds);
-     PRAGMA RESTRICT_REFERENCES(calc_st_chain         , wnds);
-     PRAGMA RESTRICT_REFERENCES(translate_nm_inv_type , wnds);
-     PRAGMA RESTRICT_REFERENCES(translate_mai_inv_type, wnds);
-     PRAGMA RESTRICT_REFERENCES(budget_allocation_used, wnds);
-     PRAGMA RESTRICT_REFERENCES(get_gis_sys_flag, wnds, wnps);
+--     PRAGMA RESTRICT_REFERENCES(get_hco_seq           , wnds);
+--     PRAGMA RESTRICT_REFERENCES(get_version           , wnds);
+--     PRAGMA RESTRICT_REFERENCES(calc_st_chain         , wnds);
+--     PRAGMA RESTRICT_REFERENCES(translate_nm_inv_type , wnds);
+--     PRAGMA RESTRICT_REFERENCES(translate_mai_inv_type, wnds);
+--     PRAGMA RESTRICT_REFERENCES(budget_allocation_used, wnds);
+---     PRAGMA RESTRICT_REFERENCES(get_gis_sys_flag, wnds, wnps);
 -- </PRAGMA>
 END mai;
 /
