@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.1   Mar 14 2008 10:46:14   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Mar 14 2008 10:46:14  $
+--       Date fetched Out : $Modtime:   Mar 13 2008 16:14:48  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,14 +20,16 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.0  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
    g_tab_register_wols nm3type.tab_varchar30;
    g_parent_asset_tab  parent_asset_tab;
    g_child_asset_type  nm_inv_types_all.nit_inv_type%TYPE;
-   
+
+   g_swr_licenced      BOOLEAN;
+   g_tma_licenced      BOOLEAN;   
 --
 -----------------------------------------------------------------------------
 --
@@ -4935,9 +4937,7 @@ BEGIN
 
      --
      --
-     -- refcursor is used cos cannot directly reference swr_id_mapping table
-     -- cos we cannot guarantee that this SWM table is installed when MAI is
-     -- installed
+     -- refcursor is used cos cannot directly reference SWR/TMA objects
      --
       l_sql := 'select  count(*)
                 from   work_order_lines wol
@@ -4945,9 +4945,16 @@ BEGIN
                 and    wol.wol_status_code = (SELECT hsc_status_code  -- instructed
                                               FROM hig_status_codes
                                               WHERE hsc_domain_code = ''WORK_ORDER_LINES''
-                                              AND hsc_allow_feature1 = ''Y'')
-				and not exists (select 1 from swr_id_mapping where sim_origin = ''WOL'' and sim_primary_key_value = wol_id)';
+                                              AND hsc_allow_feature1 = ''Y'')';
+                                              
+      IF g_swr_licenced THEN
+        l_sql := l_sql ||' and not exists (select 1 from swr_id_mapping where sim_origin = ''WOL'' and sim_primary_key_value = wol_id)';
+      END IF;
 
+      IF g_tma_licenced THEN
+        l_sql := l_sql ||' and not exists (select 1 from tma_id_mapping where tidm_origin = ''WOL'' and tidm_primary_key_value = wol_id)';
+      END IF;
+              
       OPEN l_refcur FOR l_sql
       USING pi_works_order_no;
       FETCH l_refcur INTO l_retval;
@@ -4959,7 +4966,7 @@ END count_wols_for_register;
 --
 ---------------------------------------------------------------------------------------------------
 --
-FUNCTION count_notices_for_works_order(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER IS
+FUNCTION count_swm_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER IS
 
  l_refcur nm3type.ref_cursor;
  l_retval PLS_INTEGER;
@@ -4974,22 +4981,62 @@ BEGIN
      -- cos we cannot guarantee that this SWM table is installed when MAI is
      -- installed
      --
-      l_sql := 'select  count(*)
-                from   swr_id_mapping
-				      ,work_order_lines
-                where  sim_origin = ''WOL''
-				and    sim_primary_key_value = wol_id
-				and    wol_works_order_no = :1';
+     IF g_swr_licenced THEN
+       l_sql := 'select  count(*)
+                 from   swr_id_mapping
+ 				      ,work_order_lines
+                 where  sim_origin = ''WOL''
+                 and    sim_primary_key_value = wol_id
+				 and    wol_works_order_no = :1';
 
-      OPEN l_refcur FOR l_sql
-      USING pi_works_order_no;
-      FETCH l_refcur INTO l_retval;
-      CLOSE l_refcur;
+       OPEN l_refcur FOR l_sql
+       USING pi_works_order_no;
+       FETCH l_refcur INTO l_retval;
+       CLOSE l_refcur;
+       
+     END IF;       
 
-	  RETURN(NVL(l_retval,0));
+     RETURN(NVL(l_retval,0));
 
 
-END count_notices_for_works_order;
+END count_swm_notices_for_wo;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION count_tma_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER IS
+
+ l_refcur nm3type.ref_cursor;
+ l_retval PLS_INTEGER;
+ l_sql    VARCHAR2(2000);
+
+
+BEGIN
+
+     --
+     --
+     -- refcursor is used cos cannot directly reference swr_id_mapping table
+     -- cos we cannot guarantee that this TMA table is installed when MAI is
+     -- installed
+     --
+     IF g_tma_licenced THEN
+       l_sql := 'select  count(*)
+                 from   tma_id_mapping
+ 				      ,work_order_lines
+                 where  tidm_origin = ''WOL''
+                 and    tidm_primary_key_value = wol_id
+				 and    wol_works_order_no = :1';
+
+       OPEN l_refcur FOR l_sql
+       USING pi_works_order_no;
+       FETCH l_refcur INTO l_retval;
+       CLOSE l_refcur;
+       
+     END IF;       
+
+     RETURN(NVL(l_retval,0));
+
+
+END count_tma_notices_for_wo;
 --
 ---------------------------------------------------------------------------------------------------
 --
@@ -5022,7 +5069,7 @@ FUNCTION wols_of_given_type_exist(pi_works_order_no IN work_orders.wor_works_ord
                                  ,pi_wol_flag       IN work_order_lines.wol_flag%TYPE) RETURN BOOLEAN IS
 
 BEGIN
- 
+
   RETURN(count_wols(pi_wol_works_order_no => pi_works_order_no
                    ,pi_wol_flag           => pi_wol_flag) >0);
  
@@ -5035,7 +5082,7 @@ FUNCTION determine_reg_status(pi_works_order_no IN work_orders.wor_works_order_n
  l_retval work_orders.wor_register_status%TYPE; 
 
  l_wols_to_be_sent   PLS_INTEGER;
- l_wols_already_sent PLS_INTEGER; 
+
   
 BEGIN
 
@@ -5048,10 +5095,10 @@ BEGIN
      l_retval := 'O'; -- 'Outstanding'
    ELSE
 
-    l_wols_already_sent := mai.count_notices_for_works_order(pi_works_order_no => pi_works_order_no);   
-
-    IF NVL(l_wols_already_sent,0) > 0 THEN
+    IF mai.count_swm_notices_for_wo(pi_works_order_no => pi_works_order_no) >0  OR count_tma_notices_for_wo(pi_works_order_no => pi_works_order_no) >0 THEN   
       l_retval := 'C'; -- 'Completed'
+--    ELSIF  THEN
+--          l_retval := 'C'; -- 'Completed'      
     END IF;
 		  		  
    END IF;
@@ -5069,9 +5116,9 @@ FUNCTION determine_reg_status_for_flag(pi_works_order_no    IN work_orders.wor_w
 
 BEGIN
 
- IF pi_wor_register_flag = 'Y' AND NOT hig.is_product_licensed(pi_product => 'SWR') THEN
+ IF pi_wor_register_flag = 'Y' AND NOT hig.is_product_licensed(pi_product => 'TMA') THEN
    hig.raise_ner(pi_appl => 'MAI'
-                ,pi_id   => 918);
+                ,pi_id   => 918);  
  END IF;
 
  IF pi_wor_register_flag = 'N' THEN
@@ -5298,7 +5345,13 @@ BEGIN  /* mai - automatic variables */
   /* return the language under which the application is running */
   g_language := 'ENGLISH';
 
-  /* instantiate common error messages */
+  
+  g_swr_licenced := nm3ddl.does_object_exist(p_object_name => 'SWR_ID_MAPPING'
+                                            ,p_object_type => 'TABLE');
+                                            
+
+  g_tma_licenced := nm3ddl.does_object_exist(p_object_name => 'TMA_ID_MAPPING'
+                                            ,p_object_type => 'TABLE');                                            
 
 END mai;
 /
