@@ -3,16 +3,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.4   Oct 19 2007 08:42:16   sscanlon  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.5   Mar 14 2008 11:26:58   gjohnson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Oct 19 2007 08:42:16  $
---       Date fetched Out : $Modtime:   Oct 19 2007 08:38:36  $
---       Version          : $Revision:   2.4  $
+--       Date into PVCS   : $Date:   Mar 14 2008 11:26:58  $
+--       Date fetched Out : $Modtime:   Mar 14 2008 11:25:02  $
+--       Version          : $Revision:   2.5  $
 --
 --   Product metadata script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2007
+--	Copyright (c) exor corporation ltd, 2008
 -----------------------------------------------------------------------------
 --
 --
@@ -20,11 +20,11 @@
 
 INFO
 ====
-As at Release 4.0.2.0
+As at Release 4.0.4.3
 
 GENERATION DATE
 ===============
-19-OCT-2007 08:38
+14-MAR-2008 11:24
 
 TABLES PROCESSED
 ================
@@ -445,7 +445,7 @@ SELECT
         'MAI'
        ,918
        ,null
-       ,'Street Works Manager must be installed and licenced in order to Self Notice'
+       ,'TMA must be installed and licenced in order to Self Notice'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -9231,6 +9231,30 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI3960');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI3970'
+       ,'Print Gang Work Orders'
+       ,'mai3970'
+       ,'R25'
+       ,''
+       ,'N'
+       ,'Y'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3970');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
