@@ -5,7 +5,7 @@
 /* "@(#)r1validc.h	1.2 05/20/04"  */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1validc.h  $ $Revision:   2.1  $ $Modtime:   Nov 22 2007 11:15:56  $" */
+/* "$Workfile:   r1validc.h  $ $Revision:   2.2  $ $Modtime:   Jan 31 2008 14:41:00  $" */
 
 /* ---------------------------------------------------------------------- *
    Change History

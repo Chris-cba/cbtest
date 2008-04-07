@@ -217,6 +217,14 @@ long int lineno;
 
    int i;
 
+/* ARCHANGES START */
+/* The code below validates the link id. This is not necessary and hinders */
+/* loading for non RMMS UKPMS users such as Barnet */
+
+   return(TRUE);                        
+
+/* ARCHANGES END */
+
    if (strlen(link) > 10)
    { 
       strcpy(err_msg,
