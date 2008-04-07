@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.2  $ $Modtime:   Nov 22 2007 11:12:52  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.3  $ $Modtime:   Mar 11 2008 14:16:00  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +13,7 @@ static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.2  $ $Modtime: 
 #define FATAL        2
 
 EXEC SQL BEGIN DECLARE SECTION;
+
 int tmp_he_id[100];
 int tmp_loop;
 int i_next_seq;
@@ -1265,6 +1266,11 @@ int validate_mc_data_direction()
   if (sqlca.sqlcode < 0)
     sql_err("validate_mc_data_direction(2)");
 
+/* ARTEST START */
+/* Commented this section out for initial testing. */
+/* Barnet database changed so that network direction was properly set. */
+/* So now re-introducing this check */
+
   EXEC SQL UPDATE HHINV_SECT_LOG HHSl
            SET    SUCCESS_STAT = 2,
                   ERROR_LEVEL  = 'SECT',
@@ -1282,6 +1288,9 @@ int validate_mc_data_direction()
                                          AND SURV_DIRECTION IS NULL) );
   if (sqlca.sqlcode < 0)
     sql_err("validate_mc_data_direction(3)");
+
+/* ARTEST END */
+
 /*
   EXEC SQL UPDATE HHINV_LOAD_2 HL2
            SET    ERROR_MSG = 'Conflicting or Incorrect Directions',
@@ -5539,15 +5548,30 @@ int ct_3_nw_err()
    Count Items in ERROR 3
    ************************************************************************* */
  {
-  EXEC SQL SELECT COUNT('A')
-           INTO   :newerr_3
-           FROM   HHINV_LOAD_3
-           WHERE  ERROR_FLG = 'Y';
+/* ARCHANGES2 Start Looking for core dump */
+  EXEC SQL WHENEVER sqlerror continue;
+  EXEC SQL WHENEVER sqlwarning continue;
+
+  EXEC SQL DECLARE ARTEMP TABLE
+      (ecount        number);
+
+  EXEC SQL create table ARTEMP (ecount number);
+  EXEC SQL delete from ARTEMP;
+  EXEC SQL insert into ARTEMP select count('A') ecount from hhinv_load_3 where error_flg = 'Y';
+
+  EXEC SQL SELECT ecount
+    INTO :newerr_3
+    FROM ARTEMP;
 
   if (sqlca.sqlcode < 0)
+  {
     sql_err("ct_3_nw_er");
+  }
   else
+  {
       return(SUCCESS);
+  }
+/* ARCHANGES2 End Looking for core dump */
  }
 
 commit()

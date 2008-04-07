@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.2  $ $Modtime:   Nov 22 2007 11:12:48  $";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.3  $ $Modtime:   Mar 11 2008 14:16:00  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -1233,36 +1233,61 @@ int finish()
   strcat(pipe_msg," BPR-8521");
   write_pipe(fi,pipe_msg);
 
+/* ARCHANGES2 Start Looking for core dump */
+printf ("do: if ( ( status = ct_1_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = ct_1_nw_err() ) != SUCCESS )
    {
     return(status);
    }
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = ct_2_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = ct_2_nw_err() ) != SUCCESS )
    {
     return(status);
    }
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = ct_3_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = ct_3_nw_err() ) != SUCCESS )
    {
     return(status);
    }
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = count_sect_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = count_sect_err() ) != SUCCESS )
    {
     return(status);
    }
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = re_set_sect() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = re_set_sect() ) != SUCCESS )
    {
     return(status);
    }
+
+/* ARCHANGES2 Start Looking for core dump */
+  printf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+  printf(fi,"\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
+  printf(fi,"\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
+  printf(fi,"\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
+/* ARCHANGES2 End Looking for core dump */
 
   fprintf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
   fprintf(fi,"\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
   fprintf(fi,"\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
   fprintf(fi,"\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( tot_run_i < 0 )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( tot_run_i < 0 )
    {
     if ( ( status = c_get_total() ) != SUCCESS )
@@ -1273,6 +1298,9 @@ int finish()
 
   cur_run_stat = 10;
 
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = fin_upd_run_log() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
   if ( ( status = fin_upd_run_log() ) != SUCCESS )
    {
     return(status);
