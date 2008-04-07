@@ -430,7 +430,14 @@ if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
    14-Jun-01. MRE. Added RTRIM for ECDM 686490
  * -------------------------------------------------------- */
         AND    RSE.RSE_GROUP(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1))))
+/* ARCHANGES START */
+/* The code used to get the section id via a fixed position count. */
+/* This is changed so that it gets the section id by looking for commas */
+/*
         AND    RSE.RSE_SECT_NO(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,12,instr(full_value,',',1,2)-12))))
+*/
+AND RSE.RSE_SECT_NO(+) = substr(full_value,(instr(full_value,',',1,1)+1), (instr(full_value,',',1,2)) - (instr(full_value,',',1,1)+1) )
+/* ARCHANGES END */
         AND    PEO.HUS_INITIALS(+)    = 
                LTRIM(RTRIM(SUBSTR(FULL_VALUE,
                    instr(full_value,',',1,4) + 1,3)));
@@ -502,7 +509,14 @@ else
    14-Jun-01. MRE. Added RTRIM for ECDM 686490
  * -------------------------------------------------------- */
         AND    RSE.RSE_GROUP(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,1,instr(full_value,',')-1))))
-        AND    RSE.RSE_SECT_NO(+) =LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,12,instr(full_value,',',1,2)-12))))
+/* ARCHANGES START */
+/* The code used to get the section id via a fixed position count. */
+/* This is changed so that it gets the section id by looking for commas */
+/*
+        AND    RSE.RSE_SECT_NO(+) = LTRIM(RTRIM(upper(SUBSTR(FULL_VALUE,12,instr(full_value,',',1,2)-12))))
+*/
+AND RSE.RSE_SECT_NO(+) = substr(full_value,(instr(full_value,',',1,1)+1), (instr(full_value,',',1,2)) - (instr(full_value,',',1,1)+1) )
+/* ARCHANGES END */
         AND    PEO.HUS_INITIALS(+)    = 
                LTRIM(RTRIM(SUBSTR(FULL_VALUE,
                    instr(full_value,',',1,4) + 1,3)));
