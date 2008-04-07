@@ -1,14 +1,14 @@
-create or replace package mai2110c authid current_user
+CREATE OR REPLACE package mai2110c 
 AS
 --<PACKAGE>
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.1   Aug 17 2007 19:08:42   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.2   Apr 07 2008 14:01:22   swilliams  $
 --       Module Name      : $Workfile:   mai2110c.pkh  $
---       Date into PVCS   : $Date:   Aug 17 2007 19:08:42  $
---       Date fetched Out : $Modtime:   Aug 17 2007 18:16:58  $
---       PVCS Version     : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Apr 07 2008 14:01:22  $
+--       Date fetched Out : $Modtime:   Mar 14 2008 12:29:00  $
+--       PVCS Version     : $Revision:   2.2  $
 --       Based on SCCS version :
 --
 --
@@ -26,7 +26,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.1  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.2  $"';
   TYPE hhinv_load_3_rec
     IS RECORD(rec_seq_no                 hhinv_load_3.rec_seq_no               %TYPE
              ,iit_he_id                  hhinv_load_3.he_id                    %TYPE
@@ -81,7 +81,7 @@ AS
              ,iit_offset                 hhinv_load_3.offset                   %TYPE
              ,iit_x                      hhinv_load_3.x                        %TYPE
              ,iit_y                      hhinv_load_3.y                        %TYPE
-             ,iit_z                      hhinv_load_3.z                        %TYPE 
+             ,iit_z                      hhinv_load_3.z                        %TYPE
              ,iit_num_attrib16           hhinv_load_3.num_attrib16             %TYPE
              ,iit_num_attrib17           hhinv_load_3.num_attrib17             %TYPE
              ,iit_num_attrib18           hhinv_load_3.num_attrib18             %TYPE
@@ -270,3 +270,6 @@ FUNCTION get_inv_location(pi_ne_id IN NUMBER
 --
 end mai2110c;
 /
+
+
+

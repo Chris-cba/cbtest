@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.1   Aug 17 2007 19:11:24   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.2   Apr 07 2008 14:01:22   swilliams  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Aug 17 2007 19:11:24  $
---       Date fetched Out : $Modtime:   Aug 17 2007 18:16:52  $
---       PVCS Version     : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Apr 07 2008 14:01:22  $
+--       Date fetched Out : $Modtime:   Mar 14 2008 12:29:00  $
+--       PVCS Version     : $Revision:   2.2  $
 --       Based on SCCS version :
 --
 --
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.1  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.2  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -49,10 +49,23 @@ END get_body_version;
 --
 -----------------------------------------------------------------------------
 --
+/*
+function get_npa ( p_pl nm_placement_array ) return nm_placement_array_type;
+-- pragma restrict_references( get_npa, WNDS, WNPS, TRUST );
+
+  FUNCTION get_npa ( p_pl nm_placement_array ) return nm_placement_array_type is
+begin
+  return p_pl.npa_placement_array;
+end; 
+
+*/
+
 PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
   --
   lt_attr_recs attr_rec_tab;
   --
+  
+
   FUNCTION return_date_format(pi_inv_type       IN hhinv_load_3.inv_code%TYPE
                              ,pi_attribute      IN hhinv_load_3.attribute%TYPE
                              ,pi_value          IN hhinv_load_3.value%TYPE
@@ -366,7 +379,7 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
               ,NM_SEG_NO
               ,NM_TRUE
               ,NM_END_SLK
-              ,NM_END_TRUE) 
+              ,NM_END_TRUE)
         VALUES(pi_iit_rec.iit_ne_id
               ,pi_ne_id
               ,'I'
@@ -410,7 +423,7 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
               ,NM_SEG_NO
               ,NM_TRUE
               ,NM_END_SLK
-              ,NM_END_TRUE) 
+              ,NM_END_TRUE)
         SELECT pi_iit_rec.iit_ne_id
               ,p.pl_ne_id
               ,'I'
@@ -431,10 +444,15 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
               ,0
               ,NULL
               ,NULL
+          FROM  TABLE(  cast ( mai2110c.get_inv_location( pi_ne_id
+                                              ,pi_st_chain
+                                              ,pi_end_chain).npa_placement_array as nm_placement_array_type )) p;
+/*
           FROM TABLE(mai2110c.get_inv_location(pi_ne_id
                                               ,pi_st_chain
                                               ,pi_end_chain).npa_placement_array) p
-             ;
+*/
+             
     END IF;
     --
     nm3user.set_effective_date(lv_effective_date);
@@ -1028,7 +1046,7 @@ FUNCTION get_inv_location(pi_ne_id IN NUMBER
 BEGIN
   --
   OPEN  c1(pi_ne_id,pi_start,pi_end);
-  FETCH c1 
+  FETCH c1
    BULK COLLECT
    INTO lt_ne_id
        ,lt_s_slk
