@@ -3,11 +3,11 @@ CREATE OR REPLACE package body mai_audit as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.1   Nov 16 2007 16:07:12   dyounger  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.2   Apr 07 2008 15:50:12   smarshall  $
 --       Module Name      : $Workfile:   mai_audit.pkb  $
---       Date into SCCS   : $Date:   Nov 16 2007 16:07:12  $
---       Date fetched Out : $Modtime:   Nov 08 2007 10:26:28  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Apr 07 2008 15:50:12  $
+--       Date fetched Out : $Modtime:   Apr 07 2008 11:56:16  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -182,7 +182,7 @@ CREATE OR REPLACE package body mai_audit as
        write_log('wor_act_cost', p_wor_act_cost, old_rec.wor_act_cost);
     end if;
     if (nvl(old_rec.wor_date_confirmed,'01-JAN-1901') != nvl(p_wor_date_confirmed,'01-JAN-1901') and is_audited('wor_date_confirmed')) then
-       write_log('wor_date_confirmed', p_wor_date_confirmed, old_rec.wor_date_confirmed);
+       write_log('wor_date_confirmed', TO_CHAR(p_wor_date_confirmed,'DD-MON-YYYY'), TO_CHAR(old_rec.wor_date_confirmed,'DD-MON-YYYY'));
     end if;
     if (nvl(old_rec.wor_act_cost_code,'@') != nvl(p_wor_act_cost_code,'@') and is_audited('wor_act_cost_code')) then
        write_log('wor_act_cost_code', p_wor_act_cost_code, old_rec.wor_act_cost_code);
@@ -194,13 +194,13 @@ CREATE OR REPLACE package body mai_audit as
        write_log('wor_con_id', p_wor_con_id, old_rec.wor_con_id);
     end if;
     if (nvl(old_rec.wor_est_complete,'01-JAN-1901') != nvl(p_wor_est_complete,'01-JAN-1901') and is_audited('wor_est_complete')) then
-       write_log('wor_est_complete', p_wor_est_complete, old_rec.wor_est_complete);
+       write_log('wor_est_complete', TO_CHAR(p_wor_est_complete,'DD-MON-YYYY'), TO_CHAR(old_rec.wor_est_complete,'DD-MON-YYYY'));
     end if;
     if (nvl(old_rec.wor_est_cost,'0') != nvl(p_wor_est_cost,'0') and is_audited('wor_est_cost')) then
        write_log('wor_est_cost', p_wor_est_cost, old_rec.wor_est_cost);
     end if;
     if (nvl(old_rec.wor_last_print_date,'01-JAN-1901') != nvl(p_wor_last_print_date,'01-JAN-1901') and is_audited('wor_last_print_date')) then
-       write_log('wor_last_print_date', p_wor_last_print_date, old_rec.wor_last_print_date);
+       write_log('wor_last_print_date', TO_CHAR(p_wor_last_print_date,'DD-MON-YYYY'), TO_CHAR(old_rec.wor_last_print_date,'DD-MON-YYYY'));
     end if;
     if (nvl(old_rec.wor_priority,'@') != nvl(p_wor_priority,'@') and is_audited('wor_priority')) then
        write_log('wor_priority', p_wor_priority, old_rec.wor_priority);
@@ -271,7 +271,7 @@ CREATE OR REPLACE package body mai_audit as
                       ,p_wol_gang           in work_order_lines.wol_gang%type) is
    begin
     if (old_rec.wol_date_complete != p_wol_date_complete and is_audited('wol_date_complete')) then
-       write_log('wol_date_complete', p_wol_date_complete, old_rec.wol_date_complete);
+       write_log('wol_date_complete', TO_CHAR(p_wol_date_complete,'DD-MON-YYYY'), TO_CHAR(old_rec.wol_date_complete,'DD-MON-YYYY'));
     end if;
     if (old_rec.wol_est_cost != p_wol_est_cost and is_audited('wol_est_cost')) then
        write_log('wol_est_cost', p_wol_est_cost, old_rec.wol_est_cost);
