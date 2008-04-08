@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.1   Apr 08 2008 10:27:24   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Apr 08 2008 10:27:24  $
+--       Date fetched Out : $Modtime:   Apr 08 2008 10:25:46  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -724,7 +724,10 @@ BEGIN
       RAISE g_file_exists;
   END IF;
   --
-  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath,g_filepath),NVL(interfaces.extract_filename,l_filename),'w');
+  --SM 09/04/2008 log712203
+  --Removed reference to extract_filename as no longer required for forms9. Used to be required to create a 
+  --*.lis file.
+  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath,g_filepath),/*NVL(interfaces.extract_filename,*/l_filename/*)*/,'w');
   --
   IF UTL_FILE.IS_OPEN(l_fhand)
    THEN
@@ -6386,9 +6389,12 @@ BEGIN
 --  l_fhand := utl_file.fopen(Nvl(p_filepath, g_filepath), l_filename, 'w');
 
 IF hig.get_user_or_sys_opt('FCFORMAT')='Y' THEN
-  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), NVL(interfaces.extract_filename,l_filename), 'w');
+  --SM 09/04/2008 log712203
+  --Removed reference to extract_filename as no longer required for forms9. Used to be required to create a 
+  --*.lis file.	
+  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), /*NVL(interfaces.extract_filename,*/l_filename/*)*/, 'w');
 ELSE
-  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), NVL(interfaces.extract_filename,l_filename2), 'w');
+  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), /*NVL(interfaces.extract_filename,*/l_filename2/*)*/, 'w');
 END IF;
 
   IF UTL_FILE.IS_OPEN(l_fhand) THEN
