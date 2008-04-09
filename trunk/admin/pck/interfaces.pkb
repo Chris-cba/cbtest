@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.1   Apr 08 2008 10:27:24   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.2   Apr 09 2008 14:40:28   jwadsworth  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Apr 08 2008 10:27:24  $
---       Date fetched Out : $Modtime:   Apr 08 2008 10:25:46  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Apr 09 2008 14:40:28  $
+--       Date fetched Out : $Modtime:   Apr 09 2008 14:34:18  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -1123,17 +1123,26 @@ END;
 ---------------------------------------------------------------------
 
 PROCEDURE validate_date_complete(p_ih_id IN interface_headers.ih_id%TYPE) IS
+
+  l_option hig_options.hop_value%TYPE;
+
 BEGIN
 
-  UPDATE interface_completions
-  SET    ic_error = SUBSTR(ic_error||'Completed date must be >= Instructed Date and not in the future. ', 1, 254)
-        ,ic_status = 'R'
-  WHERE (EXISTS (SELECT 1
-                 FROM   work_orders
-                 WHERE  wor_works_order_no = ic_works_order_no
-                 AND    NVL(wor_date_confirmed, ic_date_completed + 1) > ic_date_completed)
-   OR    ic_date_completed > SYSDATE)
-  AND    ic_ih_id = p_ih_id;
+  l_option := hig.get_sysopt('COMPLEDATE');
+
+  IF l_option = 'N' then
+
+     UPDATE interface_completions
+     SET    ic_error = SUBSTR(ic_error||'Completed date must be >= Instructed Date and not in the future. ', 1, 254)
+           ,ic_status = 'R'
+     WHERE (EXISTS (SELECT 1
+                      FROM  work_orders
+                     WHERE  wor_works_order_no = ic_works_order_no
+                       AND  NVL(wor_date_confirmed, ic_date_completed + 1) > ic_date_completed)
+       OR    ic_date_completed > SYSDATE)
+      AND    ic_ih_id = p_ih_id;
+
+  END IF;
 
 END;
 
