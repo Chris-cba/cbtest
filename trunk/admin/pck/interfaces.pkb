@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.2   Apr 09 2008 14:40:28   jwadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.3   Apr 15 2008 11:38:06   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Apr 09 2008 14:40:28  $
---       Date fetched Out : $Modtime:   Apr 09 2008 14:34:18  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Apr 15 2008 11:38:06  $
+--       Date fetched Out : $Modtime:   Apr 15 2008 11:34:52  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -4425,6 +4425,8 @@ BEGIN
 
 IF wol_rec.icwor_claim_type != 'I' THEN
   l_wol_date_complete := TO_DATE(TO_CHAR(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS');
+ELSE
+  l_wol_date_complete := null;  --SM 15042998 - 707188 - Resetting the l_wol_date_complete to null should mean that the completion date doesn't get updated if the file contains both I and F files.
 END IF;
 
       UPDATE work_order_lines
@@ -5101,6 +5103,8 @@ BEGIN
 
 IF wol_rec.icwor_claim_type != 'I' THEN
   l_wol_date_complete := TO_DATE(TO_CHAR(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS');
+ELSE
+  l_wol_date_complete := null;  --SM 15042998 - 707188 - Resetting the l_wol_date_complete to null should mean that the completion date doesn't get updated if the file contains both I and F files.  
 END IF;
 
       UPDATE work_order_lines
