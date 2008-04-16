@@ -1,12 +1,13 @@
 -----------------------------------------------------------------------------
 --
---   SCCS Identifiers :-
+--   PVCS Identifiers :-
 --
---       sccsid           : @(#)mai3830.sql	1.1 09/24/03
---       Module Name      : mai3830.sql
---       Date into SCCS   : 03/09/24 11:55:58
---       Date fetched Out : 07/06/07 11:18:24
---       SCCS Version     : 1.1
+--       sccsid           : $Header:   //vm_latest/archives/mai/9i_bin/mai3830.sql-arc   3.1   Apr 16 2008 15:50:06   smarshall  $
+--       Module Name      : $Workfile:   mai3830.sql  $
+--       Date into PVCS   : $Date:   Apr 16 2008 15:50:06  $
+--       Date fetched Out : $Modtime:   Apr 16 2008 15:49:46  $
+--       PVCS Version     : $Revision:   3.1  $
+--       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 
@@ -41,7 +42,7 @@ begin
 
   dbms_output.enable(300);
   if l_filename is not null then
-    HIGGRIRP.write_gri_spool(&1,'Info: File '||HIGGRIRP.get_module_spoolfile('&1')||' created');
+    HIGGRIRP.write_gri_spool(&1,'Info: File '||l_filename||' created');
     dbms_output.put_line('Info: File '||l_filename||' created');
   end if;
 
