@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.3   Apr 15 2008 11:38:06   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.4   Jun 03 2008 15:00:42   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Apr 15 2008 11:38:06  $
---       Date fetched Out : $Modtime:   Apr 15 2008 11:34:52  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jun 03 2008 15:00:42  $
+--       Date fetched Out : $Modtime:   Jun 03 2008 14:57:58  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -439,7 +439,7 @@ END get_body_version;
 FUNCTION file_seq( p_job_id IN number,
              p_contractor_id	IN varchar2
 			,p_seq_no		IN number
-			,p_file_type	IN varchar2) RETURN number IS
+			,p_file_type	IN varchar2) RETURN varchar IS
 
   CURSOR irl IS
     SELECT MAX(irl_run_number) + 1
@@ -454,11 +454,10 @@ FUNCTION file_seq( p_job_id IN number,
     AND    irl_run_number = p_seq_no
     AND    irl_file_type = p_file_type;
 
-  l_seq_no number;
+  l_seq_no varchar(8);
   l_dummy  number(1);
 
 BEGIN
-
   IF NVL(p_seq_no, -1) = -1 THEN  -- no seq no provided get default
     OPEN irl;
     FETCH irl INTO l_seq_no;
@@ -473,6 +472,14 @@ BEGIN
       CLOSE irl_exists;
       l_seq_no := p_seq_no;
     END IF;
+  END IF;
+/*****************************************************************************************************************
+** SM 03062008 714051
+** New product option ZEROPAD to pad out the filenames with zeros. Meant changing the file_seq output from a 
+** number to a varchar2 and thus changing all the variables in this package that call file_seq.
+*****************************************************************************************************************/
+  IF hig.get_user_or_sys_opt('ZEROPAD')='Y' THEN
+    l_seq_no := lpad(l_seq_no,6,'0');
   END IF;
 
   INSERT INTO interface_run_log
@@ -517,7 +524,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
   l_char_pos         number;
   l_descr_length     number    := 110;
   l_fhand            utl_file.file_type;
-  l_seq_no           number(6) := file_seq(interfaces.g_job_id,p_contractor_id
+  l_seq_no           varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id
                                           ,p_seq_no
                                           ,'WO');
   l_filename         varchar2(12) := 'WO'||TO_CHAR(l_seq_no)||'.'||p_contractor_id;
@@ -2269,7 +2276,6 @@ PROCEDURE populate_wc_interface_tables(p_ih_id	IN OUT interface_headers.ih_id%TY
   l_record_type	varchar2(2) := int_utility.get_field(p_record, 1);
 
 BEGIN
-
   IF l_record_type = '10' THEN -- completion record
 
     INSERT INTO interface_completions (
@@ -2954,7 +2960,7 @@ PROCEDURE completion_file_ph1( p_contractor_id	IN varchar2
 					,p_error		OUT varchar2 ) IS
 
   l_fhand		 utl_file.file_type;
-  l_seq_no		 number(6) := file_seq(interfaces.g_job_id,
+  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,
                                        p_contractor_id
                   	                ,p_seq_no
 					 	    ,'WC');
@@ -2989,7 +2995,6 @@ BEGIN
     ELSE
       RAISE invalid_file;
     END IF;
-
     EXCEPTION
       WHEN invalid_file OR utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
 	    p_error := l_file_not_found;
@@ -3771,7 +3776,7 @@ PROCEDURE claim_file_ph1(p_contractor_id	IN varchar2
 
   l_today			date := SYSDATE;
   l_fhand			utl_file.file_type;		-- claim file
-  l_seq_no			number(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'WI');
+  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'WI');
   l_filename	    varchar2(12) := NVL(p_filename,'WI'||TO_CHAR(l_seq_no)||'.'||p_contractor_id);
   l_record			interface_erroneous_records.ier_record_text%TYPE;
   l_error			interface_erroneous_records.ier_error%TYPE;
@@ -3933,7 +3938,7 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
   l_total_value		number := 0;
   l_cost_code		budgets.bud_cost_code%TYPE;
   l_fhand			utl_file.file_type;		-- financial debit file
-  l_seq_no			number(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
+  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
   l_filename		varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
   l_today			date := SYSDATE;
   l_header_record		varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
@@ -4630,7 +4635,7 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
   l_total_value		number := 0;
   l_cost_code		budgets.bud_cost_code%TYPE;
   l_fhand			utl_file.file_type;		-- financial debit file
-  l_seq_no			number(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
+  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
   l_filename		varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
   l_today			date := SYSDATE;
   l_header_record		varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
@@ -5525,7 +5530,7 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
   l_fhand		utl_file.file_type;
   l_no_of_recs	number(7) := 0;
   l_total_value	number := 0;
-  l_seq_no		number(6);
+  l_seq_no		varchar2(6);
   l_header_record	varchar2(31);
   l_contractor_id	interface_headers.ih_contractor_id%TYPE;
   l_status		interface_headers.ih_status%TYPE;
@@ -5839,7 +5844,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
   l_no_of_recs	 number(7) := 0;
   l_total_value	 number := 0;
   l_fhand		 utl_file.file_type;
-  l_seq_no		 number(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'FI');
+  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'FI');
 --
   l_filename	 varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')||'.'||get_oun_id(p_contractor_id);
   l_filename2	 varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||'.DAT';
@@ -6686,7 +6691,7 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
   l_no_of_recs	 number(7) := 0;
   l_total_value	 number := 0;
   l_fhand		 utl_file.file_type;
-  l_seq_no		 number(6) := file_seq(interfaces.g_job_id,p_contractor_id, '', 'FC');
+  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, '', 'FC');
   l_filename	 varchar2(50) := 'FC'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MMSS')||'.'||get_oun_id(p_contractor_id);
   l_filename2	 varchar2(12) := 'FC'||TO_CHAR(l_seq_no)||'.DAT';
   l_header_record	 varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
@@ -7275,7 +7280,7 @@ PROCEDURE payment_transaction_file(p_seq_no   IN number
   l_fhand			utl_file.file_type;
   l_no_of_recs		number := 0;
   l_total_value		number := 0;
-  l_seq_no			number(6) := file_seq(interfaces.g_job_id,'', p_seq_no, 'FP');
+  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', p_seq_no, 'FP');
   l_filename	    varchar2(12) := NVL(p_filename,'FP'||TO_CHAR(l_seq_no)||'.DAT');
   l_record			varchar2(255);
   l_wol_id			work_order_lines.wol_id%TYPE;
