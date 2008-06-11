@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.1   Mar 14 2008 10:46:14   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.2   Jun 11 2008 15:51:42   smarshall  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Mar 14 2008 10:46:14  $
---       Date fetched Out : $Modtime:   Mar 13 2008 16:14:48  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 11 2008 15:51:42  $
+--       Date fetched Out : $Modtime:   Jun 11 2008 15:49:08  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -3012,7 +3012,7 @@ BEGIN
   CLOSE C3;
   --
   IF NOT top then
-    IF hig.get_sysopt('ICBFGAC') = 'Y' AND HIG.GET_OWNER('HIG_PRODUCTS') != User THEN
+    IF hig.get_sysopt('ICBFGAC') = 'Y' AND /*HIG.GET_OWNER('HIG_PRODUCTS')*/ hig.get_application_owner != User THEN
         IF lc_agency IS NULL THEN
           --
     -- Now need to set agency level restriction
@@ -5337,7 +5337,7 @@ BEGIN  /* mai - automatic variables */
     return the Oracle user who is owner of the MAI application
     (use 'DEFECTS' as the sample HIGHWAYS object)
   */
-  g_application_owner := get_owner( 'DEFECTS');
+  g_application_owner := hig.get_application_owner;--get_owner( 'DEFECTS');
   IF    (g_application_owner IS NULL) THEN
     RAISE_APPLICATION_ERROR( -20000 ,'MAI.G_APPLICATION_OWNER is null.');
   END IF;
