@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.1   Mar 14 2008 10:46:18   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.2   Jun 11 2008 15:47:34   smarshall  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Mar 14 2008 10:46:18  $
---       Date fetched Out : $Modtime:   Mar 13 2008 16:14:34  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 11 2008 15:47:34  $
+--       Date fetched Out : $Modtime:   Jun 11 2008 15:47:08  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,13 +22,13 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.2  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
     g_thing_does_not_exist	VARCHAR2(2000);
     g_product               VARCHAR2(6);
-    g_context               VARCHAR2(30) := 'ICB_'||substr(HIG.GET_OWNER('HIG_PRODUCTS'),1,26);
+    g_context               VARCHAR2(30) := 'ICB_'||substr(hig.get_application_owner/*HIG.GET_OWNER('HIG_PRODUCTS')*/,1,26);
     g_works_order_no        WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE;
     g_wo_no                 WORK_ORDERS.WOR_WORKS_ORDER_NO%TYPE;
 --  g_sccsid is the SCCS ID for the package
