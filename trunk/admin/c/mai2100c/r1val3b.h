@@ -1,7 +1,8 @@
 
 /* SCCS ID keywords, do not remove */
 /* "@(#)r1val3b.h	1.1 09/08/03"                       */
-
+/* PVCS ID Keywords, do not remove */
+/* "$Workfile:   r1val3b.h  $ $Revision:   2.2  $ $Modtime:   Jun 13 2008 17:18:32  $" */
 /* r1val3b.h
 
 contains C functions for checking the format of husky hunter B load records
@@ -153,9 +154,9 @@ if (strlen(section) > 5)
 }   
 
 
-if (strlen(section)  < 5)
+if (strlen(section)  < 1)
 { strcpy(err_msg,
-"ERROR: Section code format - Less than 5 characters BPR-8021");
+"ERROR: Section code format - Less than 1 character BPR-8021");
   format_err(lineno,1);
 }   
 
