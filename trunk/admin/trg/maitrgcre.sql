@@ -5,11 +5,11 @@ rem *******************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.0   Jun 13 2007 16:23:02   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.1   Jun 19 2008 15:58:10   smarshall  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:23:02  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:22:42  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jun 19 2008 15:58:10  $
+--       Date fetched Out : $Modtime:   Jun 19 2008 15:55:38  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.16
 --
 -----------------------------------------------------------------------------
@@ -911,7 +911,7 @@ declare
                        from hig_status_codes
                        where hsc_domain_code = 'WORK_ORDER_LINES'
                        and :NEW.wol_status_code = hsc_status_code
-                       and hsc_allow_feature3 = 'Y'
+                       and hsc_allow_feature7 = 'Y'
                        and sysdate between nvl(hsc_start_date, sysdate)
                        and nvl(hsc_end_date, sysdate)); 
 --
