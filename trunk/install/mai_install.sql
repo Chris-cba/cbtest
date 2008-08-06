@@ -1,5 +1,7 @@
-REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.6   Jan 07 2008 17:19:06   jwadsworth  $
+-- SCCS ID Keyword, do not remove
+define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.7   Aug 06 2008 11:57:24   malexander  $"'
+
+REM Copyright (c) Exor Corporation Ltd, 2008
 
 set echo off
 set linesize 120
@@ -111,11 +113,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.0.4.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.0.5.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.0.4.0'
+                                ,p_VERSION        => '4.0.5.0'
                                 );
 END;
 /
@@ -379,8 +381,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.4.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.4.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.5.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.5.0');
 END;
 /
 COMMIT;
