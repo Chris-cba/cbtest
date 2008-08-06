@@ -1,30 +1,12 @@
---
------------------------------------------------------------------------------
---
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.3   Sep 14 2007 15:58:14   sscanlon  $
---       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Sep 14 2007 15:58:14  $
---       Date fetched Out : $Modtime:   Sep 14 2007 15:55:40  $
---       Version          : $Revision:   2.3  $
---
---   Product metadata script
---
------------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2007
------------------------------------------------------------------------------
---
---
 /***************************************************************************
 
 INFO
 ====
-As at Release 4.0.2.0
+As at Release 4.0.5.0
 
 GENERATION DATE
 ===============
-14-SEP-2007 15:55
+06-AUG-2008 15:28
 
 TABLES PROCESSED
 ================
@@ -45,6 +27,7 @@ A
 
 ***************************************************************************/
 
+define sccsid = '%W% %G%'
 set define off;
 set feedback off;
 
@@ -2257,6 +2240,34 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
                    WHERE GRM_MODULE = 'MAI3960');
+--
+INSERT INTO GRI_MODULES
+       (GRM_MODULE
+       ,GRM_MODULE_TYPE
+       ,GRM_MODULE_PATH
+       ,GRM_FILE_TYPE
+       ,GRM_TAG_FLAG
+       ,GRM_TAG_TABLE
+       ,GRM_TAG_COLUMN
+       ,GRM_TAG_WHERE
+       ,GRM_LINESIZE
+       ,GRM_PAGESIZE
+       ,GRM_PRE_PROCESS
+       )
+SELECT 
+        'MAI3970'
+       ,'N/A'
+       ,'$PROD_HOME/bin'
+       ,'lis'
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,80
+       ,66
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
+                   WHERE GRM_MODULE = 'MAI3970');
 --
 INSERT INTO GRI_MODULES
        (GRM_MODULE
@@ -4630,6 +4641,34 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM GRI_PARAMS
                    WHERE GP_PARAM = 'F_OR_M');
+--
+INSERT INTO GRI_PARAMS
+       (GP_PARAM
+       ,GP_PARAM_TYPE
+       ,GP_TABLE
+       ,GP_COLUMN
+       ,GP_DESCR_COLUMN
+       ,GP_SHOWN_COLUMN
+       ,GP_SHOWN_TYPE
+       ,GP_DESCR_TYPE
+       ,GP_ORDER
+       ,GP_CASE
+       ,GP_GAZ_RESTRICTION
+       )
+SELECT 
+        'GANG'
+       ,'NUMBER'
+       ,'HIG_CODES'
+       ,'TO_NUMBER(HCO_CODE)'
+       ,'HCO_MEANING'
+       ,'HCO_CODE'
+       ,'CHAR'
+       ,'CHAR'
+       ,''
+       ,''
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_PARAMS
+                   WHERE GP_PARAM = 'GANG');
 --
 INSERT INTO GRI_PARAMS
        (GP_PARAM
@@ -17939,7 +17978,7 @@ SELECT
        ,'ADMIN_UNIT'
        ,1
        ,'Admin Unit'
-       ,'N'
+       ,'Y'
        ,1
        ,'(HAU_ADMIN_UNIT IN (SELECT HAG_CHILD_ADMIN_UNIT FROM HIG_ADMIN_GROUPS WHERE HAG_PARENT_ADMIN_UNIT IN (SELECT HUS_ADMIN_UNIT FROM HIG_USERS WHERE HUS_USERNAME = USER)))'
        ,'Y'
@@ -18143,7 +18182,7 @@ SELECT
        ,'ROAD_ID'
        ,3
        ,'Road Id'
-       ,'N'
+       ,'Y'
        ,1
        ,'NVL(RSE_GTY_GROUP_TYPE,''SECT'')=NVL(:ROAD_TYPE,NVL(RSE_GTY_GROUP_TYPE,''SECT''))'
        ,'Y'
@@ -18194,7 +18233,7 @@ SELECT
        ,'ROAD_TYPE'
        ,2
        ,'Road Type'
-       ,'N'
+       ,'Y'
        ,1
        ,''
        ,'N'
@@ -22193,6 +22232,108 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
                    WHERE GMP_MODULE = 'MAI3960'
                     AND  GMP_PARAM = 'SCHD_ID');
+--
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3970'
+       ,'GANG'
+       ,1
+       ,'Gang'
+       ,'Y'
+       ,1
+       ,'HCO_DOMAIN=''GANG'' AND SYSDATE BETWEEN NVL(HCO_START_DATE,SYSDATE) AND NVL(HCO_END_DATE,SYSDATE)'
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'Y'
+       ,'N'
+       ,'Y'
+       ,''
+       ,'N'
+       ,'Enter The Gang For The Report'
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3970'
+                    AND  GMP_PARAM = 'GANG');
+--
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3970'
+       ,'ORDER_SHEET_BOTH'
+       ,2
+       ,'Wrks Ord/Ctrl Sht/Both'
+       ,'Y'
+       ,1
+       ,'GPL_PARAM=''ORDER_SHEET_BOTH'''
+       ,'N'
+       ,''
+       ,'GRI_PARAM_LOOKUP'
+       ,'GPL_VALUE'
+       ,'GPL_VALUE=''W'' AND GPL_PARAM=''ORDER_SHEET_BOTH'''
+       ,'Y'
+       ,'N'
+       ,'Y'
+       ,''
+       ,'N'
+       ,'Enter W - Works Order, C - Control Sheet, B - Both'
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3970'
+                    AND  GMP_PARAM = 'ORDER_SHEET_BOTH');
 --
 INSERT INTO GRI_MODULE_PARAMS
        (GMP_MODULE
