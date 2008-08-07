@@ -1,30 +1,12 @@
---
------------------------------------------------------------------------------
---
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.5   Mar 14 2008 11:26:58   gjohnson  $
---       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Mar 14 2008 11:26:58  $
---       Date fetched Out : $Modtime:   Mar 14 2008 11:25:02  $
---       Version          : $Revision:   2.5  $
---
---   Product metadata script
---
------------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2008
------------------------------------------------------------------------------
---
---
 /***************************************************************************
 
 INFO
 ====
-As at Release 4.0.4.3
+As at Release 4.0.5.0
 
 GENERATION DATE
 ===============
-14-MAR-2008 11:24
+07-AUG-2008 09:46
 
 TABLES PROCESSED
 ================
@@ -50,6 +32,7 @@ A
 
 ***************************************************************************/
 
+define sccsid = '%W% %G%'
 set define off;
 set feedback off;
 
@@ -11036,6 +11019,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'COMPLEDATE'
+       ,'MAI'
+       ,'Completion Date'
+       ,'When the flag is set to ''Y'' the Completion date can be equal to or before the Instructed date. If the flag is set to ''N'' the Completion date can be equal to or after the Instructed date.'
+       ,''
+       ,'VARCHAR2'
+       ,'Y'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'COMPLEDATE');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'COMPWOLEL'
        ,'MAI'
        ,'Complete WOL when interface on'
@@ -12598,6 +12603,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'WOREPORDBY'
+       ,'MAI'
+       ,'WO (Enhanced) Order By Clause'
+       ,'This option determines which order by clause is used within the Print Works Order (Enhanced) report. The reports default order by clause is used when the option is set to Y and when it is set to N the ordering is done by boq_sta_item_code'
+       ,''
+       ,'VARCHAR2'
+       ,'Y'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'WOREPORDBY');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'WORGRPTYP'
        ,'MAI'
        ,'Work Planng Reports Group Type'
@@ -12763,6 +12790,28 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'XSPSTDDIR');
 --
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'ZEROPAD'
+       ,'MAI'
+       ,'Zero pad the CIM filenames'
+       ,'This option, when set to Y, means that all filenames used within Interfaces must be padded out with zeros until of the format <filetype><999999>.<concode> ie WO000001.CON.'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'ZEROPAD');
+--
 --
 --********** HIG_OPTION_VALUES **********--
 SET TERM ON
@@ -12904,6 +12953,16 @@ SELECT
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'CLAIMREJT');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'COMPLEDATE'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'COMPLEDATE');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
@@ -13610,6 +13669,16 @@ INSERT INTO HIG_OPTION_VALUES
        ,HOV_VALUE
        )
 SELECT 
+        'WOREPORDBY'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'WOREPORDBY');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
         'WORGRPTYP'
        ,'LINK' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13684,6 +13753,16 @@ SELECT
        ,'4' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'XSPSTDDIR');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'ZEROPAD'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'ZEROPAD');
 --
 --
 --********** HIG_STATUS_DOMAINS **********--
