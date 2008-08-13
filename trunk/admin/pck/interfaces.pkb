@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.4   Jun 03 2008 15:00:42   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.5   Aug 13 2008 17:32:52   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jun 03 2008 15:00:42  $
---       Date fetched Out : $Modtime:   Jun 03 2008 14:57:58  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Aug 13 2008 17:32:52  $
+--       Date fetched Out : $Modtime:   Aug 13 2008 17:32:20  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -1808,7 +1808,7 @@ FOR c1rec IN boq1_n LOOP --all the parent boq items for this wol
       UPDATE interface_claims_boq
       SET    icboq_error = SUBSTR(icboq_error||'1) Bill Item cost does not equal the product of its quantity and rate. '||c2rec.icboq_boq_id||c2rec.icboq_percent_band_comp, 1, 254)
             ,icboq_status = 'R'
-      WHERE  icboq_cost != ROUND((icboq_rate/100)*(c1rec.icboq_cost),2)
+      WHERE  0.03 <= abs(icboq_cost - ROUND((icboq_rate/100)*(c1rec.icboq_cost),2))--SM 13082008 715407 introduced a 0.03 tolerance
       AND    icboq_ih_id = p_ih_id
       AND    icboq_boq_id = c2rec.icboq_boq_id
       AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
@@ -1821,7 +1821,7 @@ FOR c1rec IN boq1_n LOOP --all the parent boq items for this wol
         UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'2) Bill Item cost does not equal the product of its quantity and rate. '||c2rec.icboq_boq_id||c2rec.icboq_percent_band_comp, 1, 254)
               ,icboq_status = 'R'
-        WHERE  icboq_cost != ROUND((icboq_rate/100)*(c1rec.icboq_cost),2)
+        WHERE  0.03 <= abs(icboq_cost - ROUND((icboq_rate/100)*(c1rec.icboq_cost),2))--SM 13082008 715407 introduced a 0.03 tolerance
         AND    icboq_ih_id = p_ih_id
 	AND    icboq_boq_id = c2rec.icboq_boq_id
         AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
@@ -1833,7 +1833,7 @@ FOR c1rec IN boq1_n LOOP --all the parent boq items for this wol
         UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'3) Bill Item cost does not equal the product of its quantity and rate. ', 1, 254)
               ,icboq_status = 'R'
-        WHERE  icboq_cost != ROUND((c2rec.icboq_rate/100)*(l_cumulative_total),2)
+        WHERE  0.03 <= abs(icboq_cost - ROUND((icboq_rate/100)*(c1rec.icboq_cost),2))--SM 13082008 715407 introduced a 0.03 tolerance
         AND    icboq_ih_id = p_ih_id
 	AND    icboq_boq_id = c2rec.icboq_boq_id
   	AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
