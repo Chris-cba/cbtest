@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.0.1.0   Jun 11 2008 16:15:10   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.0.1.1   Aug 15 2008 15:25:04   smarshall  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Jun 11 2008 16:15:10  $
---       Date fetched Out : $Modtime:   Jun 11 2008 16:14:52  $
---       SCCS Version     : $Revision:   2.0.1.0  $
+--       Date into SCCS   : $Date:   Aug 15 2008 15:25:04  $
+--       Date fetched Out : $Modtime:   Aug 15 2008 15:22:42  $
+--       SCCS Version     : $Revision:   2.0.1.1  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.0.1.0  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.0.1.1  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
