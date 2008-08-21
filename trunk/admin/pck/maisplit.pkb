@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.1   Aug 21 2008 15:15:20   smarshall  $
 --       Module Name      : $Workfile:   maisplit.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Aug 21 2008 15:15:20  $
+--       Date fetched Out : $Modtime:   Aug 21 2008 14:10:08  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based onSCCS Version     : 1.7
 --
 -- This package contains procedures and functions which are required by
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.0  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maisplit';
@@ -374,6 +374,11 @@ END get_body_version;
     where  iih_new_rse_he_id(+) = p_road
     and    iih_item_id(+) = def_iit_item_id
     and    def_defect_id = p_old_defect;
+
+    nm3reclass.ins_doc_assocs( pi_new_id => p_new_defect
+                             , pi_old_id => p_old_defect
+                             , pi_table_name => 'DEFECTS'
+                             );	                             
 
     insert into repairs
      (REP_ACTION_CAT, REP_ATV_ACTY_AREA_CODE, REP_DATE_DUE, REP_DEF_DEFECT_ID,
