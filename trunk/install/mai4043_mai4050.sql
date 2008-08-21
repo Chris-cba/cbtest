@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4043_mai4050.sql-arc   3.0   Aug 07 2008 17:22:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4043_mai4050.sql-arc   3.1   Aug 21 2008 10:37:30   malexander  $
 --       Module Name      : $Workfile:   mai4043_mai4050.sql  $
---       Date into PVCS   : $Date:   Aug 07 2008 17:22:04  $
---       Date fetched Out : $Modtime:   Aug 07 2008 17:17:38  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Aug 21 2008 10:37:30  $
+--       Date fetched Out : $Modtime:   Aug 21 2008 10:37:10  $
+--       Version          : $Revision:   3.1  $
 --
 --   Product upgrade script
 --
@@ -67,7 +67,7 @@ prompt About TO upgrade using exor base : &exor_base
 prompt
 ACCEPT ok_res prompt "OK to Continue with this setting ? (Y/N) "
 SELECT DECODE(UPPER('&ok_res'),'Y','&exor_base'||'mai'||'&terminator'||
-        'install'||'&terminator'||'mai4043_mai4050_upg.sql','exit') run_file
+        'install'||'&terminator'||'mai404x_mai4050_upg.sql','exit') run_file
 FROM dual
 /
 start '&run_file'
