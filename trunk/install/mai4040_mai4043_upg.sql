@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4040_mai4043_upg.sql-arc   3.0   Mar 17 2008 09:05:40   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4040_mai4043_upg.sql-arc   3.1   Aug 21 2008 10:30:38   malexander  $
 --       Module Name      : $Workfile:   mai4040_mai4043_upg.sql  $
---       Date into PVCS   : $Date:   Mar 17 2008 09:05:40  $
---       Date fetched Out : $Modtime:   Mar 17 2008 09:05:12  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Aug 21 2008 10:30:38  $
+--       Date fetched Out : $Modtime:   Aug 21 2008 10:30:02  $
+--       Version          : $Revision:   3.1  $
 --
 --   Product upgrade script
 --
@@ -79,36 +79,47 @@ SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --               ****************   RE-RUN CONSTRAINTS   *******************
-SET TERM ON
-PROMPT Re-running Constraints...
-PROMPT Ignore errors resulting from constraint already existing...
-SET TERM OFF
-SET DEFINE ON
-SELECT '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mai.con' run_file
-FROM dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
+--SET TERM ON
+--PROMPT Re-running Constraints...
+--PROMPT Ignore errors resulting from constraint already existing...
+--SET TERM OFF
+--SET DEFINE ON
+--SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+--        '&terminator'||'mai.con' run_file
+--FROM dual
+--/
+--SET FEEDBACK ON
+--start &&run_file
+--SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                        **************** VIEWS   ****************
-SET TERM ON
-PROMPT Views...
-SET TERM OFF
-SET DEFINE ON
-SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
-        '&terminator'||'views'||'&terminator'||'maiviews.sql' run_file
-FROM dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
+--SET TERM ON
+--PROMPT Views...
+--SET TERM OFF
+--SET DEFINE ON
+--SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+--        '&terminator'||'views'||'&terminator'||'maiviews.sql' run_file
+--FROM dual
+--/
+--SET FEEDBACK ON
+--start &&run_file
+--SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                        **************** TRIGGERS   ****************
 --
+SET TERM ON
+PROMPT Triggers...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'trg'||'&terminator'||'maitrg.sql' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                  **************** PACKAGE HEADERS AND BODIES   ****************
