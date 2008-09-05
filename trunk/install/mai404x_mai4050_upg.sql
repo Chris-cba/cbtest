@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai404x_mai4050_upg.sql-arc   3.0   Aug 13 2008 14:41:38   smarshall  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai404x_mai4050_upg.sql-arc   3.1   Sep 05 2008 17:10:10   malexander  $
 --       Module Name      : $Workfile:   mai404x_mai4050_upg.sql  $
---       Date into PVCS   : $Date:   Aug 13 2008 14:41:38  $
---       Date fetched Out : $Modtime:   Aug 11 2008 16:45:04  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 05 2008 17:10:10  $
+--       Date fetched Out : $Modtime:   Sep 05 2008 17:09:48  $
+--       Version          : $Revision:   3.1  $
 --       
 -------------------------------------------------------------------------
 --
@@ -49,10 +49,10 @@ FROM hig_products WHERE hpr_product = 'MAI' AND hpr_version NOT IN ('4.0.4.0','4
 /
 select  TO_CHAR(sysdate,'DDMONYYYY_HH24MISS')||'.LOG' log_extension from dual
 /
-SELECT 'mai'||replace(hpr_version,'.',Null)||'_mai4050_1&log_extension' logfile1
+SELECT 'mai'||replace(hpr_version,'.',Null)||'_mai4050_1_&log_extension' logfile1
 FROM hig_products WHERE hpr_product = 'MAI' 
 /
-SELECT 'mai'||replace(hpr_version,'.',Null)||'_mai4050_2&log_extension' logfile2
+SELECT 'mai'||replace(hpr_version,'.',Null)||'_mai4050_2_&log_extension' logfile2
 FROM hig_products WHERE hpr_product = 'MAI' 
 /
 
