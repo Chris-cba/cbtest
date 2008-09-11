@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4043_mai4050_metadata_upg.sql-arc   3.0   Aug 07 2008 17:22:06   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4043_mai4050_metadata_upg.sql-arc   3.1   Sep 11 2008 16:59:52   malexander  $
 --       Module Name      : $Workfile:   mai4043_mai4050_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Aug 07 2008 17:22:06  $
---       Date fetched Out : $Modtime:   Aug 07 2008 17:17:38  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 11 2008 16:59:52  $
+--       Date fetched Out : $Modtime:   Sep 11 2008 16:48:52  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2008
@@ -214,6 +214,73 @@ SELECT 'COMPLEDATE'
                    WHERE  hov_id = 'COMPLEDATE')
 /
 
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Product option - ZEROPAD
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED PROBLEM MANAGER LOG#
+-- 714051
+-- 
+-- CUSTOMER
+-- Exor Corporation Ltd
+-- 
+-- PROBLEM
+-- The CIM spec document shows the filename format for WO extract files as WO999999.XXX
+-- 
+-- Where 999999 is a sequential number.   Currently, the file as extract is called (e.g.) WO123.CON whereas the spec suggests the numeric element of the filename should be zero-padded to 6 digits (i.e. WO000123.CON)
+-- 
+-- 1 Create new Y/N product option to enforce padding on file name
+-- 
+-- 2 If set to `Y' then number part of name is left padded with zero's to 6 digits
+-- 
+-- 
+------------------------------------------------------------------
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (STUART MARSHALL)
+-- **** COMMENTS TO BE ADDED BY STUART MARSHALL ****
+-- 
+------------------------------------------------------------------
+INSERT
+  INTO hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+SELECT 'ZEROPAD'
+      ,'MAI'
+      ,'Zero pad the CIM filenames'      
+      ,'his option, when set to Y, means that all filenames used within Interfaces must be padded out with zeros until of the format <filetype><999999>.<concode> ie WO000001.CON.'
+      ,NULL
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  FROM dual
+ WHERE NOT EXISTS(SELECT 1
+                    FROM hig_option_list
+                   WHERE hol_id = 'ZEROPAD')
+/
+INSERT
+  INTO hig_option_values
+      (hov_id
+      ,hov_value)
+SELECT 'ZEROPAD'
+      ,'Y'
+  FROM dual
+ WHERE NOT EXISTS(SELECT 1
+                    FROM  hig_option_values
+                   WHERE  hov_id = 'ZEROPAD')
+/
 ------------------------------------------------------------------
 
 
