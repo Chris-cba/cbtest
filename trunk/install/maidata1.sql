@@ -2,11 +2,11 @@
 
 INFO
 ====
-As at Release 4.0.5.0
+As at Release 4.0.5.1
 
 GENERATION DATE
 ===============
-07-AUG-2008 09:46
+22-SEP-2008 11:42
 
 TABLES PROCESSED
 ================
@@ -12801,6 +12801,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'XTRIFLDS'
+       ,'MAI'
+       ,'Version of Interface Files'
+       ,'If set to 2-1-3 uses additional fields on the end of the WO and WI files. Otherwise set to NA.'
+       ,''
+       ,'VARCHAR2'
+       ,'Y'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'XTRIFLDS');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'ZEROPAD'
        ,'MAI'
        ,'Zero pad the CIM filenames'
@@ -13753,6 +13775,16 @@ SELECT
        ,'4' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'XSPSTDDIR');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'XTRIFLDS'
+       ,'NA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'XTRIFLDS');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
