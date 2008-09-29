@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.1   Sep 29 2008 11:53:14   jwadsworth  $
 --       Module Name      : $Workfile:   mai_budgets.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Sep 29 2008 11:53:14  $
+--       Date fetched Out : $Modtime:   Sep 29 2008 11:50:22  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -216,7 +216,9 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
        UPDATE WORK_ORDER_LINES
        SET wol_unposted_est = v_wol_unposted_est
        WHERE wol_id = p_wol_id;
-       COMMIT;
+       
+       -- Log 715703 JW 29-SEP-2008     
+       --COMMIT;
        --
 /****************************************************************************************
 ** SM 5-JAN-2007 707222
