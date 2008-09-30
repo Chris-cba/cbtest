@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai404x_mai4050_upg.sql-arc   3.1   Sep 05 2008 17:10:10   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai404x_mai4050_upg.sql-arc   3.2   Sep 30 2008 15:12:32   jwadsworth  $
 --       Module Name      : $Workfile:   mai404x_mai4050_upg.sql  $
---       Date into PVCS   : $Date:   Sep 05 2008 17:10:10  $
---       Date fetched Out : $Modtime:   Sep 05 2008 17:09:48  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Sep 30 2008 15:12:32  $
+--       Date fetched Out : $Modtime:   Sep 30 2008 15:04:02  $
+--       Version          : $Revision:   3.2  $
 --       
 -------------------------------------------------------------------------
 --
@@ -72,16 +72,6 @@ WHERE hpr_product = 'ENQ';
 ---------------------------------------------------------------------------------------------------
 --                        ****************   CHECK(S)   *******************
 WHENEVER SQLERROR EXIT
-
-DECLARE
- CURSOR c1 IS
- SELECT 'Y'
- FROM   hig_upgrades
- WHERE  hup_product = 'NET'
- AND    remarks = 'NET 4040 FIX 8';
- 
- l_dummy VARCHAR2(1);
-
 begin
    hig2.pre_upgrade_check (p_product               => 'MAI'
                           ,p_new_version           => '4.0.5.0'
@@ -92,19 +82,6 @@ begin
   hig2.product_exists_at_version (p_product    => 'NET'
                                  ,p_version    => '4.0.5.0'
                                   );
-/*
-  hig2.product_exists_at_version (p_product    => 'NSG'
-                                 ,p_version    => '4.0.4.5'
-                                  );
-*/
-  
-  OPEN c1;
-  FETCH c1 INTO l_dummy;
-  CLOSE c1;
-  
-  IF l_dummy IS NULL THEN
-     RAISE_APPLICATION_ERROR(-20001,'"Network Manager 4040 Fix 8" must be applied before proceeding - contact exor support for further information');
-  END IF;
                                   
 END;
 /
