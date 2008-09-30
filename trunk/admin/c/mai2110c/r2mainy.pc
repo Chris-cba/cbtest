@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.3  $ $Modtime:   Mar 11 2008 14:16:00  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.4  $ $Modtime:   Sep 30 2008 16:06:42  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -2819,7 +2819,12 @@ int pull_off_inv_bad()
                     HHFLD74,HHATTR74,HHFLD75,HHATTR75,
                     ERROR_MSG,HHINV_ITY_SYS_FLAG
             FROM    HHINV_LOAD_2 HHL2
-            WHERE   ERROR_FLG = 'Y';
+            WHERE   ERROR_FLG = 'Y'
+              AND   NOT EXISTS(SELECT 1
+                                 FROM HHINV_ITEM_ERR_2 HHIE2
+                                WHERE RUN_NUM = :run_num
+                                  AND HHIE2.REC_SEQ_NO = HHL2.REC_SEQ_NO)
+                ;
        break;
    default:
    EXEC SQL INSERT INTO HHINV_ITEM_ERR_2
@@ -2884,7 +2889,12 @@ int pull_off_inv_bad()
                     HHFLD74,HHATTR74,HHFLD75,HHATTR75,
                     ERROR_MSG
             FROM    HHINV_LOAD_2 HHL2
-            WHERE   ERROR_FLG = 'Y';
+            WHERE   ERROR_FLG = 'Y'
+              AND   NOT EXISTS(SELECT 1
+                                 FROM HHINV_ITEM_ERR_2 HHIE2
+                                WHERE RUN_NUM = :run_num
+                                  AND HHIE2.REC_SEQ_NO = HHL2.REC_SEQ_NO)
+                ;
    ;
    }
 
@@ -4655,6 +4665,7 @@ int values_to_attri()
     ct_3_nw_err();
     pull_into_err_3();
     pull_inv_due_attr();
+    pull_off_inv_bad();
     upd_x_err_2();
     }
   if(sqlca.sqlcode < 0)
