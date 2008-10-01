@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.2   Jun 11 2008 15:51:42   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.3   Oct 01 2008 08:51:24   smarshall  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jun 11 2008 15:51:42  $
---       Date fetched Out : $Modtime:   Jun 11 2008 15:49:08  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Oct 01 2008 08:51:24  $
+--       Date fetched Out : $Modtime:   Aug 29 2008 16:02:06  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -62,6 +62,63 @@ BEGIN
   RETURN g_wo_no;
   --
 END get_wo_no;
+--
+---------------------------------------------------------------------------------------------------
+--
+  -- SM 29092008 714910 based on log below.
+  -- PT log 711850
+  -- this checks on admin units that the road segment can be selected
+  --  from road_segments_all by the current user
+  -- if p_ne_id is null then does nothing
+  procedure check_rse_admin_unit(
+     p_ne_id in nm_elements.ne_id%type
+    ,p_user in varchar2
+  )
+  is
+    l_dummy   varchar2(1);
+    l_user    varchar2(30) := p_user;
+  begin
+    if p_ne_id is not null then
+      if l_user is null then
+        l_user := user;
+      end if;
+      -- the criteria taken from the road_segments_all view
+      select 'x' dummy
+      into l_dummy
+      from road_segs s
+      where s.rse_he_id = p_ne_id
+        and (s.rse_admin_unit in (
+          select hag_child_admin_unit
+          from
+             hig_admin_groups
+            ,hig_users
+          where hag_parent_admin_unit = hus_admin_unit
+            and hus_username = l_user
+          )
+          or rse_admin_unit in (
+            select hau_admin_unit
+            from hig_admin_units
+            where hau_level = 1
+          )
+        );
+      end if;
+    exception
+      when no_data_found then
+        begin
+          select 'x' dummy
+          into l_dummy
+          from road_segs s
+          where s.rse_he_id = p_ne_id;
+          hig.raise_ner(
+              pi_appl     => nm3type.c_hig
+             ,pi_id       => 48 -- The admin unit is inconsistent with this road segment
+             ,pi_sqlcode  => -20000
+          );
+        exception
+          when no_data_found then
+            raise_application_error(-20001, 'Road segment not found: rse_he_id='||p_ne_id);
+        end;
+    end; 
 --
 -------------------------------------------------------------------------------
 -- Parse an inventory condition for cyclic maintenance inventory rules.
@@ -1458,6 +1515,11 @@ FUNCTION create_defect(
   insert_error  EXCEPTION;
 
 BEGIN
+--SM 29082008 714910
+  check_rse_admin_unit(
+     p_ne_id  => p_rse_he_id
+    ,p_user   => user
+  );
 
   SELECT def_defect_id_seq.NEXTVAL
   INTO   l_defect_id
@@ -1629,6 +1691,12 @@ FUNCTION create_defect(
   insert_error  EXCEPTION;
 
 BEGIN
+
+--SM 29082008 714910
+  check_rse_admin_unit(
+     p_ne_id  => p_rse_he_id
+    ,p_user   => user
+  );
 
   SELECT def_defect_id_seq.NEXTVAL
   INTO   l_defect_id
@@ -1870,6 +1938,11 @@ FUNCTION create_defect(pi_insp_rec           IN activities_report%ROWTYPE
   END get_admin_unit;
   --
 BEGIN
+  --SM 29082008 714910
+  check_rse_admin_unit(
+     p_ne_id  => pi_insp_rec.are_rse_he_id
+    ,p_user   => user
+  );	
   --
   -- Create Inspection.
   --
