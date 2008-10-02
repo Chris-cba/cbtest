@@ -4,17 +4,19 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai40_upg.sql-arc   2.0   Jun 13 2007 16:46:24   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai40_upg.sql-arc   2.1   Oct 02 2008 09:55:58   Ian Turnbull  $
 --       Module Name      : $Workfile:   mai2220_mai40_upg.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:46:24  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:45:44  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Oct 02 2008 09:55:58  $
+--       Date fetched Out : $Modtime:   Oct 02 2008 09:54:58  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version : 1.5
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2004
+--	Copyright (c) exor corporation ltd, 2008
 -----------------------------------------------------------------------------
 
+-- 
+-- This will take you from 2220 to 4040
 
 set echo off
 set linesize 120
@@ -101,7 +103,7 @@ SET FEEDBACK OFF
 BEGIN
  
      hig2.pre_upgrade_check (p_product               => 'MAI'
-                            ,p_new_version           => '4.0'
+                            ,p_new_version           => '4.0.4.0'
                             ,p_allowed_old_version_1 => '2.2.2.0'
                             );
 
@@ -195,6 +197,64 @@ SET FEEDBACK ON
 start &&run_file
 SET FEEDBACK OFF
 
+
+--
+-- 4000 to 4010
+--
+SET TERM OFF
+PROMPT 4010 DDL Changes...
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai40_mai4010_ddl_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+--
+-- 4010 to 4020
+--
+SET TERM OFF
+PROMPT 4020 DDL Changes...
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4010_mai4020_ddl_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+--
+-- 4020 to 4022
+--
+SET TERM OFF
+PROMPT 4022 DDL Changes...
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4020_mai4022_ddl_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+--
+-- 4022 to 4040
+--
+SET TERM OFF
+PROMPT 4040 DDL Changes...
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4022_mai4040_ddl_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+PROMPT run the 4040_4050 upgrade
 
 ---------------------------------------------------------------------------------------------------
 --                        ****************   INDEXES  *******************
@@ -418,7 +478,54 @@ start &&run_file
 SET FEEDBACK OFF
 
 
+SET TERM ON
+PROMPT 4010 Metadata...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai40_mai4010_metadata_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 
+
+SET TERM ON
+PROMPT 4020 Metadata...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4010_mai4020_metadata_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+SET TERM ON
+PROMPT 4022 Metadata...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4020_mai4022_metadata_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+
+SET TERM ON
+PROMPT 4040 Metadata...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4022_mai4040_metadata_upg' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 
 --
 ---------------------------------------------------------------------------------------------------
@@ -521,8 +628,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai2220_mai40.sql','Upgraded from 2.2.2.0 to 4.0','4.0');
-      hig2.upgrade('PMS','mai2220_mai40.sql','Upgraded from 2.2.2.0 to 4.0','4.0');
+      hig2.upgrade('MAI','mai2220_mai40.sql','Upgraded from 2.2.2.0 to 4.0.4.0','4.0.4.0');
+      hig2.upgrade('PMS','mai2220_mai40.sql','Upgraded from 2.2.2.0 to 4.0.4.0','4.0.4.0');
 END;
 /
 COMMIT;
