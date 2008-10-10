@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.2   Sep 21 2007 17:06:28   malexander  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.3   Oct 10 2008 11:22:32   smarshall  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Sep 21 2007 17:06:28  $
- --       Date fetched Out : $Modtime:   Sep 21 2007 16:10:42  $
- --       SCCS Version     : $Revision:   2.2  $
+ --       Date into SCCS   : $Date:   Oct 10 2008 11:22:32  $
+ --       Date fetched Out : $Modtime:   Oct 06 2008 10:18:02  $
+ --       SCCS Version     : $Revision:   2.3  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -585,12 +585,55 @@ CURSOR c15 IS
       WHERE oun_org_unit_type = 'NO'
       AND   oun_end_date IS NULL
       ORDER BY 1;
+-- SM 713267 06102008
+-- Cursor 21 and 22 were the original cursors which would return the list of organisations 
+-- to the user.  This cursor is fine if the parameter ANSWER2 = 'N'.
+-- If ANSWER2 = 'Y' then an additional restriction needed to be added to this 
+-- cursor.  For ease, the cursors were copied and recreated as cursors c21a and c22a, and 
+-- the restriction added.
+    -- Organisation Details - admin unit restricted       	
+       CURSOR C21a IS
+          SELECT '21,*,'||oun_unit_code||','||replace(oun_name,',',':') rec
+          FROM  org_units
+          WHERE oun_org_unit_type = 'NO'
+          AND   oun_end_date IS NULL
+          AND   OUN_ADMIN_ORG_ID in ( SELECT HAG_CHILD_ADMIN_UNIT
+                                    FROM   HIG_ADMIN_GROUPS
+                                    WHERE  HAG_DIRECT_LINK='Y'
+                                    START WITH HAG_PARENT_ADMIN_UNIT = ( SELECT HUS_ADMIN_UNIT 
+                                                                         FROM   HIG_USERS
+                                                                         WHERE  HUS_USERNAME=USER )                                                                     
+                                    CONNECT BY PRIOR HAG_CHILD_ADMIN_UNIT=HAG_PARENT_ADMIN_UNIT
+                                    AND HAG_DIRECT_LINK='Y'
+                                    UNION
+                                    SELECT HUS_ADMIN_UNIT
+                                    FROM HIG_USERS
+                                    WHERE HUS_USERNAME=USER)
+          ORDER BY 1;      	
    CURSOR c22 IS
       SELECT '22,*,'||oun_unit_code||','||replace(oun_name,',',':') rec
       FROM org_units
       WHERE oun_org_unit_type = 'RE'
       AND   oun_end_date IS NULL
       ORDER BY 1;
+       CURSOR C22a IS
+          SELECT '22,*,'||oun_unit_code||','||replace(oun_name,',',':') rec
+          FROM  org_units
+          WHERE oun_org_unit_type = 'RE'
+          AND   oun_end_date IS NULL
+          AND   OUN_ADMIN_ORG_ID in ( SELECT HAG_CHILD_ADMIN_UNIT
+                                    FROM   HIG_ADMIN_GROUPS
+                                    WHERE  HAG_DIRECT_LINK='Y'
+                                    START WITH HAG_PARENT_ADMIN_UNIT = ( SELECT HUS_ADMIN_UNIT 
+                                                                         FROM   HIG_USERS
+                                                                         WHERE  HUS_USERNAME=USER )                                                                     
+                                    CONNECT BY PRIOR HAG_CHILD_ADMIN_UNIT=HAG_PARENT_ADMIN_UNIT
+                                    AND HAG_DIRECT_LINK='Y'
+                                    UNION
+                                    SELECT HUS_ADMIN_UNIT
+                                    FROM HIG_USERS
+                                    WHERE HUS_USERNAME=USER)
+          ORDER BY 1; 
    CURSOR c24 IS
       SELECT DISTINCT '24,*,'||d.dpr_priority||','||replace(hig.hco_meaning,',',':') rec
       FROM  defect_priorities d
@@ -1064,14 +1107,30 @@ BEGIN
     rec_count := rec_count + 1;
     cursor_recs(rec_count) := i_rec.rec;
   END LOOP;
-  FOR i_rec IN c21 LOOP
-    rec_count := rec_count + 1;
-    cursor_recs(rec_count) := i_rec.rec;
-  END LOOP;
-  FOR i_rec IN c22 LOOP
-    rec_count := rec_count + 1;
-    cursor_recs(rec_count) := i_rec.rec;
-  END LOOP;
+-- SM 713267 06102008
+  if FAunit='N' then
+    FOR i_rec IN c21 LOOP
+      rec_count := rec_count + 1;
+      cursor_recs(rec_count) := i_rec.rec;
+    END LOOP;
+  else
+    FOR i_rec IN c21a LOOP
+      rec_count := rec_count + 1;
+      cursor_recs(rec_count) := i_rec.rec;
+    END LOOP;
+  end if;
+  if FAunit='N' then
+    FOR i_rec IN c22 LOOP
+      rec_count := rec_count + 1;
+      cursor_recs(rec_count) := i_rec.rec;
+    END LOOP;
+  else
+    FOR i_rec IN c22a LOOP
+      rec_count := rec_count + 1;
+      cursor_recs(rec_count) := i_rec.rec;
+    END LOOP;
+  end if;
+-- end SM 713267 06102008  
   FOR i_rec IN c24 LOOP
     rec_count := rec_count + 1;
     cursor_recs(rec_count) := i_rec.rec;
