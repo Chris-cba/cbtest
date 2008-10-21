@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.3  $ $Modtime:   Mar 11 2008 14:16:00  $";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.4  $ $Modtime:   Oct 21 2008 12:28:34  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -1274,10 +1274,10 @@ printf("do: if ( ( status = re_set_sect() ) != SUCCESS )\n");
    }
 
 /* ARCHANGES2 Start Looking for core dump */
-  printf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
-  printf(fi,"\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
-  printf(fi,"\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
-  printf(fi,"\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
+  printf("\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+  printf("\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
+  printf("\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
+  printf("\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
 /* ARCHANGES2 End Looking for core dump */
 
   fprintf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
