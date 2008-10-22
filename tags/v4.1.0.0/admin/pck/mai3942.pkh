@@ -1,0 +1,61 @@
+CREATE OR REPLACE PACKAGE mai3942 AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3942.pkh-arc   2.0   Oct 22 2008 17:34:50   smarshall  $
+--       Module Name      : $Workfile:   mai3942.pkh  $
+--       Date into PVCS   : $Date:   Oct 22 2008 17:34:50  $
+--       Date fetched Out : $Modtime:   Oct 22 2008 16:25:02  $
+--       PVCS Version     : $Revision:   2.0  $
+--
+--
+--   Author : S Marshall
+--
+--   Package for 716903 fix for drd urgently required.
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) exor corporation ltd, 2001
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision::   ';
+--  g_sccsid is the SCCS ID for the package
+--
+--
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="count_slash_instr">
+FUNCTION count_slash_instr( string_in work_order_lines.wol_works_order_no%TYPE
+                          ) RETURN number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, rnds, wnps, wnds);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, rnds, wnps, wnds);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai3942;
+/
