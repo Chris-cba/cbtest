@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.3.1.2   Aug 28 2008 15:33:06   smarshall  $
---       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 28 2008 15:33:06  $
---       Date fetched Out : $Modtime:   Aug 28 2008 15:31:52  $
---       SCCS Version     : $Revision:   2.3.1.2  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.3.1.3   Nov 20 2008 10:16:10   smarshall  $
+--       Module Name      : $Workfile:   interfaces_4043.pkb  $
+--       Date into SCCS   : $Date:   Nov 20 2008 10:16:10  $
+--       Date fetched Out : $Modtime:   Oct 15 2008 15:46:58  $
+--       SCCS Version     : $Revision:   2.3.1.3  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.3.1.2  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.3.1.3  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -1526,12 +1526,14 @@ END;
 PROCEDURE validate_completed_date(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
 
+IF hig.get_sysopt('COMPLEDATE') = 'N' THEN
   UPDATE interface_claims_wor
   SET    icwor_error = SUBSTR(icwor_error||'Completed Date must be > Commence By Date and > Instructed Date. ', 1, 254)
         ,icwor_status = 'R'
   WHERE (icwor_date_closed < icwor_commence_by
    OR    icwor_date_closed < icwor_date_confirmed)
   AND    icwor_ih_id = p_ih_id;
+END IF;
 
 IF SQL%rowcount > 0 THEN
   validate_wo_item(p_ih_id,'WOR',9);
@@ -1657,7 +1659,7 @@ END;
 
 PROCEDURE validate_claim_date_complete(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
-
+IF hig.get_sysopt('COMPLEDATE') = 'N' THEN
   UPDATE interface_claims_wol
   SET    icwol_error = SUBSTR(icwol_error||'Completed date must be >= Order Instructed Date and not in the future. ', 1, 254)
         ,icwol_status = 'R'
@@ -1671,6 +1673,7 @@ BEGIN
 			AND    NVL(wor_date_confirmed, icwol_date_complete + 1) > icwol_date_complete)
    OR    icwol_date_complete > SYSDATE)
   AND    icwol_ih_id = p_ih_id;
+END IF;
 IF SQL%rowcount > 0 THEN
   validate_wo_item(p_ih_id,'WOL',20);
 END IF;
