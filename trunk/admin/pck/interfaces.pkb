@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.7   Nov 20 2008 10:17:26   smarshall  $
---       Module Name      : $Workfile:   interfaces_4050.pkb  $
---       Date into SCCS   : $Date:   Nov 20 2008 10:17:26  $
---       Date fetched Out : $Modtime:   Oct 15 2008 15:46:22  $
---       SCCS Version     : $Revision:   2.7  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.8   Nov 26 2008 15:16:14   smarshall  $
+--       Module Name      : $Workfile:   interfaces.pkb  $
+--       Date into SCCS   : $Date:   Nov 26 2008 15:16:14  $
+--       Date fetched Out : $Modtime:   Nov 26 2008 14:41:18  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.7  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.8  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -199,6 +199,26 @@ END get_body_version;
            );
     COMMIT;
   END;
+---------------------------------------------------------------------
+--returns the fyr_id when given the wol_id. Part of 717549 (SM 26112008). 
+--Called from claim_file_ph2.
+function get_fyr_id (pi_wol_id work_order_lines.wol_id%TYPE) RETURN varchar2 is
+  cursor c1 (p_wol_id work_order_lines.wol_id%TYPE) is
+  select fyr_id
+  from financial_years
+     , budgets
+     , work_order_lines
+  where fyr_id = bud_fyr_id
+  and bud_id = wol_bud_id
+  and wol_id = p_wol_id;
+  
+  l_fyr_id financial_years.fyr_id%TYPE := '-1'; 
+begin
+	open c1(pi_wol_id);
+	fetch c1 into l_fyr_id;
+	close c1;
+	return l_fyr_id;
+end get_fyr_id;
 ---------------------------------------------------------------------
 -- Called from the copy_data_to_interface procedure.
 -- It populates the Interface_WOL and Interface_BOQ tables.
@@ -479,7 +499,7 @@ BEGIN
 ** number to a varchar2 and thus changing all the variables in this package that call file_seq.
 *****************************************************************************************************************/
   IF hig.get_user_or_sys_opt('ZEROPAD')='Y' THEN
-    l_seq_no := lpad(l_seq_no,6,'0');
+    l_seq_no := lpad(NVL(l_seq_no, 1),6,'0');--SM 26112008 717549 (if l_seq_no was null wasn't using ZEROPAD)
   END IF;
 
   INSERT INTO interface_run_log
@@ -491,7 +511,7 @@ BEGIN
   VALUES    ( p_file_type
 		 ,SYSDATE
 		 ,NVL(l_seq_no, 1)
-		 ,p_contractor_id
+		 ,decode(length(p_contractor_id),4,get_oun_id(p_contractor_id),p_contractor_id)--SM 26112008 717549 (Was returning 4 digit contractor id rather than 3 digit elect_orders id)
          ,p_job_id);
 
   COMMIT;
@@ -3948,7 +3968,7 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
 					    TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
   l_file_not_found 	varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
   invalid_file		EXCEPTION;
-  l_fyr_id			financial_years.fyr_id%TYPE; -- currently not used
+  l_fyr_id			financial_years.fyr_id%TYPE; 
   l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
 
 BEGIN
@@ -4077,6 +4097,11 @@ BEGIN
 	  OPEN cost_code(wol_rec.icwol_wol_id);
 	  FETCH cost_code INTO l_cost_code;
 	  CLOSE cost_code;
+
+    l_fyr_id := get_fyr_id(wol_rec.icwol_wol_id);--SM 26112008 717549
+    if l_fyr_id = '-1' then
+    	l_fyr_id := null;
+    end if;
 
         UTL_FILE.PUT_LINE(l_fhand, '05,'||TO_CHAR(wol_rec.icwor_claim_date, g_date_format)||','||
 				  wol_rec.icwor_con_claim_ref||','||wol_rec.icwor_works_order_no||','||
@@ -4645,7 +4670,7 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 					    TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
   l_file_not_found 	varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
   invalid_file		EXCEPTION;
-  l_fyr_id			financial_years.fyr_id%TYPE; -- currently not used
+  l_fyr_id			financial_years.fyr_id%TYPE; 
   l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
 
 BEGIN
@@ -5825,6 +5850,7 @@ FUNCTION financial_commitment_file(p_job_id number) RETURN varchar2 IS
     OPEN gri_report_run;
     FETCH gri_report_run
     INTO lc_dummy;
+
     IF gri_report_run%FOUND THEN
       interfaces.extract_filename := higgrirp.get_module_spoolpath(p_job_id,USER)||higgrirp.get_module_spoolfile(p_job_id);
     END IF;
@@ -5864,18 +5890,20 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
   CURSOR commitment(p_end_date date                        --KA: added 05/10/2006
                    ) IS
     SELECT '05,'||iwor_transaction_type||','||TO_CHAR(iwor_date_confirmed, g_date_format)||
-		','||iwor_works_order_no||','||TO_CHAR(iwol_id)||','||
-		TO_CHAR(iwol_def_defect_id)||','||TO_CHAR(iwol_schd_id)||','||
-		iwol_def_priority||','||oun_unit_code||','||iwor_con_code||','||
-		LTRIM(TO_CHAR(NVL(SUM(iboq_cost), 0),'9999999990.00'))||','||iwol_work_cat||','||iwol_cost_code||
-		',' commitment_record
+        ','||iwor_works_order_no||','||TO_CHAR(iwol_id)||','||
+        TO_CHAR(iwol_def_defect_id)||','||TO_CHAR(iwol_schd_id)||','||
+        iwol_def_priority||','||oun_unit_code||','||iwor_con_code||','||
+        LTRIM(TO_CHAR(NVL(SUM(iboq_cost), 0),'9999999990.00'))||','||iwol_work_cat||','||iwol_cost_code||
+        ','||bud_fyr_id commitment_record --SM 26112008 717549 added budget year
           ,iwor_transaction_id
-	    ,NVL(SUM(iboq_cost), 0) VALUE
+        ,NVL(SUM(iboq_cost), 0) VALUE
     FROM   contracts
-	    ,org_units
-	    ,interface_wor
-	    ,interface_wol
-	    ,interface_boq
+        ,org_units
+        ,interface_wor
+        ,interface_wol
+        ,interface_boq
+        ,work_order_lines
+        ,budgets
     WHERE  con_code = iwor_con_code
     AND    con_contr_org_id = oun_org_id
     AND    iwor_works_order_no = iwol_works_order_no
@@ -5886,11 +5914,13 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
     AND    (p_end_date IS NULL
             OR
             iwor_date_confirmed <= p_end_date)
+    AND    wol_bud_id = bud_id
+    AND    wol_id = iwol_id
     GROUP BY iwor_transaction_type, iwor_date_confirmed
-		,iwor_works_order_no, iwol_id, iwol_def_defect_id
-		,iwol_schd_id, iwol_def_priority, oun_unit_code
-		,iwor_con_code, iwol_work_cat
-		,iwol_cost_code, iwor_transaction_id
+        ,iwor_works_order_no, iwol_id, iwol_def_defect_id
+        ,iwol_schd_id, iwol_def_priority, oun_unit_code
+        ,iwor_con_code, iwol_work_cat
+        ,iwol_cost_code, iwor_transaction_id, bud_fyr_id
     ORDER BY iwor_transaction_id;
 --
   --KA 13/11/2006: Added transaction ID parameter.
@@ -6406,7 +6436,6 @@ BEGIN
   IF l_seq_no = -1 THEN
     RAISE g_file_exists;
   END IF;
-
 --  l_fhand := utl_file.fopen(Nvl(p_filepath, g_filepath), l_filename, 'w');
 
 IF hig.get_user_or_sys_opt('FCFORMAT')='Y' THEN
@@ -6417,7 +6446,6 @@ IF hig.get_user_or_sys_opt('FCFORMAT')='Y' THEN
 ELSE
   l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), /*NVL(interfaces.extract_filename,*/l_filename2/*)*/, 'w');
 END IF;
-
   IF UTL_FILE.IS_OPEN(l_fhand) THEN
     IF hig.get_user_or_sys_opt('FCFORMAT') = 'Y' THEN
     -- If NCC FIMS format is required
@@ -6628,9 +6656,11 @@ END IF;
     COMMIT;
 	--
     ELSE
+    nm_debug.debug('1)');--templine
       UTL_FILE.PUT_LINE(l_fhand, l_header_record);
       FOR l_com_rec IN commitment(p_end_date => pi_end_date)
       LOOP
+      nm_debug.debug('2)l_no_of_recs - '||l_no_of_recs);--templine
         UTL_FILE.PUT_LINE(l_fhand, l_com_rec.commitment_record);
 	  l_no_of_recs := l_no_of_recs + 1;
 	  l_total_value := l_total_value + l_com_rec.VALUE;
@@ -6638,7 +6668,6 @@ END IF;
         UPDATE interface_wor
   	  SET    iwor_fi_run_number = l_seq_no
 	  WHERE  iwor_transaction_id = l_com_rec.iwor_transaction_id;
-
       END LOOP;
 	  COMMIT;
       UTL_FILE.PUT_LINE(l_fhand, '10,'||TO_CHAR(l_no_of_recs)||','||
@@ -6646,14 +6675,12 @@ END IF;
       UTL_FILE.FFLUSH(l_fhand);
       UTL_FILE.FCLOSE(l_fhand);
     END IF;
-
   END IF;
   IF hig.get_user_or_sys_opt('FCFORMAT')='Y' THEN
     RETURN l_filename;
   ELSE
     RETURN l_filename2;
 END IF;
-
   EXCEPTION
     WHEN utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
       DBMS_OUTPUT.ENABLE(300);
@@ -6712,7 +6739,7 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
 	     oun_unit_code||','||
 	     oun_comments||','||
 	     LTRIM(TO_CHAR(cp_payment_value,'9999999990.00'))||','||
-	     wol_icb_work_code||','||bud_cost_code||',' credit_record
+	     wol_icb_work_code||','||bud_cost_code||','||bud_fyr_id credit_record --SM 26112008 727549 Added budgey financial year
           ,LTRIM(TO_CHAR(cp_payment_value,'9999999990.00')) VALUE
 	    ,wol_id
     FROM   org_units
