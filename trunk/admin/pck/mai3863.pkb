@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.3   Oct 10 2008 11:22:32   smarshall  $
- --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Oct 10 2008 11:22:32  $
- --       Date fetched Out : $Modtime:   Oct 06 2008 10:18:02  $
- --       SCCS Version     : $Revision:   2.3  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.4   Dec 19 2008 15:02:50   smarshall  $
+ --       Module Name      : $Workfile:   mai3863_ks1.pkb  $
+ --       Date into SCCS   : $Date:   Dec 19 2008 15:02:50  $
+ --       Date fetched Out : $Modtime:   Dec 19 2008 15:01:16  $
+ --       SCCS Version     : $Revision:   2.4  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -786,6 +786,8 @@ CURSOR c15 IS
       AND      sta_end_date   IS NULL
       AND      sta_item_code > '0'
       ORDER BY 1;
+-- SM 10122008 709893      
+-- Changed cursor 35, 36 and 37 to use v3 tables rather than translation views.
    CURSOR c35 IS
     SELECT '35,*,'||LPAD(TO_CHAR(iit_item_id),iit_id_pad) ||','||
                     LPAD(TO_CHAR(iit_rse_he_id),rse_pad)  ||','||
@@ -808,11 +810,13 @@ CURSOR c15 IS
                            WHERE  grp_param  = 'INVENTORY_ITEM'
                            AND    grp_job_id = job_id))
       AND   ( FGroup IS NULL
-      OR      iit_rse_he_id IN ( SELECT rsm_rse_he_id_of
-                                 FROM   road_seg_membs
-                                 WHERE  rsm_end_date IS NULL
-                                 CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-                                 START WITH rsm_rse_he_id_in       = FGroup))
+      OR      iit_rse_he_id IN ( SELECT nm_ne_id_of
+                                 FROM   nm_members_all
+                                 WHERE  nm_end_date IS NULL
+                                 AND nm_type = 'G'
+                                 AND DECODE (get_nt_type (nm_ne_id_of), 'D', 'S', 'L', 'S', 'G') <> 'P'
+                                 CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in
+                                 START WITH nm_ne_id_in       = FGroup))
       AND   ( FXsp IS NULL
       OR EXISTS ( SELECT grp_value
                   FROM   gri_run_parameters
@@ -822,25 +826,48 @@ CURSOR c15 IS
       ORDER BY 1;
 -- Inspection Network details
    CURSOR c36(he_id IN road_segs.rse_he_id%TYPE)
-   IS SELECT '36,*,'||LPAD(TO_CHAR(rse_he_id),rse_pad)||','
-    ||LPAD(rse_agency,4)
-    ||rse_linkcode||','
-    ||rse_sect_no||','
-    ||rse_scl_sect_class||','
-    ||REPLACE(rse_descr,',',':')||','
-    ||LPAD(TO_CHAR(rse_length),chain_pad)||','
-    ||rse_road_environment ||','
-    ||rse_traffic_level rec
-      FROM  road_segs
-      WHERE rse_he_id = he_id
-      AND   rse_end_date IS NULL;
+   IS 
+   SELECT '36,*,'||LPAD(TO_CHAR(ne.ne_id),rse_pad)||',' 
+    ||LPAD(DECODE (DECODE (ne.ne_gty_group_type,
+              'LLNK', 'Y',
+              'DLNK', 'Y',
+              NULL, 'Y',
+              'N'),
+           'Y',
+           ne.ne_owner,
+           NULL
+   ),4)||','
+    ||DECODE (DECODE (ne.ne_gty_group_type,
+              'LLNK', 'Y',
+              'DLNK', 'Y',
+              NULL, 'Y',
+              'N'),
+           'Y',
+           ne.ne_sub_type || ne.ne_name_1,
+           NULL
+   )||','
+    ||DECODE (ne.ne_gty_group_type, NULL, ne.ne_number, NULL)||',' 
+    ||ne.ne_sub_class||','
+    ||REPLACE(ne.ne_descr,',',':')||','
+    ||LPAD(TO_CHAR(DECODE (ne.ne_gty_group_type, NULL, get_ne_length (ne.ne_id), NULL)),chain_pad)||',' 
+    ||SUBSTR (iit_chr_attrib41, 1, 1)||','
+    ||SUBSTR (iit_chr_attrib51, 1, 1) rec 
+      FROM  nm_elements_all ne,nm_nw_ad_link_all nad,nm_inv_items_all iit
+      WHERE ne.ne_id = he_id
+      AND   ne.ne_end_date IS NULL
+      AND ne.ne_id = nad.nad_ne_id(+)
+         AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
+         AND nad.nad_primary_ad(+) = 'Y';
 --
 -- Section Id and Activity details
    CURSOR c37 IS
-      SELECT '37,*,'||TO_CHAR(rse.rse_he_id)||','
+      SELECT '37,*,'||TO_CHAR(ne.ne_id)||','
     ||afr.afr_atv_acty_area_code rec
-      FROM  road_segs rse
+      FROM  nm_elements_all ne
        ,act_freqs afr
+       ,nm_inv_items_all iit
+       ,nm_nw_ad_link_all nad
+       ,nm_elements_all linkcode
       WHERE afr.afr_atv_acty_area_code IN
                  ( SELECT DECODE(a.atv_maint_insp_flag
                                 ,'S',afr.afr_atv_acty_area_code
@@ -858,14 +885,20 @@ CURSOR c15 IS
                                             ,      ACT_GROUP_MEMBS
                                             WHERE  ACG_GROUP_CODE = FActGroup
                                             AND    AGM_GROUP_CODE = ACG_GROUP_CODE ))
-       AND   afr.afr_ity_sys_flag     = rse.rse_sys_flag
-       AND   afr.afr_scl_sect_class   = rse.rse_scl_sect_class
-       AND   afr.afr_road_environment = rse.rse_road_environment
-       AND   rse.rse_he_id IN ( SELECT rsm_rse_he_id_of
-                                FROM   road_seg_membs
-                                WHERE  rsm_end_date IS NULL
-                                CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-                                START WITH rsm_rse_he_id_in       = FGroup )
+       AND   afr.afr_ity_sys_flag     = ne.ne_prefix
+       AND   afr.afr_scl_sect_class   = ne.ne_sub_class
+       AND   afr.afr_road_environment = SUBSTR (iit_chr_attrib41, 1, 1)
+       AND   ne.ne_id IN ( SELECT nm.nm_ne_id_of
+                                FROM   nm_members_all nm
+                                WHERE  nm_type = 'G'
+                                AND DECODE (get_nt_type (nm_ne_id_of), 'D', 'S', 'L', 'S', 'G') <> 'P'   
+                                AND nm.nm_end_date IS NULL
+                                CONNECT BY PRIOR nm.nm_ne_id_of = nm.nm_ne_id_in
+                                START WITH nm.nm_ne_id_in       = FGroup )
+       AND ne.ne_id = nad.nad_ne_id(+)
+       AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
+       AND nad.nad_primary_ad(+) = 'Y'
+       AND ne.ne_name_2 = linkcode.ne_unique(+)                                
       ORDER BY 1;
    --
    CURSOR c38 IS
