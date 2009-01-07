@@ -3,24 +3,24 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.8   Nov 26 2008 15:16:14   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.9   Jan 07 2009 14:55:26   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Nov 26 2008 15:16:14  $
---       Date fetched Out : $Modtime:   Nov 26 2008 14:41:18  $
---       SCCS Version     : $Revision:   2.8  $
+--       Date into SCCS   : $Date:   Jan 07 2009 14:55:26  $
+--       Date fetched Out : $Modtime:   Jan 07 2009 14:54:44  $
+--       SCCS Version     : $Revision:   2.9  $
 --       Based on SCCS Version     : 1.37
 --
 --
 -----------------------------------------------------------------------------
---   Originally taken from '@(#)interfaces.pck	1.26 08/19/03'
+--   Originally taken from '@(#)interfaces.pck    1.26 08/19/03'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--    Copyright (c) exor corporation ltd, 2003
 -----------------------------------------------------------------------------
 -- global, private variables
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.8  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.9  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -36,24 +36,24 @@ g_separator         varchar2(1) := '~';
 g_count number := 0;
 
 --
-TYPE wol_rec IS RECORD ( r_wol_id		work_order_lines.wol_id%TYPE
-				,r_wor_no		work_order_lines.wol_works_order_no%TYPE
-				,r_defect_id	work_order_lines.wol_def_defect_id%TYPE
-				,r_schd_id		work_order_lines.wol_schd_id%TYPE
-				,r_work_code	work_order_lines.wol_icb_work_code%TYPE
-				,r_road_id		road_segs.rse_unique%TYPE
-				,r_road_descr	road_segs.rse_descr%TYPE);
+TYPE wol_rec IS RECORD ( r_wol_id        work_order_lines.wol_id%TYPE
+                ,r_wor_no        work_order_lines.wol_works_order_no%TYPE
+                ,r_defect_id    work_order_lines.wol_def_defect_id%TYPE
+                ,r_schd_id        work_order_lines.wol_schd_id%TYPE
+                ,r_work_code    work_order_lines.wol_icb_work_code%TYPE
+                ,r_road_id        road_segs.rse_unique%TYPE
+                ,r_road_descr    road_segs.rse_descr%TYPE);
 
 TYPE wol_tab IS TABLE OF wol_rec INDEX BY binary_integer;
 TYPE wor_tab IS TABLE OF interface_wor%ROWTYPE INDEX BY binary_integer;
 
-g_wol_tab		wol_tab;
-g_wor_tab		wor_tab;
-g_date_format	varchar2(20) := 'DDMMRRRR';
-g_time_format	varchar2(20) := 'HH24:MI:SS';
-g_today		date	:= SYSDATE;
-g_wol_comp_status	hig_status_codes.hsc_status_code%TYPE;
-g_file_exists	EXCEPTION;
+g_wol_tab        wol_tab;
+g_wor_tab        wor_tab;
+g_date_format    varchar2(20) := 'DDMMRRRR';
+g_time_format    varchar2(20) := 'HH24:MI:SS';
+g_today        date    := SYSDATE;
+g_wol_comp_status    hig_status_codes.hsc_status_code%TYPE;
+g_file_exists    EXCEPTION;
 g_file_exists_err varchar2(55) := 'Error: A file with this sequence number already exists.';
 
 -- global cursors
@@ -71,15 +71,15 @@ g_file_exists_err varchar2(55) := 'Error: A file with this sequence number alrea
     WHERE  wol.wol_works_order_no||'' = wor.wor_works_order_no
     AND    wol.wol_rse_he_id = rse1.rse_he_id
     AND    rse1.rse_he_id IN (SELECT rsm_rse_he_id_of
-					FROM   road_seg_membs
-					WHERE  wor.wor_date_confirmed BETWEEN rsm_start_date
-					AND    NVL(rsm_end_date, SYSDATE)
-					CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-					START WITH rsm_rse_he_id_in = rse2.rse_he_id)
+                    FROM   road_seg_membs
+                    WHERE  wor.wor_date_confirmed BETWEEN rsm_start_date
+                    AND    NVL(rsm_end_date, SYSDATE)
+                    CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
+                    START WITH rsm_rse_he_id_in = rse2.rse_he_id)
     AND    rse2.rse_gty_group_type = (SELECT hop_value
-						  FROM   hig_options
-			        		  WHERE  hop_id = DECODE(wor.wor_sys_flag,'L',
-					      				 'BUDGRPTYPL','BUDGRPTYPD'))
+                          FROM   hig_options
+                              WHERE  hop_id = DECODE(wor.wor_sys_flag,'L',
+                                           'BUDGRPTYPL','BUDGRPTYPD'))
     AND    job.job_code BETWEEN DECODE(wor.wor_sys_flag,'L','1','0')
                             AND DECODE(wor.wor_sys_flag,'L','9','0')
     AND    wor.wor_est_cost BETWEEN job.job_min_size AND job.job_max_size
@@ -143,8 +143,8 @@ END get_body_version;
 
   BEGIN
     IF p_cost_code IS NULL
-	  THEN
-	    l_retval := NULL;
+      THEN
+        l_retval := NULL;
     ELSe
       if c_1st_char_of_s_part <> 'C'
       then
@@ -214,18 +214,18 @@ function get_fyr_id (pi_wol_id work_order_lines.wol_id%TYPE) RETURN varchar2 is
   
   l_fyr_id financial_years.fyr_id%TYPE := '-1'; 
 begin
-	open c1(pi_wol_id);
-	fetch c1 into l_fyr_id;
-	close c1;
-	return l_fyr_id;
+    open c1(pi_wol_id);
+    fetch c1 into l_fyr_id;
+    close c1;
+    return l_fyr_id;
 end get_fyr_id;
 ---------------------------------------------------------------------
 -- Called from the copy_data_to_interface procedure.
 -- It populates the Interface_WOL and Interface_BOQ tables.
 --
-  FUNCTION get_woc_claim_type( p_woc_claim_ref	IN varchar2
-			     , p_woc_con_id	IN number
-			     ) RETURN varchar2 IS
+  FUNCTION get_woc_claim_type( p_woc_claim_ref    IN varchar2
+                 , p_woc_con_id    IN number
+                 ) RETURN varchar2 IS
 
     CURSOR c1 ( l_woc_claim_ref work_order_claims.woc_claim_ref%TYPE
               , l_woc_con_id    work_order_claims.woc_con_id%TYPE
@@ -256,20 +256,20 @@ end get_fyr_id;
 --
 
   PROCEDURE pop_wor_file_tabs(p_trans_id    IN interface_wor.iwor_transaction_id%TYPE
-                             ,p_wor_no   	  IN work_orders.wor_works_order_no%TYPE) IS
+                             ,p_wor_no         IN work_orders.wor_works_order_no%TYPE) IS
 
     CURSOR wols IS
       SELECT wol_id
             ,wol_def_defect_id
-		,wol_schd_id
+        ,wol_schd_id
             ,wol_rse_he_id
             ,wol_icb_work_code
             ,rse_unique
             ,rse_descr
       FROM   road_segs
-		,work_order_lines
+        ,work_order_lines
       WHERE  wol_rse_he_id = rse_he_id
-	AND    wol_works_order_no = p_wor_no;
+    AND    wol_works_order_no = p_wor_no;
 
     CURSOR boq (c_wol_id work_order_lines.wol_id%TYPE) IS
       SELECT boq_sta_item_code
@@ -309,8 +309,8 @@ end get_fyr_id;
       FROM   defects
       WHERE  def_defect_id = c_defect_id;
 
-  l_def_rec		def%ROWTYPE;
-  l_cost_code	budgets.bud_cost_code%TYPE;
+  l_def_rec        def%ROWTYPE;
+  l_cost_code    budgets.bud_cost_code%TYPE;
 
   BEGIN
 
@@ -330,37 +330,37 @@ end get_fyr_id;
         l_def_rec.def_x_sect := NULL;
       END IF;
 
-	OPEN cost_code(l_wol_rec.wol_id);
+    OPEN cost_code(l_wol_rec.wol_id);
       FETCH cost_code INTO l_cost_code;
       CLOSE cost_code;
 
       INSERT INTO interface_wol (
-		 iwol_transaction_id
-		,iwol_id
-		,iwol_works_order_no
-		,iwol_road_id
-		,iwol_road_descr
-		,iwol_def_defect_id
-		,iwol_schd_id
-		,iwol_def_locn_descr
-		,iwol_def_defect_descr
-		,iwol_def_special_instr
-		,iwol_def_priority
-		,iwol_def_defect_code
-		,iwol_def_st_chain
-		,iwol_def_x_sect
-		,iwol_percent_adjust
-		,iwol_percent_adjust_code
-		,iwol_work_cat
-		,iwol_cost_code)
+         iwol_transaction_id
+        ,iwol_id
+        ,iwol_works_order_no
+        ,iwol_road_id
+        ,iwol_road_descr
+        ,iwol_def_defect_id
+        ,iwol_schd_id
+        ,iwol_def_locn_descr
+        ,iwol_def_defect_descr
+        ,iwol_def_special_instr
+        ,iwol_def_priority
+        ,iwol_def_defect_code
+        ,iwol_def_st_chain
+        ,iwol_def_x_sect
+        ,iwol_percent_adjust
+        ,iwol_percent_adjust_code
+        ,iwol_work_cat
+        ,iwol_cost_code)
       VALUES (
-		 p_trans_id
-		,l_wol_rec.wol_id
-		,p_wor_no
-		,l_wol_rec.rse_unique
+         p_trans_id
+        ,l_wol_rec.wol_id
+        ,p_wor_no
+        ,l_wol_rec.rse_unique
             ,REPLACE(l_wol_rec.rse_descr,',','~')
-		,l_wol_rec.wol_def_defect_id
-		,l_wol_rec.wol_schd_id
+        ,l_wol_rec.wol_def_defect_id
+        ,l_wol_rec.wol_schd_id
             ,REPLACE(l_def_rec.def_locn_descr,',','~')
             ,REPLACE(l_def_rec.def_defect_descr,',','~')
             ,REPLACE(l_def_rec.def_special_instr,',','~')
@@ -377,69 +377,69 @@ end get_fyr_id;
       FOR boq_rec IN boq(l_wol_rec.wol_id) LOOP
 
         INSERT INTO interface_boq (
-		 iboq_transaction_id
-		,iboq_wol_id
-		,iboq_sta_item_code
-		,iboq_dim1
-		,iboq_dim2
-		,iboq_dim3
-		,iboq_quantity
-		,iboq_rate
-		,iboq_cost
-		,iboq_percent_adjust
-		,iboq_percent_adjust_code)
+         iboq_transaction_id
+        ,iboq_wol_id
+        ,iboq_sta_item_code
+        ,iboq_dim1
+        ,iboq_dim2
+        ,iboq_dim3
+        ,iboq_quantity
+        ,iboq_rate
+        ,iboq_cost
+        ,iboq_percent_adjust
+        ,iboq_percent_adjust_code)
         VALUES (
-		 p_trans_id
-		,l_wol_rec.wol_id
-		,boq_rec.boq_sta_item_code
-		,boq_rec.dim1
-		,boq_rec.dim2
-		,boq_rec.dim3
-		,boq_rec.quantity
-		,boq_rec.rate
-		,boq_rec.COST
-		,NULL
-		,NULL);
+         p_trans_id
+        ,l_wol_rec.wol_id
+        ,boq_rec.boq_sta_item_code
+        ,boq_rec.dim1
+        ,boq_rec.dim2
+        ,boq_rec.dim3
+        ,boq_rec.quantity
+        ,boq_rec.rate
+        ,boq_rec.COST
+        ,NULL
+        ,NULL);
 
       END LOOP;
       ELSE
       FOR boq_rec IN boq2(l_wol_rec.wol_id) LOOP
 
         INSERT INTO interface_boq (
-		 iboq_transaction_id
-		,iboq_wol_id
-		,iboq_sta_item_code
-		,iboq_dim1
-		,iboq_dim2
-		,iboq_dim3
-		,iboq_quantity
-		,iboq_rate
-		,iboq_cost
-		,iboq_percent_adjust
-		,iboq_percent_adjust_code
-		,iboq_boq_id
-  		,iboq_parent_boq_id
-  		,iboq_percent_band_comp
-  		,iboq_rogue_item
-  		,iboq_rogue_item_desc
+         iboq_transaction_id
+        ,iboq_wol_id
+        ,iboq_sta_item_code
+        ,iboq_dim1
+        ,iboq_dim2
+        ,iboq_dim3
+        ,iboq_quantity
+        ,iboq_rate
+        ,iboq_cost
+        ,iboq_percent_adjust
+        ,iboq_percent_adjust_code
+        ,iboq_boq_id
+          ,iboq_parent_boq_id
+          ,iboq_percent_band_comp
+          ,iboq_rogue_item
+          ,iboq_rogue_item_desc
 )
         VALUES (
-		 p_trans_id
-		,l_wol_rec.wol_id
-		,boq_rec.boq_sta_item_code
-		,boq_rec.dim1
-		,boq_rec.dim2
-		,boq_rec.dim3
-		,boq_rec.quantity
-		,boq_rec.rate
-		,boq_rec.COST
-		,NULL
-		,NULL
-		,boq_rec.boq_id
-		,boq_rec.boq_parent_id
-		,DECODE(boq_rec.boq_parent_id, NULL, NULL, SUBSTR(hig.get_sysopt('CUM_PERC'),1,1))
-		,DECODE(boq_rec.sta_rogue_flag, 'Y', 'R', NULL)
-		,DECODE(boq_rec.sta_rogue_flag, 'Y', REPLACE(boq_rec.boq_item_name,',','~'), NULL));
+         p_trans_id
+        ,l_wol_rec.wol_id
+        ,boq_rec.boq_sta_item_code
+        ,boq_rec.dim1
+        ,boq_rec.dim2
+        ,boq_rec.dim3
+        ,boq_rec.quantity
+        ,boq_rec.rate
+        ,boq_rec.COST
+        ,NULL
+        ,NULL
+        ,boq_rec.boq_id
+        ,boq_rec.boq_parent_id
+        ,DECODE(boq_rec.boq_parent_id, NULL, NULL, SUBSTR(hig.get_sysopt('CUM_PERC'),1,1))
+        ,DECODE(boq_rec.sta_rogue_flag, 'Y', 'R', NULL)
+        ,DECODE(boq_rec.sta_rogue_flag, 'Y', REPLACE(boq_rec.boq_item_name,',','~'), NULL));
 
       END LOOP;
       END IF;
@@ -457,9 +457,9 @@ end get_fyr_id;
 -- exist.
 
 FUNCTION file_seq( p_job_id IN number,
-             p_contractor_id	IN varchar2
-			,p_seq_no		IN number
-			,p_file_type	IN varchar2) RETURN varchar IS
+             p_contractor_id    IN varchar2
+            ,p_seq_no        IN number
+            ,p_file_type    IN varchar2) RETURN varchar IS
 
   CURSOR irl IS
     SELECT MAX(irl_run_number) + 1
@@ -503,15 +503,15 @@ BEGIN
   END IF;
 
   INSERT INTO interface_run_log
-		( irl_file_type
-		 ,irl_run_date
-		 ,irl_run_number
-		 ,irl_con_id
+        ( irl_file_type
+         ,irl_run_date
+         ,irl_run_number
+         ,irl_con_id
          ,irl_grr_job_id)
   VALUES    ( p_file_type
-		 ,SYSDATE
-		 ,NVL(l_seq_no, 1)
-		 ,decode(length(p_contractor_id),4,get_oun_id(p_contractor_id),p_contractor_id)--SM 26112008 717549 (Was returning 4 digit contractor id rather than 3 digit elect_orders id)
+         ,SYSDATE
+         ,NVL(l_seq_no, 1)
+         ,decode(length(p_contractor_id),4,get_oun_id(p_contractor_id),p_contractor_id)--SM 26112008 717549 (Was returning 4 digit contractor id rather than 3 digit elect_orders id)
          ,p_job_id);
 
   COMMIT;
@@ -971,14 +971,14 @@ BEGIN
       WHERE  icwol_ih_id = p_ih_id
         AND  icwol_wol_id = p_wol_id
         AND  icwol_status != 'R';
-	  COMMIT;
+      COMMIT;
 END;
 
 ---------------------------------------------------------------------
 PROCEDURE validate_check_rec(p_ih_id IN interface_headers.ih_id%TYPE) IS
 
-  l_count_1	number;
-  l_count_2	number;
+  l_count_1    number;
+  l_count_2    number;
 
 BEGIN
 
@@ -1233,28 +1233,28 @@ END IF;
     FETCH c2 INTO l_count;
     IF l_count = 1
       THEN
-	    CLOSE c2;
-	    OPEN c4;
-		FETCH c4 INTO l_count;
-		IF l_count = 0 THEN
-		  CLOSE c4;
+        CLOSE c2;
+        OPEN c4;
+        FETCH c4 INTO l_count;
+        IF l_count = 0 THEN
+          CLOSE c4;
           UPDATE interface_headers
           SET    ih_error = SUBSTR(ih_error||l_error, 1, 254)
                 ,ih_status = 'R'
           WHERE  ih_id = p_ih_id
             AND  ih_status != 'R';
-		ELSE
-		  CLOSE c4;
-		  l_error := 'Warning: '||l_error;
+        ELSE
+          CLOSE c4;
+          l_error := 'Warning: '||l_error;
           UPDATE interface_headers
           SET    ih_error = SUBSTR(ih_error||l_error, 1, 254)
   --              ,ih_status = 'R'
           WHERE  ih_id = p_ih_id
             AND  ih_status != 'R';
-		END IF;
+        END IF;
     ELSIF l_count > 1 THEN
-	    CLOSE c2;
-	    OPEN c4;
+        CLOSE c2;
+        OPEN c4;
         FETCH c4 INTO l_count;
         IF l_count > 0 THEN
           UPDATE interface_headers
@@ -1262,8 +1262,8 @@ END IF;
   --              ,ih_status = 'R'
           WHERE  ih_id = p_ih_id
             AND  ih_status != 'R';
-		END IF;
-		CLOSE c4;
+        END IF;
+        CLOSE c4;
     END IF;
 END;
 ---------------------------------------------------------------------
@@ -1326,7 +1326,7 @@ END IF;
     FETCH c2 INTO l_count;
     IF l_count > 0
       THEN
-	    CLOSE c2;
+        CLOSE c2;
           UPDATE interface_headers
           SET    ih_error = SUBSTR(ih_error||l_error, 1, 254)
           WHERE  ih_id = p_ih_id
@@ -1338,18 +1338,18 @@ END;
 
 PROCEDURE validate_claim_check_rec(p_ih_id IN interface_headers.ih_id%TYPE) IS
 
-  l_total_value	number;
-  l_count_1		number;
-  l_count_2		number;
-  l_count_3		number;
-  l_count_4		number;
+  l_total_value    number;
+  l_count_1        number;
+  l_count_2        number;
+  l_count_3        number;
+  l_count_4        number;
 
 BEGIN
 
   SELECT COUNT(0)
-	  ,SUM(icwor_claim_value)
+      ,SUM(icwor_claim_value)
   INTO   l_count_1
-	  ,l_total_value
+      ,l_total_value
   FROM   interface_claims_wor_all
   WHERE  NVL(icwor_status,'R') != 'D'
   AND    icwor_ih_id = p_ih_id;
@@ -1405,9 +1405,9 @@ BEGIN
   SET    icwor_error = SUBSTR(icwor_error||'A Claim with this reference already exists for this contractor. ', 1, 254)
         ,icwor_status = 'R'
   WHERE  EXISTS ( SELECT 1
-			FROM	 work_order_claims
-			WHERE	 woc_con_id = icwor_con_id
-			AND    woc_claim_ref = icwor_con_claim_ref )
+            FROM     work_order_claims
+            WHERE     woc_con_id = icwor_con_id
+            AND    woc_claim_ref = icwor_con_claim_ref )
   AND    icwor_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -1418,17 +1418,17 @@ END IF;
   SET    icwol_error = SUBSTR(icwol_error||'A Final Claim has already been processed for this work order line. ', 1, 254)
         ,icwol_status = 'R'
   WHERE  EXISTS ( SELECT 1
-			FROM	 claim_payments
-				,work_order_claims
-				,interface_claims_wor
-			WHERE	 woc_con_id = cp_woc_con_id
-			AND    woc_claim_ref = cp_woc_claim_ref
-			AND    woc_claim_type = 'F'
-			AND	 cp_wol_id = icwol_wol_id
-			AND    icwol_con_claim_ref = icwor_con_claim_ref
-			AND	 icwol_con_id = icwor_con_id
-			AND    icwol_ih_id = icwor_ih_id
-			AND    icwor_claim_type != 'P' ) -- only perform check for non-post invoices
+            FROM     claim_payments
+                ,work_order_claims
+                ,interface_claims_wor
+            WHERE     woc_con_id = cp_woc_con_id
+            AND    woc_claim_ref = cp_woc_claim_ref
+            AND    woc_claim_type = 'F'
+            AND     cp_wol_id = icwol_wol_id
+            AND    icwol_con_claim_ref = icwor_con_claim_ref
+            AND     icwol_con_id = icwor_con_id
+            AND    icwol_ih_id = icwor_ih_id
+            AND    icwor_claim_type != 'P' ) -- only perform check for non-post invoices
   AND    icwol_ih_id = p_ih_id;
 
 END;
@@ -1520,10 +1520,10 @@ BEGIN
   SET    icwor_error = SUBSTR(icwor_error||'The total order claim value does not equal the sum of the line claim values. ', 1, 254)
         ,icwor_status = 'R'
   WHERE  icwor_claim_value != (  SELECT SUM(icwol_claim_value)
-		                     FROM   interface_claims_wol
-		                     WHERE  icwol_ih_id = icwor_ih_id
-					   AND    icwol_con_claim_ref = icwor_con_claim_ref
-					   AND    icwol_con_id = icwor_con_id )
+                             FROM   interface_claims_wol
+                             WHERE  icwol_ih_id = icwor_ih_id
+                       AND    icwol_con_claim_ref = icwor_con_claim_ref
+                       AND    icwol_con_id = icwor_con_id )
   AND    icwor_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -1552,7 +1552,7 @@ END;
 
 PROCEDURE validate_completed_date(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
-	
+    
 IF hig.get_sysopt('COMPLEDATE') = 'N' THEN
   UPDATE interface_claims_wor
   SET    icwor_error = SUBSTR(icwor_error||'Completed Date must be > Commence By Date and > Instructed Date. ', 1, 254)
@@ -1649,12 +1649,12 @@ BEGIN
         ,icwol_status = 'R'
   WHERE  NOT EXISTS (SELECT 1
                      FROM   work_order_lines
-				   ,interface_claims_wor
+                   ,interface_claims_wor
                      WHERE  wol_id = icwol_wol_id
                      AND    wol_works_order_no = icwor_works_order_no
-			   AND    icwol_con_claim_ref = icwor_con_claim_ref
-			   AND    icwol_con_id = icwor_con_id
-			   AND    icwol_ih_id = icwor_ih_id)
+               AND    icwol_con_claim_ref = icwor_con_claim_ref
+               AND    icwol_con_id = icwor_con_id
+               AND    icwol_ih_id = icwor_ih_id)
   AND    icwol_ih_id = p_ih_id;
 IF SQL%rowcount > 0 THEN
   validate_wo_item(p_ih_id,'WOL',20);
@@ -1671,11 +1671,11 @@ BEGIN
   SET    icwol_error = SUBSTR(icwol_error||'The order line claim value does not equal the sum of the bill item costs. ', 1, 254)
         ,icwol_status = 'R'
   WHERE  icwol_claim_value != (  SELECT SUM(icboq_cost)
-		                     FROM   interface_claims_boq
-		                     WHERE  icboq_ih_id = icwol_ih_id
-					   AND    icboq_con_claim_ref = icwol_con_claim_ref
-					   AND    icboq_con_id = icwol_con_id
-					   AND    icboq_wol_id = icwol_wol_id )
+                             FROM   interface_claims_boq
+                             WHERE  icboq_ih_id = icwol_ih_id
+                       AND    icboq_con_claim_ref = icwol_con_claim_ref
+                       AND    icboq_con_id = icwol_con_id
+                       AND    icboq_wol_id = icwol_wol_id )
   AND    icwol_ih_id = p_ih_id;
 IF SQL%rowcount > 0 THEN
   validate_wo_item(p_ih_id,'WOL',21);
@@ -1691,13 +1691,13 @@ IF hig.get_sysopt('COMPLEDATE') = 'N' THEN
   SET    icwol_error = SUBSTR(icwol_error||'Completed date must be >= Order Instructed Date and not in the future. ', 1, 254)
         ,icwol_status = 'R'
   WHERE (EXISTS ( SELECT 1
-			FROM   work_orders
-				,interface_claims_wor
-			WHERE  wor_works_order_no = icwor_works_order_no
-			AND	 icwol_con_claim_ref = icwor_con_claim_ref
-			AND    icwol_con_id = icwor_con_id
-			AND    icwol_ih_id = icwor_ih_id
-			AND    NVL(wor_date_confirmed, icwol_date_complete + 1) > icwol_date_complete)
+            FROM   work_orders
+                ,interface_claims_wor
+            WHERE  wor_works_order_no = icwor_works_order_no
+            AND     icwol_con_claim_ref = icwor_con_claim_ref
+            AND    icwol_con_id = icwor_con_id
+            AND    icwol_ih_id = icwor_ih_id
+            AND    NVL(wor_date_confirmed, icwol_date_complete + 1) > icwol_date_complete)
    OR    icwol_date_complete > SYSDATE)
   AND    icwol_ih_id = p_ih_id;
 END IF;  
@@ -1715,7 +1715,7 @@ BEGIN
   SET    icboq_error = SUBSTR(icboq_error||'Invalid Bill Item Code. ', 1, 254)
         ,icboq_status = 'R'
   WHERE  NOT EXISTS (SELECT 1
-                 	   FROM   standard_items
+                        FROM   standard_items
                      WHERE  icboq_sta_item_code = sta_item_code)
   AND    icboq_ih_id = p_ih_id;
 IF SQL%rowcount > 0 THEN
@@ -1739,9 +1739,9 @@ BEGIN
         ,icboq_status = 'R'
   WHERE  icboq_quantity < 0
   AND    ABS(icboq_quantity) > (SELECT SUM(boq_act_quantity)
-					  FROM   boq_items
-					  WHERE  boq_wol_id = icboq_wol_id
-					  AND    boq_sta_item_code = icboq_sta_item_code)
+                      FROM   boq_items
+                      WHERE  boq_wol_id = icboq_wol_id
+                      AND    boq_sta_item_code = icboq_sta_item_code)
   AND    icboq_ih_id = p_ih_id;
 
   UPDATE interface_claims_boq
@@ -1838,33 +1838,33 @@ FOR c1rec IN boq1_n LOOP --all the parent boq items for this wol
       AND    icboq_wol_id = c1rec.icboq_wol_id --SM - 12122006 - 706220 - Was displaying error incorrectly in files with multiple WORS
       AND    icboq_parent_boq_id IS NOT NULL;
       l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
-	ELSE
-	  IF l_count = 1 THEN
- 	  --the 1st % item is calculated against the item cost regardless.
+    ELSE
+      IF l_count = 1 THEN
+       --the 1st % item is calculated against the item cost regardless.
         UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'2) Bill Item cost does not equal the product of its quantity and rate. '||c2rec.icboq_boq_id||c2rec.icboq_percent_band_comp, 1, 254)
               ,icboq_status = 'R'
         WHERE  0.03 <= abs(icboq_cost - ROUND((icboq_rate/100)*(c1rec.icboq_percent_adjust),2))--SM 13082008 715407 introduced a 0.03 tolerance
         AND    icboq_ih_id = p_ih_id
-	AND    icboq_boq_id = c2rec.icboq_boq_id
+    AND    icboq_boq_id = c2rec.icboq_boq_id
         AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
         AND    icboq_wol_id = c1rec.icboq_wol_id --SM - 12122006 - 706220 - Was displaying error incorrectly in files with multiple WORS
         AND    icboq_parent_boq_id IS NOT NULL;
         l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
-	  ELSE
-	  --% items other than the 1st are calculated against the item cost plus the previous % costs.
+      ELSE
+      --% items other than the 1st are calculated against the item cost plus the previous % costs.
         UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'3) Bill Item cost does not equal the product of its quantity and rate. ', 1, 254)
               ,icboq_status = 'R'
         WHERE  0.03 <= abs(icboq_cost - ROUND((icboq_rate/100)*(c1rec.icboq_percent_adjust),2))--SM 13082008 715407 introduced a 0.03 tolerance
         AND    icboq_ih_id = p_ih_id
-	AND    icboq_boq_id = c2rec.icboq_boq_id
-  	AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
+    AND    icboq_boq_id = c2rec.icboq_boq_id
+      AND    icboq_percent_band_comp = c2rec.icboq_percent_band_comp
         AND    icboq_wol_id = c1rec.icboq_wol_id --SM - 12122006 - 706220 - Was displaying error incorrectly in files with multiple WORS
         AND    icboq_parent_boq_id IS NOT NULL;
         l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
-	  END IF;
-	END IF;
+      END IF;
+    END IF;
   END LOOP;
 END LOOP;
 /*
@@ -1873,27 +1873,27 @@ FOR c1rec IN boq1_C LOOP --all the parent boq items for this wol (cumulative)
   FOR c2rec IN percentage1_C(c1rec.icboq_boq_id) LOOP --all the children % items of each parent
     --for each child use the parent boq to total up the costs of all the parents to enable validation of the cumulative % items
     l_count := l_count + 1;
-	IF l_count = 1 THEN
-	--the 1st % item is calculated against the item cost regardless.
+    IF l_count = 1 THEN
+    --the 1st % item is calculated against the item cost regardless.
       UPDATE interface_claims_boq
       SET    icboq_error = SUBSTR(icboq_error||'Bill Item cost does not equal the product of its quantity and rate. ', 1, 254)
             ,icboq_status = 'R'
       WHERE  icboq_cost != ROUND((icboq_rate/100)*(c1rec.icboq_cost),2)
       AND    icboq_ih_id = p_ih_id
-	  AND    icboq_boq_id = c1rec.icboq_boq_id
+      AND    icboq_boq_id = c1rec.icboq_boq_id
       AND    icboq_parent_boq_id IS NOT NULL;
-  	  l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
-	ELSE
-	--% items other than the 1st are calculated against the item cost plus the previous % costs.
+        l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
+    ELSE
+    --% items other than the 1st are calculated against the item cost plus the previous % costs.
       UPDATE interface_claims_boq
       SET    icboq_error = SUBSTR(icboq_error||'Bill Item cost does not equal the product of its quantity and rate. ', 1, 254)
             ,icboq_status = 'R'
       WHERE  icboq_cost != ROUND((icboq_rate/100)*(l_cumulative_total),2)
       AND    icboq_ih_id = p_ih_id
-	  AND    icboq_boq_id = c1rec.icboq_boq_id
+      AND    icboq_boq_id = c1rec.icboq_boq_id
       AND    icboq_parent_boq_id IS NOT NULL;
       l_cumulative_total := l_cumulative_total + c2rec.icboq_cost;
-	END IF;
+    END IF;
   END LOOP;
 END LOOP;*/
 IF SQL%rowcount > 0 THEN
@@ -1922,14 +1922,14 @@ BEGIN
   UPDATE interface_claims_boq
   SET    icboq_error = SUBSTR(icboq_error||'Warning: This Bill Items Rate does not match its rate on the Works Order. ', 1, 254)
   WHERE  NOT EXISTS ( SELECT 1
-			    FROM   boq_items
-			    WHERE  boq_sta_item_code = icboq_sta_item_code
-			    AND    boq_wol_id = icboq_wol_id
+                FROM   boq_items
+                WHERE  boq_sta_item_code = icboq_sta_item_code
+                AND    boq_wol_id = icboq_wol_id
                       AND    icboq_rate = NVL(boq_act_rate, boq_est_rate) )
   AND    EXISTS ( SELECT 1
-			FROM   boq_items
-			WHERE  boq_sta_item_code = icboq_sta_item_code
-			AND    boq_wol_id = icboq_wol_id )
+            FROM   boq_items
+            WHERE  boq_sta_item_code = icboq_sta_item_code
+            AND    boq_wol_id = icboq_wol_id )
   AND    icboq_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -1979,14 +1979,14 @@ BEGIN
         ,icwol_status = 'R'
   WHERE  EXISTS (SELECT 1
                  FROM   work_order_lines
-			     ,interface_claims_wor
+                 ,interface_claims_wor
                  WHERE  wol_id = icwol_wol_id
                  AND    wol_status_code = g_wol_comp_status
-		     AND    icwor_works_order_no = wol_works_order_no
-		     AND    icwor_claim_type IN ('F', 'I')
-		     AND    icwor_con_claim_ref = icwol_con_claim_ref
-		     AND    icwor_con_id = icwol_con_id
-		     AND    icwor_ih_id = p_ih_id)
+             AND    icwor_works_order_no = wol_works_order_no
+             AND    icwor_claim_type IN ('F', 'I')
+             AND    icwor_con_claim_ref = icwol_con_claim_ref
+             AND    icwor_con_id = icwol_con_id
+             AND    icwor_ih_id = p_ih_id)
   AND    icwol_ih_id = p_ih_id;
 
   UPDATE interface_claims_wol
@@ -1995,10 +1995,10 @@ BEGIN
   WHERE  EXISTS (SELECT 1
                  FROM   interface_claims_wor
                  WHERE  icwor_claim_type IN ('F')
-		     AND    icwol_date_complete IS NULL
-		     AND    icwor_con_claim_ref = icwol_con_claim_ref
-		     AND    icwor_con_id = icwol_con_id
-		     AND    icwor_ih_id = p_ih_id)
+             AND    icwol_date_complete IS NULL
+             AND    icwor_con_claim_ref = icwol_con_claim_ref
+             AND    icwor_con_id = icwol_con_id
+             AND    icwor_ih_id = p_ih_id)
   AND    icwol_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -2017,33 +2017,33 @@ BEGIN
   UPDATE interface_claims_wor icwor1
   SET    icwor_error = SUBSTR(icwor_error||'An interim invoice with a higher or equal number exists for at least one WOL on this invoice. ', 1, 254)
         ,icwor_status = 'R'
-  WHERE  EXISTS (SELECT 1	-- an interim invoice with a higher no. has already been processed for this WOL
+  WHERE  EXISTS (SELECT 1    -- an interim invoice with a higher no. has already been processed for this WOL
                  FROM   work_order_claims
-			     ,claim_payments
-			     ,interface_claims_wol
+                 ,claim_payments
+                 ,interface_claims_wol
                  WHERE  woc_claim_type = 'I'
-		     AND    woc_interim_no >= icwor1.icwor_interim_no
-		     AND    cp_woc_claim_ref = woc_claim_ref
-		     AND    cp_woc_con_id = woc_con_id
-		     AND    icwol_wol_id = cp_wol_id
-		     AND    icwol_con_claim_ref = icwor1.icwor_con_claim_ref
-		     AND    icwol_con_id = icwor1.icwor_con_id
-		     AND    icwol_ih_id = icwor1.icwor_ih_id
-		     UNION
-		     SELECT 1	-- the file contains two interim invoices for the same WOL
-		     FROM   interface_claims_wor icwor2
-			     ,interface_claims_wol icwol1
-			     ,interface_claims_wol icwol2
-		     WHERE  icwor1.icwor_con_claim_ref = icwol1.icwol_con_claim_ref
-		     AND    icwor1.icwor_con_id = icwol1.icwol_con_id
-		     AND    icwor2.icwor_con_claim_ref = icwol2.icwol_con_claim_ref
-		     AND    icwor2.icwor_con_id = icwol2.icwol_con_id
-		     AND    icwol1.icwol_wol_id = icwol2.icwol_wol_id
-		     AND    icwor1.icwor_works_order_no = icwor2.icwor_works_order_no
-		     AND    icwor1.icwor_claim_type = icwor2.icwor_claim_type
-		     AND    icwor1.icwor_ih_id = icwor2.icwor_ih_id
-		     AND    icwor2.icwor_interim_no >= icwor1.icwor_interim_no
-		     AND    icwor2.icwor_con_claim_ref != icwor1.icwor_con_claim_ref)
+             AND    woc_interim_no >= icwor1.icwor_interim_no
+             AND    cp_woc_claim_ref = woc_claim_ref
+             AND    cp_woc_con_id = woc_con_id
+             AND    icwol_wol_id = cp_wol_id
+             AND    icwol_con_claim_ref = icwor1.icwor_con_claim_ref
+             AND    icwol_con_id = icwor1.icwor_con_id
+             AND    icwol_ih_id = icwor1.icwor_ih_id
+             UNION
+             SELECT 1    -- the file contains two interim invoices for the same WOL
+             FROM   interface_claims_wor icwor2
+                 ,interface_claims_wol icwol1
+                 ,interface_claims_wol icwol2
+             WHERE  icwor1.icwor_con_claim_ref = icwol1.icwol_con_claim_ref
+             AND    icwor1.icwor_con_id = icwol1.icwol_con_id
+             AND    icwor2.icwor_con_claim_ref = icwol2.icwol_con_claim_ref
+             AND    icwor2.icwor_con_id = icwol2.icwol_con_id
+             AND    icwol1.icwol_wol_id = icwol2.icwol_wol_id
+             AND    icwor1.icwor_works_order_no = icwor2.icwor_works_order_no
+             AND    icwor1.icwor_claim_type = icwor2.icwor_claim_type
+             AND    icwor1.icwor_ih_id = icwor2.icwor_ih_id
+             AND    icwor2.icwor_interim_no >= icwor1.icwor_interim_no
+             AND    icwor2.icwor_con_claim_ref != icwor1.icwor_con_claim_ref)
   AND    icwor_claim_type = 'I'
   AND    icwor_ih_id = p_ih_id;
 
@@ -2062,14 +2062,14 @@ BEGIN
         ,icwol_status = 'R'
   WHERE  EXISTS (SELECT 1
                  FROM   work_order_lines
-			     ,interface_claims_wor
+                 ,interface_claims_wor
                  WHERE  wol_id = icwol_wol_id
-		 AND    wol_date_complete IS NULL
-		     AND    icwor_works_order_no = wol_works_order_no
-		     AND    icwor_claim_type = 'P'
-		     AND    icwor_con_claim_ref = icwol_con_claim_ref
-		     AND    icwor_con_id = icwol_con_id
-		     AND    icwor_ih_id = p_ih_id)
+         AND    wol_date_complete IS NULL
+             AND    icwor_works_order_no = wol_works_order_no
+             AND    icwor_claim_type = 'P'
+             AND    icwor_con_claim_ref = icwol_con_claim_ref
+             AND    icwor_con_id = icwol_con_id
+             AND    icwor_ih_id = p_ih_id)
   AND    icwol_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -2086,22 +2086,22 @@ BEGIN
   SET    icwor_error = SUBSTR(icwor_error||'Warning: Date complete does not match that on Works Order. ', 1, 254)
   WHERE  icwor_claim_type = 'P'
   AND    NVL(icwor_date_closed, TO_DATE('01-JAN-0001', 'DD-MON-YYYY')) !=
-		(SELECT NVL(wor_date_closed, TO_DATE('01-JAN-0001', 'DD-MON-YYYY'))
-		 FROM   work_orders
-		 WHERE  wor_works_order_no = icwor_works_order_no)
+        (SELECT NVL(wor_date_closed, TO_DATE('01-JAN-0001', 'DD-MON-YYYY'))
+         FROM   work_orders
+         WHERE  wor_works_order_no = icwor_works_order_no)
   AND    icwor_ih_id = p_ih_id;
 
   UPDATE interface_claims_wol
   SET    icwol_error = SUBSTR(icwol_error||'Warning: Date complete does not match that on Works Order Line. ', 1, 254)
   WHERE  EXISTS ( SELECT 1
-			FROM   interface_claims_wor
-			WHERE  icwor_claim_type = 'P'
-			AND    icwor_con_claim_ref = icwol_con_claim_ref
-			AND    icwor_con_id = icwol_con_id
-			AND    icwor_ih_id = p_ih_id )
+            FROM   interface_claims_wor
+            WHERE  icwor_claim_type = 'P'
+            AND    icwor_con_claim_ref = icwol_con_claim_ref
+            AND    icwor_con_id = icwol_con_id
+            AND    icwor_ih_id = p_ih_id )
   AND    icwol_date_complete != (SELECT wol_date_complete
-					   FROM   work_order_lines
-					   WHERE  wol_id = icwol_wol_id)
+                       FROM   work_order_lines
+                       WHERE  wol_id = icwol_wol_id)
   AND    icwol_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -2121,12 +2121,12 @@ BEGIN
   SET    icwol_error = SUBSTR(icwol_error||'Invalid Bill Items exist. ', 1, 254)
         ,icwol_status = 'R'
   WHERE  EXISTS ( SELECT 1
-			FROM   interface_claims_boq
-			WHERE  icwol_con_claim_ref = icboq_con_claim_ref
-			AND    icwol_con_id = icboq_con_id
-			AND    icwol_ih_id = icboq_ih_id
-			AND    icwol_wol_id = icboq_wol_id
-			AND    icboq_status != 'P' )
+            FROM   interface_claims_boq
+            WHERE  icwol_con_claim_ref = icboq_con_claim_ref
+            AND    icwol_con_id = icboq_con_id
+            AND    icwol_ih_id = icboq_ih_id
+            AND    icwol_wol_id = icboq_wol_id
+            AND    icboq_status != 'P' )
   AND    icwol_ih_id = p_ih_id;
 
 IF SQL%rowcount > 0 THEN
@@ -2143,7 +2143,7 @@ CURSOR c1 IS
   WHERE  icboq_ih_id = p_ih_id;
 CURSOR c2 (l_sta_item_code interface_claims_boq.icboq_sta_item_code%TYPE,
           l_wol_id interface_claims_boq.icboq_wol_id%TYPE
-		  )IS
+          )IS
   SELECT COUNT(1)
   FROM   boq_items
   WHERE  boq_sta_item_code = l_sta_item_code
@@ -2151,7 +2151,7 @@ CURSOR c2 (l_sta_item_code interface_claims_boq.icboq_sta_item_code%TYPE,
 
 CURSOR c3 (l_sta_item_code interface_claims_boq.icboq_sta_item_code%TYPE,
           l_wol_id interface_claims_boq.icboq_wol_id%TYPE
-		  )IS
+          )IS
   SELECT boq_id
   FROM   boq_items
   WHERE  boq_sta_item_code = l_sta_item_code
@@ -2163,44 +2163,44 @@ BEGIN
   FOR c1rec IN c1 LOOP
     IF c1rec.icboq_boq_id IS NOT NULL THEN
 
-	  IF SIGN(c1rec.icboq_boq_id) != -1 THEN
-	    UPDATE interface_claims_boq
+      IF SIGN(c1rec.icboq_boq_id) != -1 THEN
+        UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'Invalid boq_id for this item. ('||c1rec.icboq_boq_id||')', 1, 254)
               ,icboq_status = 'R'
         WHERE  NOT EXISTS (SELECT 1
-                   	        FROM   boq_items
+                               FROM   boq_items
                             WHERE  icboq_boq_id = boq_id
-			                AND    icboq_wol_id = boq_wol_id)
+                            AND    icboq_wol_id = boq_wol_id)
         AND    icboq_ih_id = p_ih_id
-		AND    icboq_boq_id = c1rec.icboq_boq_id;
-		l_row_count := l_row_count + SQL%rowcount;
-	  END IF;
-	ELSE
-	  OPEN c2(c1rec.icboq_sta_item_code, c1rec.icboq_wol_id);
-	  FETCH c2 INTO l_count;
-	  IF l_count = 1 THEN
-	    CLOSE c2;
-	    OPEN c3(c1rec.icboq_sta_item_code, c1rec.icboq_wol_id);
-	    FETCH c3 INTO l_boq_id;
-	    UPDATE interface_claims_boq
+        AND    icboq_boq_id = c1rec.icboq_boq_id;
+        l_row_count := l_row_count + SQL%rowcount;
+      END IF;
+    ELSE
+      OPEN c2(c1rec.icboq_sta_item_code, c1rec.icboq_wol_id);
+      FETCH c2 INTO l_count;
+      IF l_count = 1 THEN
+        CLOSE c2;
+        OPEN c3(c1rec.icboq_sta_item_code, c1rec.icboq_wol_id);
+        FETCH c3 INTO l_boq_id;
+        UPDATE interface_claims_boq
             SET    icboq_boq_id = l_boq_id
             WHERE  icboq_sta_item_code = c1rec.icboq_sta_item_code
             AND    icboq_ih_id = p_ih_id
-	    AND    icboq_wol_id = c1rec.icboq_wol_id;
-	    l_row_count := l_row_count - SQL%rowcount;
-	    CLOSE c3;
-	  ELSE
-	    CLOSE c2;
-	    UPDATE interface_claims_boq
+        AND    icboq_wol_id = c1rec.icboq_wol_id;
+        l_row_count := l_row_count - SQL%rowcount;
+        CLOSE c3;
+      ELSE
+        CLOSE c2;
+        UPDATE interface_claims_boq
             SET    icboq_error = SUBSTR(icboq_error||'No boq_id supplied and more than one boq items matched. ', 1, 254)
                   ,icboq_status = 'R'
             WHERE  icboq_sta_item_code = c1rec.icboq_sta_item_code
             AND    icboq_ih_id = p_ih_id
-	    AND    icboq_wol_id = c1rec.icboq_wol_id
-	    AND    icboq_boq_id IS NULL;
-	    l_row_count := l_row_count + SQL%rowcount;
-	  END IF;
-	END IF;
+        AND    icboq_wol_id = c1rec.icboq_wol_id
+        AND    icboq_boq_id IS NULL;
+        l_row_count := l_row_count + SQL%rowcount;
+      END IF;
+    END IF;
 IF l_row_count > 0 THEN
   validate_wo_item(p_ih_id,'BOQ',10);
 END IF;
@@ -2219,26 +2219,26 @@ l_row_count number;
 BEGIN
   FOR c1rec IN c1 LOOP
     IF c1rec.icboq_parent_boq_id IS NOT NULL THEN
-	  IF SIGN(c1rec.icboq_parent_boq_id) != -1 THEN
-	    UPDATE interface_claims_boq
+      IF SIGN(c1rec.icboq_parent_boq_id) != -1 THEN
+        UPDATE interface_claims_boq
         SET    icboq_error = SUBSTR(icboq_error||'Invalid parent_boq_id for this item. ', 1, 254)
               ,icboq_status = 'R'
         WHERE  NOT EXISTS (SELECT 1
-                   	        FROM   boq_items
+                               FROM   boq_items
                             WHERE  icboq_parent_boq_id = boq_id
-			                AND    icboq_wol_id = boq_wol_id)
+                            AND    icboq_wol_id = boq_wol_id)
         AND    icboq_ih_id = p_ih_id
-		AND    icboq_parent_boq_id = c1rec.icboq_parent_boq_id;
-		l_row_count := l_row_count + SQL%rowcount;
-	  END IF;
+        AND    icboq_parent_boq_id = c1rec.icboq_parent_boq_id;
+        l_row_count := l_row_count + SQL%rowcount;
+      END IF;
     ELSE
       UPDATE interface_claims_boq
       SET    icboq_error = SUBSTR(icboq_error||'Parent_boq_id is null. ', 1, 254)
             ,icboq_status = 'R'
       WHERE  NOT EXISTS (SELECT 1
-                	 FROM   boq_items
+                     FROM   boq_items
                          WHERE  icboq_parent_boq_id = boq_id
-			 AND    icboq_wol_id = boq_wol_id)
+             AND    icboq_wol_id = boq_wol_id)
       AND    icboq_ih_id = p_ih_id
       AND    icboq_sta_item_code = c1rec.icboq_sta_item_code
       AND    icboq_wol_id = c1rec.icboq_wol_id
@@ -2292,42 +2292,42 @@ END;
 -- form (when validating an erroneous completion record).
 --
 
-PROCEDURE populate_wc_interface_tables(p_ih_id	IN OUT interface_headers.ih_id%TYPE
-						  ,p_record IN	 varchar2
-						  ,p_error	IN OUT varchar2) IS
+PROCEDURE populate_wc_interface_tables(p_ih_id    IN OUT interface_headers.ih_id%TYPE
+                          ,p_record IN     varchar2
+                          ,p_error    IN OUT varchar2) IS
 
-  l_record_type	varchar2(2) := int_utility.get_field(p_record, 1);
+  l_record_type    varchar2(2) := int_utility.get_field(p_record, 1);
 
 BEGIN
   IF l_record_type = '10' THEN -- completion record
 
     INSERT INTO interface_completions (
-			 ic_ih_id
-			,ic_works_order_no
-			,ic_wol_id
-			,ic_defect_id
-			,ic_schd_id
-			,ic_date_completed
-			,ic_fyr_id
-			,ic_comments
-			,ic_status
-			,ic_error)
+             ic_ih_id
+            ,ic_works_order_no
+            ,ic_wol_id
+            ,ic_defect_id
+            ,ic_schd_id
+            ,ic_date_completed
+            ,ic_fyr_id
+            ,ic_comments
+            ,ic_status
+            ,ic_error)
     VALUES (
-			 p_ih_id
+             p_ih_id
                         ,DECODE(hig.get_sysopt('CPAFORMAT'),'1',
                          SUBSTR(UPPER(int_utility.get_field(p_record, 2)),1,3)||'/'||
                          SUBSTR(UPPER(int_utility.get_field(p_record, 2)),4,(LENGTH(SUBSTR(UPPER(int_utility.get_field(p_record, 2)),1,INSTR(UPPER(int_utility.get_field(p_record, 2)),'/',1)-1))-3)),
                          UPPER(int_utility.get_field(p_record, 2)))
-			,int_utility.get_field(p_record, 3)
-			,int_utility.get_field(p_record, 4)
-			,int_utility.get_field(p_record, 5)
-			,TO_DATE(TO_CHAR(check_date_format(int_utility.get_field(p_record, 6)), 'dd-mon-yyyy')
-			||' '||TO_CHAR(TO_DATE(NVL(int_utility.get_field(p_record, 7),'00:00:01')
-			,'HH24:MI:SS'),'HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')
-			,int_utility.get_field(p_record, 8)
-			,int_utility.get_field(p_record, 9)
-			,'P'
-			,NULL);
+            ,int_utility.get_field(p_record, 3)
+            ,int_utility.get_field(p_record, 4)
+            ,int_utility.get_field(p_record, 5)
+            ,TO_DATE(TO_CHAR(check_date_format(int_utility.get_field(p_record, 6)), 'dd-mon-yyyy')
+            ||' '||TO_CHAR(TO_DATE(NVL(int_utility.get_field(p_record, 7),'00:00:01')
+            ,'HH24:MI:SS'),'HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')
+            ,int_utility.get_field(p_record, 8)
+            ,int_utility.get_field(p_record, 9)
+            ,'P'
+            ,NULL);
     COMMIT;
 
   ELSIF l_record_type = '00' THEN -- header record
@@ -2341,23 +2341,23 @@ BEGIN
     END IF;
 
     INSERT INTO interface_headers (
-			 ih_id
-			,ih_file_type
-			,ih_contractor_id
-			,ih_seq_no
-			,ih_created_date
-			,ih_status
-			,ih_error)
+             ih_id
+            ,ih_file_type
+            ,ih_contractor_id
+            ,ih_seq_no
+            ,ih_created_date
+            ,ih_status
+            ,ih_error)
     VALUES (
-			 p_ih_id
-			,'WC'
-			,UPPER(int_utility.get_field(p_record, 2))
-			,int_utility.get_field(p_record, 3)
-			,TO_DATE(check_date_format(int_utility.get_field(p_record, 4)/*, g_date_format*/)||
-			 TO_CHAR(TO_DATE(int_utility.get_field(p_record, 5), 'HH24:MI:SS')
-			,'HH24:MI:SS'),'DD-MON-YYHH24:MI:SS')
-			,'P'
-			,NULL);
+             p_ih_id
+            ,'WC'
+            ,UPPER(int_utility.get_field(p_record, 2))
+            ,int_utility.get_field(p_record, 3)
+            ,TO_DATE(check_date_format(int_utility.get_field(p_record, 4)/*, g_date_format*/)||
+             TO_CHAR(TO_DATE(int_utility.get_field(p_record, 5), 'HH24:MI:SS')
+            ,'HH24:MI:SS'),'DD-MON-YYHH24:MI:SS')
+            ,'P'
+            ,NULL);
 
   ELSIF p_ih_id IS NOT NULL AND l_record_type = '15' THEN -- check record
 
@@ -2367,34 +2367,34 @@ BEGIN
 
   END IF;
 
-  p_error := NULL;	-- no errors occured
+  p_error := NULL;    -- no errors occured
 
 EXCEPTION
   WHEN others THEN
 
-    IF p_error IS NULL THEN	-- new error
+    IF p_error IS NULL THEN    -- new error
 
       p_error := SQLERRM;
 
       INSERT INTO interface_erroneous_records (
-			 ier_ih_id
-			,ier_record_type
-			,ier_record_text
-			,ier_error)
+             ier_ih_id
+            ,ier_record_type
+            ,ier_record_text
+            ,ier_error)
       VALUES (
-			 p_ih_id
-			,l_record_type
-			,p_record
-			,p_error);
+             p_ih_id
+            ,l_record_type
+            ,p_record
+            ,p_error);
 
     ELSE  -- validating existing error (from form)
 
-      p_error := SQLERRM;	-- don't create an error record
-					-- one already exists
+      p_error := SQLERRM;    -- don't create an error record
+                    -- one already exists
     END IF;
 
-    IF l_record_type = '00' THEN	-- error with the header record
-      p_ih_id := NULL;			-- mark for process halting
+    IF l_record_type = '00' THEN    -- error with the header record
+      p_ih_id := NULL;            -- mark for process halting
     END IF;
 
 END;
@@ -2403,21 +2403,21 @@ END;
 -- Automatically submits the current header if it passes validation.
 -- Called from the completion_file_ph1 procedure.
 --
-PROCEDURE submit_record( p_ih_id	IN OUT interface_headers.ih_id%TYPE
+PROCEDURE submit_record( p_ih_id    IN OUT interface_headers.ih_id%TYPE
                        , p_icwor_works_order_no interface_claims_wor_all.icwor_works_order_no%TYPE
                        , p_icwor_claim_value interface_claims_wor_all.icwor_claim_value%TYPE
                        ) IS
 
-  l_response 		number;
-  l_file		varchar2(255);
-  l_error		varchar2(500);
+  l_response         number;
+  l_file        varchar2(255);
+  l_error        varchar2(500);
 
   CURSOR c1 (p_works_order_no work_order_lines.wol_works_order_no%TYPE) IS
     SELECT wol_rse_he_id
           ,wol_id
           ,wol_def_defect_id
           ,wol_act_cost
-	        ,wol_est_cost
+            ,wol_est_cost
           ,wol_bud_id
     FROM   work_order_lines
     WHERE  wol_works_order_no = p_works_order_no;
@@ -2452,7 +2452,7 @@ IF p_ih_id IS NOT NULL
     CLOSE c2;
       --
       IF l_interface_header.ih_status = 'P'
-      	THEN
+          THEN
           --
           IF l_interface_header.ih_file_type = 'WC'
             THEN
@@ -2472,21 +2472,21 @@ EXCEPTION
     NULL;
 END;
 ------------------------------------------------------------------------------
-PROCEDURE auto_load_file(p_ih_id	IN OUT interface_headers.ih_id%TYPE
-                        ,p_record IN	 varchar2
-                        ,p_error	IN OUT varchar2) IS
+PROCEDURE auto_load_file(p_ih_id    IN OUT interface_headers.ih_id%TYPE
+                        ,p_record IN     varchar2
+                        ,p_error    IN OUT varchar2) IS
 
-  l_record_type	varchar2(2) := int_utility.get_field(p_record, 1);
-  l_response 		number;
-  l_file		varchar2(255);
-  l_error		varchar2(500);
+  l_record_type    varchar2(2) := int_utility.get_field(p_record, 1);
+  l_response         number;
+  l_file        varchar2(255);
+  l_error        varchar2(500);
 
   CURSOR c1 (p_works_order_no work_order_lines.wol_works_order_no%TYPE) IS
     SELECT wol_rse_he_id
           ,wol_id
           ,wol_def_defect_id
           ,wol_act_cost
-	        ,wol_est_cost
+            ,wol_est_cost
           ,wol_bud_id
     FROM   work_order_lines
     WHERE  wol_works_order_no = p_works_order_no;
@@ -2543,8 +2543,8 @@ BEGIN
     SELECT COUNT(0)
     INTO   l_count_errors
     FROM   interface_claims_wor
-	  ,interface_claims_wol
-	  ,interface_claims_boq
+      ,interface_claims_wol
+      ,interface_claims_boq
     WHERE (icwor_ih_id = p_ih_id
     AND    icwor_status != 'P')
     OR    (icwol_ih_id = p_ih_id
@@ -2625,9 +2625,9 @@ BEGIN
       WHERE  ic_ih_id = p_ih_id;
 
       IF l_count_records = 0 THEN
-	p_details_ok := 'N';
+    p_details_ok := 'N';
       ELSE
-	p_details_ok := 'Y';
+    p_details_ok := 'Y';
       END IF;
     END IF;
   END IF;
@@ -2747,7 +2747,7 @@ END email_errors;
 -- Completes work order lines
 --
 PROCEDURE close_lines( p_ih_id IN  interface_headers.ih_id%TYPE
-		     ) IS
+             ) IS
 
   CURSOR c1 ( l_ih_id interface_completions.ic_ih_id%TYPE ) IS
     SELECT wol_def_defect_id
@@ -2856,11 +2856,11 @@ BEGIN
       UPDATE work_order_lines
       SET    wol_status_code = g_wol_comp_status
            , wol_date_complete = c1rec.wol_date_repaired
-	   , (wol_act_cost, wol_est_labour) = (SELECT SUM(boq_act_cost)
-						    , SUM(boq_act_labour)
-					       FROM   boq_items
-				               WHERE  boq_wol_id = wol_id)
-	   , wol_invoice_status = 'O' -- db trigger with create an invoice Maiwo.wol_invoice_status(wol_id)
+       , (wol_act_cost, wol_est_labour) = (SELECT SUM(boq_act_cost)
+                            , SUM(boq_act_labour)
+                           FROM   boq_items
+                               WHERE  boq_wol_id = wol_id)
+       , wol_invoice_status = 'O' -- db trigger with create an invoice Maiwo.wol_invoice_status(wol_id)
       WHERE  wol_id = c1rec.wol_id;
       --
       --Update the repair
@@ -2960,39 +2960,39 @@ END close_lines;
 --
 
 PROCEDURE completion_file_ph1( p_job_id IN number
-                    ,p_contractor_id	IN varchar2
-					,p_seq_no		IN number
-					,p_filepath		IN varchar2
+                    ,p_contractor_id    IN varchar2
+                    ,p_seq_no        IN number
+                    ,p_filepath        IN varchar2
                     ,p_filename     IN varchar2
-					,p_error		OUT varchar2 ) IS
+                    ,p_error        OUT varchar2 ) IS
 BEGIN
   interfaces.g_job_id := p_job_id;
   higgrirp.write_gri_spool(interfaces.g_job_id,'Point 1');
   --
   interfaces.completion_file_ph1(p_contractor_id
-					             ,p_seq_no
-					             ,p_filepath
+                                 ,p_seq_no
+                                 ,p_filepath
                                  ,p_filename
-					             ,p_error);
+                                 ,p_error);
 END;
 --
-PROCEDURE completion_file_ph1( p_contractor_id	IN varchar2
-					,p_seq_no		IN number
-					,p_filepath		IN varchar2
+PROCEDURE completion_file_ph1( p_contractor_id    IN varchar2
+                    ,p_seq_no        IN number
+                    ,p_filepath        IN varchar2
                     ,p_filename     IN varchar2
-					,p_error		OUT varchar2 ) IS
+                    ,p_error        OUT varchar2 ) IS
 
-  l_fhand		 utl_file.file_type;
-  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,
+  l_fhand         utl_file.file_type;
+  l_seq_no         varchar2(6) := file_seq(interfaces.g_job_id,
                                        p_contractor_id
-                  	                ,p_seq_no
-					 	    ,'WC');
-  l_filename	 varchar2(12) := NVL(p_filename,'WC'||TO_CHAR(l_seq_no)||'.'||p_contractor_id);
-  l_record		 interface_erroneous_records.ier_record_text%TYPE;
-  l_error		 interface_erroneous_records.ier_error%TYPE;
-  l_ih_id		 interface_headers.ih_id%TYPE;
+                                      ,p_seq_no
+                             ,'WC');
+  l_filename     varchar2(12) := NVL(p_filename,'WC'||TO_CHAR(l_seq_no)||'.'||p_contractor_id);
+  l_record         interface_erroneous_records.ier_record_text%TYPE;
+  l_error         interface_erroneous_records.ier_error%TYPE;
+  l_ih_id         interface_headers.ih_id%TYPE;
   l_file_not_found varchar2(250) := 'Error: Unable to open file. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
-  invalid_file	 EXCEPTION;
+  invalid_file     EXCEPTION;
 l_count number := 0;
 BEGIN
 
@@ -3003,13 +3003,13 @@ BEGIN
       LOOP
         UTL_FILE.GET_LINE(l_fhand, l_record);
         --
-	    l_error := NULL;
+        l_error := NULL;
         --
-	    populate_wc_interface_tables(l_ih_id
-						  ,l_record
-						  ,l_error);
-          IF l_ih_id IS NULL THEN	-- error in header record
-            EXIT;				-- halt processing
+        populate_wc_interface_tables(l_ih_id
+                          ,l_record
+                          ,l_error);
+          IF l_ih_id IS NULL THEN    -- error in header record
+            EXIT;                -- halt processing
           END IF;
           --
       END LOOP;
@@ -3020,7 +3020,7 @@ BEGIN
     END IF;
     EXCEPTION
       WHEN invalid_file OR utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
-	    p_error := l_file_not_found;
+        p_error := l_file_not_found;
 
       WHEN no_data_found THEN  --end of file
         UTL_FILE.FCLOSE(l_fhand);
@@ -3035,7 +3035,7 @@ BEGIN
             END IF;
 
       WHEN others THEN
-	    p_error := SQLERRM;
+        p_error := SQLERRM;
 
   END;
 
@@ -3056,13 +3056,120 @@ PROCEDURE completion_file_ph2(p_ih_id IN interface_headers.ih_id%TYPE) IS
   l_count number;
   l_wol_id work_order_lines.wol_id%TYPE;
   l_ih_id interface_completions.ic_ih_id%TYPE;
+  l_number_of_repairs number;
+
+  cursor c_interface_completions_all ( pi_ih_id IN interface_headers.ih_id%TYPE
+              ) is 
+  select * 
+      from interface_completions_all, work_order_lines
+      where ic_ih_id = pi_ih_id
+      	and ic_wol_id = wol_id
+      	and ic_defect_id = wol_def_defect_id;
+
+  cursor c_defects ( pi_def_defect_id repairs.rep_def_defect_id%TYPE ) is
+  select * 
+     from defects
+     where def_defect_id = pi_def_defect_id
+     	and def_date_compl is null;
+      
+    cursor c_repairs ( pi_def_defect_id repairs.rep_def_defect_id%TYPE 
+    	               , pi_rep_action_cat repairs.rep_action_cat%TYPE
+    	               ) is
+     select * 
+     from repairs
+     where rep_def_defect_id = pi_def_defect_id
+     	 and rep_action_cat = pi_rep_action_cat;
+          
+  r_repairs repairs%rowtype;
+  r_defects defects%rowtype;
+  
+function check_defect_repairs ( pi_def_defect_id repairs.rep_def_defect_id%TYPE
+                              ) return number is
+  l_count number;
+begin
+  select count(1)
+  into l_count
+  from repairs
+  where rep_def_defect_id = pi_def_defect_id
+  and rep_date_completed is null;
+  
+  return l_count;
+
+end check_defect_repairs;
+
+function complete_repair ( pi_def_defect_id repairs.rep_def_defect_id%TYPE
+                         , pi_rep_action_cat repairs.rep_action_cat%TYPE
+                         , pi_complete_date repairs.rep_date_completed%TYPE
+                         ) return boolean is
+
+begin
+  update repairs
+  set rep_date_completed = pi_complete_date
+    , rep_last_updated_date = sysdate
+  where rep_def_defect_id = pi_def_defect_id
+  and rep_action_cat = pi_rep_action_cat;
+  return TRUE;
+end complete_repair;
+
+function complete_defect ( pi_def_defect_id defects.def_defect_id%TYPE
+                         , pi_complete_date defects.def_date_compl%TYPE
+                         ) return boolean is
+
+begin
+  update defects
+  set def_status_code=(SELECT MAX(hsc_status_code)
+                       FROM   hig_status_codes
+                       WHERE  hsc_allow_feature4 = 'Y'
+                       AND    hsc_domain_code = 'DEFECTS'
+                       AND    g_today BETWEEN NVL(hsc_start_date, g_today)
+                       AND NVL(hsc_end_date, g_today))
+    , def_date_compl = pi_complete_date
+    , def_last_updated_date = SYSDATE
+  where def_defect_id = pi_def_defect_id;
+  return TRUE;
+end complete_defect;
 
 BEGIN
+/******************************************************************************************************************
+** SM 06012009 717676
+** Checks the repairs and defects and if the WCCOMPLETE product option is set then completes them with teh loading 
+** of the WC file.
+** 1) If defect has one repair then complete both repair and defect.
+** 2) If defect has two repairs and wol has P repair then complete P repair only.
+** 3) If defect has two repairs and wol has T repair then complete T repair only.
+******************************************************************************************************************/
+--check product option WCCOMPLETE
+IF hig.get_user_or_sys_opt('WCCOMPLETE')='Y' THEN -- SM 06012009 717676
+  for c_interface_completions_allrec in c_interface_completions_all(p_ih_id) loop
+-- if set then check number of repairs
+    l_number_of_repairs := check_defect_repairs(c_interface_completions_allrec.ic_defect_id);
+
+    open c_repairs(c_interface_completions_allrec.ic_defect_id, c_interface_completions_allrec.wol_rep_action_cat);
+    fetch c_repairs into r_repairs;
+    close c_repairs;
+    if complete_repair ( r_repairs.rep_def_defect_id
+                       , r_repairs.rep_action_cat
+                       , c_interface_completions_allrec.ic_date_completed
+                       ) then
+      if l_number_of_repairs = 1 then
+        open c_defects(c_interface_completions_allrec.ic_defect_id);
+        fetch c_defects into r_defects;
+        close c_defects;
+        if complete_defect ( r_defects.def_defect_id 
+                           , c_interface_completions_allrec.ic_date_completed
+                           ) then
+              --success
+          null;
+        end if;
+      end if;
+    end if;        
+-- if multiple then complete repair only
+  end loop;
+END IF;
   -- Amend the status code of the WOL to indicate that work is completed
   -- on site. Only do this if the repaired date is null and the WOL has
   -- been assigned for work (ie INSTRUCTED).
   -----------------------------------------------------------------------
-
 SELECT 1
 INTO l_wol_id
 FROM dual
@@ -3158,24 +3265,24 @@ END;
 --
 PROCEDURE validate_claim_data(p_ih_id IN interface_headers.ih_id%TYPE) IS
   l_cps_wol_id interface_claims_wol.icwol_wol_id%TYPE;
-	CURSOR c1 IS
-	SELECT icwol_error
-	FROM interface_claims_wol
-	WHERE icwol_ih_id = p_ih_id;
+    CURSOR c1 IS
+    SELECT icwol_error
+    FROM interface_claims_wol
+    WHERE icwol_ih_id = p_ih_id;
   l_error interface_claims_wol.icwol_error%TYPE;
 BEGIN
   OPEN c1;
   FETCH c1 INTO l_error;
   IF c1%NOTFOUND THEN
     l_error := NULL;
-	CLOSE c1;
+    CLOSE c1;
   ELSE
     IF INSTR(l_error, 'Tolerance exceeded.') = 0 THEN
       l_error := SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),(INSTR(l_error,')')-(INSTR(l_error, 'Tolerance exceeded. '))));
-	ELSE
+    ELSE
       l_error := SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),(INSTR(l_error,')')-(INSTR(l_error, 'Tolerance exceeded. '))-1));
-	END IF;
-	CLOSE c1;
+    END IF;
+    CLOSE c1;
   END IF;
   l_cps_wol_id := check_paid_status(p_ih_id);
   IF l_cps_wol_id IS NOT NULL THEN
@@ -3250,16 +3357,16 @@ END;
 --
 
 PROCEDURE populate_wi_interface_tables(p_ih_id       IN OUT interface_headers.ih_id%TYPE
-						  ,p_wor_no      IN OUT interface_claims_wor.icwor_works_order_no%TYPE
-						  ,p_wol_id	     IN OUT interface_claims_wol.icwol_wol_id%TYPE
-						  ,p_claim_date  IN OUT interface_claims_wor.icwor_claim_date%TYPE
-						  ,p_claim_ref   IN OUT interface_claims_wor.icwor_con_claim_ref%TYPE
-						  ,p_con_id	     IN OUT interface_claims_wor.icwor_con_id%TYPE
-						  ,p_record      IN     varchar2
-						  ,p_error	     IN OUT varchar2) IS
+                          ,p_wor_no      IN OUT interface_claims_wor.icwor_works_order_no%TYPE
+                          ,p_wol_id         IN OUT interface_claims_wol.icwol_wol_id%TYPE
+                          ,p_claim_date  IN OUT interface_claims_wor.icwor_claim_date%TYPE
+                          ,p_claim_ref   IN OUT interface_claims_wor.icwor_con_claim_ref%TYPE
+                          ,p_con_id         IN OUT interface_claims_wor.icwor_con_id%TYPE
+                          ,p_record      IN     varchar2
+                          ,p_error         IN OUT varchar2) IS
 
-  l_record_type	interface_erroneous_records.ier_record_type%TYPE := int_utility.get_field(p_record, 1);
-  l_con_code	contracts.con_code%TYPE;
+  l_record_type    interface_erroneous_records.ier_record_type%TYPE := int_utility.get_field(p_record, 1);
+  l_con_code    contracts.con_code%TYPE;
   l_con_id      interface_claims_wor.icwor_con_id%TYPE;
   invalid_contract EXCEPTION;
   mandatory_is_null EXCEPTION;
@@ -3279,13 +3386,13 @@ PROCEDURE populate_wi_interface_tables(p_ih_id       IN OUT interface_headers.ih
 
   CURSOR c3 (p_sta_item_code standard_items.sta_item_code%TYPE) IS
     SELECT 1
-	FROM standard_items
-	WHERE sta_unit = hig.get_sysopt('PERC_ITEM')
-	AND sta_item_code = p_sta_item_code;
+    FROM standard_items
+    WHERE sta_unit = hig.get_sysopt('PERC_ITEM')
+    AND sta_item_code = p_sta_item_code;
 
   CURSOR c4 IS
     SELECT neg_boq_id_seq.NEXTVAL
-	FROM dual;
+    FROM dual;
 
   l_boq_id number;
   l_parent_boq_id number;
@@ -3310,99 +3417,99 @@ DBMS_OUTPUT.PUT_LINE('15');
 */    --
     IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0') THEN
     INSERT INTO interface_claims_boq (
-				 icboq_ih_id
-				,icboq_con_claim_ref
-				,icboq_con_id
-				,icboq_wol_id
-				,icboq_sta_item_code
-				,icboq_dim1
-				,icboq_dim2
-				,icboq_dim3
-				,icboq_quantity
-				,icboq_rate
-				,icboq_cost
-				,icboq_percent_adjust
-				,icboq_percent_adjust_code
-				,icboq_status
-				,icboq_error)
+                 icboq_ih_id
+                ,icboq_con_claim_ref
+                ,icboq_con_id
+                ,icboq_wol_id
+                ,icboq_sta_item_code
+                ,icboq_dim1
+                ,icboq_dim2
+                ,icboq_dim3
+                ,icboq_quantity
+                ,icboq_rate
+                ,icboq_cost
+                ,icboq_percent_adjust
+                ,icboq_percent_adjust_code
+                ,icboq_status
+                ,icboq_error)
     VALUES (
-				 p_ih_id
-				,p_claim_ref
-				,p_con_id
-				,p_wol_id
-				,int_utility.get_field(p_record, 2)
-				,int_utility.get_field(p_record, 3)
-				,int_utility.get_field(p_record, 4)
-				,int_utility.get_field(p_record, 5)
-				,int_utility.get_field(p_record, 6)
-				,int_utility.get_field(p_record, 7)
-				,int_utility.get_field(p_record, 8)
-				,int_utility.get_field(p_record, 9)
-				,int_utility.get_field(p_record, 10)
-				,'P'
-				,'');
+                 p_ih_id
+                ,p_claim_ref
+                ,p_con_id
+                ,p_wol_id
+                ,int_utility.get_field(p_record, 2)
+                ,int_utility.get_field(p_record, 3)
+                ,int_utility.get_field(p_record, 4)
+                ,int_utility.get_field(p_record, 5)
+                ,int_utility.get_field(p_record, 6)
+                ,int_utility.get_field(p_record, 7)
+                ,int_utility.get_field(p_record, 8)
+                ,int_utility.get_field(p_record, 9)
+                ,int_utility.get_field(p_record, 10)
+                ,'P'
+                ,'');
    ELSE
    OPEN c3(int_utility.get_field(p_record, 2));
    FETCH c3 INTO l_temp;
    IF c3%NOTFOUND THEN
      IF int_utility.get_field(p_record, 11) IS NULL THEN
-	   CLOSE c3;
-	   OPEN c4;
-	   FETCH c4 INTO g_boq_id;
-	   CLOSE c4;
-	 END IF;
+       CLOSE c3;
+       OPEN c4;
+       FETCH c4 INTO g_boq_id;
+       CLOSE c4;
+     END IF;
    ELSE
      IF int_utility.get_field(p_record, 12) IS NULL THEN
-	   CLOSE c3;
-	   l_parent_boq_id := g_boq_id;
-	   OPEN c4;
-	   FETCH c4 INTO g_boq_id;
-	   CLOSE c4;
-	 END IF;
+       CLOSE c3;
+       l_parent_boq_id := g_boq_id;
+       OPEN c4;
+       FETCH c4 INTO g_boq_id;
+       CLOSE c4;
+     END IF;
    END IF;
 
    INSERT INTO interface_claims_boq (
-				 icboq_ih_id
-				,icboq_con_claim_ref
-				,icboq_con_id
-				,icboq_wol_id
-				,icboq_sta_item_code
-				,icboq_dim1
-				,icboq_dim2
-				,icboq_dim3
-				,icboq_quantity
-				,icboq_rate
-				,icboq_cost
-				,icboq_percent_adjust
-				,icboq_percent_adjust_code
-				,icboq_status
-				,icboq_error
-				,icboq_boq_id
-				,icboq_parent_boq_id
-				,icboq_percent_band_comp
-				,icboq_rogue_item
-				,icboq_rogue_item_desc)
+                 icboq_ih_id
+                ,icboq_con_claim_ref
+                ,icboq_con_id
+                ,icboq_wol_id
+                ,icboq_sta_item_code
+                ,icboq_dim1
+                ,icboq_dim2
+                ,icboq_dim3
+                ,icboq_quantity
+                ,icboq_rate
+                ,icboq_cost
+                ,icboq_percent_adjust
+                ,icboq_percent_adjust_code
+                ,icboq_status
+                ,icboq_error
+                ,icboq_boq_id
+                ,icboq_parent_boq_id
+                ,icboq_percent_band_comp
+                ,icboq_rogue_item
+                ,icboq_rogue_item_desc)
     VALUES (
-				 p_ih_id
-				,p_claim_ref
-				,p_con_id
-				,p_wol_id
-				,int_utility.get_field(p_record, 2)
-				,int_utility.get_field(p_record, 3)
-				,int_utility.get_field(p_record, 4)
-				,int_utility.get_field(p_record, 5)
-				,int_utility.get_field(p_record, 6)
-				,int_utility.get_field(p_record, 7)
-				,int_utility.get_field(p_record, 8)
-				,int_utility.get_field(p_record, 9)
-				,int_utility.get_field(p_record, 10)
-				,'P'
-				,''
-				,int_utility.get_field(p_record, 11)--NVL(Int_Utility.get_field(p_record, 11),g_boq_id)
-				,int_utility.get_field(p_record, 12)--NVL(Int_Utility.get_field(p_record, 12),l_parent_boq_id)
-				,int_utility.get_field(p_record, 13)
-				,int_utility.get_field(p_record, 14)
-				,int_utility.get_field(REPLACE(SUBSTR(p_record,INSTR(p_record,',',1,14)+1,LENGTH(p_record)-INSTR(p_record,',',1,14)),',','~'), 15));
+                 p_ih_id
+                ,p_claim_ref
+                ,p_con_id
+                ,p_wol_id
+                ,int_utility.get_field(p_record, 2)
+                ,int_utility.get_field(p_record, 3)
+                ,int_utility.get_field(p_record, 4)
+                ,int_utility.get_field(p_record, 5)
+                ,int_utility.get_field(p_record, 6)
+                ,int_utility.get_field(p_record, 7)
+                ,int_utility.get_field(p_record, 8)
+                ,int_utility.get_field(p_record, 9)
+                ,int_utility.get_field(p_record, 10)
+                ,'P'
+                ,''
+                ,int_utility.get_field(p_record, 11)--NVL(Int_Utility.get_field(p_record, 11),g_boq_id)
+                ,int_utility.get_field(p_record, 12)--NVL(Int_Utility.get_field(p_record, 12),l_parent_boq_id)
+                ,int_utility.get_field(p_record, 13)
+                ,int_utility.get_field(p_record, 14)
+                ,int_utility.get_field(REPLACE(SUBSTR(p_record,INSTR(p_record,',',1,14)+1,LENGTH(p_record)-INSTR(p_record,',',1,14)),',','~'), 15));
 
    END IF;
 
@@ -3419,31 +3526,31 @@ DBMS_OUTPUT.PUT_LINE('10');
     p_wol_id := int_utility.get_field(p_record, 2);
 
     INSERT INTO interface_claims_wol (
-				 icwol_ih_id
-				,icwol_con_claim_ref
-				,icwol_con_id
-				,icwol_wol_id
-				,icwol_defect_id
-				,icwol_schd_id
-				,icwol_claim_value
-				,icwol_percent_adjust
-				,icwol_percent_adjust_code
-				,icwol_date_complete
-				,icwol_status
-				,icwol_error)
+                 icwol_ih_id
+                ,icwol_con_claim_ref
+                ,icwol_con_id
+                ,icwol_wol_id
+                ,icwol_defect_id
+                ,icwol_schd_id
+                ,icwol_claim_value
+                ,icwol_percent_adjust
+                ,icwol_percent_adjust_code
+                ,icwol_date_complete
+                ,icwol_status
+                ,icwol_error)
     VALUES (
-				 p_ih_id
-				,p_claim_ref
-				,p_con_id
-				,p_wol_id
-				,int_utility.get_field(p_record, 3) --l_defect_id
-				,int_utility.get_field(p_record, 4) --l_schd_id
-				,int_utility.get_field(p_record, 5) --l_claim_value
-				,int_utility.get_field(p_record, 6)
-				,int_utility.get_field(p_record, 7)
-				,DECODE( GREATEST ( LENGTH(int_utility.get_field(p_record, 8)) , /*LENGTH(g_date_format)*/ 12), /*LENGTH(g_date_format)*/ 12, TO_DATE(TO_CHAR(l_p_record8,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record8,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
-				,'P'
-				,'');
+                 p_ih_id
+                ,p_claim_ref
+                ,p_con_id
+                ,p_wol_id
+                ,int_utility.get_field(p_record, 3) --l_defect_id
+                ,int_utility.get_field(p_record, 4) --l_schd_id
+                ,int_utility.get_field(p_record, 5) --l_claim_value
+                ,int_utility.get_field(p_record, 6)
+                ,int_utility.get_field(p_record, 7)
+                ,DECODE( GREATEST ( LENGTH(int_utility.get_field(p_record, 8)) , /*LENGTH(g_date_format)*/ 12), /*LENGTH(g_date_format)*/ 12, TO_DATE(TO_CHAR(l_p_record8,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record8,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+                ,'P'
+                ,'');
 
   ELSIF l_record_type = '05' THEN -- claim record
 
@@ -3474,106 +3581,106 @@ DBMS_OUTPUT.PUT_LINE('05');
 ** interface_claims_wor with a matching ih_id which isn't the same for all the records.
 ********************************************************************************************************/
 /*    Open c2(p_ih_id);
-	FETCH c2 INTO l_con_id;
-	IF c2%FOUND THEN
+    FETCH c2 INTO l_con_id;
+    IF c2%FOUND THEN
       CLOSE c2;
-	  IF l_con_id = -1 THEN
+      IF l_con_id = -1 THEN
         OPEN c1;
         FETCH c1 INTO p_con_id;
-    	IF c1%NOTFOUND THEN
-	      p_con_id := -1;
-		  RAISE invalid_contract;
-		END IF;
-	    UPDATE interface_claims_wor SET icwor_con_id = p_con_id WHERE icwor_ih_id = p_ih_id;
-	    UPDATE interface_claims_wol SET icwol_con_id = p_con_id WHERE icwol_ih_id = p_ih_id;
-	    UPDATE interface_claims_boq SET icboq_con_id = p_con_id WHERE icboq_ih_id = p_ih_id;
+        IF c1%NOTFOUND THEN
+          p_con_id := -1;
+          RAISE invalid_contract;
+        END IF;
+        UPDATE interface_claims_wor SET icwor_con_id = p_con_id WHERE icwor_ih_id = p_ih_id;
+        UPDATE interface_claims_wol SET icwol_con_id = p_con_id WHERE icwol_ih_id = p_ih_id;
+        UPDATE interface_claims_boq SET icboq_con_id = p_con_id WHERE icboq_ih_id = p_ih_id;
       END IF;
       INSERT INTO interface_claims_wor (
-		  		  icwor_ih_id
-				 ,icwor_claim_type
-				 ,icwor_con_claim_ref
-				 ,icwor_con_id
-				 ,icwor_claim_date
-				 ,icwor_works_order_no
-				 ,icwor_interim_no
-				 ,icwor_originator
-				 ,icwor_date_confirmed
-				 ,icwor_est_complete
-				 ,icwor_claim_value
-				 ,icwor_commence_by
-				 ,icwor_date_closed
-				 ,icwor_status
-				 ,icwor_error)
+                    icwor_ih_id
+                 ,icwor_claim_type
+                 ,icwor_con_claim_ref
+                 ,icwor_con_id
+                 ,icwor_claim_date
+                 ,icwor_works_order_no
+                 ,icwor_interim_no
+                 ,icwor_originator
+                 ,icwor_date_confirmed
+                 ,icwor_est_complete
+                 ,icwor_claim_value
+                 ,icwor_commence_by
+                 ,icwor_date_closed
+                 ,icwor_status
+                 ,icwor_error)
       VALUES (
-				  p_ih_id
-				 ,UPPER(int_utility.get_field(p_record, 2))
-				 ,p_claim_ref
-				 ,p_con_id
-				 ,p_claim_date
-				 ,DECODE(hig.get_sysopt('CPAFORMAT'),'1',
+                  p_ih_id
+                 ,UPPER(int_utility.get_field(p_record, 2))
+                 ,p_claim_ref
+                 ,p_con_id
+                 ,p_claim_date
+                 ,DECODE(hig.get_sysopt('CPAFORMAT'),'1',
                                   SUBSTR(UPPER(p_wor_no),1,3)||'/'||
                                   SUBSTR(UPPER(p_wor_no),4,(LENGTH(SUBSTR(UPPER(p_wor_no),1,INSTR(UPPER(p_wor_no),'/',1)-1))-3)),
                                   UPPER(p_wor_no))
-				 ,int_utility.get_field(p_record, 3)
-				 ,int_utility.get_field(p_record, 8)*/
---		                 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 9)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
---				 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 10)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
---				 ,int_utility.get_field(p_record, 11)
---				 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 12)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
---				 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 13)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
---				 ,'P'
---				 ,'');
+                 ,int_utility.get_field(p_record, 3)
+                 ,int_utility.get_field(p_record, 8)*/
+--                         ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 9)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+--                 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 10)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+--                 ,int_utility.get_field(p_record, 11)
+--                 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 12)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+--                 ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 13)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+--                 ,'P'
+--                 ,'');
 --        IF p_con_id = -1 THEN
---	      RAISE invalid_contract;
---	    END IF;
+--          RAISE invalid_contract;
+--        END IF;
 --    ELSE
 --      CLOSE c2;
       OPEN c1;
       FETCH c1 INTO p_con_id;
-	  IF c1%NOTFOUND THEN
-	    p_con_id := -1;
- 	  END IF;
+      IF c1%NOTFOUND THEN
+        p_con_id := -1;
+       END IF;
       CLOSE c1;
 
     INSERT INTO interface_claims_wor (
-				 icwor_ih_id
-				,icwor_claim_type
-				,icwor_con_claim_ref
-				,icwor_con_id
-				,icwor_claim_date
-				,icwor_works_order_no
-				,icwor_interim_no
-				,icwor_originator
-				,icwor_date_confirmed
-				,icwor_est_complete
-				,icwor_claim_value
-				,icwor_commence_by
-				,icwor_date_closed
-				,icwor_status
-				,icwor_error)
+                 icwor_ih_id
+                ,icwor_claim_type
+                ,icwor_con_claim_ref
+                ,icwor_con_id
+                ,icwor_claim_date
+                ,icwor_works_order_no
+                ,icwor_interim_no
+                ,icwor_originator
+                ,icwor_date_confirmed
+                ,icwor_est_complete
+                ,icwor_claim_value
+                ,icwor_commence_by
+                ,icwor_date_closed
+                ,icwor_status
+                ,icwor_error)
     VALUES (
-				 p_ih_id
-				,UPPER(int_utility.get_field(p_record, 2))
-				,p_claim_ref
-				,p_con_id
-				,p_claim_date
-				,DECODE(hig.get_sysopt('CPAFORMAT'),'1',
+                 p_ih_id
+                ,UPPER(int_utility.get_field(p_record, 2))
+                ,p_claim_ref
+                ,p_con_id
+                ,p_claim_date
+                ,DECODE(hig.get_sysopt('CPAFORMAT'),'1',
                                  SUBSTR(UPPER(p_wor_no),1,3)||'/'||
                                  SUBSTR(UPPER(p_wor_no),4,(LENGTH(SUBSTR(UPPER(p_wor_no),1,INSTR(UPPER(p_wor_no),'/',1)-1))-3)),
                                  UPPER(p_wor_no))
-				,int_utility.get_field(p_record, 3)
-				,int_utility.get_field(p_record, 8)
-				,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 9)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
-				,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 10)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
-				,int_utility.get_field(p_record, 11)
-				,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 12)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
-				,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 13)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
-				,'P'
-				,'');
+                ,int_utility.get_field(p_record, 3)
+                ,int_utility.get_field(p_record, 8)
+                ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 9)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record9,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+                ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 10)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record10,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+                ,int_utility.get_field(p_record, 11)
+                ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 12)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record12,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+                ,DECODE(GREATEST(LENGTH(int_utility.get_field(p_record, 13)),/*LENGTH(g_date_format)*/ 12),/*LENGTH(g_date_format)*/ 12,TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY')||' 00:00:01', g_date_format||' '||g_time_format), TO_DATE(TO_CHAR(l_p_record13,'DDMMYYYY HH24:MI:SS'), g_date_format||' '||g_time_format))
+                ,'P'
+                ,'');
       IF p_con_id = -1 THEN
-	    RAISE invalid_contract;
-	  END IF;
---	END IF;
+        RAISE invalid_contract;
+      END IF;
+--    END IF;
   ELSIF l_record_type = '00' THEN -- header record
 
 DBMS_OUTPUT.PUT_LINE('00');
@@ -3588,23 +3695,23 @@ DBMS_OUTPUT.PUT_LINE('00');
     FROM   dual;
     l_p_record4 := check_date_format(int_utility.get_field(p_record, 4));
     INSERT INTO interface_headers (
-			 ih_id
-			,ih_file_type
-			,ih_contractor_id
-			,ih_seq_no
-			,ih_created_date
-			,ih_status
-			,ih_error)
+             ih_id
+            ,ih_file_type
+            ,ih_contractor_id
+            ,ih_seq_no
+            ,ih_created_date
+            ,ih_status
+            ,ih_error)
     VALUES (
-			 p_ih_id
-			,'WI'
-			,UPPER(int_utility.get_field(p_record, 2))
-			,int_utility.get_field(p_record, 3)
-			,TO_DATE(TO_CHAR(l_p_record4, g_date_format)||
-			 TO_CHAR(TO_DATE(int_utility.get_field(p_record, 5), 'HH24:MI:SS')
-			,'HH24:MI:SS'),g_date_format||'HH24:MI:SS')
-			,'P'
-			,NULL);
+             p_ih_id
+            ,'WI'
+            ,UPPER(int_utility.get_field(p_record, 2))
+            ,int_utility.get_field(p_record, 3)
+            ,TO_DATE(TO_CHAR(l_p_record4, g_date_format)||
+             TO_CHAR(TO_DATE(int_utility.get_field(p_record, 5), 'HH24:MI:SS')
+            ,'HH24:MI:SS'),g_date_format||'HH24:MI:SS')
+            ,'P'
+            ,NULL);
 
   ELSIF p_ih_id IS NOT NULL AND l_record_type = '20' THEN -- Check record
 
@@ -3616,96 +3723,96 @@ DBMS_OUTPUT.PUT_LINE('20');
 */    --
     UPDATE interface_headers
     SET    ih_no_of_recs = int_utility.get_field(p_record, 2)
- 	    ,ih_total_value = int_utility.get_field(p_record, 3)
+         ,ih_total_value = int_utility.get_field(p_record, 3)
     WHERE  ih_id = p_ih_id;
 
   END IF;
 
-  p_error := NULL;	-- no errors occured
+  p_error := NULL;    -- no errors occured
 
   EXCEPTION
     WHEN invalid_contract THEN
-      IF p_error IS NULL THEN	-- new error
+      IF p_error IS NULL THEN    -- new error
         p_error := 'Invalid Contract Reference';
         INSERT INTO interface_erroneous_records (
-			 ier_ih_id
-			,ier_record_type
-			,ier_record_text
-			,ier_error)
+             ier_ih_id
+            ,ier_record_type
+            ,ier_record_text
+            ,ier_error)
         VALUES (
-			 p_ih_id
-			,int_utility.get_field(p_record, 1)  -- l_record_type
-			,p_record
-			,p_error);
-        IF l_record_type = '05' THEN	-- nullify mandatory fields
---	    p_claim_ref := Null;		-- to ensure child records
+             p_ih_id
+            ,int_utility.get_field(p_record, 1)  -- l_record_type
+            ,p_record
+            ,p_error);
+        IF l_record_type = '05' THEN    -- nullify mandatory fields
+--        p_claim_ref := Null;        -- to ensure child records
         NULL;
-        ELSIF l_record_type = '10' THEN	-- fail and do not get
-	    p_wol_id := NULL;			-- inserted under incorrect
-        END IF;					-- parent
+        ELSIF l_record_type = '10' THEN    -- fail and do not get
+        p_wol_id := NULL;            -- inserted under incorrect
+        END IF;                    -- parent
       ELSE  -- validating existing error (from form)
-        p_error := 'Invalid Contract Reference';	-- don't create an error record
-					-- one already exists
+        p_error := 'Invalid Contract Reference';    -- don't create an error record
+                    -- one already exists
       END IF;
-      IF l_record_type = '00' THEN	-- error with the header record
-        p_ih_id := NULL;		-- mark for process halting
+      IF l_record_type = '00' THEN    -- error with the header record
+        p_ih_id := NULL;        -- mark for process halting
       END IF;
     WHEN mandatory_is_null THEN
-      IF p_error IS NULL THEN	-- new error
+      IF p_error IS NULL THEN    -- new error
         p_error := 'Mandatory field is null';
         INSERT INTO interface_erroneous_records (
-			 ier_ih_id
-			,ier_record_type
-			,ier_record_text
-			,ier_error)
+             ier_ih_id
+            ,ier_record_type
+            ,ier_record_text
+            ,ier_error)
         VALUES (
-			 p_ih_id
-			,int_utility.get_field(p_record, 1)  -- l_record_type
-			,p_record
-			,p_error);
-        IF l_record_type = '05' THEN	-- nullify mandatory fields
-	    p_claim_ref := NULL;		-- to ensure child records
-        ELSIF l_record_type = '10' THEN	-- fail and do not get
-	    p_wol_id := NULL;			-- inserted under incorrect
-        END IF;					-- parent
+             p_ih_id
+            ,int_utility.get_field(p_record, 1)  -- l_record_type
+            ,p_record
+            ,p_error);
+        IF l_record_type = '05' THEN    -- nullify mandatory fields
+        p_claim_ref := NULL;        -- to ensure child records
+        ELSIF l_record_type = '10' THEN    -- fail and do not get
+        p_wol_id := NULL;            -- inserted under incorrect
+        END IF;                    -- parent
       ELSE  -- validating existing error (from form)
-        p_error := 'Mandatory field is null';	-- don't create an error record
-					-- one already exists
+        p_error := 'Mandatory field is null';    -- don't create an error record
+                    -- one already exists
       END IF;
-      IF l_record_type = '00' THEN	-- error with the header record
-        p_ih_id := NULL;		-- mark for process halting
+      IF l_record_type = '00' THEN    -- error with the header record
+        p_ih_id := NULL;        -- mark for process halting
       END IF;
     WHEN others THEN
 
-      IF p_error IS NULL THEN	-- new error
+      IF p_error IS NULL THEN    -- new error
 
         p_error := SQLERRM;
 
         INSERT INTO interface_erroneous_records (
-			 ier_ih_id
-			,ier_record_type
-			,ier_record_text
-			,ier_error)
+             ier_ih_id
+            ,ier_record_type
+            ,ier_record_text
+            ,ier_error)
         VALUES (
-			 p_ih_id
-			,int_utility.get_field(p_record, 1)  -- l_record_type
-			,p_record
-			,p_error);
+             p_ih_id
+            ,int_utility.get_field(p_record, 1)  -- l_record_type
+            ,p_record
+            ,p_error);
 
-        IF l_record_type = '05' THEN	-- nullify mandatory fields
-	    p_claim_ref := NULL;		-- to ensure child records
-        ELSIF l_record_type = '10' THEN	-- fail and do not get
-	    p_wol_id := NULL;			-- inserted under incorrect
-        END IF;					-- parent
+        IF l_record_type = '05' THEN    -- nullify mandatory fields
+        p_claim_ref := NULL;        -- to ensure child records
+        ELSIF l_record_type = '10' THEN    -- fail and do not get
+        p_wol_id := NULL;            -- inserted under incorrect
+        END IF;                    -- parent
 
       ELSE  -- validating existing error (from form)
 
-        p_error := SQLERRM;	-- don't create an error record
-					-- one already exists
+        p_error := SQLERRM;    -- don't create an error record
+                    -- one already exists
       END IF;
 
-      IF l_record_type = '00' THEN	-- error with the header record
-        p_ih_id := NULL;		-- mark for process halting
+      IF l_record_type = '00' THEN    -- error with the header record
+        p_ih_id := NULL;        -- mark for process halting
       END IF;
 
 END;
@@ -3728,7 +3835,7 @@ CURSOR c2 IS
   WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
   AND    hsc_allow_feature4 = 'Y'
   AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
 CURSOR c3 IS
   SELECT icwor_claim_type, icwol_wol_id
@@ -3748,10 +3855,10 @@ BEGIN
 
     FOR c2rec IN c2 LOOP
       IF l_wol_status_code = c2rec.hsc_status_code THEN
-	    IF c3rec.icwor_claim_type = 'P' THEN
-		  l_icwol_wol_id := c3rec.icwol_wol_id;
-	    END IF;
-	  END IF;
+        IF c3rec.icwor_claim_type = 'P' THEN
+          l_icwol_wol_id := c3rec.icwol_wol_id;
+        END IF;
+      END IF;
     END LOOP;
   END LOOP;
   RETURN l_icwol_wol_id;
@@ -3776,41 +3883,41 @@ END;
 --
 
 PROCEDURE claim_file_ph1(p_job_id IN number
-                ,p_contractor_id	IN varchar2
-				,p_seq_no		IN number
-				,p_filepath		IN varchar2
+                ,p_contractor_id    IN varchar2
+                ,p_seq_no        IN number
+                ,p_filepath        IN varchar2
                 ,p_filename     IN varchar2
-				,p_error		OUT varchar2) IS
+                ,p_error        OUT varchar2) IS
 BEGIN
   interfaces.g_job_id := p_job_id;
   --
   interfaces.claim_file_ph1(p_contractor_id
-				           ,p_seq_no
-				           ,p_filepath
+                           ,p_seq_no
+                           ,p_filepath
                            ,p_filename
-				           ,p_error);
+                           ,p_error);
 END;
 --
-PROCEDURE claim_file_ph1(p_contractor_id	IN varchar2
-				,p_seq_no		IN number
-				,p_filepath		IN varchar2
+PROCEDURE claim_file_ph1(p_contractor_id    IN varchar2
+                ,p_seq_no        IN number
+                ,p_filepath        IN varchar2
                 ,p_filename     IN varchar2
-				,p_error		OUT varchar2) IS
+                ,p_error        OUT varchar2) IS
 
-  l_today			date := SYSDATE;
-  l_fhand			utl_file.file_type;		-- claim file
-  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'WI');
-  l_filename	    varchar2(12) := NVL(p_filename,'WI'||TO_CHAR(l_seq_no)||'.'||p_contractor_id);
-  l_record			interface_erroneous_records.ier_record_text%TYPE;
-  l_error			interface_erroneous_records.ier_error%TYPE;
-  l_ih_id			interface_headers.ih_id%TYPE;
-  l_wor_no			interface_claims_wor.icwor_works_order_no%TYPE;
-  l_wol_id			interface_claims_wol.icwol_wol_id%TYPE;
-  l_claim_date    	interface_claims_wor.icwor_claim_date%TYPE;
-  l_claim_ref     	interface_claims_wor.icwor_con_claim_ref%TYPE;
-  l_con_id	      	interface_claims_wor.icwor_con_id%TYPE;
-  l_file_not_found 	varchar2(250) := 'Error: Unable to open file. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
-  invalid_file		EXCEPTION;
+  l_today            date := SYSDATE;
+  l_fhand            utl_file.file_type;        -- claim file
+  l_seq_no            varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'WI');
+  l_filename        varchar2(12) := NVL(p_filename,'WI'||TO_CHAR(l_seq_no)||'.'||p_contractor_id);
+  l_record            interface_erroneous_records.ier_record_text%TYPE;
+  l_error            interface_erroneous_records.ier_error%TYPE;
+  l_ih_id            interface_headers.ih_id%TYPE;
+  l_wor_no            interface_claims_wor.icwor_works_order_no%TYPE;
+  l_wol_id            interface_claims_wol.icwol_wol_id%TYPE;
+  l_claim_date        interface_claims_wor.icwor_claim_date%TYPE;
+  l_claim_ref         interface_claims_wor.icwor_con_claim_ref%TYPE;
+  l_con_id              interface_claims_wor.icwor_con_id%TYPE;
+  l_file_not_found     varchar2(250) := 'Error: Unable to open file. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
+  invalid_file        EXCEPTION;
 
 BEGIN
 
@@ -3825,17 +3932,17 @@ BEGIN
         UTL_FILE.GET_LINE(l_fhand, l_record);
         l_error := NULL;
 
-	  populate_wi_interface_tables(l_ih_id
-						,l_wor_no
-						,l_wol_id
-						,l_claim_date
-						,l_claim_ref
-						,l_con_id
-						,l_record
-						,l_error);
+      populate_wi_interface_tables(l_ih_id
+                        ,l_wor_no
+                        ,l_wol_id
+                        ,l_claim_date
+                        ,l_claim_ref
+                        ,l_con_id
+                        ,l_record
+                        ,l_error);
 
-        IF l_ih_id IS NULL THEN	-- error in header record
-          EXIT;				-- halt processing
+        IF l_ih_id IS NULL THEN    -- error in header record
+          EXIT;                -- halt processing
         END IF;
 
       END LOOP;
@@ -3846,10 +3953,10 @@ BEGIN
 
     EXCEPTION
       WHEN invalid_file OR utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
-	    p_error := l_file_not_found;
+        p_error := l_file_not_found;
 
-  	  WHEN no_data_found THEN  -- end of file
-	    UTL_FILE.FCLOSE(l_fhand);
+        WHEN no_data_found THEN  -- end of file
+        UTL_FILE.FCLOSE(l_fhand);
 
       WHEN others THEN
         p_error := SQLERRM;
@@ -3891,8 +3998,8 @@ END;
 --
 
 PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
-				,p_file  OUT varchar2
-				,p_error OUT varchar2) IS
+                ,p_file  OUT varchar2
+                ,p_error OUT varchar2) IS
 
   CURSOR usr_id IS
     SELECT hus_user_id
@@ -3901,22 +4008,22 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
 
   CURSOR wols IS
     SELECT icwol_defect_id
-	    ,icwol_schd_id
-	    ,icwol_wol_id
-	    ,icwol_date_complete
-	    ,icwor_works_order_no
-	    ,icwor_claim_type
-	    ,icwor_claim_date
-	    ,icwor_con_claim_ref
-	    ,icwor_con_id
-	    ,icwol_claim_value
-	    ,oun_unit_code
-	    ,wol_icb_work_code
+        ,icwol_schd_id
+        ,icwol_wol_id
+        ,icwol_date_complete
+        ,icwor_works_order_no
+        ,icwor_claim_type
+        ,icwor_claim_date
+        ,icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwol_claim_value
+        ,oun_unit_code
+        ,wol_icb_work_code
     FROM   interface_claims_wol
-	    ,interface_claims_wor
-	    ,contracts
-	    ,org_units
-	    ,work_order_lines
+        ,interface_claims_wor
+        ,contracts
+        ,org_units
+        ,work_order_lines
     WHERE  oun_org_id = con_contr_org_id
     AND    con_id = icwor_con_id
     AND    icwol_wol_id = wol_id
@@ -3927,9 +4034,9 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
     AND    icwor_con_id = icwol_con_id
     AND    icwor_status = 'P';
 
-  CURSOR boqs (p_wol_id		 interface_claims_wol.icwol_wol_id%TYPE
-		  ,p_con_claim_ref interface_claims_wol.icwol_con_claim_ref%TYPE
-		  ,p_con_id		 interface_claims_wol.icwol_con_id%TYPE) IS
+  CURSOR boqs (p_wol_id         interface_claims_wol.icwol_wol_id%TYPE
+          ,p_con_claim_ref interface_claims_wol.icwol_con_claim_ref%TYPE
+          ,p_con_id         interface_claims_wol.icwol_con_id%TYPE) IS
     SELECT *
     FROM   interface_claims_boq
     WHERE  icboq_ih_id = p_ih_id
@@ -3939,9 +4046,9 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
     AND    icboq_status = 'P';
 
   CURSOR neg_boqs (p_wol_id    boq_items.boq_wol_id%TYPE
-			,p_item_code boq_items.boq_sta_item_code%TYPE) IS
+            ,p_item_code boq_items.boq_sta_item_code%TYPE) IS
     SELECT boq_act_quantity
-	    ,ROWID
+        ,ROWID
     FROM   boq_items
     WHERE  boq_wol_id = p_wol_id
     AND    boq_sta_item_code = p_item_code;
@@ -3950,25 +4057,31 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
     SELECT boq_id_seq.NEXTVAL
     FROM dual;
 
-  l_boq_id_seq		number;
-  l_user_id			hig_users.hus_user_id%TYPE;
-  l_wol_not_done_status	hig_status_codes.hsc_status_code%TYPE;
-  l_wol_interim_status	hig_status_codes.hsc_status_code%TYPE;
-  l_count			number;
-  l_quantity		boq_items.boq_act_quantity%TYPE;
-  l_rowid			ROWID;
-  l_no_of_recs		number(7) := 0;
-  l_total_value		number := 0;
-  l_cost_code		budgets.bud_cost_code%TYPE;
-  l_fhand			utl_file.file_type;		-- financial debit file
-  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
-  l_filename		varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
-  l_today			date := SYSDATE;
-  l_header_record		varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
-					    TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
-  l_file_not_found 	varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
-  invalid_file		EXCEPTION;
-  l_fyr_id			financial_years.fyr_id%TYPE; 
+  cursor c_defects ( pi_def_defect_id repairs.rep_def_defect_id%TYPE ) is
+  select * 
+     from defects
+     where def_defect_id = pi_def_defect_id
+     	 and def_date_compl is null;
+
+  l_boq_id_seq        number;
+  l_user_id            hig_users.hus_user_id%TYPE;
+  l_wol_not_done_status    hig_status_codes.hsc_status_code%TYPE;
+  l_wol_interim_status    hig_status_codes.hsc_status_code%TYPE;
+  l_count            number;
+  l_quantity        boq_items.boq_act_quantity%TYPE;
+  l_rowid            ROWID;
+  l_no_of_recs        number(7) := 0;
+  l_total_value        number := 0;
+  l_cost_code        budgets.bud_cost_code%TYPE;
+  l_fhand            utl_file.file_type;        -- financial debit file
+  l_seq_no            varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
+  l_filename        varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
+  l_today            date := SYSDATE;
+  l_header_record        varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
+                        TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
+  l_file_not_found     varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
+  invalid_file        EXCEPTION;
+  l_fyr_id            financial_years.fyr_id%TYPE; 
   l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
 
 BEGIN
@@ -3985,7 +4098,7 @@ BEGIN
     WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
     AND    hsc_allow_feature5 = 'Y'
     AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
     EXCEPTION
       WHEN too_many_rows THEN
@@ -4006,9 +4119,9 @@ BEGIN
     AND    hsc_allow_feature9 = 'Y'
     AND    hsc_allow_feature4 = 'N'
     AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
-    EXCEPTION		-- need to add these messages to errors table
+    EXCEPTION        -- need to add these messages to errors table
       WHEN too_many_rows THEN
         RAISE_APPLICATION_ERROR(-20001, '> 1 interim work order line status code exists');
       WHEN no_data_found THEN
@@ -4026,55 +4139,55 @@ BEGIN
   END IF;
 
   INSERT INTO work_order_claims (
-		 woc_claim_ref
-		,woc_con_id
-		,woc_claim_type
-		,woc_claim_date
-		,woc_claim_value
-		,woc_works_order_no
-		,woc_interim_no)
-  SELECT	 icwor_con_claim_ref
-		,icwor_con_id
-		,icwor_claim_type
-		,icwor_claim_date
-		,icwor_claim_value
-		,icwor_works_order_no
-		,icwor_interim_no
-  FROM	 interface_claims_wor
-  WHERE 	 icwor_status = 'P'
-  AND		 icwor_ih_id = p_ih_id
-  AND		 NOT EXISTS (SELECT 1				-- for when reprocessing existing invoices
-				 FROM   work_order_claims	-- ie. for previously held or rejected records
-				 WHERE  woc_claim_ref = icwor_con_claim_ref
-				 AND    woc_con_id = icwor_con_id);
+         woc_claim_ref
+        ,woc_con_id
+        ,woc_claim_type
+        ,woc_claim_date
+        ,woc_claim_value
+        ,woc_works_order_no
+        ,woc_interim_no)
+  SELECT     icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwor_claim_type
+        ,icwor_claim_date
+        ,icwor_claim_value
+        ,icwor_works_order_no
+        ,icwor_interim_no
+  FROM     interface_claims_wor
+  WHERE      icwor_status = 'P'
+  AND         icwor_ih_id = p_ih_id
+  AND         NOT EXISTS (SELECT 1                -- for when reprocessing existing invoices
+                 FROM   work_order_claims    -- ie. for previously held or rejected records
+                 WHERE  woc_claim_ref = icwor_con_claim_ref
+                 AND    woc_con_id = icwor_con_id);
 
   INSERT INTO claim_payments (
-		 cp_woc_claim_ref
-		,cp_woc_con_id
-		,cp_wol_id
-		,cp_status
-		,cp_claim_value)
-  SELECT	 icwor_con_claim_ref
-		,icwor_con_id
-		,icwol_wol_id
-		,DECODE(get_woc_claim_type(icwor_con_claim_ref, icwor_con_id),'P','H',hop_value)
-		,icwol_claim_value
-  FROM	 hig_options
-		,interface_claims_wol
-		,interface_claims_wor
-  WHERE	 hop_id = 'CLAIMDEF'
-  AND	 icwor_ih_id = p_ih_id
-  AND	 icwor_status = 'P'
-  AND	 icwor_con_claim_ref = icwol_con_claim_ref
+         cp_woc_claim_ref
+        ,cp_woc_con_id
+        ,cp_wol_id
+        ,cp_status
+        ,cp_claim_value)
+  SELECT     icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwol_wol_id
+        ,DECODE(get_woc_claim_type(icwor_con_claim_ref, icwor_con_id),'P','H',hop_value)
+        ,icwol_claim_value
+  FROM     hig_options
+        ,interface_claims_wol
+        ,interface_claims_wor
+  WHERE     hop_id = 'CLAIMDEF'
+  AND     icwor_ih_id = p_ih_id
+  AND     icwor_status = 'P'
+  AND     icwor_con_claim_ref = icwol_con_claim_ref
   AND      icwor_con_id = icwol_con_id
-  AND	 icwol_ih_id = icwor_ih_id
-  AND	 icwol_status = 'P';
+  AND     icwol_ih_id = icwor_ih_id
+  AND     icwol_status = 'P';
 
   IF hig.get_sysopt('CPAINTERIM') = '1'
     THEN
       UPDATE claim_payments SET cp_status = 'H'
        WHERE cp_status = 'A'
-	 AND cp_wol_id IN
+     AND cp_wol_id IN
       (SELECT icwol_wol_id
       FROM interface_claims_wor
          , interface_claims_wol
@@ -4094,21 +4207,21 @@ BEGIN
 -- write financial debit transaction debit record
       IF UTL_FILE.IS_OPEN(l_fhand) THEN
 
-	  OPEN cost_code(wol_rec.icwol_wol_id);
-	  FETCH cost_code INTO l_cost_code;
-	  CLOSE cost_code;
+      OPEN cost_code(wol_rec.icwol_wol_id);
+      FETCH cost_code INTO l_cost_code;
+      CLOSE cost_code;
 
     l_fyr_id := get_fyr_id(wol_rec.icwol_wol_id);--SM 26112008 717549
     if l_fyr_id = '-1' then
-    	l_fyr_id := null;
+        l_fyr_id := null;
     end if;
 
         UTL_FILE.PUT_LINE(l_fhand, '05,'||TO_CHAR(wol_rec.icwor_claim_date, g_date_format)||','||
-				  wol_rec.icwor_con_claim_ref||','||wol_rec.icwor_works_order_no||','||
-				  TO_CHAR(wol_rec.icwol_wol_id)||','||TO_CHAR(wol_rec.icwol_defect_id)||','||
-				  TO_CHAR(wol_rec.icwol_schd_id)||','||wol_rec.oun_unit_code||','||
-				  LTRIM(TO_CHAR(wol_rec.icwol_claim_value,'9999999990.00'))||','||wol_rec.wol_icb_work_code||','||
-				  l_cost_code||','||l_fyr_id);
+                  wol_rec.icwor_con_claim_ref||','||wol_rec.icwor_works_order_no||','||
+                  TO_CHAR(wol_rec.icwol_wol_id)||','||TO_CHAR(wol_rec.icwol_defect_id)||','||
+                  TO_CHAR(wol_rec.icwol_schd_id)||','||wol_rec.oun_unit_code||','||
+                  LTRIM(TO_CHAR(wol_rec.icwol_claim_value,'9999999990.00'))||','||wol_rec.wol_icb_work_code||','||
+                  l_cost_code||','||l_fyr_id);
 
         l_no_of_recs := l_no_of_recs + 1;
         l_total_value := l_total_value + wol_rec.icwol_claim_value;
@@ -4119,24 +4232,46 @@ BEGIN
 
       IF wol_rec.icwor_claim_type = 'F' AND  -- not necessary for Post or Interim claims
          wol_rec.icwol_defect_id IS NOT NULL THEN -- skip for non defect WOLs
+        IF hig.get_user_or_sys_opt('WCCOMPLETE')='Y' then -- SM 06012009 717676
+          --check to see if defect is complete already
+          for c_defectsrec in c_defects(wol_rec.icwol_defect_id) loop
+            maiwo.update_defect_date( wol_rec.icwol_defect_id
+                                    , wol_rec.icwol_date_complete
+                                    , wol_rec.icwor_works_order_no  );
 
-        maiwo.update_defect_date(  wol_rec.icwol_defect_id
-					    ,wol_rec.icwol_date_complete
-					    ,wol_rec.icwor_works_order_no  );
-
-	  UPDATE defects
-	  SET    def_status_code = (SELECT MAX(hsc_status_code)
-					    FROM   hig_status_codes
-                                  WHERE  hsc_allow_feature4 = 'Y'
-                                  AND    hsc_domain_code = 'DEFECTS'
-					    AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-						     AND NVL(hsc_end_date, g_today))
-		  ,def_last_updated_date = SYSDATE
-	  WHERE  NOT EXISTS (SELECT 1
-                           FROM   repairs
-                           WHERE  rep_def_defect_id = def_defect_id
-                           AND    rep_date_completed IS NULL)
-	  AND	   def_defect_id = wol_rec.icwol_defect_id;
+            UPDATE defects
+            SET    def_status_code = (SELECT MAX(hsc_status_code)
+            FROM   hig_status_codes
+            WHERE  hsc_allow_feature4 = 'Y'
+            AND    hsc_domain_code = 'DEFECTS'
+            AND    g_today BETWEEN NVL(hsc_start_date, g_today)
+            AND NVL(hsc_end_date, g_today))
+            ,def_last_updated_date = SYSDATE
+            WHERE  NOT EXISTS (SELECT 1
+                             FROM   repairs
+                             WHERE  rep_def_defect_id = def_defect_id
+                             AND    rep_date_completed IS NULL)
+          AND       def_defect_id = wol_rec.icwol_defect_id;          
+          end loop;
+        else
+          maiwo.update_defect_date( wol_rec.icwol_defect_id
+                                  , wol_rec.icwol_date_complete
+                                  , wol_rec.icwor_works_order_no  
+                                  );
+          UPDATE defects
+          SET    def_status_code = (SELECT MAX(hsc_status_code)
+                                    FROM   hig_status_codes
+                                    WHERE  hsc_allow_feature4 = 'Y'
+                                    AND    hsc_domain_code = 'DEFECTS'
+                                    AND    g_today BETWEEN NVL(hsc_start_date, g_today)
+                                                       AND NVL(hsc_end_date, g_today))
+                ,def_last_updated_date = SYSDATE
+          WHERE  NOT EXISTS (SELECT 1
+                             FROM   repairs
+                             WHERE  rep_def_defect_id = def_defect_id
+                             AND    rep_date_completed IS NULL)
+          AND       def_defect_id = wol_rec.icwol_defect_id;
+        end if;
 
       END IF;
 
@@ -4226,211 +4361,211 @@ BEGIN
        IF hig.get_sysopt('XTRIFLDS') IN ('2-1-3', '2-4-0') THEN
         IF SIGN(boq_rec.icboq_boq_id) = -1 THEN
           IF boq_rec.icboq_parent_boq_id IS NOT NULL THEN
-		    g_parent_boq_id_seq := g_boq_id_seq;
-		  ELSE
-		    g_parent_boq_id_seq := NULL;
-		  END IF;
-			OPEN boq_id;
-			FETCH boq_id INTO g_boq_id_seq;
-			CLOSE boq_id;
+            g_parent_boq_id_seq := g_boq_id_seq;
+          ELSE
+            g_parent_boq_id_seq := NULL;
+          END IF;
+            OPEN boq_id;
+            FETCH boq_id INTO g_boq_id_seq;
+            CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id
-			,boq_parent_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
-            		,g_boq_id_seq
-			,g_parent_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
-		ELSE
-		OPEN boq_id;
-		FETCH boq_id INTO l_boq_id_seq;
-		CLOSE boq_id;
+            ,boq_parent_id)
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
+                    ,g_boq_id_seq
+            ,g_parent_boq_id_seq
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
+        ELSE
+        OPEN boq_id;
+        FETCH boq_id INTO l_boq_id_seq;
+        CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
             ,l_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
         END IF;
-		ELSE
-		OPEN boq_id;
-		FETCH boq_id INTO l_boq_id_seq;
-		CLOSE boq_id;
+        ELSE
+        OPEN boq_id;
+        FETCH boq_id INTO l_boq_id_seq;
+        CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(sta_item_name,',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(sta_item_name,',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
             ,l_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
-		  END IF;
-	-- handle negative claims ie. credits
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
+          END IF;
+    -- handle negative claims ie. credits
         ELSIF wol_rec.icwor_claim_type = 'P' AND boq_rec.icboq_quantity < 0 THEN
 
-	    OPEN neg_boqs(wol_rec.icwol_wol_id
-			     ,boq_rec.icboq_sta_item_code);
-	    LOOP
+        OPEN neg_boqs(wol_rec.icwol_wol_id
+                 ,boq_rec.icboq_sta_item_code);
+        LOOP
 
-	      FETCH neg_boqs INTO l_quantity
-				       ,l_rowid;
-	      EXIT WHEN neg_boqs%NOTFOUND;
+          FETCH neg_boqs INTO l_quantity
+                       ,l_rowid;
+          EXIT WHEN neg_boqs%NOTFOUND;
 
-	      IF l_quantity + boq_rec.icboq_quantity < 0 THEN
-		  boq_rec.icboq_quantity := boq_rec.icboq_quantity + l_quantity;
-		  l_quantity := 0;
-	      ELSE
-		  l_quantity := l_quantity + boq_rec.icboq_quantity;
-		  boq_rec.icboq_quantity := 0;
-	      END IF;
+          IF l_quantity + boq_rec.icboq_quantity < 0 THEN
+          boq_rec.icboq_quantity := boq_rec.icboq_quantity + l_quantity;
+          l_quantity := 0;
+          ELSE
+          l_quantity := l_quantity + boq_rec.icboq_quantity;
+          boq_rec.icboq_quantity := 0;
+          END IF;
 
-	      UPDATE boq_items
-	      SET    boq_act_dim1 = l_quantity
+          UPDATE boq_items
+          SET    boq_act_dim1 = l_quantity
                ,(boq_act_dim2
                 ,boq_act_dim3) = (SELECT DECODE(sta_dim2_text, NULL, NULL, DECODE(l_quantity, 0, 0, 1))
                                         ,DECODE(sta_dim3_text, NULL, NULL, DECODE(l_quantity, 0, 0, 1))
@@ -4443,18 +4578,18 @@ BEGIN
                 ,boq_act_cost = ROUND((l_quantity * boq_act_rate), 2)
                  WHERE  ROWID = l_rowid;
 
-	      EXIT WHEN boq_rec.icboq_quantity = 0;
+          EXIT WHEN boq_rec.icboq_quantity = 0;
 
-	    END LOOP;
-	    CLOSE neg_boqs;
+        END LOOP;
+        CLOSE neg_boqs;
 
         END IF;
 
       END LOOP;
 
       maiwo.adjust_contract_figures(wol_rec.icwol_wol_id
-					     ,wol_rec.icwor_con_id
-					     ,'+');
+                         ,wol_rec.icwor_con_id
+                         ,'+');
 
 IF wol_rec.icwor_claim_type != 'I' THEN
   l_wol_date_complete := TO_DATE(TO_CHAR(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS');
@@ -4464,39 +4599,39 @@ END IF;
 
       UPDATE work_order_lines
       SET    wol_status_code = DECODE(wol_rec.icwor_claim_type, 'F',
-						  g_wol_comp_status, 'I',
-						  l_wol_interim_status, wol_status_code)
+                          g_wol_comp_status, 'I',
+                          l_wol_interim_status, wol_status_code)
             ,wol_date_complete = DECODE(wol_rec.icwor_claim_type, 'P',TO_DATE(TO_CHAR(wol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')
                                        ,l_wol_date_complete/*Decode(wol_rec.icwor_claim_type,'I',null,to_date(to_char(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH:MI:SS'),'DD-MON-YYYY HH:MI:SS'))*/)
-	      ,(wol_act_cost
-	      ,wol_est_labour) = (SELECT SUM(boq_act_cost)
-						  ,SUM(boq_act_labour)
-					  FROM   boq_items
-				        WHERE  boq_wol_id = wol_id)
-	      ,wol_invoice_status = maiwo.wol_invoice_status(wol_id)
+          ,(wol_act_cost
+          ,wol_est_labour) = (SELECT SUM(boq_act_cost)
+                          ,SUM(boq_act_labour)
+                      FROM   boq_items
+                        WHERE  boq_wol_id = wol_id)
+          ,wol_invoice_status = maiwo.wol_invoice_status(wol_id)
       WHERE  wol_id = wol_rec.icwol_wol_id;
 
       UPDATE interface_claims_boq
       SET    icboq_status = NULL
       WHERE  icboq_status = 'P'
       AND    icboq_wol_id = wol_rec.icwol_wol_id
-	AND    icboq_con_claim_ref = wol_rec.icwor_con_claim_ref
-	AND    icboq_con_id = wol_rec.icwor_con_id
+    AND    icboq_con_claim_ref = wol_rec.icwor_con_claim_ref
+    AND    icboq_con_id = wol_rec.icwor_con_id
       AND    icboq_ih_id = p_ih_id;
 
       UPDATE interface_claims_wol
       SET    icwol_status = NULL
       WHERE  icwol_wol_id = wol_rec.icwol_wol_id
       AND    icwol_con_claim_ref = wol_rec.icwor_con_claim_ref
-	AND    icwol_con_id = wol_rec.icwor_con_id
+    AND    icwol_con_id = wol_rec.icwor_con_id
       AND    icwol_ih_id = p_ih_id
       AND    icwol_status = 'P'
       AND    NOT EXISTS ( SELECT 1
-				  FROM   interface_claims_boq
-				  WHERE  icboq_wol_id = icwol_wol_id
-				  AND    icboq_con_claim_ref = icwol_con_claim_ref
-				  AND    icboq_con_id = icwol_con_id
-				  AND    icboq_ih_id = p_ih_id );
+                  FROM   interface_claims_boq
+                  WHERE  icboq_wol_id = icwol_wol_id
+                  AND    icboq_con_claim_ref = icwol_con_claim_ref
+                  AND    icboq_con_id = icwol_con_id
+                  AND    icboq_ih_id = p_ih_id );
 
     END LOOP;
 
@@ -4513,45 +4648,45 @@ END IF;
 
     UPDATE work_orders
     SET   (wor_est_labour
-	    ,wor_act_cost
-	    ,wor_act_balancing_sum
-	    ,wor_date_closed
-	    ,wor_closed_by_id) = (SELECT DISTINCT		-- incase duplicate WOs in file
-						   SUM(wol_est_labour)
-						  ,SUM(wol_act_cost)
-						  ,maiwo.bal_sum(SUM(wol_act_cost), oun_cng_disc_group)
-						  ,DECODE(wor_date_closed, NULL,
-						   DECODE(maiwo.works_order_complete(wor_works_order_no),
-						  'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), wor_date_closed)
-						  ,DECODE(wor_date_closed, NULL, l_user_id, wor_closed_by_id)
-					  FROM   work_order_lines
-						  ,interface_claims_wor
-						  ,org_units
-						  ,contracts
-					  WHERE  wol_works_order_no = wor_works_order_no
-					  AND    icwor_works_order_no = wor_works_order_no
-					  AND    icwor_ih_id = p_ih_id
-					  AND	   icwor_status = 'P'
-					  AND    con_id = wor_con_id
-					  AND    con_contr_org_id = oun_org_id
-					  GROUP BY
-						   oun_cng_disc_group
-						  ,icwor_con_claim_ref
-						  ,icwor_con_id)
+        ,wor_act_cost
+        ,wor_act_balancing_sum
+        ,wor_date_closed
+        ,wor_closed_by_id) = (SELECT DISTINCT        -- incase duplicate WOs in file
+                           SUM(wol_est_labour)
+                          ,SUM(wol_act_cost)
+                          ,maiwo.bal_sum(SUM(wol_act_cost), oun_cng_disc_group)
+                          ,DECODE(wor_date_closed, NULL,
+                           DECODE(maiwo.works_order_complete(wor_works_order_no),
+                          'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), wor_date_closed)
+                          ,DECODE(wor_date_closed, NULL, l_user_id, wor_closed_by_id)
+                      FROM   work_order_lines
+                          ,interface_claims_wor
+                          ,org_units
+                          ,contracts
+                      WHERE  wol_works_order_no = wor_works_order_no
+                      AND    icwor_works_order_no = wor_works_order_no
+                      AND    icwor_ih_id = p_ih_id
+                      AND       icwor_status = 'P'
+                      AND    con_id = wor_con_id
+                      AND    con_contr_org_id = oun_org_id
+                      GROUP BY
+                           oun_cng_disc_group
+                          ,icwor_con_claim_ref
+                          ,icwor_con_id)
     WHERE  wor_works_order_no IN (SELECT icwor_works_order_no
-				 	    FROM   interface_claims_wor
-					    WHERE  icwor_ih_id = p_ih_id
-					    AND    icwor_status = 'P');
+                         FROM   interface_claims_wor
+                        WHERE  icwor_ih_id = p_ih_id
+                        AND    icwor_status = 'P');
 
     UPDATE interface_claims_wor
     SET    icwor_status = NULL
     WHERE  icwor_status = 'P'
     AND    icwor_ih_id = p_ih_id
     AND    NOT EXISTS ( SELECT 1
-			      FROM   interface_claims_wol
-			      WHERE  icwol_con_claim_ref = icwor_con_claim_ref
-				AND    icwol_con_id = icwor_con_id
-			      AND    icwol_ih_id = p_ih_id );
+                  FROM   interface_claims_wol
+                  WHERE  icwol_con_claim_ref = icwor_con_claim_ref
+                AND    icwol_con_id = icwor_con_id
+                  AND    icwol_ih_id = p_ih_id );
 
     SELECT COUNT(0)
     INTO   l_count
@@ -4565,8 +4700,8 @@ END IF;
       WHERE  ier_ih_id = p_ih_id;
     END IF;
 
-    IF l_count = 0 THEN			-- if no child records exist
-      UPDATE interface_headers	-- archive the header record
+    IF l_count = 0 THEN            -- if no child records exist
+      UPDATE interface_headers    -- archive the header record
       SET    ih_status = NULL
       WHERE  ih_id = p_ih_id;
     END IF;
@@ -4582,7 +4717,7 @@ END IF;
         UTL_FILE.FCLOSE(l_fhand);
 
       WHEN others THEN
-	    p_error := SQLERRM;
+        p_error := SQLERRM;
 
 END;
 
@@ -4593,8 +4728,8 @@ END;
 --
 
 PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
-				,p_file  OUT varchar2
-				,p_error OUT varchar2) IS
+                ,p_file  OUT varchar2
+                ,p_error OUT varchar2) IS
 
   CURSOR usr_id IS
     SELECT hus_user_id
@@ -4603,22 +4738,22 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 
   CURSOR wols IS
     SELECT icwol_defect_id
-	    ,icwol_schd_id
-	    ,icwol_wol_id
-	    ,icwol_date_complete
-	    ,icwor_works_order_no
-	    ,icwor_claim_type
-	    ,icwor_claim_date
-	    ,icwor_con_claim_ref
-	    ,icwor_con_id
-	    ,icwol_claim_value
-	    ,oun_unit_code
-	    ,wol_icb_work_code
+        ,icwol_schd_id
+        ,icwol_wol_id
+        ,icwol_date_complete
+        ,icwor_works_order_no
+        ,icwor_claim_type
+        ,icwor_claim_date
+        ,icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwol_claim_value
+        ,oun_unit_code
+        ,wol_icb_work_code
     FROM   interface_claims_wol
-	    ,interface_claims_wor
-	    ,contracts
-	    ,org_units
-	    ,work_order_lines
+        ,interface_claims_wor
+        ,contracts
+        ,org_units
+        ,work_order_lines
     WHERE  oun_org_id = con_contr_org_id
     AND    con_id = icwor_con_id
     AND    icwol_wol_id = wol_id
@@ -4629,9 +4764,9 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
     AND    icwor_con_id = icwol_con_id
     AND    icwor_status = 'P';
 
-  CURSOR boqs (p_wol_id		 interface_claims_wol.icwol_wol_id%TYPE
-		  ,p_con_claim_ref interface_claims_wol.icwol_con_claim_ref%TYPE
-		  ,p_con_id		 interface_claims_wol.icwol_con_id%TYPE) IS
+  CURSOR boqs (p_wol_id         interface_claims_wol.icwol_wol_id%TYPE
+          ,p_con_claim_ref interface_claims_wol.icwol_con_claim_ref%TYPE
+          ,p_con_id         interface_claims_wol.icwol_con_id%TYPE) IS
     SELECT *
     FROM   interface_claims_boq
     WHERE  icboq_ih_id = p_ih_id
@@ -4641,9 +4776,9 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
     AND    icboq_status = 'P';
 
   CURSOR neg_boqs (p_wol_id    boq_items.boq_wol_id%TYPE
-			,p_item_code boq_items.boq_sta_item_code%TYPE) IS
+            ,p_item_code boq_items.boq_sta_item_code%TYPE) IS
     SELECT boq_act_quantity
-	    ,ROWID
+        ,ROWID
     FROM   boq_items
     WHERE  boq_wol_id = p_wol_id
     AND    boq_sta_item_code = p_item_code;
@@ -4652,25 +4787,25 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
     SELECT boq_id_seq.NEXTVAL
     FROM dual;
 
-  l_boq_id_seq		number;
-  l_user_id			hig_users.hus_user_id%TYPE;
-  l_wol_not_done_status	hig_status_codes.hsc_status_code%TYPE;
-  l_wol_interim_status	hig_status_codes.hsc_status_code%TYPE;
-  l_count			number;
-  l_quantity		boq_items.boq_act_quantity%TYPE;
-  l_rowid			ROWID;
-  l_no_of_recs		number(7) := 0;
-  l_total_value		number := 0;
-  l_cost_code		budgets.bud_cost_code%TYPE;
-  l_fhand			utl_file.file_type;		-- financial debit file
-  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
-  l_filename		varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
-  l_today			date := SYSDATE;
-  l_header_record		varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
-					    TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
-  l_file_not_found 	varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
-  invalid_file		EXCEPTION;
-  l_fyr_id			financial_years.fyr_id%TYPE; 
+  l_boq_id_seq        number;
+  l_user_id            hig_users.hus_user_id%TYPE;
+  l_wol_not_done_status    hig_status_codes.hsc_status_code%TYPE;
+  l_wol_interim_status    hig_status_codes.hsc_status_code%TYPE;
+  l_count            number;
+  l_quantity        boq_items.boq_act_quantity%TYPE;
+  l_rowid            ROWID;
+  l_no_of_recs        number(7) := 0;
+  l_total_value        number := 0;
+  l_cost_code        budgets.bud_cost_code%TYPE;
+  l_fhand            utl_file.file_type;        -- financial debit file
+  l_seq_no            varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
+  l_filename        varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
+  l_today            date := SYSDATE;
+  l_header_record        varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
+                        TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
+  l_file_not_found     varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
+  invalid_file        EXCEPTION;
+  l_fyr_id            financial_years.fyr_id%TYPE; 
   l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
 
 BEGIN
@@ -4687,7 +4822,7 @@ BEGIN
     WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
     AND    hsc_allow_feature5 = 'Y'
     AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
     EXCEPTION
       WHEN too_many_rows THEN
@@ -4708,9 +4843,9 @@ BEGIN
     AND    hsc_allow_feature9 = 'Y'
     AND    hsc_allow_feature4 = 'N'
     AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
-    EXCEPTION		-- need to add these messages to errors table
+    EXCEPTION        -- need to add these messages to errors table
       WHEN too_many_rows THEN
         RAISE_APPLICATION_ERROR(-20001, '> 1 interim work order line status code exists');
       WHEN no_data_found THEN
@@ -4728,65 +4863,65 @@ BEGIN
 --   END IF;
 
   INSERT INTO work_order_claims (
-		 woc_claim_ref
-		,woc_con_id
-		,woc_claim_type
-		,woc_claim_date
-		,woc_claim_value
-		,woc_works_order_no
-		,woc_interim_no)
-  SELECT	 icwor_con_claim_ref
-		,icwor_con_id
-		,icwor_claim_type
-		,icwor_claim_date
-		,icwor_claim_value
-		,icwor_works_order_no
-		,icwor_interim_no
-  FROM	 interface_claims_wor
-  WHERE 	 icwor_status = 'P'
-  AND		 icwor_ih_id = p_ih_id
-  AND		 NOT EXISTS (SELECT 1				-- for when reprocessing existing invoices
-				 FROM   work_order_claims	-- ie. for previously held or rejected records
-				 WHERE  woc_claim_ref = icwor_con_claim_ref
-				 AND    woc_con_id = icwor_con_id);
+         woc_claim_ref
+        ,woc_con_id
+        ,woc_claim_type
+        ,woc_claim_date
+        ,woc_claim_value
+        ,woc_works_order_no
+        ,woc_interim_no)
+  SELECT     icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwor_claim_type
+        ,icwor_claim_date
+        ,icwor_claim_value
+        ,icwor_works_order_no
+        ,icwor_interim_no
+  FROM     interface_claims_wor
+  WHERE      icwor_status = 'P'
+  AND         icwor_ih_id = p_ih_id
+  AND         NOT EXISTS (SELECT 1                -- for when reprocessing existing invoices
+                 FROM   work_order_claims    -- ie. for previously held or rejected records
+                 WHERE  woc_claim_ref = icwor_con_claim_ref
+                 AND    woc_con_id = icwor_con_id);
 
   INSERT INTO claim_payments (
-		 cp_woc_claim_ref
-		,cp_woc_con_id
-		,cp_wol_id
-		,cp_status
-		,cp_claim_value)
-  SELECT	 icwor_con_claim_ref
-		,icwor_con_id
-		,icwol_wol_id
-		,DECODE(get_woc_claim_type(icwor_con_claim_ref, icwor_con_id),'P','H',hop_value)
-		,icwol_claim_value
-  FROM	 hig_options
-		,interface_claims_wol
-		,interface_claims_wor
-  WHERE	 hop_id = 'CLAIMDEF'
-  AND	 icwor_ih_id = p_ih_id
-  AND	 icwor_status = 'P'
-  AND	 icwor_con_claim_ref = icwol_con_claim_ref
+         cp_woc_claim_ref
+        ,cp_woc_con_id
+        ,cp_wol_id
+        ,cp_status
+        ,cp_claim_value)
+  SELECT     icwor_con_claim_ref
+        ,icwor_con_id
+        ,icwol_wol_id
+        ,DECODE(get_woc_claim_type(icwor_con_claim_ref, icwor_con_id),'P','H',hop_value)
+        ,icwol_claim_value
+  FROM     hig_options
+        ,interface_claims_wol
+        ,interface_claims_wor
+  WHERE     hop_id = 'CLAIMDEF'
+  AND     icwor_ih_id = p_ih_id
+  AND     icwor_status = 'P'
+  AND     icwor_con_claim_ref = icwol_con_claim_ref
   AND      icwor_con_id = icwol_con_id
-  AND	 icwol_ih_id = icwor_ih_id
-  AND	 icwol_status = 'P';
+  AND     icwol_ih_id = icwor_ih_id
+  AND     icwol_status = 'P';
 
   FOR wol_rec IN wols LOOP
 
 -- write financial debit transaction debit record
 --       IF UTL_FILE.IS_OPEN(l_fhand) THEN
 --
--- 	  OPEN cost_code(wol_rec.icwol_wol_id);
--- 	  FETCH cost_code INTO l_cost_code;
--- 	  CLOSE cost_code;
+--       OPEN cost_code(wol_rec.icwol_wol_id);
+--       FETCH cost_code INTO l_cost_code;
+--       CLOSE cost_code;
 --
 --         UTL_FILE.PUT_LINE(l_fhand, '05,'||TO_CHAR(wol_rec.icwor_claim_date, g_date_format)||','||
--- 				  wol_rec.icwor_con_claim_ref||','||wol_rec.icwor_works_order_no||','||
--- 				  TO_CHAR(wol_rec.icwol_wol_id)||','||TO_CHAR(wol_rec.icwol_defect_id)||','||
--- 				  TO_CHAR(wol_rec.icwol_schd_id)||','||wol_rec.oun_unit_code||','||
--- 				  LTRIM(TO_CHAR(wol_rec.icwol_claim_value,'9999999990.00'))||','||wol_rec.wol_icb_work_code||','||
--- 				  l_cost_code||','||l_fyr_id);
+--                   wol_rec.icwor_con_claim_ref||','||wol_rec.icwor_works_order_no||','||
+--                   TO_CHAR(wol_rec.icwol_wol_id)||','||TO_CHAR(wol_rec.icwol_defect_id)||','||
+--                   TO_CHAR(wol_rec.icwol_schd_id)||','||wol_rec.oun_unit_code||','||
+--                   LTRIM(TO_CHAR(wol_rec.icwol_claim_value,'9999999990.00'))||','||wol_rec.wol_icb_work_code||','||
+--                   l_cost_code||','||l_fyr_id);
 --
 --         l_no_of_recs := l_no_of_recs + 1;
 --         l_total_value := l_total_value + wol_rec.icwol_claim_value;
@@ -4799,22 +4934,22 @@ BEGIN
          wol_rec.icwol_defect_id IS NOT NULL THEN -- skip for non defect WOLs
 
         maiwo.update_defect_date(  wol_rec.icwol_defect_id
-					    ,wol_rec.icwol_date_complete
-					    ,wol_rec.icwor_works_order_no  );
+                        ,wol_rec.icwol_date_complete
+                        ,wol_rec.icwor_works_order_no  );
 
-	  UPDATE defects
-	  SET    def_status_code = (SELECT MAX(hsc_status_code)
-					    FROM   hig_status_codes
+      UPDATE defects
+      SET    def_status_code = (SELECT MAX(hsc_status_code)
+                        FROM   hig_status_codes
                                   WHERE  hsc_allow_feature4 = 'Y'
                                   AND    hsc_domain_code = 'DEFECTS'
-					    AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-						     AND NVL(hsc_end_date, g_today))
-		  ,def_last_updated_date = SYSDATE
-	  WHERE  NOT EXISTS (SELECT 1
+                        AND    g_today BETWEEN NVL(hsc_start_date, g_today)
+                             AND NVL(hsc_end_date, g_today))
+          ,def_last_updated_date = SYSDATE
+      WHERE  NOT EXISTS (SELECT 1
                            FROM   repairs
                            WHERE  rep_def_defect_id = def_defect_id
                            AND    rep_date_completed IS NULL)
-	  AND	   def_defect_id = wol_rec.icwol_defect_id;
+      AND       def_defect_id = wol_rec.icwol_defect_id;
 
       END IF;
 
@@ -4904,211 +5039,211 @@ BEGIN
        IF hig.get_sysopt('XTRIFLDS') IN ('2-1-3', '2-4-0') THEN
         IF SIGN(boq_rec.icboq_boq_id) = -1 THEN
           IF boq_rec.icboq_parent_boq_id IS NOT NULL THEN
-		    g_parent_boq_id_seq := g_boq_id_seq;
-		  ELSE
-		    g_parent_boq_id_seq := NULL;
-		  END IF;
-			OPEN boq_id;
-			FETCH boq_id INTO g_boq_id_seq;
-			CLOSE boq_id;
+            g_parent_boq_id_seq := g_boq_id_seq;
+          ELSE
+            g_parent_boq_id_seq := NULL;
+          END IF;
+            OPEN boq_id;
+            FETCH boq_id INTO g_boq_id_seq;
+            CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id
-			,boq_parent_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
-            		,g_boq_id_seq
-			,g_parent_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
-		ELSE
-		OPEN boq_id;
-		FETCH boq_id INTO l_boq_id_seq;
-		CLOSE boq_id;
+            ,boq_parent_id)
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
+                    ,g_boq_id_seq
+            ,g_parent_boq_id_seq
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
+        ELSE
+        OPEN boq_id;
+        FETCH boq_id INTO l_boq_id_seq;
+        CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(DECODE(boq_rec.icboq_rogue_item, 'R', boq_rec.icboq_rogue_item_desc, sta_item_name),',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
             ,l_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
         END IF;
-		ELSE
-		OPEN boq_id;
-		FETCH boq_id INTO l_boq_id_seq;
-		CLOSE boq_id;
+        ELSE
+        OPEN boq_id;
+        FETCH boq_id INTO l_boq_id_seq;
+        CLOSE boq_id;
           INSERT INTO boq_items (
-			 boq_work_flag
-			,boq_defect_id
-			,boq_rep_action_cat
-			,boq_wol_id
-			,boq_sta_item_code
-			,boq_item_name
-			,boq_date_created
-			,boq_icb_work_code
-			,boq_est_dim1
-			,boq_est_dim2
-			,boq_est_dim3
-			,boq_est_quantity
-			,boq_est_rate
-			,boq_est_discount
-			,boq_est_cost
-			,boq_est_labour
-			,boq_act_dim1
-			,boq_act_dim2
-			,boq_act_dim3
-			,boq_act_quantity
-			,boq_act_cost
-			,boq_act_labour
-			,boq_act_rate
-			,boq_act_discount
+             boq_work_flag
+            ,boq_defect_id
+            ,boq_rep_action_cat
+            ,boq_wol_id
+            ,boq_sta_item_code
+            ,boq_item_name
+            ,boq_date_created
+            ,boq_icb_work_code
+            ,boq_est_dim1
+            ,boq_est_dim2
+            ,boq_est_dim3
+            ,boq_est_quantity
+            ,boq_est_rate
+            ,boq_est_discount
+            ,boq_est_cost
+            ,boq_est_labour
+            ,boq_act_dim1
+            ,boq_act_dim2
+            ,boq_act_dim3
+            ,boq_act_quantity
+            ,boq_act_cost
+            ,boq_act_labour
+            ,boq_act_rate
+            ,boq_act_discount
             ,boq_id)
-          SELECT 	 DECODE(wol_def_defect_id, NULL, 'O', 'D')
-			,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
-			,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
-			,wol_id
-			,boq_rec.icboq_sta_item_code
-			,REPLACE(sta_item_name,',','~')
-			,SYSDATE
-			,''
-			,0
-			,DECODE(sta_dim2_text, NULL, '', 0)
-			,DECODE(sta_dim3_text, NULL, '', 0)
-			,0
-			,0
-			,''
-			,0
-			,0
-			,boq_rec.icboq_dim1
-			,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
-			,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
-			,boq_rec.icboq_quantity
-			,boq_rec.icboq_cost
-			,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
-			,boq_rec.icboq_rate
-			,''
+          SELECT      DECODE(wol_def_defect_id, NULL, 'O', 'D')
+            ,DECODE(wol_def_defect_id, NULL, 0, wol_def_defect_id)
+            ,DECODE(wol_rep_action_cat, NULL, 'X', wol_rep_action_cat)
+            ,wol_id
+            ,boq_rec.icboq_sta_item_code
+            ,REPLACE(sta_item_name,',','~')
+            ,SYSDATE
+            ,''
+            ,0
+            ,DECODE(sta_dim2_text, NULL, '', 0)
+            ,DECODE(sta_dim3_text, NULL, '', 0)
+            ,0
+            ,0
+            ,''
+            ,0
+            ,0
+            ,boq_rec.icboq_dim1
+            ,NVL(boq_rec.icboq_dim2, DECODE(sta_dim2_text, NULL, '', 1))
+            ,NVL(boq_rec.icboq_dim3, DECODE(sta_dim3_text, NULL, '', 1))
+            ,boq_rec.icboq_quantity
+            ,boq_rec.icboq_cost
+            ,ROUND((boq_rec.icboq_quantity * sta_labour_units), 2)
+            ,boq_rec.icboq_rate
+            ,''
             ,l_boq_id_seq
-          FROM	 standard_items
-			,work_order_lines
-          WHERE	 sta_item_code = boq_rec.icboq_sta_item_code
-          AND  	 wol_id = wol_rec.icwol_wol_id;
-		  END IF;
-	-- handle negative claims ie. credits
+          FROM     standard_items
+            ,work_order_lines
+          WHERE     sta_item_code = boq_rec.icboq_sta_item_code
+          AND       wol_id = wol_rec.icwol_wol_id;
+          END IF;
+    -- handle negative claims ie. credits
         ELSIF wol_rec.icwor_claim_type = 'P' AND boq_rec.icboq_quantity < 0 THEN
 
-	    OPEN neg_boqs(wol_rec.icwol_wol_id
-			     ,boq_rec.icboq_sta_item_code);
-	    LOOP
+        OPEN neg_boqs(wol_rec.icwol_wol_id
+                 ,boq_rec.icboq_sta_item_code);
+        LOOP
 
-	      FETCH neg_boqs INTO l_quantity
-				       ,l_rowid;
-	      EXIT WHEN neg_boqs%NOTFOUND;
+          FETCH neg_boqs INTO l_quantity
+                       ,l_rowid;
+          EXIT WHEN neg_boqs%NOTFOUND;
 
-	      IF l_quantity + boq_rec.icboq_quantity < 0 THEN
-		  boq_rec.icboq_quantity := boq_rec.icboq_quantity + l_quantity;
-		  l_quantity := 0;
-	      ELSE
-		  l_quantity := l_quantity + boq_rec.icboq_quantity;
-		  boq_rec.icboq_quantity := 0;
-	      END IF;
+          IF l_quantity + boq_rec.icboq_quantity < 0 THEN
+          boq_rec.icboq_quantity := boq_rec.icboq_quantity + l_quantity;
+          l_quantity := 0;
+          ELSE
+          l_quantity := l_quantity + boq_rec.icboq_quantity;
+          boq_rec.icboq_quantity := 0;
+          END IF;
 
-	      UPDATE boq_items
-	      SET    boq_act_dim1 = l_quantity
+          UPDATE boq_items
+          SET    boq_act_dim1 = l_quantity
                ,(boq_act_dim2
                 ,boq_act_dim3) = (SELECT DECODE(sta_dim2_text, NULL, NULL, DECODE(l_quantity, 0, 0, 1))
                                         ,DECODE(sta_dim3_text, NULL, NULL, DECODE(l_quantity, 0, 0, 1))
@@ -5121,18 +5256,18 @@ BEGIN
                 ,boq_act_cost = ROUND((l_quantity * boq_act_rate), 2)
                  WHERE  ROWID = l_rowid;
 
-	      EXIT WHEN boq_rec.icboq_quantity = 0;
+          EXIT WHEN boq_rec.icboq_quantity = 0;
 
-	    END LOOP;
-	    CLOSE neg_boqs;
+        END LOOP;
+        CLOSE neg_boqs;
 
         END IF;
 
       END LOOP;
 
       maiwo.adjust_contract_figures(wol_rec.icwol_wol_id
-					     ,wol_rec.icwor_con_id
-					     ,'+');
+                         ,wol_rec.icwor_con_id
+                         ,'+');
 
 IF wol_rec.icwor_claim_type != 'I' THEN
   l_wol_date_complete := TO_DATE(TO_CHAR(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS');
@@ -5142,39 +5277,39 @@ END IF;
 
       UPDATE work_order_lines
       SET    wol_status_code = DECODE(wol_rec.icwor_claim_type, 'F',
-						  g_wol_comp_status, 'I',
-						  l_wol_interim_status, wol_status_code)
+                          g_wol_comp_status, 'I',
+                          l_wol_interim_status, wol_status_code)
             ,wol_date_complete = DECODE(wol_rec.icwor_claim_type, 'P',TO_DATE(TO_CHAR(wol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')
                                        ,l_wol_date_complete/*Decode(wol_rec.icwor_claim_type,'I',null,to_date(to_char(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH:MI:SS'),'DD-MON-YYYY HH:MI:SS'))*/)
-	      ,(wol_act_cost
-	      ,wol_est_labour) = (SELECT SUM(boq_act_cost)
-						  ,SUM(boq_act_labour)
-					  FROM   boq_items
-				        WHERE  boq_wol_id = wol_id)
-	      ,wol_invoice_status = maiwo.wol_invoice_status(wol_id)
+          ,(wol_act_cost
+          ,wol_est_labour) = (SELECT SUM(boq_act_cost)
+                          ,SUM(boq_act_labour)
+                      FROM   boq_items
+                        WHERE  boq_wol_id = wol_id)
+          ,wol_invoice_status = maiwo.wol_invoice_status(wol_id)
       WHERE  wol_id = wol_rec.icwol_wol_id;
 
       UPDATE interface_claims_boq
       SET    icboq_status = NULL
       WHERE  icboq_status = 'P'
       AND    icboq_wol_id = wol_rec.icwol_wol_id
-	AND    icboq_con_claim_ref = wol_rec.icwor_con_claim_ref
-	AND    icboq_con_id = wol_rec.icwor_con_id
+    AND    icboq_con_claim_ref = wol_rec.icwor_con_claim_ref
+    AND    icboq_con_id = wol_rec.icwor_con_id
       AND    icboq_ih_id = p_ih_id;
 
       UPDATE interface_claims_wol
       SET    icwol_status = NULL
       WHERE  icwol_wol_id = wol_rec.icwol_wol_id
       AND    icwol_con_claim_ref = wol_rec.icwor_con_claim_ref
-	AND    icwol_con_id = wol_rec.icwor_con_id
+    AND    icwol_con_id = wol_rec.icwor_con_id
       AND    icwol_ih_id = p_ih_id
       AND    icwol_status = 'P'
       AND    NOT EXISTS ( SELECT 1
-				  FROM   interface_claims_boq
-				  WHERE  icboq_wol_id = icwol_wol_id
-				  AND    icboq_con_claim_ref = icwol_con_claim_ref
-				  AND    icboq_con_id = icwol_con_id
-				  AND    icboq_ih_id = p_ih_id );
+                  FROM   interface_claims_boq
+                  WHERE  icboq_wol_id = icwol_wol_id
+                  AND    icboq_con_claim_ref = icwol_con_claim_ref
+                  AND    icboq_con_id = icwol_con_id
+                  AND    icboq_ih_id = p_ih_id );
 
     END LOOP;
 
@@ -5191,45 +5326,45 @@ END IF;
 
     UPDATE work_orders
     SET   (wor_est_labour
-	    ,wor_act_cost
-	    ,wor_act_balancing_sum
-	    ,wor_date_closed
-	    ,wor_closed_by_id) = (SELECT DISTINCT		-- incase duplicate WOs in file
-						   SUM(wol_est_labour)
-						  ,SUM(wol_act_cost)
-						  ,maiwo.bal_sum(SUM(wol_act_cost), oun_cng_disc_group)
-						  ,DECODE(wor_date_closed, NULL,
-						   DECODE(maiwo.works_order_complete(wor_works_order_no),
-						  'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), wor_date_closed)
-						  ,DECODE(wor_date_closed, NULL, l_user_id, wor_closed_by_id)
-					  FROM   work_order_lines
-						  ,interface_claims_wor
-						  ,org_units
-						  ,contracts
-					  WHERE  wol_works_order_no = wor_works_order_no
-					  AND    icwor_works_order_no = wor_works_order_no
-					  AND    icwor_ih_id = p_ih_id
-					  AND	   icwor_status = 'P'
-					  AND    con_id = wor_con_id
-					  AND    con_contr_org_id = oun_org_id
-					  GROUP BY
-						   oun_cng_disc_group
-						  ,icwor_con_claim_ref
-						  ,icwor_con_id)
+        ,wor_act_cost
+        ,wor_act_balancing_sum
+        ,wor_date_closed
+        ,wor_closed_by_id) = (SELECT DISTINCT        -- incase duplicate WOs in file
+                           SUM(wol_est_labour)
+                          ,SUM(wol_act_cost)
+                          ,maiwo.bal_sum(SUM(wol_act_cost), oun_cng_disc_group)
+                          ,DECODE(wor_date_closed, NULL,
+                           DECODE(maiwo.works_order_complete(wor_works_order_no),
+                          'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), wor_date_closed)
+                          ,DECODE(wor_date_closed, NULL, l_user_id, wor_closed_by_id)
+                      FROM   work_order_lines
+                          ,interface_claims_wor
+                          ,org_units
+                          ,contracts
+                      WHERE  wol_works_order_no = wor_works_order_no
+                      AND    icwor_works_order_no = wor_works_order_no
+                      AND    icwor_ih_id = p_ih_id
+                      AND       icwor_status = 'P'
+                      AND    con_id = wor_con_id
+                      AND    con_contr_org_id = oun_org_id
+                      GROUP BY
+                           oun_cng_disc_group
+                          ,icwor_con_claim_ref
+                          ,icwor_con_id)
     WHERE  wor_works_order_no IN (SELECT icwor_works_order_no
-				 	    FROM   interface_claims_wor
-					    WHERE  icwor_ih_id = p_ih_id
-					    AND    icwor_status = 'P');
+                         FROM   interface_claims_wor
+                        WHERE  icwor_ih_id = p_ih_id
+                        AND    icwor_status = 'P');
 
     UPDATE interface_claims_wor
     SET    icwor_status = NULL
     WHERE  icwor_status = 'P'
     AND    icwor_ih_id = p_ih_id
     AND    NOT EXISTS ( SELECT 1
-			      FROM   interface_claims_wol
-			      WHERE  icwol_con_claim_ref = icwor_con_claim_ref
-				AND    icwol_con_id = icwor_con_id
-			      AND    icwol_ih_id = p_ih_id );
+                  FROM   interface_claims_wol
+                  WHERE  icwol_con_claim_ref = icwor_con_claim_ref
+                AND    icwol_con_id = icwor_con_id
+                  AND    icwol_ih_id = p_ih_id );
 
     SELECT COUNT(0)
     INTO   l_count
@@ -5243,8 +5378,8 @@ END IF;
       WHERE  ier_ih_id = p_ih_id;
     END IF;
 
-    IF l_count = 0 THEN			-- if no child records exist
-      UPDATE interface_headers	-- archive the header record
+    IF l_count = 0 THEN            -- if no child records exist
+      UPDATE interface_headers    -- archive the header record
       SET    ih_status = NULL
       WHERE  ih_id = p_ih_id;
     END IF;
@@ -5260,7 +5395,7 @@ END IF;
         UTL_FILE.FCLOSE(l_fhand);
 
       WHEN others THEN
-	    p_error := SQLERRM;
+        p_error := SQLERRM;
 
 END;
 
@@ -5269,26 +5404,26 @@ END;
 -- Check claimed values of all WOLs on a Final or Interim claims
 -- against any tolerance entered
 
-FUNCTION tolerance_exceeded(p_ih_id		IN interface_headers.ih_id%TYPE
-				   ,p_tol_percent	IN number
-				   ,p_tol_value	IN number) RETURN boolean IS
+FUNCTION tolerance_exceeded(p_ih_id        IN interface_headers.ih_id%TYPE
+                   ,p_tol_percent    IN number
+                   ,p_tol_value    IN number) RETURN boolean IS
 
   CURSOR c1 IS
   SELECT icwol_error, wol_act_cost, wol_est_cost
   FROM   interface_claims_wol,
-  		 work_order_lines
+           work_order_lines
   WHERE  EXISTS ( SELECT 1
-			  FROM   work_order_lines
-				  ,interface_claims_wor
-			  WHERE  ABS((icwol_claim_value + DECODE(icwor_claim_type, 'P', NVL(wol_act_cost, 0), 0))
-				 - NVL(wol_act_cost, DECODE(icwor_claim_type, 'P', 0, wol_est_cost))) >
-				   GREATEST(NVL(p_tol_value, (NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100))),
-					      NVL((NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100)), p_tol_value))
-			  AND	   wol_id = icwol_wol_id
-			  AND	   wol_works_order_no = icwor_works_order_no
-			  AND    icwor_con_claim_ref = icwol_con_claim_ref
-			  AND    icwor_con_id = icwol_con_id
-			  AND	   icwor_ih_id = p_ih_id )
+              FROM   work_order_lines
+                  ,interface_claims_wor
+              WHERE  ABS((icwol_claim_value + DECODE(icwor_claim_type, 'P', NVL(wol_act_cost, 0), 0))
+                 - NVL(wol_act_cost, DECODE(icwor_claim_type, 'P', 0, wol_est_cost))) >
+                   GREATEST(NVL(p_tol_value, (NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100))),
+                          NVL((NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100)), p_tol_value))
+              AND       wol_id = icwol_wol_id
+              AND       wol_works_order_no = icwor_works_order_no
+              AND    icwor_con_claim_ref = icwol_con_claim_ref
+              AND    icwor_con_id = icwol_con_id
+              AND       icwor_ih_id = p_ih_id )
   AND    icwol_ih_id = p_ih_id
   AND    icwol_wol_id = wol_id;
 
@@ -5335,17 +5470,17 @@ END IF;
     SET    icwol_error = SUBSTR(icwol_error||'Tolerance exceeded.', 1, 254)
           ,icwol_status = DECODE(icwol_status, 'R', 'R', 'R')
     WHERE  EXISTS ( SELECT 1
-			  FROM   work_order_lines
-				  ,interface_claims_wor
-			  WHERE  ABS((icwol_claim_value + DECODE(icwor_claim_type, 'P', NVL(wol_act_cost, 0), 0))
-				 - NVL(wol_act_cost, DECODE(icwor_claim_type, 'P', 0, wol_est_cost))) >
-				   GREATEST(NVL(p_tol_value, (NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100))),
-					      NVL((NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100)), p_tol_value))
-			  AND	   wol_id = icwol_wol_id
-			  AND	   wol_works_order_no = icwor_works_order_no
-			  AND    icwor_con_claim_ref = icwol_con_claim_ref
-			  AND    icwor_con_id = icwol_con_id
-			  AND	   icwor_ih_id = p_ih_id )
+              FROM   work_order_lines
+                  ,interface_claims_wor
+              WHERE  ABS((icwol_claim_value + DECODE(icwor_claim_type, 'P', NVL(wol_act_cost, 0), 0))
+                 - NVL(wol_act_cost, DECODE(icwor_claim_type, 'P', 0, wol_est_cost))) >
+                   GREATEST(NVL(p_tol_value, (NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100))),
+                          NVL((NVL(wol_act_cost, wol_est_cost) * (p_tol_percent/100)), p_tol_value))
+              AND       wol_id = icwol_wol_id
+              AND       wol_works_order_no = icwor_works_order_no
+              AND    icwor_con_claim_ref = icwol_con_claim_ref
+              AND    icwor_con_id = icwol_con_id
+              AND       icwor_ih_id = p_ih_id )
     AND    icwol_ih_id = p_ih_id;
 
     IF SQL%rowcount > 0 THEN
@@ -5359,87 +5494,87 @@ END IF;
 
   OPEN c1;
   FETCH c1 INTO l_error, l_wol_act_cost, l_wol_est_cost;
-	IF c1%NOTFOUND THEN
+    IF c1%NOTFOUND THEN
       NULL;
-	ELSE
-	IF NVL(p_tol_value,0)
-	 > NVL(NVL(l_wol_act_cost, l_wol_est_cost) * (p_tol_percent/100),0) THEN
- 	  IF INSTR(l_error, 'Tolerance exceeded.') > 0 THEN
-	    IF INSTR(l_error, 'Tolerance exceeded.(') > 0 THEN --tolerance has been exceeded and a value is displayed
-	      IF INSTR(l_error, '%') > 0 THEN --tolerance currently displayed is percentage
-		    l_error_percent := SUBSTR(l_error, '(',(INSTR(l_error, '%')-1));
-		      UPDATE interface_claims_wol
-			  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
+    ELSE
+    IF NVL(p_tol_value,0)
+     > NVL(NVL(l_wol_act_cost, l_wol_est_cost) * (p_tol_percent/100),0) THEN
+       IF INSTR(l_error, 'Tolerance exceeded.') > 0 THEN
+        IF INSTR(l_error, 'Tolerance exceeded.(') > 0 THEN --tolerance has been exceeded and a value is displayed
+          IF INSTR(l_error, '%') > 0 THEN --tolerance currently displayed is percentage
+            l_error_percent := SUBSTR(l_error, '(',(INSTR(l_error, '%')-1));
+              UPDATE interface_claims_wol
+              SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
                                 SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),20)||
-								'('||p_tol_value||') '||
-								SUBSTR(l_error,INSTR(l_error, '%')+1,LENGTH(l_error)))
+                                '('||p_tol_value||') '||
+                                SUBSTR(l_error,INSTR(l_error, '%')+1,LENGTH(l_error)))
 
-	          WHERE icwol_ih_id = p_ih_id;
-		  ELSE --tolerance currently displayed is a value
-		    l_error_value := SUBSTR(l_error, '(',(INSTR(l_error, ')')-1));
-		    IF l_error_value != p_tol_value THEN
-		      UPDATE interface_claims_wol
-			  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
+              WHERE icwol_ih_id = p_ih_id;
+          ELSE --tolerance currently displayed is a value
+            l_error_value := SUBSTR(l_error, '(',(INSTR(l_error, ')')-1));
+            IF l_error_value != p_tol_value THEN
+              UPDATE interface_claims_wol
+              SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
                                 SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),20)||
-								'('||p_tol_value||') '||
-								SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
-	          WHERE icwol_ih_id = p_ih_id;
-		    END IF;
-		  END IF;
-	    ELSE --tolerance has been exceeded but the value has not been displayed.
+                                '('||p_tol_value||') '||
+                                SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
+              WHERE icwol_ih_id = p_ih_id;
+            END IF;
+          END IF;
+        ELSE --tolerance has been exceeded but the value has not been displayed.
           UPDATE interface_claims_wol
-		  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
+          SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
                                 SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),20)||
-								'('||p_tol_value||') '||
-								SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
+                                '('||p_tol_value||') '||
+                                SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
           WHERE icwol_ih_id = p_ih_id;
-		END IF;
-	  END IF;
-	ELSE
- 	  IF INSTR(l_error, 'Tolerance exceeded.') > 0 THEN
-	    IF INSTR(l_error, 'Tolerance exceeded.(') > 0 THEN --tolerance has been exceeded and a value is displayed
-	      IF INSTR(l_error, '%') > 0 THEN --tolerance currently displayed is percentage
-		    l_error_percent := SUBSTR(l_error, '(',(INSTR(l_error, '%')-1));
-		    IF l_error_percent != p_tol_percent THEN
-		      UPDATE interface_claims_wol
-			  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')+20)||
-								'('||p_tol_percent||'%) '||
-								SUBSTR(l_error,INSTR(l_error, '%')+1,LENGTH(l_error)))
-	          WHERE icwol_ih_id = p_ih_id;
-		    END IF;
-		  ELSE --tolerance currently displayed is a value
-		    l_error_value := SUBSTR(l_error, '(',(INSTR(l_error, ')')-1));
-		    IF l_error_value != p_tol_value THEN
-		      UPDATE interface_claims_wol
-			  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
+        END IF;
+      END IF;
+    ELSE
+       IF INSTR(l_error, 'Tolerance exceeded.') > 0 THEN
+        IF INSTR(l_error, 'Tolerance exceeded.(') > 0 THEN --tolerance has been exceeded and a value is displayed
+          IF INSTR(l_error, '%') > 0 THEN --tolerance currently displayed is percentage
+            l_error_percent := SUBSTR(l_error, '(',(INSTR(l_error, '%')-1));
+            IF l_error_percent != p_tol_percent THEN
+              UPDATE interface_claims_wol
+              SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')+20)||
+                                '('||p_tol_percent||'%) '||
+                                SUBSTR(l_error,INSTR(l_error, '%')+1,LENGTH(l_error)))
+              WHERE icwol_ih_id = p_ih_id;
+            END IF;
+          ELSE --tolerance currently displayed is a value
+            l_error_value := SUBSTR(l_error, '(',(INSTR(l_error, ')')-1));
+            IF l_error_value != p_tol_value THEN
+              UPDATE interface_claims_wol
+              SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')-1)||
                                 SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.'),20)||
-								'('||p_tol_percent||'%) '||
-								SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
-	          WHERE icwol_ih_id = p_ih_id;
-		    END IF;
-		  END IF;
-	    ELSE --tolerance has been exceeded but the value has not been displayed.
+                                '('||p_tol_percent||'%) '||
+                                SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
+              WHERE icwol_ih_id = p_ih_id;
+            END IF;
+          END IF;
+        ELSE --tolerance has been exceeded but the value has not been displayed.
           UPDATE interface_claims_wol
-		  SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')+20)||
-								'('||p_tol_percent||'%) '||
-								SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
+          SET icwol_error = (SUBSTR(l_error,1,INSTR(l_error, 'Tolerance exceeded.')+20)||
+                                '('||p_tol_percent||'%) '||
+                                SUBSTR(l_error,INSTR(l_error, 'Tolerance exceeded.')+20,LENGTH(l_error)))
           WHERE icwol_ih_id = p_ih_id;
-		END IF;
-	  END IF;
-	END IF;
-	END IF;
-	CLOSE c1;
+        END IF;
+      END IF;
+    END IF;
+    END IF;
+    CLOSE c1;
 
     IF SQL%rowcount > 0 THEN
       validate_wo_item(p_ih_id,'WOL',19);
       COMMIT;
-	END IF;
+    END IF;
 
-	IF l_return THEN
-	  RETURN TRUE;
-	ELSE
-	  RETURN FALSE;
-	END IF;
+    IF l_return THEN
+      RETURN TRUE;
+    ELSE
+      RETURN FALSE;
+    END IF;
 
   ELSE
     RETURN FALSE;
@@ -5453,30 +5588,30 @@ END;
 --
 
 PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
-		  	      ,p_filename IN OUT varchar2
-			      ,p_error IN OUT varchar2) IS
+                    ,p_filename IN OUT varchar2
+                  ,p_error IN OUT varchar2) IS
 
   CURSOR c1 IS
     SELECT ih_contractor_id
-	    ,ih_status
+        ,ih_status
     FROM   interface_headers
     WHERE  ih_id = p_ih_id;
 
   CURSOR HEADER IS
     SELECT '05,'||ih_status||','||icwor_con_claim_ref||','||
-		icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
-		icwol_defect_id||','||icwol_schd_id||','||
-		LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
-		ih_error referred_record
+        icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
+        icwol_defect_id||','||icwol_schd_id||','||
+        LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
+        ih_error referred_record
            ,icwor.ROWID icwor_rowid
-	     ,icwor_con_claim_ref
-	     ,icwor_con_id
+         ,icwor_con_claim_ref
+         ,icwor_con_id
            ,icwol_wol_id
-	     ,icwol_claim_value
-	     ,ih_status
+         ,icwol_claim_value
+         ,ih_status
     FROM    interface_headers
-	     ,interface_claims_wor icwor
-	     ,interface_claims_wol
+         ,interface_claims_wor icwor
+         ,interface_claims_wol
     WHERE   ih_status IN ('R','H')
     AND     ih_id = p_ih_id
     AND     icwor_ih_id = ih_id
@@ -5486,18 +5621,18 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
 
   CURSOR icwor IS
     SELECT '05,'||icwor_status||','||icwor_con_claim_ref||','||
-		icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
-		icwol_defect_id||','||icwol_schd_id||','||
-		LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
-		icwor_error referred_record
+        icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
+        icwol_defect_id||','||icwol_schd_id||','||
+        LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
+        icwor_error referred_record
            ,icwor.ROWID icwor_rowid
-	     ,icwor_con_claim_ref
-	     ,icwor_con_id
+         ,icwor_con_claim_ref
+         ,icwor_con_id
            ,icwol_wol_id
-	     ,icwol_claim_value
-	     ,icwor_status
+         ,icwol_claim_value
+         ,icwor_status
     FROM    interface_claims_wor icwor
-	     ,interface_claims_wol
+         ,interface_claims_wol
     WHERE   icwor_status IN ('R','H')
     AND     icwor_ih_id = p_ih_id
     AND     icwol_ih_id = icwor_ih_id
@@ -5506,18 +5641,18 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
 
   CURSOR icwol IS
     SELECT '05,'||icwol_status||','||icwor_con_claim_ref||','||
-		icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
-		icwol_defect_id||','||icwol_schd_id||','||
-		LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
-		icwol_error referred_record
+        icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
+        icwol_defect_id||','||icwol_schd_id||','||
+        LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
+        icwol_error referred_record
            ,icwor.ROWID icwor_rowid
-	     ,icwor_con_claim_ref
-	     ,icwor_con_id
+         ,icwor_con_claim_ref
+         ,icwor_con_id
            ,icwol_wol_id
-	     ,icwol_claim_value
-	     ,icwol_status
+         ,icwol_claim_value
+         ,icwol_status
     FROM    interface_claims_wor icwor
-	     ,interface_claims_wol
+         ,interface_claims_wol
     WHERE   icwol_status IN ('R','H')
     AND     icwor_status = 'P'
     AND     icwor_ih_id = p_ih_id
@@ -5527,19 +5662,19 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
 
   CURSOR icboq IS
     SELECT '05,'||icboq_status||','||icwor_con_claim_ref||','||
-		icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
-		icwol_defect_id||','||icwol_schd_id||','||
-		LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
-		icboq_error referred_record
+        icwor_works_order_no||','||TO_CHAR(icwol_wol_id)||','||
+        icwol_defect_id||','||icwol_schd_id||','||
+        LTRIM(TO_CHAR(icwol_claim_value,'9999999990.00'))||','||
+        icboq_error referred_record
            ,icwor.ROWID icwor_rowid
-	     ,icwor_con_claim_ref
-	     ,icwor_con_id
+         ,icwor_con_claim_ref
+         ,icwor_con_id
            ,icwol_wol_id
-	     ,icwol_claim_value
-	     ,icboq_status
+         ,icwol_claim_value
+         ,icboq_status
     FROM    interface_claims_wor icwor
-	     ,interface_claims_wol
-	     ,interface_claims_boq
+         ,interface_claims_wol
+         ,interface_claims_boq
     WHERE   icwol_status = 'P'
     AND     icwor_status = 'P'
     AND     icboq_status IN ('R', 'H')
@@ -5549,28 +5684,28 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
     AND     icwol_con_id = icwor_con_id
     AND     icboq_ih_id = icwol_ih_id
     AND     icboq_con_claim_ref = icwol_con_claim_ref
-    AND	icboq_con_id = icwol_con_id
+    AND    icboq_con_id = icwol_con_id
     AND     icboq_wol_id = icwol_wol_id;
 
   TYPE referral_record IS REF CURSOR RETURN HEADER%ROWTYPE;
-  l_referral_rec	referral_record;
-  l_today		date := SYSDATE;
-  l_fhand		utl_file.file_type;
-  l_no_of_recs	number(7) := 0;
-  l_total_value	number := 0;
-  l_seq_no		varchar2(6);
-  l_header_record	varchar2(31);
-  l_contractor_id	interface_headers.ih_contractor_id%TYPE;
-  l_status		interface_headers.ih_status%TYPE;
-  l_rowid_copy	ROWID;
-  l_wor_rowid	ROWID;
+  l_referral_rec    referral_record;
+  l_today        date := SYSDATE;
+  l_fhand        utl_file.file_type;
+  l_no_of_recs    number(7) := 0;
+  l_total_value    number := 0;
+  l_seq_no        varchar2(6);
+  l_header_record    varchar2(31);
+  l_contractor_id    interface_headers.ih_contractor_id%TYPE;
+  l_status        interface_headers.ih_status%TYPE;
+  l_rowid_copy    ROWID;
+  l_wor_rowid    ROWID;
   l_file_not_found varchar2(250);
 
-  PROCEDURE write_and_delete_record( p_referred_rec	IN varchar2
-						,p_claim_ref	IN interface_claims_wor.icwor_con_claim_ref%TYPE
-						,p_con_id		IN interface_claims_wol.icwol_con_id%TYPE
-						,p_wol_id		IN interface_claims_wol.icwol_wol_id%TYPE
-						,p_status		IN interface_claims_wor.icwor_status%TYPE) IS
+  PROCEDURE write_and_delete_record( p_referred_rec    IN varchar2
+                        ,p_claim_ref    IN interface_claims_wor.icwor_con_claim_ref%TYPE
+                        ,p_con_id        IN interface_claims_wol.icwol_con_id%TYPE
+                        ,p_wol_id        IN interface_claims_wol.icwol_wol_id%TYPE
+                        ,p_status        IN interface_claims_wor.icwor_status%TYPE) IS
   BEGIN
 
     UTL_FILE.PUT_LINE(l_fhand, p_referred_rec);
@@ -5580,15 +5715,15 @@ PROCEDURE create_referral_file(p_ih_id     IN interface_headers.ih_id%TYPE
       UPDATE interface_claims_boq
       SET    icboq_status = 'D'
       WHERE  icboq_ih_id = p_ih_id
-	AND    icboq_con_claim_ref = p_claim_ref
-	AND    icboq_con_id = p_con_id
+    AND    icboq_con_claim_ref = p_claim_ref
+    AND    icboq_con_id = p_con_id
       AND    icboq_wol_id = p_wol_id;
 
       UPDATE interface_claims_wol
       SET    icwol_status = 'D'
       WHERE  icwol_ih_id = p_ih_id
       AND    icwol_con_claim_ref = p_claim_ref
-	AND    icwol_con_id = p_con_id
+    AND    icwol_con_id = p_con_id
       AND    icwol_wol_id = p_wol_id;
     END IF;
 
@@ -5598,7 +5733,7 @@ BEGIN
 
   OPEN c1;
   FETCH c1 INTO l_contractor_id
-		   ,l_status;
+           ,l_status;
   CLOSE c1;
 
   l_seq_no := file_seq(interfaces.g_job_id,l_contractor_id, '', 'WR');
@@ -5607,8 +5742,8 @@ BEGIN
 
   l_file_not_found := 'Error: Unable to write Referral File. Path: '||g_filepath||'  File: '||p_filename;
 
-  l_header_record	:= '00,'||l_contractor_id||','||TO_CHAR(l_seq_no)||','||
-			   TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
+  l_header_record    := '00,'||l_contractor_id||','||TO_CHAR(l_seq_no)||','||
+               TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
 
   l_fhand := UTL_FILE.FOPEN(g_filepath, p_filename, 'w');
 
@@ -5620,60 +5755,60 @@ BEGIN
 
       FOR l_referral_rec IN HEADER LOOP
         UTL_FILE.PUT_LINE(l_fhand, l_referral_rec.referred_record);
-	  l_no_of_recs := l_no_of_recs + 1;
+      l_no_of_recs := l_no_of_recs + 1;
         l_total_value := l_total_value + l_referral_rec.icwol_claim_value;
       END LOOP;
 
       IF l_status = 'R' THEN
 
-	  UPDATE interface_claims_boq
-	  SET    icboq_status = 'D'
-	  WHERE  icboq_ih_id = p_ih_id;
+      UPDATE interface_claims_boq
+      SET    icboq_status = 'D'
+      WHERE  icboq_ih_id = p_ih_id;
 
         UPDATE interface_claims_wol
-	  SET    icwol_status = 'D'
-	  WHERE  icwol_ih_id = p_ih_id;
+      SET    icwol_status = 'D'
+      WHERE  icwol_ih_id = p_ih_id;
 
         UPDATE interface_claims_wor
-	  SET    icwor_status = 'D'
-	  WHERE  icwor_ih_id = p_ih_id;
+      SET    icwor_status = 'D'
+      WHERE  icwor_ih_id = p_ih_id;
 
         UPDATE interface_headers
-	  SET    ih_status = 'D'
-	  WHERE  ih_id = p_ih_id;
+      SET    ih_status = 'D'
+      WHERE  ih_id = p_ih_id;
 
-	END IF;
+    END IF;
 
     ELSE
 
-	l_rowid_copy := NULL;
+    l_rowid_copy := NULL;
 
       FOR l_referral_rec IN icwor LOOP
 
-	  l_wor_rowid := l_referral_rec.icwor_rowid;
+      l_wor_rowid := l_referral_rec.icwor_rowid;
 
         write_and_delete_record (l_referral_rec.referred_record
-					  ,l_referral_rec.icwor_con_claim_ref
-					  ,l_referral_rec.icwor_con_id
-					  ,l_referral_rec.icwol_wol_id
-					  ,l_referral_rec.icwor_status);
+                      ,l_referral_rec.icwor_con_claim_ref
+                      ,l_referral_rec.icwor_con_id
+                      ,l_referral_rec.icwol_wol_id
+                      ,l_referral_rec.icwor_status);
 
         l_total_value := l_total_value + l_referral_rec.icwol_claim_value;
-	  l_no_of_recs := l_no_of_recs + 1;
+      l_no_of_recs := l_no_of_recs + 1;
 
-	  IF l_rowid_copy IS NULL THEN
+      IF l_rowid_copy IS NULL THEN
 
-	    l_rowid_copy := l_wor_rowid;
+        l_rowid_copy := l_wor_rowid;
 
-	  ELSIF l_rowid_copy != l_wor_rowid THEN
+      ELSIF l_rowid_copy != l_wor_rowid THEN
 
-	    UPDATE interface_claims_wor
-	    SET    icwor_status = DECODE(icwor_status, 'R', 'D', icwor_status)
-	    WHERE  ROWID = l_rowid_copy;
+        UPDATE interface_claims_wor
+        SET    icwor_status = DECODE(icwor_status, 'R', 'D', icwor_status)
+        WHERE  ROWID = l_rowid_copy;
 
-	    l_rowid_copy := l_wor_rowid;
+        l_rowid_copy := l_wor_rowid;
 
-	  END IF;
+      END IF;
 
       END LOOP;
 
@@ -5684,39 +5819,39 @@ BEGIN
       FOR l_referral_rec IN icwol LOOP
 
         write_and_delete_record (l_referral_rec.referred_record
-					  ,l_referral_rec.icwor_con_claim_ref
-					  ,l_referral_rec.icwor_con_id
-					  ,l_referral_rec.icwol_wol_id
-					  ,l_referral_rec.icwol_status);
+                      ,l_referral_rec.icwor_con_claim_ref
+                      ,l_referral_rec.icwor_con_id
+                      ,l_referral_rec.icwol_wol_id
+                      ,l_referral_rec.icwol_status);
 
         l_total_value := l_total_value + l_referral_rec.icwol_claim_value;
-	  l_no_of_recs := l_no_of_recs + 1;
+      l_no_of_recs := l_no_of_recs + 1;
 
       END LOOP;
 
       FOR l_referral_rec IN icboq LOOP
 
         write_and_delete_record (l_referral_rec.referred_record
-					  ,l_referral_rec.icwor_con_claim_ref
-					  ,l_referral_rec.icwor_con_id
-					  ,l_referral_rec.icwol_wol_id
-					  ,l_referral_rec.icboq_status);
+                      ,l_referral_rec.icwor_con_claim_ref
+                      ,l_referral_rec.icwor_con_id
+                      ,l_referral_rec.icwol_wol_id
+                      ,l_referral_rec.icboq_status);
 
         l_total_value := l_total_value + l_referral_rec.icwol_claim_value;
-	  l_no_of_recs := l_no_of_recs + 1;
+      l_no_of_recs := l_no_of_recs + 1;
 
       END LOOP;
 
     END IF;
 
     UTL_FILE.PUT_LINE(l_fhand, '10,'||TO_CHAR(l_no_of_recs)||','||
-			    TO_CHAR(l_total_value));
+                TO_CHAR(l_total_value));
     UTL_FILE.FFLUSH(l_fhand);
     UTL_FILE.FCLOSE(l_fhand);
 
     COMMIT;
 
-	p_error := NULL;
+    p_error := NULL;
 
   ELSE
 
@@ -5736,15 +5871,15 @@ END;
 
 FUNCTION get_oun_id(p_contractor_id IN varchar2) RETURN varchar2 IS
     CURSOR c1 IS
-	SELECT oun_contractor_id
-	FROM org_units
-	WHERE oun_org_id = p_contractor_id;
-	l_id org_units.oun_contractor_id%TYPE;
+    SELECT oun_contractor_id
+    FROM org_units
+    WHERE oun_org_id = p_contractor_id;
+    l_id org_units.oun_contractor_id%TYPE;
   BEGIN
     OPEN c1;
     FETCH c1 INTO l_id;
-	CLOSE c1;
-	RETURN l_id;
+    CLOSE c1;
+    RETURN l_id;
   END get_oun_id;
 /******************************************************************************
 ** SM - 03102004
@@ -5869,17 +6004,17 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
                                   ,pi_end_date     IN date
                                   ) RETURN varchar2 IS
 
-  l_today		 date := SYSDATE;
-  l_no_of_recs	 number(7) := 0;
-  l_total_value	 number := 0;
-  l_fhand		 utl_file.file_type;
-  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'FI');
+  l_today         date := SYSDATE;
+  l_no_of_recs     number(7) := 0;
+  l_total_value     number := 0;
+  l_fhand         utl_file.file_type;
+  l_seq_no         varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, p_seq_no, 'FI');
 --
-  l_filename	 varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')||'.'||get_oun_id(p_contractor_id);
-  l_filename2	 varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||'.DAT';
-  l_header_record	 varchar2(31) := '00,'||TO_CHAR(l_seq_no)||','||
-						TO_CHAR(l_today, g_date_format)
-					    ||','||TO_CHAR(l_today, g_time_format);
+  l_filename     varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')||'.'||get_oun_id(p_contractor_id);
+  l_filename2     varchar2(50) := 'FI'||TO_CHAR(l_seq_no)||'.DAT';
+  l_header_record     varchar2(31) := '00,'||TO_CHAR(l_seq_no)||','||
+                        TO_CHAR(l_today, g_date_format)
+                        ||','||TO_CHAR(l_today, g_time_format);
   l_file_not_found varchar2(250) := 'Error: Unable to write Financial Commitment File. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
 
 --
@@ -5938,7 +6073,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
                         , p_cost_code interface_wol.iwol_cost_code%TYPE
                         , p_end_date date                                  --KA: added 05/10/2006
                         , p_transaction_id interface_wor.iwor_transaction_id%type  --KA: added 13/11/2006
-			) IS
+            ) IS
     SELECT 'GLJEH01,'||--RECORD_TYPE
            'NEW,'||--STATUS
            1||','||--SET_OF_BOOKS_ID
@@ -5992,12 +6127,12 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
-		   interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1)) commitment_record --ATTRIBUTE1
-		   --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1) commitment_record --ATTRIBUTE1
+           -- IFB 30.09.2005
+           interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1)) commitment_record --ATTRIBUTE1
+           --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1) commitment_record --ATTRIBUTE1
            --NVL(p_cost_code,iwol_cost_code) commitment_record--ATTRIBUTE1
            --'commitment_record cost code 1 debit' commitment_record--ATTRIBUTE1
-		   ,'GLJEH01,'||--RECORD_TYPE
+           ,'GLJEH01,'||--RECORD_TYPE
            'NEW,'||--STATUS
            1||','||--SET_OF_BOOKS_ID
            TO_CHAR(p_account_date,'DD-MON-YYYY')||','||--ACCOUNTING_DATE
@@ -6050,7 +6185,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),3)) commitment_record2--ATTRIBUTE1
            --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),3) commitment_record2--ATTRIBUTE1
            --NVL(p_cost_code,iwol_cost_code) commitment_record2--ATTRIBUTE1
@@ -6108,8 +6243,8 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
-		   interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1)) commitment_record3--cost code 1 CREDIT
+           -- IFB 30.09.2005
+           interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1)) commitment_record3--cost code 1 CREDIT
            --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),1) commitment_record3--cost code 1 CREDIT
            --NVL(p_cost_code,iwol_cost_code) commitment_record3--cost code 1 CREDIT
            --'commitment_record3 cost code 1 CREDIT' commitment_record3--cost code 1 CREDIT
@@ -6166,7 +6301,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),3)) commitment_record4--cost code 3 DEBIT
            --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),3) commitment_record4--cost code 3 DEBIT
            --NVL(p_cost_code,iwol_cost_code) commitment_record4--cost code 3 DEBIT
@@ -6224,20 +6359,20 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),2)) commitment_record5 --cost code 2 CREDIT
            --interfaces.split_cost_code(NVL(p_cost_code,iwol_cost_code),2) commitment_record5--cost code 2 CREDIT
            --NVL(p_cost_code,iwol_cost_code) commitment_record5--cost code 2 CREDIT
            --'commitment_record5 cost code 2 CREDIT' commitment_record5--cost code 2 CREDIT
-		   ,iwor_transaction_id
-	    ,NVL(SUM(iboq_cost), 0) VALUE
+           ,iwor_transaction_id
+        ,NVL(SUM(iboq_cost), 0) VALUE
     FROM contracts
-	    ,org_units
-	    ,interface_wor
-	    ,interface_wol
-	    ,interface_boq
---		,budgets
---		,work_order_lines
+        ,org_units
+        ,interface_wor
+        ,interface_wol
+        ,interface_boq
+--        ,budgets
+--        ,work_order_lines
     WHERE  con_code = iwor_con_code
     AND    con_contr_org_id = oun_org_id
     AND    iwor_works_order_no = iwol_works_order_no
@@ -6248,17 +6383,17 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
     AND    (p_end_date IS NULL
             OR
             iwor_date_confirmed <= p_end_date)
-	AND    iwol_id = p_wol_id
---	and    wol_id = iwol_id
---	and    bud_id = wol_bud_id
-	AND    con_contr_org_id = p_contractor_id
-	AND    iwor_transaction_type = p_transaction_type
+    AND    iwol_id = p_wol_id
+--    and    wol_id = iwol_id
+--    and    bud_id = wol_bud_id
+    AND    con_contr_org_id = p_contractor_id
+    AND    iwor_transaction_type = p_transaction_type
   and    iwor_transaction_id = p_transaction_id
     GROUP BY iwor_transaction_type, iwor_date_confirmed
-		,iwor_works_order_no, iwol_id, iwol_def_defect_id
-		,iwol_schd_id, iwol_def_priority, oun_unit_code
-		,iwor_con_code, iwol_work_cat
-		,iwol_cost_code, iwor_transaction_id, iwol_cost_code;
+        ,iwor_works_order_no, iwol_id, iwol_def_defect_id
+        ,iwol_schd_id, iwol_def_priority, oun_unit_code
+        ,iwor_con_code, iwol_work_cat
+        ,iwol_cost_code, iwor_transaction_id, iwol_cost_code;
 --
 TYPE trans_type IS TABLE OF interface_boq.iboq_transaction_id%TYPE INDEX BY binary_integer;
 transaction_id_tab trans_type;
@@ -6281,17 +6416,17 @@ CURSOR c1 ( p_iboq_transaction_id interface_boq.iboq_transaction_id%TYPE
 SELECT SUM(iboq_cost) iwol_cost
 FROM interface_wor
     ,interface_wol
-	,interface_boq
-	,work_order_lines
+    ,interface_boq
+    ,work_order_lines
 WHERE iwor_works_order_no = iwol_works_order_no
     AND    iwor_transaction_id = iwol_transaction_id
     AND    iwol_transaction_id = iboq_transaction_id(+)
     AND    iwol_id = iboq_wol_id(+)
 --    And    iwor_fi_run_number Is Null
-	AND    wol_id = iwol_id
-	AND    wol_id = p_wol_id
-	AND    wol_works_order_no = iwol_works_order_no
---	and    wol_act_cost is null
+    AND    wol_id = iwol_id
+    AND    wol_id = p_wol_id
+    AND    wol_works_order_no = iwol_works_order_no
+--    and    wol_act_cost is null
 AND iboq_transaction_id = p_iboq_transaction_id;
 --
 --KA 13/11/2006: Added transaction ID to the select list
@@ -6300,16 +6435,16 @@ CURSOR c2(p_end_date date                                  --KA: added 05/10/200
   SELECT
     iwor_transaction_id,
     iwor_transaction_type
-	     , iwor_works_order_no
-		 , iwol_id
-		 , SUM(iboq_cost) wol_est_cost
-		 , iwol_road_id
+         , iwor_works_order_no
+         , iwol_id
+         , SUM(iboq_cost) wol_est_cost
+         , iwol_road_id
     FROM   contracts
-	    ,org_units
-	    ,interface_wor
-	    ,interface_wol
-	    ,interface_boq
---		,work_order_lines
+        ,org_units
+        ,interface_wor
+        ,interface_wol
+        ,interface_boq
+--        ,work_order_lines
     WHERE  con_code = iwor_con_code
     AND    con_contr_org_id = oun_org_id
     AND    iwor_works_order_no = iwol_works_order_no
@@ -6320,17 +6455,17 @@ CURSOR c2(p_end_date date                                  --KA: added 05/10/200
     AND    (p_end_date IS NULL
             OR
             iwor_date_confirmed <= p_end_date)
---	and    wol_id = iwol_id
---	and    wol_works_order_no = iwol_works_order_no
-	AND    con_contr_org_id = p_contractor_id
---	and    wol_act_cost is null
+--    and    wol_id = iwol_id
+--    and    wol_works_order_no = iwol_works_order_no
+    AND    con_contr_org_id = p_contractor_id
+--    and    wol_act_cost is null
     GROUP BY iwor_transaction_type, iwor_date_confirmed
-		,iwor_works_order_no, iwol_id, iwol_def_defect_id
-		,iwol_schd_id, iwol_def_priority, oun_unit_code
-		,iwor_con_code, iwol_work_cat
-		,iwol_cost_code, iwor_transaction_id,
-		--wol_est_cost,
-		iwol_id, iwol_road_id
+        ,iwor_works_order_no, iwol_id, iwol_def_defect_id
+        ,iwol_schd_id, iwol_def_priority, oun_unit_code
+        ,iwor_con_code, iwol_work_cat
+        ,iwol_cost_code, iwor_transaction_id,
+        --wol_est_cost,
+        iwol_id, iwol_road_id
     ORDER BY iwor_transaction_id;
 --
 CURSOR c3 IS
@@ -6347,17 +6482,17 @@ CURSOR get_last_sent_val ( p_wol_id         interface_wol.iwol_id%TYPE
                          , p_transaction_id interface_wor.iwor_transaction_id%type
                          ) IS
     SELECT iwor_transaction_type
-	     , iwor_works_order_no
-		 , iwol_id
-		 , SUM(iboq_cost) wol_est_cost
-		 , iwor_fi_run_number
-		 , iwol_cost_code
+         , iwor_works_order_no
+         , iwol_id
+         , SUM(iboq_cost) wol_est_cost
+         , iwor_fi_run_number
+         , iwol_cost_code
     FROM   contracts
-	    ,org_units
-	    ,interface_wor
-	    ,interface_wol
-	    ,interface_boq
---		,work_order_lines
+        ,org_units
+        ,interface_wor
+        ,interface_wol
+        ,interface_boq
+--        ,work_order_lines
     WHERE  con_code = iwor_con_code
     AND    con_contr_org_id = oun_org_id
     AND    iwor_works_order_no = iwol_works_order_no
@@ -6365,21 +6500,21 @@ CURSOR get_last_sent_val ( p_wol_id         interface_wol.iwol_id%TYPE
     AND    iwol_transaction_id = iboq_transaction_id(+)
     AND    iwol_id = iboq_wol_id(+)
     --AND    iwor_fi_run_number IS NOT NULL
---	and    wol_id = iwol_id
-	AND    iwol_id = p_wol_id
---	and    wol_works_order_no = iwol_works_order_no
-	AND    con_contr_org_id = p_contractor_id
+--    and    wol_id = iwol_id
+    AND    iwol_id = p_wol_id
+--    and    wol_works_order_no = iwol_works_order_no
+    AND    con_contr_org_id = p_contractor_id
   and iwor_transaction_id < p_transaction_id
-	    GROUP BY iwor_transaction_type, iwor_date_confirmed
-		,iwor_works_order_no, iwol_id, iwol_def_defect_id
-		,iwol_schd_id, iwol_def_priority, oun_unit_code
-		,iwor_con_code, iwol_work_cat
-		,iwol_cost_code, iwor_transaction_id
---		,wol_est_cost
-		,iwol_id
-		,iwol_cost_code
---		,wol_act_cost
-		,iwor_fi_run_number
+        GROUP BY iwor_transaction_type, iwor_date_confirmed
+        ,iwor_works_order_no, iwol_id, iwol_def_defect_id
+        ,iwol_schd_id, iwol_def_priority, oun_unit_code
+        ,iwor_con_code, iwol_work_cat
+        ,iwol_cost_code, iwor_transaction_id
+--        ,wol_est_cost
+        ,iwol_id
+        ,iwol_cost_code
+--        ,wol_act_cost
+        ,iwor_fi_run_number
     ORDER BY iwor_transaction_id DESC;
 --
 CURSOR get_wol_date_created ( p_wol_id work_order_lines.wol_id%TYPE
@@ -6441,7 +6576,7 @@ BEGIN
 IF hig.get_user_or_sys_opt('FCFORMAT')='Y' THEN
   --SM 09/04/2008 log712203
   --Removed reference to extract_filename as no longer required for forms9. Used to be required to create a 
-  --*.lis file.	
+  --*.lis file.    
   l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), /*NVL(interfaces.extract_filename,*/l_filename/*)*/, 'w');
 ELSE
   l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), /*NVL(interfaces.extract_filename,*/l_filename2/*)*/, 'w');
@@ -6458,27 +6593,27 @@ END IF;
         l_cost_code := NULL;   --KA: added 13/11/2006. If not reset here potentially
                                --picks up value from previous iteration of the loop
 
-	  -- return the transaction type, works order no and wol cost
-	  -- for all order lines not processed.
-	l_transaction_type := l_com_rec.iwor_transaction_type;
+      -- return the transaction type, works order no and wol cost
+      -- for all order lines not processed.
+    l_transaction_type := l_com_rec.iwor_transaction_type;
         IF l_com_rec.iwor_transaction_type = 'C'
           THEN
             -- if transaction type is (C)reate
             l_entered_dr := l_com_rec.wol_est_cost;
             l_entered_cr := l_com_rec.wol_est_cost;
                         -- gets the wol_date_created for teh account_date
-			OPEN get_wol_date_created( l_com_rec.iwol_id );
-			FETCH get_wol_date_created INTO l_account_date;
-			CLOSE get_wol_date_created;
-			--
+            OPEN get_wol_date_created( l_com_rec.iwol_id );
+            FETCH get_wol_date_created INTO l_account_date;
+            CLOSE get_wol_date_created;
+            --
         ELSIF l_com_rec.iwor_transaction_type = 'A'
-		  THEN
-		  -- if transaction type is (A)mend
-		    IF l_com_rec.iwol_road_id IS NULL OR l_com_rec.iwol_road_id = ' '
-			  THEN
-			    --assume record is deleted
-		            --KA 13/11/2006 added transaction ID param
-		            FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
+          THEN
+          -- if transaction type is (A)mend
+            IF l_com_rec.iwol_road_id IS NULL OR l_com_rec.iwol_road_id = ' '
+              THEN
+                --assume record is deleted
+                    --KA 13/11/2006 added transaction ID param
+                    FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
                                              ,p_transaction_id => l_com_rec.iwor_transaction_id)
                 LOOP
 /*******************************************************************************************************************
@@ -6489,73 +6624,73 @@ END IF;
 *******************************************************************************************************************/
                                   l_glsv_cr := TO_CHAR(glsv.wol_est_cost);-- SM - 04112004
                                   l_glsv_dr := TO_CHAR(glsv.wol_est_cost);-- SM - 04112004
-				  l_cost_code := glsv.iwol_cost_code;
-			      EXIT;
-			    END LOOP;
+                  l_cost_code := glsv.iwol_cost_code;
+                  EXIT;
+                END LOOP;
                           OPEN get_wol_date_created( l_com_rec.iwol_id );
-			  FETCH get_wol_date_created INTO l_account_date;
-			  CLOSE get_wol_date_created;
-			ELSE
-			  --get all the transaction_ids for this wol_id into a table in desc order.
+              FETCH get_wol_date_created INTO l_account_date;
+              CLOSE get_wol_date_created;
+            ELSE
+              --get all the transaction_ids for this wol_id into a table in desc order.
         --KA 13/11/2006 added transaction ID param
-			  OPEN trans_id (p_wol_id         => l_com_rec.iwol_id
+              OPEN trans_id (p_wol_id         => l_com_rec.iwol_id
                       ,p_transaction_id => l_com_rec.iwor_transaction_id);
-			  FETCH trans_id BULK COLLECT INTO transaction_id_tab;
-			  CLOSE trans_id;
+              FETCH trans_id BULK COLLECT INTO transaction_id_tab;
+              CLOSE trans_id;
               --
                           --takes the latest trasaction id and gets the cost for it.
-			  IF transaction_id_tab.COUNT > 1 THEN
-		          FOR c1rec IN c1( transaction_id_tab(2)
-			                   , l_com_rec.iwol_id
-				  	  	       ) LOOP
-			      --
-  		          l_entered_cr := TO_CHAR(c1rec.iwol_cost);
-  		          EXIT;
-			      --
+              IF transaction_id_tab.COUNT > 1 THEN
+                  FOR c1rec IN c1( transaction_id_tab(2)
+                               , l_com_rec.iwol_id
+                                   ) LOOP
+                  --
+                    l_entered_cr := TO_CHAR(c1rec.iwol_cost);
+                    EXIT;
+                  --
                           END LOOP;
-			  END IF;
-			  --
-			  OPEN get_wol_date_created( l_com_rec.iwol_id );
-			  FETCH get_wol_date_created INTO l_account_date;
-			  CLOSE get_wol_date_created;
-			  --
+              END IF;
+              --
+              OPEN get_wol_date_created( l_com_rec.iwol_id );
+              FETCH get_wol_date_created INTO l_account_date;
+              CLOSE get_wol_date_created;
+              --
                           l_entered_dr := l_com_rec.wol_est_cost;
-			  --if l_entered_cr is null and l_entered_dr is null --SM - 05112004 - commented out and replaced with new glsv values
-			  IF l_glsv_cr IS NULL AND l_glsv_dr IS NULL
-		            THEN --assume an instructed line deleted
-			      --KA 13/11/2006 added transaction ID param
-		        FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
+              --if l_entered_cr is null and l_entered_dr is null --SM - 05112004 - commented out and replaced with new glsv values
+              IF l_glsv_cr IS NULL AND l_glsv_dr IS NULL
+                    THEN --assume an instructed line deleted
+                  --KA 13/11/2006 added transaction ID param
+                FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
                                          ,p_transaction_id => l_com_rec.iwor_transaction_id)
             LOOP
                                 l_glsv_cr := TO_CHAR(glsv.wol_est_cost);
                                 l_glsv_dr := TO_CHAR(glsv.wol_est_cost);
-			        EXIT;
-			      END LOOP;
-		          END IF;
-			END IF;
+                    EXIT;
+                  END LOOP;
+                  END IF;
+            END IF;
         ELSIF l_com_rec.iwor_transaction_type = 'D'
-		  THEN
-		    -- if transaction type is (D)elete
+          THEN
+            -- if transaction type is (D)elete
                     l_entered_cr := l_com_rec.wol_est_cost;
                     l_entered_dr := l_com_rec.wol_est_cost;
-			--
---		    if l_com_rec.iwol_road_id is null or l_com_rec.iwol_road_id = ' '
---			  then
-			    --assume record is cancelled
-		      --KA 13/11/2006 added transaction ID param
-		      FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
+            --
+--            if l_com_rec.iwol_road_id is null or l_com_rec.iwol_road_id = ' '
+--              then
+                --assume record is cancelled
+              --KA 13/11/2006 added transaction ID param
+              FOR glsv IN get_last_sent_val(p_wol_id         => l_com_rec.iwol_id
                                        ,p_transaction_id => l_com_rec.iwor_transaction_id)
           LOOP
                                   l_glsv_cr := TO_CHAR(glsv.wol_est_cost);-- SM - 04112004
                                   l_glsv_dr := TO_CHAR(glsv.wol_est_cost);-- SM - 04112004
-				  l_cost_code := glsv.iwol_cost_code;
-			      EXIT;
-			    END LOOP;
---		    end if;
-			OPEN get_wor_date_comp( l_com_rec.iwor_works_order_no );
-			FETCH get_wor_date_comp INTO l_account_date;
-			CLOSE get_wor_date_comp;
-			--
+                  l_cost_code := glsv.iwol_cost_code;
+                  EXIT;
+                END LOOP;
+--            end if;
+            OPEN get_wor_date_comp( l_com_rec.iwor_works_order_no );
+            FETCH get_wor_date_comp INTO l_account_date;
+            CLOSE get_wor_date_comp;
+            --
         END IF;
         --
         FOR l_com_rec_fc IN ncc_commitment( l_entered_dr                    --l_entered_cr --SM - 21092004
@@ -6563,10 +6698,10 @@ END IF;
                                           , l_glsv_cr                       --SM - 04112004 -- Added these two values to allow for teh splitting of the cost code.
                                           , l_glsv_dr                       --SM - 04112004 -- Should the cost code be split into more than 3 values then the main
                                           , l_com_rec.iwol_id                               -- query that the file is written from should probably be reworked.
-					  , l_user_id
-					  , l_com_rec.iwor_transaction_type
-					  , l_account_date
-					  , l_cost_code
+                      , l_user_id
+                      , l_com_rec.iwor_transaction_type
+                      , l_account_date
+                      , l_cost_code
             , pi_end_date
             , l_com_rec.iwor_transaction_id) LOOP
           --
@@ -6582,16 +6717,16 @@ END IF;
 --utl_file.put_line(l_fhand, l_com_rec_FC.commitment_record2); -- debit file
 /*******************************************************************************************************************
           if l_entered_cr is not null
- 		    then
-		    --must be an A or D.
-			  utl_file.put_line(l_fhand, l_com_rec_FC.commitment_record2);
-		  end if;
-		  --
-		  if l_entered_dr is not null
- 		    then
-			--must be an A or C.
+             then
+            --must be an A or D.
+              utl_file.put_line(l_fhand, l_com_rec_FC.commitment_record2);
+          end if;
+          --
+          if l_entered_dr is not null
+             then
+            --must be an A or C.
               utl_file.put_line(l_fhand, l_com_rec_FC.commitment_record);
-		end if;
+        end if;
 *******************************************************************************************************************/
           --
           IF l_com_rec.iwor_transaction_type = 'C'
@@ -6631,22 +6766,22 @@ END IF;
                                           ,pi_debit       => l_glsv_dr);
                         END IF;
           END IF;
-		  --
+          --
           l_no_of_recs := l_no_of_recs + 1;
-	      l_total_value := l_total_value + l_com_rec_fc.VALUE;
-		  l_transaction_id := l_com_rec_fc.iwor_transaction_id;
-		  --
-		  l_count := l_count+1;
-		  transaction_id_tab2(l_count) := l_transaction_id;
-		  --
-    	END LOOP;--l_com_rec_FC
-	END LOOP;--l_com_rec
-	FOR i IN 1..transaction_id_tab2.COUNT LOOP
+          l_total_value := l_total_value + l_com_rec_fc.VALUE;
+          l_transaction_id := l_com_rec_fc.iwor_transaction_id;
+          --
+          l_count := l_count+1;
+          transaction_id_tab2(l_count) := l_transaction_id;
+          --
+        END LOOP;--l_com_rec_FC
+    END LOOP;--l_com_rec
+    FOR i IN 1..transaction_id_tab2.COUNT LOOP
           UPDATE interface_wor
-  	      SET    iwor_fi_run_number = l_seq_no
-	      WHERE  iwor_transaction_id = transaction_id_tab2(i);
+            SET    iwor_fi_run_number = l_seq_no
+          WHERE  iwor_transaction_id = transaction_id_tab2(i);
     END LOOP;
-	--
+    --
     write_ctrl_file(pi_filename      => l_filename
                    ,pi_filepath      => p_filepath
                    ,pi_total_lines   => l_lines_in_file
@@ -6654,7 +6789,7 @@ END IF;
                    ,pi_total_debits  => l_total_debits);
 
     COMMIT;
-	--
+    --
     ELSE
     nm_debug.debug('1)');--templine
       UTL_FILE.PUT_LINE(l_fhand, l_header_record);
@@ -6662,16 +6797,16 @@ END IF;
       LOOP
       nm_debug.debug('2)l_no_of_recs - '||l_no_of_recs);--templine
         UTL_FILE.PUT_LINE(l_fhand, l_com_rec.commitment_record);
-	  l_no_of_recs := l_no_of_recs + 1;
-	  l_total_value := l_total_value + l_com_rec.VALUE;
+      l_no_of_recs := l_no_of_recs + 1;
+      l_total_value := l_total_value + l_com_rec.VALUE;
 
         UPDATE interface_wor
-  	  SET    iwor_fi_run_number = l_seq_no
-	  WHERE  iwor_transaction_id = l_com_rec.iwor_transaction_id;
+        SET    iwor_fi_run_number = l_seq_no
+      WHERE  iwor_transaction_id = l_com_rec.iwor_transaction_id;
       END LOOP;
-	  COMMIT;
+      COMMIT;
       UTL_FILE.PUT_LINE(l_fhand, '10,'||TO_CHAR(l_no_of_recs)||','||
-			      LTRIM(TO_CHAR(l_total_value,'9999999990.00')));
+                  LTRIM(TO_CHAR(l_total_value,'9999999990.00')));
       UTL_FILE.FFLUSH(l_fhand);
       UTL_FILE.FCLOSE(l_fhand);
     END IF;
@@ -6692,7 +6827,7 @@ END IF;
       --
       RETURN NULL;
 
-	WHEN g_file_exists THEN
+    WHEN g_file_exists THEN
       DBMS_OUTPUT.ENABLE(300);
       DBMS_OUTPUT.PUT_LINE(g_file_exists_err);
       --
@@ -6712,42 +6847,42 @@ END;
 --
 
 PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
-					 ,p_file   OUT varchar2
-					 ,p_contractor_id IN varchar2) IS
+                     ,p_file   OUT varchar2
+                     ,p_contractor_id IN varchar2) IS
 
-  l_today		 date := SYSDATE;
-  l_wol_id		 work_order_lines.wol_id%TYPE;
-  l_cost_code	 budgets.bud_cost_code%TYPE;
-  l_no_of_recs	 number(7) := 0;
-  l_total_value	 number := 0;
-  l_fhand		 utl_file.file_type;
-  l_seq_no		 varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, '', 'FC');
-  l_filename	 varchar2(50) := 'FC'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MMSS')||'.'||get_oun_id(p_contractor_id);
-  l_filename2	 varchar2(12) := 'FC'||TO_CHAR(l_seq_no)||'.DAT';
-  l_header_record	 varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
-						TO_CHAR(l_today, g_date_format)
-					    ||','||TO_CHAR(l_today, g_time_format);
+  l_today         date := SYSDATE;
+  l_wol_id         work_order_lines.wol_id%TYPE;
+  l_cost_code     budgets.bud_cost_code%TYPE;
+  l_no_of_recs     number(7) := 0;
+  l_total_value     number := 0;
+  l_fhand         utl_file.file_type;
+  l_seq_no         varchar2(6) := file_seq(interfaces.g_job_id,p_contractor_id, '', 'FC');
+  l_filename     varchar2(50) := 'FC'||TO_CHAR(l_seq_no)||TO_CHAR(SYSDATE,'YYYYMMDDHH24MMSS')||'.'||get_oun_id(p_contractor_id);
+  l_filename2     varchar2(12) := 'FC'||TO_CHAR(l_seq_no)||'.DAT';
+  l_header_record     varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
+                        TO_CHAR(l_today, g_date_format)
+                        ||','||TO_CHAR(l_today, g_time_format);
   l_file_not_found varchar2(250) := 'Error: Unable to write Financial Credit File. Path: '||g_filepath||'  File: '||l_filename;
 
   CURSOR credit IS
     SELECT '05,'||TO_CHAR(woc_claim_date, g_date_format)||','||
            TO_CHAR(p_cnp_id)||','||woc_claim_ref||','||
-	     wol_works_order_no||','||
-	     TO_CHAR(wol_id)||','||
-	     TO_CHAR(wol_def_defect_id)||','||
-	     TO_CHAR(wol_schd_id)||','||
-	     oun_unit_code||','||
-	     oun_comments||','||
-	     LTRIM(TO_CHAR(cp_payment_value,'9999999990.00'))||','||
-	     wol_icb_work_code||','||bud_cost_code||','||bud_fyr_id credit_record --SM 26112008 727549 Added budgey financial year
+         wol_works_order_no||','||
+         TO_CHAR(wol_id)||','||
+         TO_CHAR(wol_def_defect_id)||','||
+         TO_CHAR(wol_schd_id)||','||
+         oun_unit_code||','||
+         oun_comments||','||
+         LTRIM(TO_CHAR(cp_payment_value,'9999999990.00'))||','||
+         wol_icb_work_code||','||bud_cost_code||','||bud_fyr_id credit_record --SM 26112008 727549 Added budgey financial year
           ,LTRIM(TO_CHAR(cp_payment_value,'9999999990.00')) VALUE
-	    ,wol_id
+        ,wol_id
     FROM   org_units
-	    ,contracts
-	    ,work_order_claims
-	    ,work_orders
-	    ,claim_payments
-	    ,work_order_lines
+        ,contracts
+        ,work_order_claims
+        ,work_orders
+        ,claim_payments
+        ,work_order_lines
           ,budgets
     WHERE  con_id = woc_con_id
     AND    con_contr_org_id = oun_org_id
@@ -6816,7 +6951,7 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,3)) actual_record,--cost code 3 DR
            --interfaces.split_cost_code(bud_cost_code,3) actual_record,--cost code 3 DR
            'GLJEH01,'||--RECORD_TYPE
@@ -6872,9 +7007,9 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,1)) actual_record2,--cost code 1 CR
-		   --interfaces.split_cost_code(bud_cost_code,1) actual_record2,--cost code 1 CR
+           --interfaces.split_cost_code(bud_cost_code,1) actual_record2,--cost code 1 CR
            'GLJEH01,'||--RECORD_TYPE
            'NEW,'||--STATUS
            1||','||--SET_OF_BOOKS_ID
@@ -6928,7 +7063,7 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
           interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,1)) actual_record3,--cost code 1 DR
            --interfaces.split_cost_code(bud_cost_code,1) actual_record3,--cost code 1 DR
            'GLJEH01,'||--RECORD_TYPE
@@ -6984,17 +7119,17 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,2)) actual_record4--cost code 2 CR
            --interfaces.split_cost_code(bud_cost_code,2) actual_record4--cost code 2 CR
            ,wol_act_cost line_value
     FROM   org_units
-	    ,contracts
-	    ,work_order_claims
-	    ,work_orders
-	    ,claim_payments
-	    ,work_order_lines
-	    ,budgets
+        ,contracts
+        ,work_order_claims
+        ,work_orders
+        ,claim_payments
+        ,work_order_lines
+        ,budgets
     WHERE  con_id = woc_con_id
     AND    con_contr_org_id = oun_org_id
     AND    wol_works_order_no = wor_works_order_no
@@ -7002,11 +7137,11 @@ PROCEDURE financial_credit_file(p_cnp_id IN  contract_payments.cnp_id%TYPE
     AND    woc_claim_ref = cp_woc_claim_ref
     AND    woc_con_id = cp_woc_con_id
     AND    wol_id = cp_wol_id
-	AND    p_wol_id = wol_id
+    AND    p_wol_id = wol_id
     AND    wol_cnp_id = cp_payment_id
     AND    wol_cnp_id = p_cnp_id
-	AND    con_contr_org_id = p_contractor_id
-	AND    wol_bud_id = bud_id;
+    AND    con_contr_org_id = p_contractor_id
+    AND    wol_bud_id = bud_id;
 --
 CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
                         , p_user_id hig_users.hus_user_id%TYPE
@@ -7064,7 +7199,7 @@ CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,1)) commitment_record,--cost code 3 DR
            --interfaces.split_cost_code(bud_cost_code,1) commitment_record,--cost code 3 DR
            'GLJEH01,'||--RECORD_TYPE
@@ -7120,19 +7255,19 @@ CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
            ','||--CODE_COMBINATION_ID
            ','||--STST_SCOUNT
            ','||--GROUP_ID
-		   -- IFB 30.09.2005
+           -- IFB 30.09.2005
            interfaces.reformat_cost_code(interfaces.split_cost_code(bud_cost_code,3)) commitment_record2--cost code 1 CR
            --interfaces.split_cost_code(bud_cost_code,3) commitment_record2--cost code 1 CR
-		   ,iwor_transaction_id
-	    ,NVL(SUM(iboq_cost), 0) VALUE
+           ,iwor_transaction_id
+        ,NVL(SUM(iboq_cost), 0) VALUE
       ,wol_act_cost line_value
     FROM contracts
-	    ,org_units
-	    ,interface_wor
-	    ,interface_wol
-	    ,interface_boq
-		,budgets
-		,work_order_lines
+        ,org_units
+        ,interface_wor
+        ,interface_wol
+        ,interface_boq
+        ,budgets
+        ,work_order_lines
     WHERE  con_code = iwor_con_code
     AND    con_contr_org_id = oun_org_id
     AND    iwor_works_order_no = iwol_works_order_no
@@ -7140,32 +7275,32 @@ CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
     AND    iwol_transaction_id = iboq_transaction_id(+)
     AND    iwol_id = iboq_wol_id(+)
     AND    iwor_fi_run_number IS NOT NULL
-	AND    iwol_id = p_wol_id
-	AND    wol_id = iwol_id
-	AND    bud_id = wol_bud_id
-	AND    con_contr_org_id = p_contractor_id
+    AND    iwol_id = p_wol_id
+    AND    wol_id = iwol_id
+    AND    bud_id = wol_bud_id
+    AND    con_contr_org_id = p_contractor_id
     GROUP BY iwor_transaction_type, iwor_date_confirmed
-		,iwor_works_order_no, iwol_id, iwol_def_defect_id
-		,iwol_schd_id, iwol_def_priority, oun_unit_code
-		,iwor_con_code, iwol_work_cat
-		,iwol_cost_code, iwor_transaction_id, bud_cost_code
-		,wol_date_created, wol_act_cost
+        ,iwor_works_order_no, iwol_id, iwol_def_defect_id
+        ,iwol_schd_id, iwol_def_priority, oun_unit_code
+        ,iwor_con_code, iwol_work_cat
+        ,iwol_cost_code, iwor_transaction_id, bud_cost_code
+        ,wol_date_created, wol_act_cost
     ORDER BY iwor_transaction_id DESC;
 --
-	CURSOR c1 IS
-	SELECT hus_user_id
-	FROM hig_users
-	WHERE hus_username = USER;
+    CURSOR c1 IS
+    SELECT hus_user_id
+    FROM hig_users
+    WHERE hus_username = USER;
 --
     CURSOR get_wol_id IS
-	SELECT wol_id
-	FROM   org_units
-	      ,contracts
-	      ,work_order_claims
-	      ,work_orders
-	      ,claim_payments
-	      ,work_order_lines
-		  ,budgets
+    SELECT wol_id
+    FROM   org_units
+          ,contracts
+          ,work_order_claims
+          ,work_orders
+          ,claim_payments
+          ,work_order_lines
+          ,budgets
     WHERE  con_id = woc_con_id
     AND    con_contr_org_id = oun_org_id
     AND    wol_works_order_no = wor_works_order_no
@@ -7175,8 +7310,8 @@ CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
     AND    wol_id = cp_wol_id
     AND    wol_cnp_id = cp_payment_id
     AND    wol_cnp_id = p_cnp_id
-	AND    con_contr_org_id = p_contractor_id
-	AND    wol_bud_id = bud_id;
+    AND    con_contr_org_id = p_contractor_id
+    AND    wol_bud_id = bud_id;
 --
     l_user_id hig_users.hus_user_id%TYPE;
 
@@ -7205,31 +7340,31 @@ ELSE
 END IF;
   IF UTL_FILE.IS_OPEN(l_fhand) THEN
     IF hig.get_user_or_sys_opt('FCFORMAT') = 'Y'
-	  THEN
-	    OPEN c1;
-		FETCH c1 INTO l_user_id;
-		CLOSE c1;
+      THEN
+        OPEN c1;
+        FETCH c1 INTO l_user_id;
+        CLOSE c1;
         -- If NCC FIMS format is required
         FOR wolrec IN get_wol_id LOOP --lists all the wol_ids for payments due
 /**********************************************************************************************************************
 ** SM - 21092004 - Removed lines to prevent the estimate getting balanced. Need to replace with balancing debit line.
 ***********************************************************************************************************************
-   		    for ncc2rec in ncc_commitment_2( wolrec.wol_id, l_user_id ) loop --gets the payment for that wol_id
+               for ncc2rec in ncc_commitment_2( wolrec.wol_id, l_user_id ) loop --gets the payment for that wol_id
                           utl_file.put_line(l_fhand, ncc2rec.commitment_record2);--writes the estimate
-			  exit;
-			end loop;
+              exit;
+            end loop;
 **********************************************************************************************************************/
-   		  FOR ncc2rec IN ncc_commitment_2( wolrec.wol_id, l_user_id ) LOOP --gets the payment for that wol_id
+             FOR ncc2rec IN ncc_commitment_2( wolrec.wol_id, l_user_id ) LOOP --gets the payment for that wol_id
                     UTL_FILE.PUT_LINE(l_fhand, ncc2rec.commitment_record);--writes the estimate (CR)
                     UTL_FILE.PUT_LINE(l_fhand, ncc2rec.commitment_record2);--writes the estimate (DR)
 
           log_ctrl_data(pi_credit => ncc2rec.line_value
                        ,pi_debit  => ncc2rec.line_value);
 
-		    EXIT;
-		  END LOOP;
-		  --
-		  FOR nccrec IN ncc_commitment( wolrec.wol_id, l_user_id ) LOOP --gets the last transaction value for that wol_id
+            EXIT;
+          END LOOP;
+          --
+          FOR nccrec IN ncc_commitment( wolrec.wol_id, l_user_id ) LOOP --gets the last transaction value for that wol_id
                     --utl_file.put_line(l_fhand, nccrec.actual_record2);--writes the actual (CR)E
                     --utl_file.put_line(l_fhand, nccrec.actual_record);--writes the actual (DR)E
                     UTL_FILE.PUT_LINE(l_fhand, nccrec.actual_record3);--writes the actual (DR)A
@@ -7237,9 +7372,9 @@ END IF;
 
         log_ctrl_data(pi_credit => nccrec.line_value
                      ,pi_debit  => nccrec.line_value);
-		  END LOOP;
+          END LOOP;
         END LOOP;
-		--
+        --
         UTL_FILE.FFLUSH(l_fhand);
         UTL_FILE.FCLOSE(l_fhand);
 
@@ -7258,19 +7393,19 @@ END IF;
 --      NM 20-JUL-2005: Commented out fetch of cost_code as cost_code is now retrieved from the cursor above (credit)
 --      and tagged on the end of the Credit_record value.
 --
---	  Open cost_code(l_credit_rec.wol_id);
---	  Fetch cost_code Into l_cost_code;
---	  Close cost_code;
+--      Open cost_code(l_credit_rec.wol_id);
+--      Fetch cost_code Into l_cost_code;
+--      Close cost_code;
 
-	  l_credit_rec.credit_record := l_credit_rec.credit_record;
+      l_credit_rec.credit_record := l_credit_rec.credit_record;
        UTL_FILE.PUT_LINE(l_fhand, l_credit_rec.credit_record);
-	  l_no_of_recs := l_no_of_recs + 1;
-	  l_total_value := l_total_value + l_credit_rec.VALUE;
+      l_no_of_recs := l_no_of_recs + 1;
+      l_total_value := l_total_value + l_credit_rec.VALUE;
 
       END LOOP;
 
       UTL_FILE.PUT_LINE(l_fhand, '10,'||TO_CHAR(l_no_of_recs)||','||
-			    LTRIM(TO_CHAR(l_total_value,'9999999990.00')));
+                LTRIM(TO_CHAR(l_total_value,'9999999990.00')));
 
       UTL_FILE.FFLUSH(l_fhand);
       UTL_FILE.FCLOSE(l_fhand);
@@ -7290,36 +7425,36 @@ END;
 
 PROCEDURE payment_transaction_file(p_job_id IN number
                         ,p_seq_no   IN number
-					    ,p_filepath IN varchar2
+                        ,p_filepath IN varchar2
                         ,p_filename IN varchar2
-					    ,p_error OUT varchar2) IS
+                        ,p_error OUT varchar2) IS
 BEGIN
   interfaces.g_job_id := p_job_id;
   --
   interfaces.payment_transaction_file(p_seq_no
-					                 ,p_filepath
+                                     ,p_filepath
                                      ,p_filename
-					                 ,p_error);
+                                     ,p_error);
 END;
 --
 PROCEDURE payment_transaction_file(p_seq_no   IN number
-					    ,p_filepath IN varchar2
+                        ,p_filepath IN varchar2
                         ,p_filename IN varchar2
-					    ,p_error OUT varchar2) IS
+                        ,p_error OUT varchar2) IS
 
-  l_fhand			utl_file.file_type;
-  l_no_of_recs		number := 0;
-  l_total_value		number := 0;
-  l_seq_no			varchar2(6) := file_seq(interfaces.g_job_id,'', p_seq_no, 'FP');
-  l_filename	    varchar2(12) := NVL(p_filename,'FP'||TO_CHAR(l_seq_no)||'.DAT');
-  l_record			varchar2(255);
-  l_wol_id			work_order_lines.wol_id%TYPE;
-  l_claim_ref		claim_payments.cp_woc_claim_ref%TYPE;
-  l_approved		claim_payments.cp_claim_value%TYPE;
-  l_payment			claim_payments.cp_claim_value%TYPE;
-  l_record_type		interface_erroneous_records.ier_record_type%TYPE;
-  invalid_file		EXCEPTION;
-  l_file_not_found	varchar2(250) := 'Error: Unable to read Payment Transaction File. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
+  l_fhand            utl_file.file_type;
+  l_no_of_recs        number := 0;
+  l_total_value        number := 0;
+  l_seq_no            varchar2(6) := file_seq(interfaces.g_job_id,'', p_seq_no, 'FP');
+  l_filename        varchar2(12) := NVL(p_filename,'FP'||TO_CHAR(l_seq_no)||'.DAT');
+  l_record            varchar2(255);
+  l_wol_id            work_order_lines.wol_id%TYPE;
+  l_claim_ref        claim_payments.cp_woc_claim_ref%TYPE;
+  l_approved        claim_payments.cp_claim_value%TYPE;
+  l_payment            claim_payments.cp_claim_value%TYPE;
+  l_record_type        interface_erroneous_records.ier_record_type%TYPE;
+  invalid_file        EXCEPTION;
+  l_file_not_found    varchar2(250) := 'Error: Unable to read Payment Transaction File. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
 
   CURSOR approved IS
     SELECT cp_claim_value
@@ -7338,17 +7473,17 @@ BEGIN
 
       IF l_record_type = '05' THEN
 
-	  l_no_of_recs := l_no_of_recs + 1;
+      l_no_of_recs := l_no_of_recs + 1;
         l_wol_id := int_utility.get_field(l_record, 7);
-	  l_claim_ref := UPPER(int_utility.get_field(l_record, 4));
+      l_claim_ref := UPPER(int_utility.get_field(l_record, 4));
         l_payment := int_utility.get_field(l_record, 11);
-	  l_total_value := l_total_value + l_payment;
+      l_total_value := l_total_value + l_payment;
 
         UPDATE claim_payments
-        SET	   cp_fis_payment_ref = int_utility.get_field(l_record, 5)
-	  WHERE  cp_woc_claim_ref = l_claim_ref
-	  AND    cp_wol_id = l_wol_id
-	  AND    cp_payment_id = int_utility.get_field(l_record, 3);
+        SET       cp_fis_payment_ref = int_utility.get_field(l_record, 5)
+      WHERE  cp_woc_claim_ref = l_claim_ref
+      AND    cp_wol_id = l_wol_id
+      AND    cp_payment_id = int_utility.get_field(l_record, 3);
 
         OPEN approved;
         FETCH approved INTO l_approved;
@@ -7356,19 +7491,19 @@ BEGIN
 
         IF NVL(l_approved,0) != NVL(l_payment,0) THEN
           DBMS_OUTPUT.PUT_LINE('WARNING: The payment value and approved value are not the same for claim '||
-					  l_claim_ref);
+                      l_claim_ref);
           --
           IF interfaces.g_job_id IS NOT NULL THEN
             higgrirp.write_gri_spool(interfaces.g_job_id,'WARNING: The payment value and approved value are not the same for claim '||
-					  l_claim_ref);
+                      l_claim_ref);
           END IF;
           --
         END IF;
 
       ELSIF l_record_type = '10' THEN
 
-	  IF l_no_of_recs != int_utility.get_field(l_record, 2) OR
-	     l_total_value != int_utility.get_field(l_record, 3) THEN
+      IF l_no_of_recs != int_utility.get_field(l_record, 2) OR
+         l_total_value != int_utility.get_field(l_record, 3) THEN
 
           DBMS_OUTPUT.PUT_LINE('WARNING: Check record totals do not tally.');
           --
@@ -7378,7 +7513,7 @@ BEGIN
           --
         END IF;
 
-	END IF;
+    END IF;
     END LOOP;
   ELSE
     RAISE invalid_file;
@@ -7401,7 +7536,7 @@ END;
 -- Populate the Interface_Wol/Boq tables
 --
 PROCEDURE pop_wol_and_boq_tabs(p_wol_rec  IN wol_rec
-					,p_trans_id	IN interface_wor.iwor_transaction_id%TYPE) IS
+                    ,p_trans_id    IN interface_wor.iwor_transaction_id%TYPE) IS
   --
   CURSOR boq
       IS
@@ -7447,8 +7582,8 @@ PROCEDURE pop_wol_and_boq_tabs(p_wol_rec  IN wol_rec
    WHERE def_defect_id = cp_defect_id
        ;
   --
-  l_def_rec		def%ROWTYPE;
-  l_cost_code	budgets.bud_cost_code%TYPE;
+  l_def_rec        def%ROWTYPE;
+  l_cost_code    budgets.bud_cost_code%TYPE;
   --
 BEGIN
   --
@@ -7468,31 +7603,31 @@ BEGIN
   INSERT
     INTO interface_wol
         (iwol_transaction_id
-    	  ,iwol_id
-    	  ,iwol_works_order_no
-    	  ,iwol_road_id
-    	  ,iwol_road_descr
-    	  ,iwol_def_defect_id
-    	  ,iwol_schd_id
-    	  ,iwol_def_locn_descr
-    	  ,iwol_def_defect_descr
-    	  ,iwol_def_special_instr
-    	  ,iwol_def_priority
-    	  ,iwol_def_defect_code
-    	  ,iwol_def_st_chain
-    	  ,iwol_def_x_sect
-    	  ,iwol_percent_adjust
-    	  ,iwol_percent_adjust_code
-    	  ,iwol_work_cat
-    	  ,iwol_cost_code
+          ,iwol_id
+          ,iwol_works_order_no
+          ,iwol_road_id
+          ,iwol_road_descr
+          ,iwol_def_defect_id
+          ,iwol_schd_id
+          ,iwol_def_locn_descr
+          ,iwol_def_defect_descr
+          ,iwol_def_special_instr
+          ,iwol_def_priority
+          ,iwol_def_defect_code
+          ,iwol_def_st_chain
+          ,iwol_def_x_sect
+          ,iwol_percent_adjust
+          ,iwol_percent_adjust_code
+          ,iwol_work_cat
+          ,iwol_cost_code
         )
   VALUES(p_trans_id
-		    ,p_wol_rec.r_wol_id
-		    ,p_wol_rec.r_wor_no
-		    ,p_wol_rec.r_road_id
+            ,p_wol_rec.r_wol_id
+            ,p_wol_rec.r_wor_no
+            ,p_wol_rec.r_road_id
         ,REPLACE(p_wol_rec.r_road_descr,',','~')
-		    ,p_wol_rec.r_defect_id
-		    ,p_wol_rec.r_schd_id
+            ,p_wol_rec.r_defect_id
+            ,p_wol_rec.r_schd_id
         ,REPLACE(l_def_rec.def_locn_descr,',','~')
         ,REPLACE(l_def_rec.def_defect_descr,',','~')
         ,REPLACE(l_def_rec.def_special_instr,',','~')
@@ -7514,27 +7649,27 @@ BEGIN
         INSERT
           INTO interface_boq
               (iboq_transaction_id
-		          ,iboq_wol_id
-		          ,iboq_sta_item_code
-		          ,iboq_dim1
-		          ,iboq_dim2
-		          ,iboq_dim3
-		          ,iboq_quantity
-		          ,iboq_rate
-		          ,iboq_cost
-		          ,iboq_percent_adjust
-		          ,iboq_percent_adjust_code)
+                  ,iboq_wol_id
+                  ,iboq_sta_item_code
+                  ,iboq_dim1
+                  ,iboq_dim2
+                  ,iboq_dim3
+                  ,iboq_quantity
+                  ,iboq_rate
+                  ,iboq_cost
+                  ,iboq_percent_adjust
+                  ,iboq_percent_adjust_code)
         VALUES(p_trans_id
-		          ,p_wol_rec.r_wol_id
-		          ,boq_rec.boq_sta_item_code
-		          ,boq_rec.dim1
-		          ,boq_rec.dim2
-		          ,boq_rec.dim3
-		          ,boq_rec.quantity
-		          ,boq_rec.rate
-		          ,boq_rec.COST
-		          ,NULL
-		          ,NULL);
+                  ,p_wol_rec.r_wol_id
+                  ,boq_rec.boq_sta_item_code
+                  ,boq_rec.dim1
+                  ,boq_rec.dim2
+                  ,boq_rec.dim3
+                  ,boq_rec.quantity
+                  ,boq_rec.rate
+                  ,boq_rec.COST
+                  ,NULL
+                  ,NULL);
         --
       END LOOP;
   ELSE
@@ -7544,36 +7679,36 @@ BEGIN
           INTO interface_boq
               (iboq_transaction_id
               ,iboq_wol_id
-	            ,iboq_sta_item_code
-	            ,iboq_dim1
-	            ,iboq_dim2
-	            ,iboq_dim3
-	            ,iboq_quantity
-	            ,iboq_rate
-	            ,iboq_cost
-	            ,iboq_percent_adjust
-	            ,iboq_percent_adjust_code
-	            ,iboq_boq_id
-  		        ,iboq_parent_boq_id
-  		        ,iboq_percent_band_comp
-  		        ,iboq_rogue_item
-  		        ,iboq_rogue_item_desc)
+                ,iboq_sta_item_code
+                ,iboq_dim1
+                ,iboq_dim2
+                ,iboq_dim3
+                ,iboq_quantity
+                ,iboq_rate
+                ,iboq_cost
+                ,iboq_percent_adjust
+                ,iboq_percent_adjust_code
+                ,iboq_boq_id
+                  ,iboq_parent_boq_id
+                  ,iboq_percent_band_comp
+                  ,iboq_rogue_item
+                  ,iboq_rogue_item_desc)
         VALUES(p_trans_id
-		          ,p_wol_rec.r_wol_id
-		          ,boq_rec.boq_sta_item_code
-		          ,boq_rec.dim1
-		          ,boq_rec.dim2
-		          ,boq_rec.dim3
-		          ,boq_rec.quantity
-		          ,boq_rec.rate
-		          ,boq_rec.COST
-		          ,NULL
-		          ,NULL
-		          ,boq_rec.boq_id
-		          ,boq_rec.boq_parent_id
-		          ,DECODE(boq_rec.boq_parent_id, NULL, NULL, SUBSTR(hig.get_sysopt('CUM_PERC'),1,1))
-		          ,DECODE(boq_rec.sta_rogue_flag, 'Y', 'R', NULL)
-		          ,DECODE(boq_rec.sta_rogue_flag, 'Y', REPLACE(boq_rec.boq_item_name,',','~'), NULL))
+                  ,p_wol_rec.r_wol_id
+                  ,boq_rec.boq_sta_item_code
+                  ,boq_rec.dim1
+                  ,boq_rec.dim2
+                  ,boq_rec.dim3
+                  ,boq_rec.quantity
+                  ,boq_rec.rate
+                  ,boq_rec.COST
+                  ,NULL
+                  ,NULL
+                  ,boq_rec.boq_id
+                  ,boq_rec.boq_parent_id
+                  ,DECODE(boq_rec.boq_parent_id, NULL, NULL, SUBSTR(hig.get_sysopt('CUM_PERC'),1,1))
+                  ,DECODE(boq_rec.sta_rogue_flag, 'Y', 'R', NULL)
+                  ,DECODE(boq_rec.sta_rogue_flag, 'Y', REPLACE(boq_rec.boq_item_name,',','~'), NULL))
              ;
         --
       END LOOP;
@@ -7584,23 +7719,23 @@ END;
 -- Add work order to the list of those to be inserted into the
 -- interface tables by the copy_data_to_interface procedure.
 --
-PROCEDURE add_wor_to_list(p_trans_type	IN interface_wor.iwor_transaction_type%TYPE
-				 ,p_wor_no		IN interface_wor.iwor_works_order_no%TYPE
-				 ,p_wor_flag	IN interface_wor.iwor_flag%TYPE
-				 ,p_scheme_type	IN interface_wor.iwor_scheme_type%TYPE
-				 ,p_con_code	IN interface_wor.iwor_con_code%TYPE
-				 ,p_originator	IN interface_wor.iwor_originator%TYPE
-				 ,p_confirmed	IN interface_wor.iwor_date_confirmed%TYPE
-				 ,p_est_complete	IN interface_wor.iwor_est_complete%TYPE
-				 ,p_cost		IN interface_wor.iwor_cost%TYPE
-				 ,p_labour		IN interface_wor.iwor_est_labour%TYPE
-				 ,p_ip_flag		IN interface_wor.iwor_interim_payment_flag%TYPE
-				 ,p_ra_flag		IN interface_wor.iwor_risk_assessment_flag%TYPE
-				 ,p_ms_flag		IN interface_wor.iwor_method_statement_flag%TYPE
-				 ,p_wp_flag		IN interface_wor.iwor_works_programme_flag%TYPE
-				 ,p_as_flag		IN interface_wor.iwor_additional_safety_flag%TYPE
-				 ,p_commence_by	IN interface_wor.iwor_commence_by%TYPE
-				 ,p_descr		IN interface_wor.iwor_descr%TYPE) IS
+PROCEDURE add_wor_to_list(p_trans_type    IN interface_wor.iwor_transaction_type%TYPE
+                 ,p_wor_no        IN interface_wor.iwor_works_order_no%TYPE
+                 ,p_wor_flag    IN interface_wor.iwor_flag%TYPE
+                 ,p_scheme_type    IN interface_wor.iwor_scheme_type%TYPE
+                 ,p_con_code    IN interface_wor.iwor_con_code%TYPE
+                 ,p_originator    IN interface_wor.iwor_originator%TYPE
+                 ,p_confirmed    IN interface_wor.iwor_date_confirmed%TYPE
+                 ,p_est_complete    IN interface_wor.iwor_est_complete%TYPE
+                 ,p_cost        IN interface_wor.iwor_cost%TYPE
+                 ,p_labour        IN interface_wor.iwor_est_labour%TYPE
+                 ,p_ip_flag        IN interface_wor.iwor_interim_payment_flag%TYPE
+                 ,p_ra_flag        IN interface_wor.iwor_risk_assessment_flag%TYPE
+                 ,p_ms_flag        IN interface_wor.iwor_method_statement_flag%TYPE
+                 ,p_wp_flag        IN interface_wor.iwor_works_programme_flag%TYPE
+                 ,p_as_flag        IN interface_wor.iwor_additional_safety_flag%TYPE
+                 ,p_commence_by    IN interface_wor.iwor_commence_by%TYPE
+                 ,p_descr        IN interface_wor.iwor_descr%TYPE) IS
 
   l_index integer;
 
@@ -7609,7 +7744,7 @@ PROCEDURE add_wor_to_list(p_trans_type	IN interface_wor.iwor_transaction_type%TY
 
     FOR t_index IN 0..g_wor_index - 1 LOOP
       IF g_wor_tab(t_index).iwor_works_order_no = p_wor_no AND
-	   g_wor_tab(t_index).iwor_transaction_type = p_trans_type THEN
+       g_wor_tab(t_index).iwor_transaction_type = p_trans_type THEN
         RETURN t_index;
       END IF;
     END LOOP;
@@ -7627,9 +7762,9 @@ PROCEDURE add_wor_to_list(p_trans_type	IN interface_wor.iwor_transaction_type%TY
     for t_index in 0..g_wor_index - 1 loop
 
       if g_wor_tab(t_index).iwor_works_order_no = p_wor_no and
-	   g_wor_tab(t_index).iwor_transaction_type = 'A' then
+       g_wor_tab(t_index).iwor_transaction_type = 'A' then
 
-        g_wor_index := g_wor_index - 1;	-- remove record from table
+        g_wor_index := g_wor_index - 1;    -- remove record from table
         for t_index2 in t_index..g_wor_index - 1 loop
           g_wor_tab(t_index2) := g_wor_tab(t_index2 + 1);
         end loop;
@@ -7643,12 +7778,12 @@ PROCEDURE add_wor_to_list(p_trans_type	IN interface_wor.iwor_transaction_type%TY
 
       if g_wol_tab(t_index).r_wor_no = p_wor_no then
 
-        g_wol_index := g_wol_index - 1;	-- remove record from table
-	  for t_index2 in t_index..g_wol_index - 1 loop
-	    g_wol_tab(t_index2) := g_wol_tab(t_index2 + 1);
-	  end loop;
+        g_wol_index := g_wol_index - 1;    -- remove record from table
+      for t_index2 in t_index..g_wol_index - 1 loop
+        g_wol_tab(t_index2) := g_wol_tab(t_index2 + 1);
+      end loop;
 
-	end if;
+    end if;
 
     end loop;
 
@@ -7699,13 +7834,13 @@ END;
 -- Add work order line to the list of those to be inserted into the
 -- interface tables by the copy_data_to_interface procedure.
 --
-PROCEDURE add_wol_to_list(p_wol_id		IN work_order_lines.wol_id%TYPE
-				 ,p_wor_no		IN work_order_lines.wol_works_order_no%TYPE
-				 ,p_defect_id	IN work_order_lines.wol_def_defect_id%TYPE
-				 ,p_schd_id		IN work_order_lines.wol_schd_id%TYPE
-				 ,p_work_code	IN work_order_lines.wol_icb_work_code%TYPE
-				 ,p_road_id		IN road_segs.rse_unique%TYPE
-				 ,p_road_descr	IN road_segs.rse_descr%TYPE) IS
+PROCEDURE add_wol_to_list(p_wol_id        IN work_order_lines.wol_id%TYPE
+                 ,p_wor_no        IN work_order_lines.wol_works_order_no%TYPE
+                 ,p_defect_id    IN work_order_lines.wol_def_defect_id%TYPE
+                 ,p_schd_id        IN work_order_lines.wol_schd_id%TYPE
+                 ,p_work_code    IN work_order_lines.wol_icb_work_code%TYPE
+                 ,p_road_id        IN road_segs.rse_unique%TYPE
+                 ,p_road_descr    IN road_segs.rse_descr%TYPE) IS
 
 
   l_index integer;
@@ -7751,7 +7886,7 @@ END;
 --
 FUNCTION create_header(p_wor_rec interface_wor%ROWTYPE) RETURN integer IS
 
-  l_trans_id		interface_wor.iwor_transaction_id%TYPE;
+  l_trans_id        interface_wor.iwor_transaction_id%TYPE;
 
 BEGIN
 
@@ -7760,48 +7895,48 @@ BEGIN
   FROM   dual;
 
   INSERT INTO interface_wor (
- 		 iwor_transaction_id
-		,iwor_transaction_type
-		,iwor_works_order_no
-		,iwor_flag
-		,iwor_scheme_type
-		,iwor_con_code
-		,iwor_originator
-		,iwor_date_confirmed
-		,iwor_est_complete
-		,iwor_cost
-		,iwor_est_labour
-		,iwor_interim_payment_flag
-		,iwor_risk_assessment_flag
-		,iwor_method_statement_flag
-		,iwor_works_programme_flag
-		,iwor_additional_safety_flag
-		,iwor_commence_by
-		,iwor_fyr_id
-		,iwor_descr
-		,iwor_wo_run_number
-		,iwor_fi_run_number)
+          iwor_transaction_id
+        ,iwor_transaction_type
+        ,iwor_works_order_no
+        ,iwor_flag
+        ,iwor_scheme_type
+        ,iwor_con_code
+        ,iwor_originator
+        ,iwor_date_confirmed
+        ,iwor_est_complete
+        ,iwor_cost
+        ,iwor_est_labour
+        ,iwor_interim_payment_flag
+        ,iwor_risk_assessment_flag
+        ,iwor_method_statement_flag
+        ,iwor_works_programme_flag
+        ,iwor_additional_safety_flag
+        ,iwor_commence_by
+        ,iwor_fyr_id
+        ,iwor_descr
+        ,iwor_wo_run_number
+        ,iwor_fi_run_number)
   VALUES  (  l_trans_id
-		,p_wor_rec.iwor_transaction_type
-		,p_wor_rec.iwor_works_order_no
-		,p_wor_rec.iwor_flag
-		,p_wor_rec.iwor_scheme_type
-		,p_wor_rec.iwor_con_code
-		,p_wor_rec.iwor_originator
-		,p_wor_rec.iwor_date_confirmed
-		,p_wor_rec.iwor_est_complete
-		,p_wor_rec.iwor_cost
-		,p_wor_rec.iwor_est_labour
-		,p_wor_rec.iwor_interim_payment_flag
-		,p_wor_rec.iwor_risk_assessment_flag
-		,p_wor_rec.iwor_method_statement_flag
-		,p_wor_rec.iwor_works_programme_flag
-		,p_wor_rec.iwor_additional_safety_flag
-		,p_wor_rec.iwor_commence_by
-		,''
-		,p_wor_rec.iwor_descr
-		,''
-		,'');
+        ,p_wor_rec.iwor_transaction_type
+        ,p_wor_rec.iwor_works_order_no
+        ,p_wor_rec.iwor_flag
+        ,p_wor_rec.iwor_scheme_type
+        ,p_wor_rec.iwor_con_code
+        ,p_wor_rec.iwor_originator
+        ,p_wor_rec.iwor_date_confirmed
+        ,p_wor_rec.iwor_est_complete
+        ,p_wor_rec.iwor_cost
+        ,p_wor_rec.iwor_est_labour
+        ,p_wor_rec.iwor_interim_payment_flag
+        ,p_wor_rec.iwor_risk_assessment_flag
+        ,p_wor_rec.iwor_method_statement_flag
+        ,p_wor_rec.iwor_works_programme_flag
+        ,p_wor_rec.iwor_additional_safety_flag
+        ,p_wor_rec.iwor_commence_by
+        ,''
+        ,p_wor_rec.iwor_descr
+        ,''
+        ,'');
 
   RETURN l_trans_id;
 
@@ -7863,29 +7998,29 @@ PROCEDURE copy_data_to_interface IS
 
   CURSOR c1(p_wor_no work_orders.wor_works_order_no%TYPE) IS
     SELECT wor_flag
-	    ,wor_scheme_type
-	    ,con_code
-	    ,hus_name
-	    ,wor_date_confirmed
-	    ,wor_est_complete
-	    ,NVL(wor_act_cost, wor_est_cost)
-	    ,wor_est_labour
-	    ,wor_interim_payment_flag
-	    ,wor_risk_assessment_flag
-	    ,wor_method_statement_flag
-	    ,wor_works_programme_flag
-	    ,wor_additional_safety_flag
-	    ,wor_commence_by
-	    ,wor_descr
+        ,wor_scheme_type
+        ,con_code
+        ,hus_name
+        ,wor_date_confirmed
+        ,wor_est_complete
+        ,NVL(wor_act_cost, wor_est_cost)
+        ,wor_est_labour
+        ,wor_interim_payment_flag
+        ,wor_risk_assessment_flag
+        ,wor_method_statement_flag
+        ,wor_works_programme_flag
+        ,wor_additional_safety_flag
+        ,wor_commence_by
+        ,wor_descr
     FROM   contracts
-	    ,hig_users
-	    ,work_orders
+        ,hig_users
+        ,work_orders
     WHERE  wor_peo_person_id = hus_user_id
     AND    wor_con_id = con_id
     AND    wor_works_order_no = p_wor_no;
 
-  l_header_found	boolean := FALSE;
-  l_trans_id	interface_wor.iwor_transaction_id%TYPE;
+  l_header_found    boolean := FALSE;
+  l_trans_id    interface_wor.iwor_transaction_id%TYPE;
 
 BEGIN
 
@@ -7895,7 +8030,7 @@ BEGIN
 
       l_trans_id := create_header(g_wor_tab(l_index));
       pop_wor_file_tabs(l_trans_id
-			     ,g_wor_tab(l_index).iwor_works_order_no);
+                 ,g_wor_tab(l_index).iwor_works_order_no);
     END IF;
 
   END LOOP;
@@ -7916,33 +8051,33 @@ BEGIN
     END LOOP;
 
     IF NOT l_header_found THEN
-	OPEN c1(g_wol_tab(l_wol_index).r_wor_no);
-	FETCH c1 INTO g_wor_tab(g_wor_index).iwor_flag
-			 ,g_wor_tab(g_wor_index).iwor_scheme_type
-			 ,g_wor_tab(g_wor_index).iwor_con_code
-			 ,g_wor_tab(g_wor_index).iwor_originator
-			 ,g_wor_tab(g_wor_index).iwor_date_confirmed
-			 ,g_wor_tab(g_wor_index).iwor_est_complete
-			 ,g_wor_tab(g_wor_index).iwor_cost
-			 ,g_wor_tab(g_wor_index).iwor_est_labour
-			 ,g_wor_tab(g_wor_index).iwor_interim_payment_flag
-			 ,g_wor_tab(g_wor_index).iwor_risk_assessment_flag
-			 ,g_wor_tab(g_wor_index).iwor_method_statement_flag
-			 ,g_wor_tab(g_wor_index).iwor_works_programme_flag
-			 ,g_wor_tab(g_wor_index).iwor_additional_safety_flag
-			 ,g_wor_tab(g_wor_index).iwor_commence_by
-			 ,g_wor_tab(g_wor_index).iwor_descr;
-	IF c1%FOUND THEN
-	  g_wor_tab(g_wor_index).iwor_works_order_no := g_wol_tab(l_wol_index).r_wor_no;
-	  g_wor_tab(g_wor_index).iwor_transaction_type := 'A';
+    OPEN c1(g_wol_tab(l_wol_index).r_wor_no);
+    FETCH c1 INTO g_wor_tab(g_wor_index).iwor_flag
+             ,g_wor_tab(g_wor_index).iwor_scheme_type
+             ,g_wor_tab(g_wor_index).iwor_con_code
+             ,g_wor_tab(g_wor_index).iwor_originator
+             ,g_wor_tab(g_wor_index).iwor_date_confirmed
+             ,g_wor_tab(g_wor_index).iwor_est_complete
+             ,g_wor_tab(g_wor_index).iwor_cost
+             ,g_wor_tab(g_wor_index).iwor_est_labour
+             ,g_wor_tab(g_wor_index).iwor_interim_payment_flag
+             ,g_wor_tab(g_wor_index).iwor_risk_assessment_flag
+             ,g_wor_tab(g_wor_index).iwor_method_statement_flag
+             ,g_wor_tab(g_wor_index).iwor_works_programme_flag
+             ,g_wor_tab(g_wor_index).iwor_additional_safety_flag
+             ,g_wor_tab(g_wor_index).iwor_commence_by
+             ,g_wor_tab(g_wor_index).iwor_descr;
+    IF c1%FOUND THEN
+      g_wor_tab(g_wor_index).iwor_works_order_no := g_wol_tab(l_wol_index).r_wor_no;
+      g_wor_tab(g_wor_index).iwor_transaction_type := 'A';
         g_wor_tab(g_wor_index).iwor_transaction_id := create_header(g_wor_tab(g_wor_index));
-	  g_wor_index := g_wor_index + 1;
+      g_wor_index := g_wor_index + 1;
 
 --        RAC - Initialis the transaction id prior to any test on its value.
           g_wor_tab(g_wor_index).iwor_transaction_id := NULL;
 
       END IF;
-	CLOSE c1;
+    CLOSE c1;
 
     END IF;
   END LOOP;
@@ -7951,24 +8086,24 @@ BEGIN
 
     IF g_wor_tab(l_wor_index).iwor_transaction_type = 'A' THEN
 
-	IF g_wor_tab(l_wor_index).iwor_transaction_id IS NULL THEN
+    IF g_wor_tab(l_wor_index).iwor_transaction_id IS NULL THEN
         g_wor_tab(l_wor_index).iwor_transaction_id := create_header(g_wor_tab(l_wor_index));
-	END IF;
+    END IF;
 
-	FOR l_wol_index IN 0..g_wol_index - 1 LOOP
+    FOR l_wol_index IN 0..g_wol_index - 1 LOOP
 
-	  IF g_wol_tab(0).r_wor_no = g_wor_tab(l_wor_index).iwor_works_order_no THEN
+      IF g_wol_tab(0).r_wor_no = g_wor_tab(l_wor_index).iwor_works_order_no THEN
 
-	    pop_wol_and_boq_tabs(g_wol_tab(0), g_wor_tab(l_wor_index).iwor_transaction_id);
-	    g_wol_index := g_wol_index - 1;	-- remove entry from table
+        pop_wol_and_boq_tabs(g_wol_tab(0), g_wor_tab(l_wor_index).iwor_transaction_id);
+        g_wol_index := g_wol_index - 1;    -- remove entry from table
 
-	    FOR l_del_index IN 0..g_wol_index - 1 LOOP
-		g_wol_tab(l_del_index) := g_wol_tab(l_del_index + 1);
-	    END LOOP;
+        FOR l_del_index IN 0..g_wol_index - 1 LOOP
+        g_wol_tab(l_del_index) := g_wol_tab(l_del_index + 1);
+        END LOOP;
 
-	  END IF;
+      END IF;
 
-	END LOOP;
+    END LOOP;
 
     END IF;
 
@@ -7989,7 +8124,7 @@ BEGIN
     WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
     AND    hsc_allow_feature3 = 'Y'
     AND    g_today BETWEEN NVL(hsc_start_date, g_today)
-	     AND NVL(hsc_end_date, g_today);
+         AND NVL(hsc_end_date, g_today);
 
     EXCEPTION
       WHEN too_many_rows THEN
