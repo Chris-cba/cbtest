@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.1   Jan 19 2009 11:09:16   smarshall  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 19 2009 11:09:16  $
+--       Date fetched Out : $Modtime:   Jan 19 2009 11:07:28  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -181,7 +181,8 @@ CREATE OR REPLACE package body maiwo is
               where  wol.wol_def_defect_id  = p_def_id
               and    wol.wol_def_defect_id = rep_def_defect_id
               and    wol.wol_rep_action_cat = rep_action_cat
-              and    wol.wol_id = p_wol_id);
+              and    wol.wol_id = p_wol_id)
+         and rep_date_completed is null;-- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
     else
        update repairs
        set    rep_date_completed = p_date_compl
@@ -194,7 +195,8 @@ CREATE OR REPLACE package body maiwo is
               where  wol.wol_def_defect_id  = p_def_id
               and    wol.wol_works_order_no = p_works_order_no
               and    wol.wol_def_defect_id = rep_def_defect_id
-              and    wol.wol_rep_action_cat = rep_action_cat);
+              and    wol.wol_rep_action_cat = rep_action_cat)
+         and rep_date_completed is null;-- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
     end if;
 
     if p_date_compl is not null then
