@@ -6,11 +6,11 @@ REM **************************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.1   Jul 04 2007 14:21:26   jwadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.2   Jan 26 2009 17:30:22   gjohnson  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into SCCS   : $Date:   Jul 04 2007 14:21:26  $
---       Date fetched Out : $Modtime:   Jul 04 2007 13:32:48  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jan 26 2009 17:30:22  $
+--       Date fetched Out : $Modtime:   Jan 26 2009 17:29:00  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on 
 --
 -----------------------------------------------------------------------------
@@ -1040,9 +1040,79 @@ from  nm_elements_all ne
 where ne.ne_id = li.ngil_ne_ne_id (+)
 and   li.ngil_iit_ne_id = ni.iit_ne_id (+)
 and   ni.iit_inv_type     ='HERM';
+--
+-------------------------------------------------------------------------------------------------------------
+--
+CREATE OR REPLACE FORCE VIEW tma_mai_wol_details_vw
+( 
+ wol_works_order_no
+,wol_id
+,def_locn_descr
+,rse_unique
+,rse_descr
+,def_defect_id
+,def_defect_code
+,def_priority
+,def_date_compl
+,wol_icb_work_code
+)        
+AS
+SELECT
+--
+-- View supports MAI to TMA integration and is referenced initially in MAI3900
+--  
+        wol.wol_works_order_no
+       ,wol.wol_id
+       ,def.def_locn_descr  
+       ,rse.rse_unique     
+       ,rse.rse_descr
+       ,def.def_defect_id
+       ,def.def_defect_code
+       ,def.def_priority
+       ,def.def_date_compl
+       ,wol.wol_icb_work_code
+FROM    work_order_lines wol
+       ,defects def
+       ,road_segs rse
+WHERE   wol.wol_def_defect_id      = def.def_defect_id(+)               
+AND     wol.wol_rse_he_id          = rse.rse_he_id 
+AND     Nvl(wol_register_flag,'N') = 'Y'
+AND     wol.wol_status_code        IN (SELECT hsc_status_code
+                                                           FROM   hig_status_codes
+                                                           WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
+                                                           AND    hsc_allow_feature1 = 'Y')
+/
+comment on table tma_mai_wol_details_vw is 'View supports MAI to TMA integration and is referenced initially in MAI3900'
+/
+--
+-------------------------------------------------------------------------------------------------------------
+--
+CREATE OR REPLACE FORCE VIEW tma_mai_wor_vw
+( 
+ mwo_works_order_no
+,mwo_descr
+,mwo_date_raised
+,mwo_flag
+)        
+AS
+SELECT
+--
+-- View supports MAI to TMA integration and is referenced initially in MAI3900
+--
+        wor_works_order_no
+       ,wor_descr
+       ,wor_date_raised
+       ,wor_flag
+FROM    work_orders    
+/
+
+comment on table tma_mai_wor_vw is 'View supports MAI to TMA integration and is referenced initially in MAI3900'
+/
 
 
-
+--
+-------------------------------------------------------------------------------------------------------------
+--
 
 REM
 REM End of command file
