@@ -1,5 +1,5 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.7   Aug 06 2008 11:57:24   malexander  $"'
+define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.8   Jan 26 2009 15:23:32   jwadsworth  $"'
 
 REM Copyright (c) Exor Corporation Ltd, 2008
 
@@ -381,8 +381,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.0.5.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.0.5.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.1.0.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.1.0.0');
 END;
 /
 COMMIT;
