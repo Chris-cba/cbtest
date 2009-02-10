@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4050_mai4052_metadata_upg.sql-arc   3.0   Feb 03 2009 17:24:10   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4050_mai4052_metadata_upg.sql-arc   3.1   Feb 10 2009 17:56:50   malexander  $
 --       Module Name      : $Workfile:   mai4050_mai4052_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Feb 03 2009 17:24:10  $
---       Date fetched Out : $Modtime:   Feb 03 2009 17:22:58  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Feb 10 2009 17:56:50  $
+--       Date fetched Out : $Modtime:   Feb 10 2009 17:46:48  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2008
@@ -145,6 +145,60 @@ select 'WCCOMPLETE'
                      from hig_option_values
                     where hov_id = 'WCCOMPLETE')
 /
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT TMA Interface Changes
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- New error and Product Option to Support the TMA Interface changes.
+-- 
+------------------------------------------------------------------
+--nm_errors
+INSERT
+  INTO nm_errors
+SELECT 'MAI'
+      ,926
+      ,NULL
+      ,'No Work Order Lines - cannot locate the Work Order on the GIS'
+      ,NULL
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM nm_errors
+                    WHERE ner_appl = 'MAI'
+                      AND ner_id = 926)
+/
+
+--Product Option.
+INSERT
+  INTO hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option)
+SELECT 'SDOWOLNTH'
+      ,'WMP'
+      ,'SDO Work Order Lines Theme ID'
+      ,'Theme ID of the Work Order Lines SDO layer'
+      ,null
+      ,'NUMBER'
+      ,'N'
+      ,'N'
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM hig_option_list
+                    WHERE hol_id = 'SDOWOLNTH')
+/
+
 ------------------------------------------------------------------
 
 
