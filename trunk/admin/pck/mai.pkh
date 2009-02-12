@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.2   Jun 11 2008 15:47:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.3   Feb 12 2009 17:19:50   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Jun 11 2008 15:47:34  $
---       Date fetched Out : $Modtime:   Jun 11 2008 15:47:08  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Feb 12 2009 17:19:50  $
+--       Date fetched Out : $Modtime:   Feb 03 2009 13:31:00  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.2  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -115,6 +115,8 @@ TYPE child_asset_rec IS RECORD(parent_inv_type nm_inv_types_all.nit_inv_type%TYP
                               ,child_primary   nm_inv_items_all.iit_primary_key%TYPE
                               ,child_descr     nm_inv_items_all.iit_descr%TYPE);
 TYPE child_asset_tab IS TABLE OF child_asset_rec INDEX BY BINARY_INTEGER;
+--
+TYPE wol_id_tab IS TABLE OF work_order_lines.wol_id%TYPE INDEX BY BINARY_INTEGER;
 --
 --</TYPE>
 --
@@ -865,6 +867,7 @@ FUNCTION get_gis_sys_flag(p_gis_session_id IN gis_data_objects.gdo_session_id%TY
         , P_WOL_UNPOSTED_EST       IN WORK_ORDER_LINES.WOL_UNPOSTED_EST%TYPE default null
         , P_WOL_IIT_ITEM_ID        IN WORK_ORDER_LINES.WOL_IIT_ITEM_ID%TYPE default null
         , P_WOL_GANG               IN WORK_ORDER_LINES.WOL_GANG%TYPE default null
+        , P_WOL_REGISTER_FLAG      IN WORK_ORDER_LINES.WOL_REGISTER_FLAG%TYPE default 'N'
         , pi_zeroize               IN BOOLEAN DEFAULT FALSE
         )  RETURN NUMBER;
 --
@@ -903,6 +906,12 @@ FUNCTION count_swm_notices_for_wo(pi_works_order_no IN work_orders.wor_works_ord
 --<PROC NAME="count_tma_notices_for_wo">
 -- Get count of tma notices for a given works order - called in MAI3800
 FUNCTION count_tma_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_swm_notices_for_wol">
+FUNCTION count_tma_notices_for_wol(pi_wol_id IN work_order_lines.wol_id%TYPE)
+  RETURN PLS_INTEGER;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
@@ -946,7 +955,9 @@ PROCEDURE check_wo_can_be_copied(pi_wor_works_order_no IN work_orders.wor_works_
 -----------------------------------------------------------------------------
 --<PROC NAME="determine_reg_status_for_flag">
 FUNCTION determine_reg_status_for_flag(pi_works_order_no    IN work_orders.wor_works_order_no%TYPE
-                                      ,pi_wor_register_flag IN work_orders.wor_register_flag%TYPE) RETURN work_orders.wor_register_status%TYPE;
+                                      ,pi_wor_register_flag IN work_orders.wor_register_flag%TYPE
+                                      ,pi_wol_id            IN work_order_lines.wol_id%TYPE DEFAULT NULL)
+  RETURN work_orders.wor_register_status%TYPE;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
@@ -990,6 +1001,13 @@ PROCEDURE set_child_asset_params(pi_parent_tab IN parent_asset_tab
 --
 --<PROC NAME="get_child_assets">
 PROCEDURE get_child_assets(po_child_assets IN OUT child_asset_tab);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_wo_wol_ids">
+FUNCTION get_wo_wol_ids(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN wol_id_tab;
 --
 -- </PROC>
 
