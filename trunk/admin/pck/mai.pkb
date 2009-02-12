@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.3   Oct 01 2008 08:51:24   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.4   Feb 12 2009 17:21:32   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Oct 01 2008 08:51:24  $
---       Date fetched Out : $Modtime:   Aug 29 2008 16:02:06  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Feb 12 2009 17:21:32  $
+--       Date fetched Out : $Modtime:   Feb 12 2009 11:19:28  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4499,6 +4499,7 @@ END check_wo_can_be_copied;
         , P_WOL_UNPOSTED_EST       IN WORK_ORDER_LINES.WOL_UNPOSTED_EST%TYPE default null
         , P_WOL_IIT_ITEM_ID        IN WORK_ORDER_LINES.WOL_IIT_ITEM_ID%TYPE default null
         , P_WOL_GANG               IN WORK_ORDER_LINES.WOL_GANG%TYPE default null
+        , P_WOL_REGISTER_FLAG      IN WORK_ORDER_LINES.WOL_REGISTER_FLAG%TYPE default 'N'
         , pi_zeroize               IN BOOLEAN DEFAULT FALSE
         ) RETURN NUMBER IS
 
@@ -4594,6 +4595,7 @@ END check_wo_can_be_copied;
                 , WOL_UNPOSTED_EST
                 , WOL_IIT_ITEM_ID
                 , WOL_GANG
+                , WOL_REGISTER_FLAG
                 ) values (
                   l_wol_id
                 , P_WOL_WORKS_ORDER_NO
@@ -4643,6 +4645,7 @@ END check_wo_can_be_copied;
                 , P_WOL_UNPOSTED_EST
                 , P_WOL_IIT_ITEM_ID
                 , P_WOL_GANG
+                , P_WOL_REGISTER_FLAG
                 );
       for c1rec in c1(p_wol_id) loop
       
@@ -4747,9 +4750,10 @@ EXCEPTION
     l_wor_rec.wor_closed_by_id := null;
     l_wor_rec.wor_date_closed := null;
     l_wor_rec.wor_date_confirmed := null;
+    l_wor_rec.wor_mod_by_id := null;
     l_wor_rec.wor_date_mod := SYSDATE;
     l_wor_rec.wor_date_raised := SYSDATE;
-    l_wor_rec.wor_descr       := pi_wor_works_order_no||' COPY';	
+    l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';	
     l_wor_rec.wor_est_balancing_sum := null;
     l_wor_rec.wor_est_complete := null;
     l_wor_rec.wor_est_cost := null;
@@ -4921,6 +4925,7 @@ EXCEPTION
                          , p_wol_unposted_est       => 0
                          , p_wol_iit_item_id        => c1rec.wol_iit_item_id
                          , p_wol_gang               => c1rec.wol_gang
+                         , p_wol_register_flag      => c1rec.wol_register_flag
                          , pi_zeroize               => TRUE);    
     
     end loop;
@@ -4993,6 +4998,7 @@ BEGIN
                          , p_wol_unposted_est       => 0
                          , p_wol_iit_item_id        => l_wol_rec.wol_iit_item_id
                          , p_wol_gang               => l_wol_rec.wol_gang
+                         , p_wol_register_flag      => l_wol_rec.wol_register_flag
                          , pi_zeroize               => TRUE);
 
 END copy_wol;
@@ -5012,22 +5018,24 @@ BEGIN
      --
      -- refcursor is used cos cannot directly reference SWR/TMA objects
      --
-      l_sql := 'select  count(*)
-                from   work_order_lines wol
-                where  wol.wol_works_order_no = :1
-                and    wol.wol_status_code = (SELECT hsc_status_code  -- instructed
-                                              FROM hig_status_codes
-                                              WHERE hsc_domain_code = ''WORK_ORDER_LINES''
-                                              AND hsc_allow_feature1 = ''Y'')';
+      l_sql := 'select count(*)
+                  from work_order_lines wol
+                 where wol.wol_works_order_no = :1
+                   and NVL(wol.wol_register_flag,''N'') = ''Y''
+                   and wol.wol_status_code = (SELECT hsc_status_code  -- instructed
+                                                FROM hig_status_codes
+                                               WHERE hsc_domain_code = ''WORK_ORDER_LINES''
+                                                 AND hsc_allow_feature1 = ''Y'')';
                                               
       IF g_swr_licenced THEN
         l_sql := l_sql ||' and not exists (select 1 from swr_id_mapping where sim_origin = ''WOL'' and sim_primary_key_value = wol_id)';
       END IF;
 
+/* Comented out for 4100
       IF g_tma_licenced THEN
         l_sql := l_sql ||' and not exists (select 1 from tma_id_mapping where tidm_origin = ''WOL'' and tidm_primary_key_value = wol_id)';
       END IF;
-              
+*/
       OPEN l_refcur FOR l_sql
       USING pi_works_order_no;
       FETCH l_refcur INTO l_retval;
@@ -5077,39 +5085,77 @@ END count_swm_notices_for_wo;
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION count_tma_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER IS
-
- l_refcur nm3type.ref_cursor;
- l_retval PLS_INTEGER;
- l_sql    VARCHAR2(2000);
-
-
+  --
+  l_refcur nm3type.ref_cursor;
+  l_retval PLS_INTEGER;
+  l_sql    VARCHAR2(2000);
+  --
 BEGIN
-
      --
-     --
-     -- refcursor is used cos cannot directly reference swr_id_mapping table
-     -- cos we cannot guarantee that this TMA table is installed when MAI is
+     -- refcursor is used cos cannot directly reference tma_id_mapping table
+     -- because we cannot guarantee that this TMA table exists when MAI is
      -- installed
      --
-     IF g_tma_licenced THEN
-       l_sql := 'select  count(*)
-                 from   tma_id_mapping
- 				      ,work_order_lines
-                 where  tidm_origin = ''WOL''
-                 and    tidm_primary_key_value = wol_id
-				 and    wol_works_order_no = :1';
-
-       OPEN l_refcur FOR l_sql
-       USING pi_works_order_no;
-       FETCH l_refcur INTO l_retval;
-       CLOSE l_refcur;
-       
+     /*
+     ||Despite it's name this function returns a count of TMA Works
+     ||Created for the given Work Order.
+     */
+     IF g_tma_licenced
+      THEN
+         --
+         l_sql := 'select count(distinct tidm_resultant_works_id)
+                     from tma_id_mapping
+ 				                 ,work_order_lines
+                    where tidm_origin = ''WOL''
+                      and tidm_primary_key_value = wol_id
+				              and wol_works_order_no = :1';
+         --
+         OPEN  l_refcur FOR l_sql
+         USING pi_works_order_no;
+         FETCH l_refcur INTO l_retval;
+         CLOSE l_refcur;
+         --
      END IF;       
-
+     --
      RETURN(NVL(l_retval,0));
-
-
+     --
 END count_tma_notices_for_wo;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION count_tma_notices_for_wol(pi_wol_id IN work_order_lines.wol_id%TYPE)
+  RETURN PLS_INTEGER IS
+  --
+  l_refcur nm3type.ref_cursor;
+  l_retval PLS_INTEGER;
+  l_sql    VARCHAR2(2000);
+  --
+BEGIN
+  --
+  --
+  -- refcursor is used cos cannot directly reference swr_id_mapping table
+  -- cos we cannot guarantee that this TMA table is installed when MAI is
+  -- installed
+  --
+  IF g_tma_licenced
+   THEN
+      --
+      l_sql := 'select count(*)
+                  from tma_id_mapping
+                 where tidm_origin = ''WOL''
+                   and tidm_primary_key_value = :1'
+                     ;
+
+      OPEN  l_refcur FOR l_sql USING pi_wol_id;
+      FETCH l_refcur
+       INTO l_retval;
+      CLOSE l_refcur;
+      --
+  END IF;       
+  --
+  RETURN(NVL(l_retval,0));
+  --
+END count_tma_notices_for_wol;
 --
 ---------------------------------------------------------------------------------------------------
 --
@@ -5150,58 +5196,86 @@ END wols_of_given_type_exist;
 --
 ---------------------------------------------------------------------------------------------------
 --
-FUNCTION determine_reg_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN work_orders.wor_register_status%TYPE IS 
-
- l_retval work_orders.wor_register_status%TYPE; 
-
- l_wols_to_be_sent   PLS_INTEGER;
-
-  
+FUNCTION determine_reg_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE
+                             ,pi_wol_id         IN work_order_lines.wol_id%TYPE DEFAULT NULL)
+  RETURN work_orders.wor_register_status%TYPE IS 
+  --
+  l_retval work_orders.wor_register_status%TYPE; 
+  --  
 BEGIN
-
-   --
-   -- if there are work order lines still to be registered then we are Outstanding
-   --
-   l_wols_to_be_sent := mai.count_wols_for_register(pi_works_order_no => pi_works_order_no);
-
-   IF l_wols_to_be_sent > 0 THEN
-     l_retval := 'O'; -- 'Outstanding'
-   ELSE
-
-    IF mai.count_swm_notices_for_wo(pi_works_order_no => pi_works_order_no) >0  OR count_tma_notices_for_wo(pi_works_order_no => pi_works_order_no) >0 THEN   
-      l_retval := 'C'; -- 'Completed'
---    ELSIF  THEN
---          l_retval := 'C'; -- 'Completed'      
-    END IF;
-		  		  
-   END IF;
-
-   RETURN(NVL(l_retval,'N')); -- if all else fails e.g. no lines to send and none already sent then return 'N' - which signifies 'Nothing to Register' 
-
+  --
+  SELECT CASE WHEN stopped = register_lines_count THEN 'C'
+              WHEN started > 0 and register_lines_count > 0 THEN 'O'
+              WHEN started = 0 and register_lines_count > 0 THEN 'N'
+              ELSE NULL
+         END register_status
+    INTO l_retval
+    FROM (SELECT SUM(started) started
+                ,SUM(stopped) stopped
+                ,COUNT(*)     register_lines_count 
+            FROM (SELECT wol_id
+                        ,(SELECT COUNT(*)
+                            FROM tma_id_mapping
+                           WHERE tidm_origin            = 'WOL'
+                             AND tidm_primary_key_value = wol_id) started
+                        ,(SELECT COUNT(*)
+                            FROM tma_notices
+                                ,tma_phases
+                                ,tma_id_mapping
+                           WHERE tidm_origin            = 'WOL'
+                             AND tidm_primary_key_value = wol_id
+                             AND tphs_works_id          = tidm_resultant_works_id
+                             AND tphs_active_flag       = 'Y'
+                             AND tnot_works_id          = tphs_works_id
+                             AND tnot_phase_no          = tphs_phase_no
+                             AND tnot_notice_type       = '0600') stopped
+                    FROM work_order_lines
+                   WHERE wol_works_order_no = pi_works_order_no
+                     AND wol_id             = NVL(pi_wol_id, wol_id)   
+                     AND wol_register_flag  = 'Y'
+                 )
+         )
+       ;
+  --
+  RETURN l_retval; 
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      RETURN NULL;
+  WHEN others
+   THEN
+      RAISE;
 END determine_reg_status;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION determine_reg_status_for_flag(pi_works_order_no    IN work_orders.wor_works_order_no%TYPE
-                                      ,pi_wor_register_flag IN work_orders.wor_register_flag%TYPE) RETURN work_orders.wor_register_status%TYPE IS
-
- l_retval work_orders.wor_register_status%TYPE;
-
+                                      ,pi_wor_register_flag IN work_orders.wor_register_flag%TYPE
+                                      ,pi_wol_id            IN work_order_lines.wol_id%TYPE DEFAULT NULL)
+  RETURN work_orders.wor_register_status%TYPE IS
+  --
+  l_retval work_orders.wor_register_status%TYPE;
+  --
 BEGIN
-
- IF pi_wor_register_flag = 'Y' AND NOT hig.is_product_licensed(pi_product => 'TMA') THEN
-   hig.raise_ner(pi_appl => 'MAI'
-                ,pi_id   => 918);  
- END IF;
-
- IF pi_wor_register_flag = 'N' THEN
-    l_retval := Null;
- ELSE
-    l_retval := mai.determine_reg_status(pi_works_order_no => pi_works_order_no);
- END IF;
-
- RETURN(l_retval);
- 
+  --
+  IF pi_wor_register_flag = 'Y'
+   AND NOT hig.is_product_licensed(pi_product => 'TMA')
+   THEN
+      hig.raise_ner(pi_appl => 'MAI'
+                   ,pi_id   => 918);  
+  END IF;
+  --
+  IF pi_wor_register_flag = 'N'
+   THEN
+      l_retval := NULL;
+  ELSE
+      l_retval := mai.determine_reg_status(pi_works_order_no => pi_works_order_no
+                                          ,pi_wol_id         => pi_wol_id);
+  END IF;
+  --
+  RETURN(l_retval);
+  --
 END determine_reg_status_for_flag;
 --
 ---------------------------------------------------------------------------------------------------
@@ -5402,6 +5476,26 @@ nm_debug.debug('Parent = '||g_parent_asset_tab(i).item_id
   --
 nm_debug.debug_off;
 END get_child_assets;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION get_wo_wol_ids(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN wol_id_tab IS
+  --
+  lt_retval  wol_id_tab;
+  --
+BEGIN
+  --
+  SELECT wol_id
+    BULK COLLECT
+    INTO lt_retval
+    FROM work_order_lines
+   WHERE wol_works_order_no = pi_works_order_no
+       ;
+  --
+  RETURN lt_retval;
+  --
+END get_wo_wol_ids;
 --
 ---------------------------------------------------------------------------------------------------
 --
