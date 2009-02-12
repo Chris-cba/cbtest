@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.1   Feb 12 2009 17:26:00   mhuitson  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Feb 12 2009 17:26:00  $
+--       Date fetched Out : $Modtime:   Feb 12 2009 15:41:08  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.7
 --
 --   Author : A. Edwards
@@ -20,11 +20,16 @@ IS
    g_sccsid   CONSTANT VARCHAR2 (80) := '@(#)mai_sdo_util.pkh	1.7 05/08/07';
 --
    g_table_name       CONSTANT user_tables.table_name%TYPE       := 'DEFECTS';
+   g_wol_table_name   CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES';
    g_view_name        CONSTANT user_tables.table_name%TYPE       := 'V_MAI_DEFECTS';
+   g_wol_view_name    CONSTANT user_tables.table_name%TYPE       := 'V_WORK_ORDER_LINES';
    g_sdo_pk           CONSTANT user_tables.table_name%TYPE       := 'DEFECT_ID';
+   g_wol_sdo_pk       CONSTANT user_tables.table_name%TYPE       := 'WOL_ID';
    g_pk_column        CONSTANT user_tab_columns.column_name%TYPE := 'DEF_DEFECT_ID';
+   g_wol_pk_column    CONSTANT user_tab_columns.column_name%TYPE := 'WOL_ID';
    g_feature_tab_xy   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_XY_SDO';
    g_feature_tab_lr   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_LR_SDO';
+   g_wol_feature_tab  CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES_SDO';
    g_shape_col        CONSTANT user_tab_columns.column_name%TYPE := 'GEOLOC';
 --
 -----------------------------------------------------------------------------
@@ -116,7 +121,7 @@ IS
 --
 -----------------------------------------------------------------------------
 --
---<PROC NAME="MAKE_BASE_SDO
+--<PROC NAME="make_base_sdo">
    PROCEDURE make_base_sdo_layer
                ( pi_theme_name    IN nm_themes_all.nth_theme_name%TYPE
                , pi_asset_type    IN nm_inv_types.nit_inv_type%TYPE
@@ -126,22 +131,105 @@ IS
                , pi_lr_ne_column  IN user_tab_columns.column_name%TYPE
                , pi_lr_st_chain   IN user_tab_columns.column_name%TYPE
                , pi_snapping_trig IN VARCHAR2 DEFAULT 'TRUE');
+--</PROC>
 --
 -----------------------------------------------------------------------------
 --
---<PROC NAME="MAKE_DEFECT_SECURE_VIEW"
+--<PROC NAME="get_wol_feature_tab">
+FUNCTION get_wol_feature_tab
+  RETURN user_tables.table_name%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_feature_table_from_gdo">
+FUNCTION get_feature_table_from_gdo(pi_session_id IN gis_data_objects.gdo_session_id%TYPE)
+  RETURN nm_themes_all.nth_feature_table%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wol_has_shape">
+FUNCTION wol_has_shape(pi_theme_id IN nm_themes_all.nth_theme_id%TYPE
+                      ,pi_wol_id   IN work_order_lines.wol_id%TYPE)
+  RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wo_has_shape">
+FUNCTION wo_has_shape(pi_theme_id       IN nm_themes_all.nth_theme_id%TYPE
+                     ,pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="generate_wol_shape">  
+PROCEDURE generate_wol_shape(pi_wol_id   IN work_order_lines.wol_id%TYPE
+                            ,pi_tab_xy   IN nm3sdo_gdo.tab_xys
+                            ,pi_geo_type IN nm_theme_gtypes.ntg_gtype%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="generate_wol_shape">
+PROCEDURE generate_wol_shape(pi_wol_id    IN work_order_lines.wol_id%TYPE
+                            ,pi_rse_he_id IN work_order_lines.wol_rse_he_id%TYPE
+                            ,pi_defect_id IN work_order_lines.wol_def_defect_id%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="maintain_wol_sdo_trg">
+PROCEDURE maintain_wol_sdo_trg(pi_wol_id    IN work_order_lines.wol_id%TYPE
+                              ,pi_rse_he_id IN work_order_lines.wol_rse_he_id%TYPE
+                              ,pi_defect_id IN work_order_lines.wol_def_defect_id%TYPE
+                              ,pi_trg_mode  IN VARCHAR2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_base_wol_sdo_layer">   
+PROCEDURE make_base_wol_sdo_layer(pi_theme_name  IN  nm_themes_all.nth_theme_name%TYPE
+                                 ,pi_asset_type  IN  nm_inv_types.nit_inv_type%TYPE
+                                 ,pi_asset_descr IN  nm_inv_types.nit_descr%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_defect_secure_view">
   PROCEDURE make_defect_secure_view;
 --</PROC>
 --
 -----------------------------------------------------------------------------
 --
---<PROC NAME="CREATE_LOOKUPS"
+--<PROC NAME="make_defect_secure_view">
+  PROCEDURE make_wol_secure_view;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_lookups">
   PROCEDURE create_lookups
              ( pi_asset_type   IN   nm_inv_types.nit_inv_type%TYPE );
 --</PROC>
 --
 -----------------------------------------------------------------------------
 --
-
+--<PROC NAME="create_wol_lookups">
+  PROCEDURE create_wol_lookups
+             ( pi_asset_type   IN   nm_inv_types.nit_inv_type%TYPE );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_wol_themes">
+PROCEDURE get_wol_themes(pi_works_order_no IN  work_orders.wor_works_order_no%TYPE
+                        ,pi_wol_id         IN  work_order_lines.wol_id%TYPE
+                        ,pi_module         IN  hig_modules.hmo_module%TYPE
+                        ,pi_join_to_msv    IN  BOOLEAN
+                        ,po_nth_theme_id   OUT NUMBER
+                        ,po_lov_sql        OUT VARCHAR2);
+--</PROC>
 END mai_sdo_util;
 /
