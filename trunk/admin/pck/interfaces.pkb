@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.9   Jan 07 2009 14:55:26   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.10   Feb 17 2009 11:40:22   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jan 07 2009 14:55:26  $
---       Date fetched Out : $Modtime:   Jan 07 2009 14:54:44  $
---       SCCS Version     : $Revision:   2.9  $
+--       Date into SCCS   : $Date:   Feb 17 2009 11:40:22  $
+--       Date fetched Out : $Modtime:   Feb 17 2009 11:39:14  $
+--       SCCS Version     : $Revision:   2.10  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.9  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.10  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2625,9 +2625,9 @@ BEGIN
       WHERE  ic_ih_id = p_ih_id;
 
       IF l_count_records = 0 THEN
-    p_details_ok := 'N';
+        p_details_ok := 'Y';--SM 17022009 705548 Changed from 'N' as it no error records then details are ok
       ELSE
-    p_details_ok := 'Y';
+        p_details_ok := 'N';
       END IF;
     END IF;
   END IF;
