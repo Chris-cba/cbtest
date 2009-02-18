@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4050_mai4052_metadata_upg.sql-arc   3.2   Feb 17 2009 17:23:16   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4050_mai4052_metadata_upg.sql-arc   3.3   Feb 18 2009 08:59:16   malexander  $
 --       Module Name      : $Workfile:   mai4050_mai4052_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Feb 17 2009 17:23:16  $
---       Date fetched Out : $Modtime:   Feb 17 2009 17:21:52  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Feb 18 2009 08:59:16  $
+--       Date fetched Out : $Modtime:   Feb 18 2009 08:52:02  $
+--       Version          : $Revision:   3.3  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2008
@@ -229,17 +229,18 @@ INSERT
       ,hmo_use_gri
       ,hmo_application
       ,hmo_menu)
-VALUES('MAI3801_NET'
+Select 'MAI3801_NET'
       ,'Raise Small Scheme Works Order (GIS)'
       ,'mai3801'
       ,'FMX'
       ,'Y'
       ,'N'
       ,'MAI'
-      ,'FORM')
+      ,'FORM'
+ FROM DUAL
  WHERE NOT EXISTS(SELECT 1
                     FROM hig_modules
-                   WHERE hmo_module = 'MAI3801_NET');
+                   WHERE hmo_module = 'MAI3801_NET')
 /
 
 INSERT
@@ -247,9 +248,10 @@ INSERT
       (hmr_module
       ,hmr_role
       ,hmr_mode)
-VALUES('MAI3801_NET'
+Select 'MAI3801_NET'
       ,'MAI_ADMIN'
-      ,'NORMAL')
+      ,'NORMAL'
+ FROM DUAL
  WHERE NOT EXISTS(SELECT 1
                     FROM hig_module_roles
                    WHERE hmr_module = 'MAI3801_NET'
@@ -261,15 +263,15 @@ INSERT
       (hmr_module
       ,hmr_role
       ,hmr_mode)
-VALUES('MAI3801_NET'
+Select 'MAI3801_NET'
       ,'MAI_USER'
-      ,'NORMAL')
+      ,'NORMAL'
+ FROM DUAL
  WHERE NOT EXISTS(SELECT 1
                     FROM hig_module_roles
                    WHERE hmr_module = 'MAI3801_NET'
                      AND hmr_role = 'MAI_USER')
 /
-
 ------------------------------------------------------------------
 
 
