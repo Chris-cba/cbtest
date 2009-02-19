@@ -6,11 +6,11 @@ REM **************************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.2   Jan 26 2009 17:30:22   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.3   Feb 19 2009 10:27:10   lsorathia  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into SCCS   : $Date:   Jan 26 2009 17:30:22  $
---       Date fetched Out : $Modtime:   Jan 26 2009 17:29:00  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Feb 19 2009 10:27:10  $
+--       Date fetched Out : $Modtime:   Feb 19 2009 10:27:06  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on 
 --
 -----------------------------------------------------------------------------
@@ -1077,10 +1077,10 @@ FROM    work_order_lines wol
 WHERE   wol.wol_def_defect_id      = def.def_defect_id(+)               
 AND     wol.wol_rse_he_id          = rse.rse_he_id 
 AND     Nvl(wol_register_flag,'N') = 'Y'
-AND     wol.wol_status_code        IN (SELECT hsc_status_code
-                                                           FROM   hig_status_codes
-                                                           WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
-                                                           AND    hsc_allow_feature1 = 'Y')
+--AND     wol.wol_status_code        IN (SELECT hsc_status_code
+--                                                           FROM   hig_status_codes
+--                                                           WHERE  hsc_domain_code = 'WORK_ORDER_LINES'
+--                                                           AND    hsc_allow_feature1 = 'Y')
 /
 comment on table tma_mai_wol_details_vw is 'View supports MAI to TMA integration and is referenced initially in MAI3900'
 /
