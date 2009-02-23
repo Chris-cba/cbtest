@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.1   Aug 21 2008 15:15:20   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.2   Feb 23 2009 10:41:38   jwadsworth  $
 --       Module Name      : $Workfile:   maisplit.pkb  $
---       Date into SCCS   : $Date:   Aug 21 2008 15:15:20  $
---       Date fetched Out : $Modtime:   Aug 21 2008 14:10:08  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Feb 23 2009 10:41:38  $
+--       Date fetched Out : $Modtime:   Feb 23 2009 10:39:56  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.7
 --
 -- This package contains procedures and functions which are required by
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maisplit';
@@ -335,7 +335,13 @@ END get_body_version;
     and    rep_def_defect_id = p_old_defect
   for update of boq_defect_id;
 
-  l_superceded hig_status_codes.hsc_status_code%TYPE;
+  cursor c_get_table_descr is
+    select das_table_name
+      from doc_assocs
+     where das_rec_id = to_char(p_old_defect);
+
+  l_superceded  hig_status_codes.hsc_status_code%TYPE;
+  l_table_descr doc_assocs.das_table_name%TYPE;
 
   begin
 
@@ -375,11 +381,16 @@ END get_body_version;
     and    iih_item_id(+) = def_iit_item_id
     and    def_defect_id = p_old_defect;
 
+    open c_get_table_descr;
+    fetch c_get_table_descr into l_table_descr;
+
     nm3reclass.ins_doc_assocs( pi_new_id => p_new_defect
                              , pi_old_id => p_old_defect
-                             , pi_table_name => 'DEFECTS'
+                             , pi_table_name => l_table_descr --'DEFECTS'
                              );	                             
 
+    close c_get_table_descr;
+    
     insert into repairs
      (REP_ACTION_CAT, REP_ATV_ACTY_AREA_CODE, REP_DATE_DUE, REP_DEF_DEFECT_ID,
       REP_RSE_HE_ID, REP_SUPERSEDED_FLAG, REP_COMPLETED_HRS, REP_COMPLETED_MINS,
