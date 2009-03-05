@@ -59,8 +59,10 @@ begin
 				   ,l_error);
   dbms_output.enable;
   if l_error is null then
+  	higgrirp.write_gri_spool(&1,'Info: Invoice file processed.');
     dbms_output.put_line('Info: Invoice file processed.');
   else
+    higgrirp.write_gri_spool(&1,l_error);
     dbms_output.put_line('Error: '||l_error);
   end if;
 
