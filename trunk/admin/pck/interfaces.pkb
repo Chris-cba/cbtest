@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.10   Feb 17 2009 11:40:22   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.11   Mar 05 2009 16:41:38   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Feb 17 2009 11:40:22  $
---       Date fetched Out : $Modtime:   Feb 17 2009 11:39:14  $
---       SCCS Version     : $Revision:   2.10  $
+--       Date into SCCS   : $Date:   Mar 05 2009 16:41:38  $
+--       Date fetched Out : $Modtime:   Mar 05 2009 14:53:48  $
+--       SCCS Version     : $Revision:   2.11  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.10  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.11  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -110,7 +110,20 @@ FUNCTION get_body_version RETURN varchar2 IS
 BEGIN
    RETURN g_body_sccsid;
 END get_body_version;
-
+--
+-----------------------------------------------------------------------------
+--
+function check_filename (filename varchar2) return boolean is
+begin
+  IF hig.get_user_or_sys_opt('ZEROPAD')='Y' THEN
+   nm_debug.debug(length(filename));
+    if length(filename) < 12 then
+      return false;
+    else 
+      return TRUE;
+    end if;
+  END IF;
+end check_filename;
 ---------------------------------------------------------------------
 -- reformat_cost_code function
 -- reformats cost centre code for Norfolk's May Gurney interface
@@ -2992,36 +3005,43 @@ PROCEDURE completion_file_ph1( p_contractor_id    IN varchar2
   l_error         interface_erroneous_records.ier_error%TYPE;
   l_ih_id         interface_headers.ih_id%TYPE;
   l_file_not_found varchar2(250) := 'Error: Unable to open file. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
+  l_invalid_filename varchar2(250) := 'Error: Filename invalid. Check the ZEROPAD product option. File: '||l_filename;
   invalid_file     EXCEPTION;
+  invalid_filename EXCEPTION;
+  
 l_count number := 0;
 BEGIN
 
   BEGIN
     --
-    l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), l_filename, 'r');
-    IF UTL_FILE.IS_OPEN(l_fhand) THEN
-      LOOP
-        UTL_FILE.GET_LINE(l_fhand, l_record);
-        --
-        l_error := NULL;
-        --
-        populate_wc_interface_tables(l_ih_id
-                          ,l_record
-                          ,l_error);
+    if check_filename(l_filename) then
+      l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), l_filename, 'r');
+      IF UTL_FILE.IS_OPEN(l_fhand) THEN
+        LOOP
+          UTL_FILE.GET_LINE(l_fhand, l_record);
+          --
+          l_error := NULL;
+          --
+          populate_wc_interface_tables(l_ih_id
+                                      ,l_record
+                                      ,l_error);
           IF l_ih_id IS NULL THEN    -- error in header record
             EXIT;                -- halt processing
           END IF;
           --
-      END LOOP;
-
-      --
-    ELSE
-      RAISE invalid_file;
-    END IF;
+        END LOOP;
+        --
+      ELSE
+        RAISE invalid_file;
+      END IF;
+    else
+        raise invalid_filename;
+    end if;
     EXCEPTION
       WHEN invalid_file OR utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
         p_error := l_file_not_found;
-
+      WHEN invalid_filename THEN
+        p_error := l_invalid_filename;
       WHEN no_data_found THEN  --end of file
         UTL_FILE.FCLOSE(l_fhand);
             IF hig.get_sysopt('XTRIFLDS') IN ('2-4-0')
@@ -3917,44 +3937,50 @@ PROCEDURE claim_file_ph1(p_contractor_id    IN varchar2
   l_claim_ref         interface_claims_wor.icwor_con_claim_ref%TYPE;
   l_con_id              interface_claims_wor.icwor_con_id%TYPE;
   l_file_not_found     varchar2(250) := 'Error: Unable to open file. Path: '||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
-  invalid_file        EXCEPTION;
+  l_invalid_filename varchar2(250) := 'Error: Filename invalid. Check the ZEROPAD product option. File: '||l_filename;
+  invalid_file     EXCEPTION;
+  invalid_filename EXCEPTION;
 
 BEGIN
 
   BEGIN
+    if check_filename(l_filename) then
+    	
+      l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), l_filename, 'r');
 
-    l_fhand := UTL_FILE.FOPEN(NVL(p_filepath, g_filepath), l_filename, 'r');
+      IF UTL_FILE.IS_OPEN(l_fhand) THEN
 
-    IF UTL_FILE.IS_OPEN(l_fhand) THEN
+        LOOP
+        
+          UTL_FILE.GET_LINE(l_fhand, l_record);
+          l_error := NULL;
 
-      LOOP
+          populate_wi_interface_tables(l_ih_id
+                                      ,l_wor_no
+                                      ,l_wol_id
+                                      ,l_claim_date
+                                      ,l_claim_ref
+                                      ,l_con_id
+                                      ,l_record
+                                      ,l_error);
 
-        UTL_FILE.GET_LINE(l_fhand, l_record);
-        l_error := NULL;
+          IF l_ih_id IS NULL THEN    -- error in header record
+            EXIT;                -- halt processing
+          END IF;
+        
+        END LOOP;
 
-      populate_wi_interface_tables(l_ih_id
-                        ,l_wor_no
-                        ,l_wol_id
-                        ,l_claim_date
-                        ,l_claim_ref
-                        ,l_con_id
-                        ,l_record
-                        ,l_error);
-
-        IF l_ih_id IS NULL THEN    -- error in header record
-          EXIT;                -- halt processing
-        END IF;
-
-      END LOOP;
-
-    ELSE
-      RAISE invalid_file;
-    END IF;
-
+      ELSE
+        RAISE invalid_file;
+      END IF;
+    else
+      raise invalid_filename;
+    end if;
     EXCEPTION
       WHEN invalid_file OR utl_file.invalid_path OR utl_file.invalid_mode OR utl_file.invalid_operation THEN
         p_error := l_file_not_found;
-
+      WHEN invalid_filename THEN
+        p_error := l_invalid_filename;
         WHEN no_data_found THEN  -- end of file
         UTL_FILE.FCLOSE(l_fhand);
 
