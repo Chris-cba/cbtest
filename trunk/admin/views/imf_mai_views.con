@@ -1,0 +1,33 @@
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.0   Mar 10 2009 14:12:44   gjohnson  $
+--       Module Name      : $Workfile:   imf_mai_views.con  $
+--       Date into PVCS   : $Date:   Mar 10 2009 14:12:44  $
+--       Date fetched Out : $Modtime:   Mar 10 2009 14:12:32  $
+--       Version          : $Revision:   3.0  $
+--       Based on SCCS version : 
+-------------------------------------------------------------------------
+--
+SET echo OFF
+SET term OFF
+--
+
+---------------------------
+-- Primary Key Constraints
+---------------------------
+--ALTER VIEW a
+--ADD CONSTRAINT b UNIQUE (c) DISABLE NOVALIDATE
+--/
+
+
+
+---------------------------
+-- Foreign Key Constraints
+---------------------------
+--ALTER VIEW     a
+--ADD CONSTRAINT b
+--FOREIGN KEY    c
+--REFERENCES     d
+--DISABLE NOVALIDATE
+/
