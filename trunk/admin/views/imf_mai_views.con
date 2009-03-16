@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.0   Mar 10 2009 14:12:44   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.1   Mar 16 2009 16:09:34   drawat  $
 --       Module Name      : $Workfile:   imf_mai_views.con  $
---       Date into PVCS   : $Date:   Mar 10 2009 14:12:44  $
---       Date fetched Out : $Modtime:   Mar 10 2009 14:12:32  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 16 2009 16:09:34  $
+--       Date fetched Out : $Modtime:   Mar 16 2009 14:23:30  $
+--       Version          : $Revision:   3.1  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -16,18 +16,69 @@ SET term OFF
 ---------------------------
 -- Primary Key Constraints
 ---------------------------
---ALTER VIEW a
---ADD CONSTRAINT b UNIQUE (c) DISABLE NOVALIDATE
---/
 
+ALTER VIEW imf_mai_bill_of_quantities
+ADD CONSTRAINT imf_mai_bill_of_quantities_pk UNIQUE (bill_of_quantities_id) DISABLE NOVALIDATE
+/
 
+ALTER VIEW imf_mai_defects
+ADD CONSTRAINT imf_mai_defects_pk UNIQUE (defect_id) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_repairs
+ADD CONSTRAINT imf_mai_repairs_pk UNIQUE (defect_id, repair_category) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_defect_repairs
+ADD CONSTRAINT imf_mai_defect_repairs_pk UNIQUE (inspection_id, defect_id, repair_category) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_inspections
+ADD CONSTRAINT imf_mai_inspections_pk UNIQUE (inspection_id) DISABLE NOVALIDATE
+/
 
 ---------------------------
 -- Foreign Key Constraints
 ---------------------------
---ALTER VIEW     a
---ADD CONSTRAINT b
---FOREIGN KEY    c
---REFERENCES     d
---DISABLE NOVALIDATE
+
+ALTER VIEW     imf_mai_bill_of_quantities 
+ADD CONSTRAINT imf_mai_bill_of_quantities_fk1 
+FOREIGN KEY   (defect_id)
+REFERENCES    imf_mai_defects (defect_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_defects 
+ADD CONSTRAINT imf_mai_defects_fk2
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_repairs 
+ADD CONSTRAINT imf_mai_repairs_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_repairs 
+ADD CONSTRAINT imf_mai_repairs_fk2
+FOREIGN KEY   (defect_id)
+REFERENCES    imf_mai_defects (defect_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_defect_repairs 
+ADD CONSTRAINT imf_mai_defects_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_inspections 
+ADD CONSTRAINT imf_mai_inspections_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
 /
