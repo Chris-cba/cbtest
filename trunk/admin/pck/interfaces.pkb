@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.11   Mar 05 2009 16:41:38   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.12   Mar 16 2009 12:10:58   dyounger  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Mar 05 2009 16:41:38  $
---       Date fetched Out : $Modtime:   Mar 05 2009 14:53:48  $
---       SCCS Version     : $Revision:   2.11  $
+--       Date into SCCS   : $Date:   Mar 16 2009 12:10:58  $
+--       Date fetched Out : $Modtime:   Mar 16 2009 12:01:38  $
+--       SCCS Version     : $Revision:   2.12  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.11  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.12  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -347,6 +347,10 @@ end get_fyr_id;
       FETCH cost_code INTO l_cost_code;
       CLOSE cost_code;
 
+ -- 719274 DY 16-MAR-2009 restricted the rse_descr below to 80 chars as per GNA's instructions.  Anything higher is more than interface_wol can handle.  
+ -- This is a temporary measure until an impact anlysis of increasing the rse_descr from 80 to 240 is undertaken and the changes to the relevant 
+ -- forms/reports made. 
+ 
       INSERT INTO interface_wol (
          iwol_transaction_id
         ,iwol_id
@@ -371,7 +375,7 @@ end get_fyr_id;
         ,l_wol_rec.wol_id
         ,p_wor_no
         ,l_wol_rec.rse_unique
-            ,REPLACE(l_wol_rec.rse_descr,',','~')
+        ,REPLACE(SUBSTR(l_wol_rec.rse_descr,1,80),',','~')  -- 719274 REPLACE(l_wol_rec.rse_descr,',','~')
         ,l_wol_rec.wol_def_defect_id
         ,l_wol_rec.wol_schd_id
             ,REPLACE(l_def_rec.def_locn_descr,',','~')
@@ -7651,7 +7655,7 @@ BEGIN
             ,p_wol_rec.r_wol_id
             ,p_wol_rec.r_wor_no
             ,p_wol_rec.r_road_id
-        ,REPLACE(p_wol_rec.r_road_descr,',','~')
+        ,REPLACE(SUBSTR(p_wol_rec.r_road_descr,1,80),',','~') -- 719274 DY 16-MAR-2009 -- REPLACE(p_wol_rec.r_road_descr,',','~')
             ,p_wol_rec.r_defect_id
             ,p_wol_rec.r_schd_id
         ,REPLACE(l_def_rec.def_locn_descr,',','~')
