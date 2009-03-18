@@ -51,11 +51,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.0   Mar 16 2009 16:19:08   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.1   Mar 18 2009 08:58:04   drawat  $
 --       Module Name      : $Workfile:   imf_mai_defect_repairs.vw  $
---       Date into PVCS   : $Date:   Mar 16 2009 16:19:08  $
---       Date fetched Out : $Modtime:   Mar 16 2009 10:32:30  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 18 2009 08:58:04  $
+--       Date fetched Out : $Modtime:   Mar 18 2009 08:51:38  $
+--       Version          : $Revision:   3.1  $
 -- Foundation view displaying maintenance defect repairs
 -------------------------------------------------------------------------   
    def_defect_id,
@@ -177,6 +177,6 @@ COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_before_repair_due IS 'The number 
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_completed_before_due IS 'The number of days the repair was completed before the due date';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_completed_before_due IS 'The number of hours the repair was completed before the due date';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_before_inspection_due IS 'Days before an inspection is due';
-COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_before_inspection_due IS 'Hours before an inspection is due';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_before_inspection_due IS 'Hours before an inspection is due';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.work_order_number IS 'Work order number';
 

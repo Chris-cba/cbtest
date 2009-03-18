@@ -21,11 +21,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.0   Mar 16 2009 16:19:08   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.1   Mar 18 2009 08:58:04   drawat  $
 --       Module Name      : $Workfile:   imf_mai_inspections.vw  $
---       Date into PVCS   : $Date:   Mar 16 2009 16:19:08  $
---       Date fetched Out : $Modtime:   Mar 16 2009 10:32:28  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 18 2009 08:58:04  $
+--       Date fetched Out : $Modtime:   Mar 18 2009 08:51:58  $
+--       Version          : $Revision:   3.1  $
 -- Foundation view displaying maintenance inspections
 -------------------------------------------------------------------------   
    are_rse_he_id,
@@ -65,5 +65,5 @@ COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_of_entry IS 'Date of entry of the ins
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_inspected IS 'The inspection date';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_loaded IS 'Date of the inspection details being loaded';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.days_before_inspection_due IS 'Days before an inspection is due';
-COMMENT ON COLUMN IMF_MAI_INSPECTIONS.days_before_inspection_due IS 'Hours before an inspection is due';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.hours_before_inspection_due IS 'Hours before an inspection is due';
 
