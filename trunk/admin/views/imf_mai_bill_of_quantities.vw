@@ -8,8 +8,10 @@ CREATE OR REPLACE FORCE VIEW imf_mai_bill_of_quantities
    STANDARD_ITEM_SUB_SECTION_ID,
    STANDARD_ITEM_SUB_SECTION_NAME,
    REPAIR_CATEGORY,
-   DATE_CREATED,
+   REPAIR_CATEGORY_DESCRIPTION,
    WORK_CATEGORY,
+   WORK_CATEGORY_DESCRIPTION,
+   DATE_CREATED,
    UNIT_OF_MEASURE,
    ESTIMATED_QUANTITY,
    ESTIMATED_RATE,
@@ -27,11 +29,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.0   Mar 16 2009 16:19:08   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.1   Mar 18 2009 17:26:14   drawat  $
 --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   Mar 16 2009 16:19:08  $
---       Date fetched Out : $Modtime:   Mar 16 2009 15:55:16  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 18 2009 17:26:14  $
+--       Date fetched Out : $Modtime:   Mar 18 2009 16:53:44  $
+--       Version          : $Revision:   3.1  $
 -- Foundation view displaying bill of quantities for a defect
 -------------------------------------------------------------------------   
    BI.BOQ_ID,
@@ -41,9 +43,16 @@ SELECT
    BI.BOQ_ITEM_NAME,
    SI.STA_SISS_ID,
    SISS.SISS_NAME,
-   BI.BOQ_REP_ACTION_CAT,
-   BI.BOQ_DATE_CREATED,
+   BI.BOQ_REP_ACTION_CAT,  
+   DECODE (BI.BOQ_REP_ACTION_CAT,
+           'I', 'Immediate',
+           'T', 'Temporary',
+           'Permanent'),
    BI.BOQ_ICB_WORK_CODE,
+   (SELECT ICB.ICB_WORK_CATEGORY_NAME 
+    FROM ITEM_CODE_BREAKDOWNS ICB
+    WHERE ICB.ICB_WORK_CODE = BI.BOQ_ICB_WORK_CODE),
+   BI.BOQ_DATE_CREATED,
    SI.STA_UNIT, 
    BI.BOQ_EST_QUANTITY,
    BI.BOQ_EST_RATE,
@@ -73,8 +82,10 @@ COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_NAME IS 'Standard ite
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_ID IS 'Internal Id standard item sub sections';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_NAME IS 'Standard item sub section name';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY IS 'Repair Action Category';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'Date the specific work was created';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY_DESCRIPTION IS 'Repair Action Category description';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY IS 'Internal Cost Breakdown work code';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY_DESCRIPTION IS 'Internal Cost Breakdown work description';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'Date the specific work was created';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.UNIT_OF_MEASURE IS 'Unit of measure for the quantity';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_QUANTITY IS 'Estimated quantity for the work';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_RATE IS 'Estimated rate for the work cost';
