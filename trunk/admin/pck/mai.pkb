@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.4   Feb 12 2009 17:21:32   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.5   Mar 18 2009 14:21:54   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Feb 12 2009 17:21:32  $
---       Date fetched Out : $Modtime:   Feb 12 2009 11:19:28  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Mar 18 2009 14:21:54  $
+--       Date fetched Out : $Modtime:   Mar 18 2009 14:17:58  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.5  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -5200,42 +5200,47 @@ FUNCTION determine_reg_status(pi_works_order_no IN work_orders.wor_works_order_n
                              ,pi_wol_id         IN work_order_lines.wol_id%TYPE DEFAULT NULL)
   RETURN work_orders.wor_register_status%TYPE IS 
   --
+  l_sql    nm3type.max_varchar2;
   l_retval work_orders.wor_register_status%TYPE; 
   --  
 BEGIN
   --
-  SELECT CASE WHEN stopped = register_lines_count THEN 'C'
-              WHEN started > 0 and register_lines_count > 0 THEN 'O'
-              WHEN started = 0 and register_lines_count > 0 THEN 'N'
-              ELSE NULL
-         END register_status
-    INTO l_retval
-    FROM (SELECT SUM(started) started
-                ,SUM(stopped) stopped
-                ,COUNT(*)     register_lines_count 
-            FROM (SELECT wol_id
-                        ,(SELECT COUNT(*)
-                            FROM tma_id_mapping
-                           WHERE tidm_origin            = 'WOL'
-                             AND tidm_primary_key_value = wol_id) started
-                        ,(SELECT COUNT(*)
-                            FROM tma_notices
-                                ,tma_phases
-                                ,tma_id_mapping
-                           WHERE tidm_origin            = 'WOL'
-                             AND tidm_primary_key_value = wol_id
-                             AND tphs_works_id          = tidm_resultant_works_id
-                             AND tphs_active_flag       = 'Y'
-                             AND tnot_works_id          = tphs_works_id
-                             AND tnot_phase_no          = tphs_phase_no
-                             AND tnot_notice_type       = '0600') stopped
-                    FROM work_order_lines
-                   WHERE wol_works_order_no = pi_works_order_no
-                     AND wol_id             = NVL(pi_wol_id, wol_id)   
-                     AND wol_register_flag  = 'Y'
-                 )
-         )
-       ;
+  IF g_tma_licenced
+   THEN
+      --
+      l_sql := 'SELECT CASE WHEN stopped = register_lines_count THEN ''C'''
+    ||CHR(10)||'            WHEN started > 0 and register_lines_count > 0 THEN ''O'''
+    ||CHR(10)||'            WHEN started = 0 and register_lines_count > 0 THEN ''N'''
+    ||CHR(10)||'            ELSE NULL'
+    ||CHR(10)||'       END register_status'
+    ||CHR(10)||'  FROM (SELECT SUM(started) started'
+    ||CHR(10)||'              ,SUM(stopped) stopped'
+    ||CHR(10)||'              ,COUNT(*)     register_lines_count'
+    ||CHR(10)||'          FROM (SELECT wol_id'
+    ||CHR(10)||'                      ,(SELECT COUNT(*)'
+    ||CHR(10)||'                          FROM tma_id_mapping'
+    ||CHR(10)||'                         WHERE tidm_origin            = ''WOL'''
+    ||CHR(10)||'                           AND tidm_primary_key_value = wol_id) started'
+    ||CHR(10)||'                      ,(SELECT COUNT(*)'
+    ||CHR(10)||'                          FROM tma_notices'
+    ||CHR(10)||'                              ,tma_phases'
+    ||CHR(10)||'                              ,tma_id_mapping'
+    ||CHR(10)||'                         WHERE tidm_origin            = ''WOL'''
+    ||CHR(10)||'                           AND tidm_primary_key_value = wol_id'
+    ||CHR(10)||'                           AND tphs_works_id          = tidm_resultant_works_id'
+    ||CHR(10)||'                           AND tphs_active_flag       = ''Y'''
+    ||CHR(10)||'                           AND tnot_works_id          = tphs_works_id'
+    ||CHR(10)||'                           AND tnot_phase_no          = tphs_phase_no'
+    ||CHR(10)||'                           AND tnot_notice_type       = ''0600'') stopped'
+    ||CHR(10)||'                  FROM work_order_lines'
+    ||CHR(10)||'                 WHERE wol_works_order_no = :works_order_no'
+    ||CHR(10)||'                   AND wol_id             = NVL(:wol_id, wol_id)'
+    ||CHR(10)||'                   AND wol_register_flag  = ''Y''))'
+           ;
+      --
+      EXECUTE IMMEDIATE l_sql INTO l_retval USING pi_works_order_no, pi_wol_id;
+      --
+  END IF;
   --
   RETURN l_retval; 
   --
