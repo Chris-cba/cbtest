@@ -12,7 +12,7 @@ CREATE OR REPLACE FORCE VIEW imf_mai_work_order_lines ( work_order_line_id
                                                       , schedule_id
                                                       , schedule_descr
                                                       , contract_payments_id
-                                                      , activities_area_code
+                                                      , activity_code
                                                       , treatment_code
                                                       , line_quantity
                                                       , line_rate
@@ -38,11 +38,11 @@ AS
    SELECT -------------------------------------------------------------------------
          --   PVCS Identifiers :-
          --
-         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.0   Mar 18 2009 14:14:40   smarshall  $
+         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.1   Mar 19 2009 13:02:34   smarshall  $
          --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-         --       Date into PVCS   : $Date:   Mar 18 2009 14:14:40  $
-         --       Date fetched Out : $Modtime:   Mar 18 2009 14:14:20  $
-         --       Version          : $Revision:   3.0  $
+         --       Date into PVCS   : $Date:   Mar 19 2009 13:02:34  $
+         --       Date fetched Out : $Modtime:   Mar 19 2009 13:02:06  $
+         --       Version          : $Revision:   3.1  $
          -- Foundation view displaying maintenance manager work order lines
          -------------------------------------------------------------------------
                                                    wol_id
@@ -126,7 +126,7 @@ COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.SCHEDULE_DESCR IS 'The full descripti
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.CONTRACT_PAYMENTS_ID IS 'The internal contract payments id.';      
 
-COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.ACTIVITIES_AREA_CODE IS 'The activity area code.';      
+COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.ACTIVITY_CODE IS 'The activity area code.';      
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.TREATMENT_CODE IS 'The treatment code.';      
 
