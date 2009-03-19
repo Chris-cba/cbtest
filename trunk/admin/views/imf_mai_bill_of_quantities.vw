@@ -29,11 +29,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.1   Mar 18 2009 17:26:14   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.2   Mar 19 2009 17:33:58   drawat  $
 --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   Mar 18 2009 17:26:14  $
---       Date fetched Out : $Modtime:   Mar 18 2009 16:53:44  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:33:58  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 10:05:40  $
+--       Version          : $Revision:   3.2  $
 -- Foundation view displaying bill of quantities for a defect
 -------------------------------------------------------------------------   
    BI.BOQ_ID,
@@ -42,12 +42,14 @@ SELECT
    BI.BOQ_STA_ITEM_CODE,
    BI.BOQ_ITEM_NAME,
    SI.STA_SISS_ID,
-   SISS.SISS_NAME,
+   ( SELECT SISS.SISS_NAME 
+       FROM STANDARD_ITEM_SUB_SECTIONS SISS 
+      WHERE SISS.SISS_ID = SI.STA_SISS_ID ),
    BI.BOQ_REP_ACTION_CAT,  
-   DECODE (BI.BOQ_REP_ACTION_CAT,
-           'I', 'Immediate',
-           'T', 'Temporary',
-           'Permanent'),
+   ( SELECT HCO.HCO_MEANING
+       FROM HIG_CODES hco
+      WHERE HCO.HCO_DOMAIN = 'REPAIR_TYPE' 
+        AND HCO.HCO_CODE = BI.BOQ_REP_ACTION_CAT ),
    BI.BOQ_ICB_WORK_CODE,
    (SELECT ICB.ICB_WORK_CATEGORY_NAME 
     FROM ITEM_CODE_BREAKDOWNS ICB
@@ -65,10 +67,8 @@ SELECT
    BI.BOQ_ACT_COST, 
    BI.BOQ_ACT_LABOUR
 FROM BOQ_ITEMS BI,
-     STANDARD_ITEMS SI,
-     STANDARD_ITEM_SUB_SECTIONS SISS
-WHERE BI.BOQ_STA_ITEM_CODE = SI.STA_ITEM_CODE
-AND   SI.STA_SISS_ID = SISS.SISS_ID
+     STANDARD_ITEMS SI
+WHERE BI.BOQ_STA_ITEM_CODE = SI.STA_ITEM_CODE(+)
 WITH READ ONLY
 /
 
