@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.12   Mar 16 2009 12:10:58   dyounger  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.13   Mar 19 2009 14:07:00   smarshall  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Mar 16 2009 12:10:58  $
---       Date fetched Out : $Modtime:   Mar 16 2009 12:01:38  $
---       SCCS Version     : $Revision:   2.12  $
+--       Date into SCCS   : $Date:   Mar 19 2009 14:07:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 14:04:14  $
+--       SCCS Version     : $Revision:   2.13  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.12  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.13  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -4259,7 +4259,12 @@ BEGIN
       ELSE
         RAISE invalid_file;
       END IF;
-
+/*************************************************************************************************
+** SM 19032009 718508
+** Added the wol_id into the call of maiwo.update_defect_date as when the defect had both a T and 
+** a P repair it was using the first repair complete date to complete both repairs even when they
+** were different. 
+*************************************************************************************************/
       IF wol_rec.icwor_claim_type = 'F' AND  -- not necessary for Post or Interim claims
          wol_rec.icwol_defect_id IS NOT NULL THEN -- skip for non defect WOLs
         IF hig.get_user_or_sys_opt('WCCOMPLETE')='Y' then -- SM 06012009 717676
@@ -4267,7 +4272,8 @@ BEGIN
           for c_defectsrec in c_defects(wol_rec.icwol_defect_id) loop
             maiwo.update_defect_date( wol_rec.icwol_defect_id
                                     , wol_rec.icwol_date_complete
-                                    , wol_rec.icwor_works_order_no  );
+                                    , wol_rec.icwor_works_order_no  
+                                    , wol_rec.icwol_wol_id); -- SM 19032009 718508
 
             UPDATE defects
             SET    def_status_code = (SELECT MAX(hsc_status_code)
@@ -4287,7 +4293,7 @@ BEGIN
           maiwo.update_defect_date( wol_rec.icwol_defect_id
                                   , wol_rec.icwol_date_complete
                                   , wol_rec.icwor_works_order_no  
-                                  );
+                                  , wol_rec.icwol_wol_id); -- SM 19032009 718508
           UPDATE defects
           SET    def_status_code = (SELECT MAX(hsc_status_code)
                                     FROM   hig_status_codes
