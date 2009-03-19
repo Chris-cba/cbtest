@@ -24,6 +24,9 @@ CREATE OR REPLACE FORCE VIEW imf_mai_defects
    activity_code,
    activity_description,
    date_loaded,
+   date_defect_completed,
+   not_found_inspection_id,
+   date_not_found,   
    work_order_number
 )
 AS
@@ -31,11 +34,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defects.vw-arc   3.0   Mar 16 2009 16:19:08   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defects.vw-arc   3.1   Mar 19 2009 17:34:00   drawat  $
 --       Module Name      : $Workfile:   imf_mai_defects.vw  $
---       Date into PVCS   : $Date:   Mar 16 2009 16:19:08  $
---       Date fetched Out : $Modtime:   Mar 16 2009 08:45:46  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 17:24:16  $
+--       Version          : $Revision:   3.1  $
 -- Foundation view displaying maintenance defects
 -------------------------------------------------------------------------   
    def_defect_id,
@@ -74,7 +77,10 @@ SELECT
        FROM activities
       WHERE atv_acty_area_code = def_atv_acty_area_code
         AND atv_dtp_flag = def_ity_sys_flag ) atv_descr,
-   def_created_date,
+   def_created_date,   
+   def_date_compl date_defect_completed,
+   def_are_id_not_found not_found_inspection_id,
+   def_date_not_found date_not_found,   
    def_works_order_no
 FROM defects
 WITH READ ONLY
@@ -106,6 +112,9 @@ COMMENT ON COLUMN IMF_MAI_DEFECTS.inspection_id IS 'The internal id for the insp
 COMMENT ON COLUMN IMF_MAI_DEFECTS.activity_code IS 'The activity code';
 COMMENT ON COLUMN IMF_MAI_DEFECTS.activity_description IS 'The activity description';
 COMMENT ON COLUMN IMF_MAI_DEFECTS.date_loaded IS 'The date this defect was loaded';
+COMMENT ON COLUMN IMF_MAI_DEFECTS.date_defect_completed IS 'The defect date completion';
+COMMENT ON COLUMN IMF_MAI_DEFECTS.not_found_inspection_id IS 'The internal id for a defect that could not be refound';
+COMMENT ON COLUMN IMF_MAI_DEFECTS.date_not_found IS 'The date when a defect could not be found';
 COMMENT ON COLUMN IMF_MAI_DEFECTS.work_order_number IS 'The work order number related to this defect';
 
 

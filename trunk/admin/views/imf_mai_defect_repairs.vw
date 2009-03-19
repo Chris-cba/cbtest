@@ -15,6 +15,10 @@ CREATE OR REPLACE FORCE VIEW imf_mai_defect_repairs
    defect_area,
    defect_superseded,
    superseded_by_defect_id,
+   date_defect_inspected,
+   date_defect_completed,
+   not_found_inspection_id,
+   date_not_found,   
    network_element_id,
    network_element_offset,
    xsp_code,
@@ -42,8 +46,8 @@ CREATE OR REPLACE FORCE VIEW imf_mai_defect_repairs
    hours_before_repair_due,
    days_completed_before_due,
    hours_completed_before_due,
-   days_before_inspection_due,
-   hours_before_inspection_due,
+   days_since_inspected,
+   hours_since_inspected,
    work_order_number
 )
 AS
@@ -51,11 +55,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.1   Mar 18 2009 08:58:04   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.2   Mar 19 2009 17:34:00   drawat  $
 --       Module Name      : $Workfile:   imf_mai_defect_repairs.vw  $
---       Date into PVCS   : $Date:   Mar 18 2009 08:58:04  $
---       Date fetched Out : $Modtime:   Mar 18 2009 08:51:38  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 17:31:32  $
+--       Version          : $Revision:   3.2  $
 -- Foundation view displaying maintenance defect repairs
 -------------------------------------------------------------------------   
    def_defect_id,
@@ -67,7 +71,11 @@ SELECT
        FROM hig_codes
       WHERE hco_domain = 'DEFECT_PRIORITIES'
         AND hco_code = def_priority ) def_priority_descr,
-   dpr_int_code,
+   ( SELECT DPR.DPR_INT_CODE
+       FROM DEFECT_PRIORITIES DPR
+      WHERE dpr_atv_acty_area_code = def_atv_acty_area_code
+        AND  dpr_priority = def_priority
+        AND  dpr_action_cat = rep_action_cat ) defect_priority_interval,
    def_defect_code,
    ( SELECT dty_descr1
        FROM def_types
@@ -80,6 +88,13 @@ SELECT
    def_area,
    def_superseded_flag,
    def_superseded_id,
+      ( TO_DATE(TO_CHAR(are_date_work_done,'DD-MON-RRRR')||' '
+                     ||LPAD(NVL(def_time_hrs,'00'),2,'0')||':'
+                     ||LPAD(NVL(def_time_mins,'00'),2,'0')
+            ,'DD-MON-RRRR HH24:MI') ) date_defect_inspected,
+   def_date_compl date_defect_completed,
+   def_are_id_not_found not_found_inspection_id,
+   def_date_not_found date_not_found,   
    def_rse_he_id,
    def_st_chain,
    def_x_sect,
@@ -91,16 +106,23 @@ SELECT
    def_northing,
    def_are_report_id,
    are_batch_id,
-   hus_user_id,
-   hus_initials,
-   hus_username,
+   are_peo_person_id_actioned,
+   ( SELECT HUS.HUS_INITIALS
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_initials,
+   ( SELECT HUS.HUS_USERNAME
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_username,
    def_atv_acty_area_code,
    ( SELECT atv_descr
        FROM activities
       WHERE atv_acty_area_code = def_atv_acty_area_code
         AND atv_dtp_flag = def_ity_sys_flag) atv_descr,
    rep_action_cat,
-   DECODE (rep_action_cat,'I', 'Immediate','T', 'Temporary','Permanent'),
+   ( SELECT HCO.HCO_MEANING
+       FROM HIG_CODES hco
+      WHERE HCO.HCO_DOMAIN = 'REPAIR_TYPE' 
+        AND HCO.HCO_CODE = rep_action_cat ),
    rep_tre_treat_code,
    ( SELECT tre_descr
        FROM treatments
@@ -110,25 +132,23 @@ SELECT
    def_created_date,
    rep_date_due,
    rep_date_completed,
-   DECODE (SIGN (rep_date_due - rep_date_completed), -1, 'Y', 'N') repair_late,
+   CASE WHEN (rep_date_completed IS NULL AND rep_date_due < sysdate)
+          OR (rep_date_completed IS NOT NULL AND rep_date_due < rep_date_completed)
+        THEN 'Y'
+        ELSE 'N'
+   END repair_late,
    (TRUNC(rep_date_due) - TRUNC(SYSDATE)) days_before_repair_due,
    ((rep_date_due - SYSDATE)*24) hours_before_repair_due,
    (TRUNC(rep_date_due) - TRUNC(rep_date_completed)) days_completed_before_due,
    ((rep_date_due - rep_date_completed)*24) hours_completed_before_due,
-   (TRUNC(are_date_work_done) - TRUNC(SYSDATE)) days_before_inspection_due,
-   ((are_date_work_done - SYSDATE)*24) hours_before_inspection_due,   
+   ( TRUNC(SYSDATE) - TRUNC(are_date_work_done) ) days_since_inspected,
+   ((SYSDATE - are_date_work_done)*24) hours_since_inspected,   
    def_works_order_no
 FROM activities_report,
-     hig_users,
      defects,
-     repairs,
-     defect_priorities
-WHERE are_peo_person_id_actioned = hus_user_id
-  AND are_report_id              = def_are_report_id
+     repairs
+WHERE are_report_id              = def_are_report_id
   AND def_defect_id              = rep_def_defect_id
-  AND def_atv_acty_area_code     = dpr_atv_acty_area_code
-  AND def_priority               = dpr_priority
-  AND dpr_action_cat             = rep_action_cat
 WITH READ ONLY
 /
 
@@ -149,6 +169,10 @@ COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.defect_length IS 'Length of defect';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.defect_area IS 'Area of defect';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.defect_superseded IS 'Flag indicating whether the defect is superseded';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.superseded_by_defect_id IS 'The internal id of the defect that has superseded this defect';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.date_defect_inspected IS 'The inspection date of the defect';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.date_defect_completed IS 'The defect date completion';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.not_found_inspection_id IS 'The internal id for a defect that could not be refound';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.date_not_found IS 'The date when a defect could not be found';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.network_element_id IS 'Internal id for a network element';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.network_element_offset IS 'The offset of the network element';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.xsp_code IS 'The XSP code where the defect is located';
@@ -176,7 +200,7 @@ COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_before_repair_due IS 'The number o
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_before_repair_due IS 'The number of hours the repair is due by';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_completed_before_due IS 'The number of days the repair was completed before the due date';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_completed_before_due IS 'The number of hours the repair was completed before the due date';
-COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_before_inspection_due IS 'Days before an inspection is due';
-COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_before_inspection_due IS 'Hours before an inspection is due';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.days_since_inspected IS 'Days since an inspection took place';
+COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.hours_since_inspected IS 'Hours since an inspection took place';
 COMMENT ON COLUMN IMF_MAI_DEFECT_REPAIRS.work_order_number IS 'Work order number';
 

@@ -8,7 +8,7 @@ CREATE OR REPLACE FORCE VIEW imf_mai_repairs
    repair_superseded,
    treatment_code,
    treatment_description,
-   activity_area,
+   activity_code,
    date_repair_loaded,
    date_repair_due,
    date_repair_completed,
@@ -24,30 +24,37 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_repairs.vw-arc   3.0   Mar 16 2009 16:19:08   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_repairs.vw-arc   3.1   Mar 19 2009 17:34:00   drawat  $
 --       Module Name      : $Workfile:   imf_mai_repairs.vw  $
---       Date into PVCS   : $Date:   Mar 16 2009 16:19:08  $
---       Date fetched Out : $Modtime:   Mar 16 2009 08:52:54  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 14:03:42  $
+--       Version          : $Revision:   3.1  $
 -- Foundation view displaying maintenance repairs
 -------------------------------------------------------------------------   
    rep_rse_he_id,
    rep_def_defect_id,
    rep_action_cat,
-   DECODE (rep_action_cat,'I', 'Immediate','T', 'Temporary','Permanent'),
+   ( SELECT HCO.HCO_MEANING
+       FROM HIG_CODES hco
+      WHERE HCO.HCO_DOMAIN = 'REPAIR_TYPE' 
+        AND HCO.HCO_CODE = rep_action_cat ),
    rep_descr,
    rep_superseded_flag,
    rep_tre_treat_code,
    ( SELECT tre_descr
        FROM treatments
       WHERE tre_treat_code = rep_tre_treat_code ) tre_descr,
-   rep_atv_acty_area_code,
+   rep_atv_acty_area_code activity_code,
    rep_created_date,
    rep_date_due,
    rep_date_completed,
    rep_completed_hrs,
    rep_completed_mins,
-   DECODE (SIGN (rep_date_due - rep_date_completed), -1, 'Y', 'N') repair_late,
+   CASE WHEN (rep_date_completed IS NULL AND rep_date_due < sysdate)
+          OR (rep_date_completed IS NOT NULL AND rep_date_due < rep_date_completed)
+        THEN 'Y'
+        ELSE 'N'
+   END repair_late,
    (TRUNC(rep_date_due) - TRUNC(SYSDATE)) days_before_repair_due,
    ((rep_date_due - SYSDATE)*24) hours_before_repair_due,
    (TRUNC(rep_date_due) - TRUNC(rep_date_completed)) days_completed_before_due,
@@ -66,7 +73,7 @@ COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_description IS 'Repair description';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_superseded IS 'Flag indicating whether the repair is superseded';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.treatment_code IS 'Treatment code';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.treatment_description IS 'Treatment description';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.activity_area IS 'Activity area';
+COMMENT ON COLUMN IMF_MAI_REPAIRS.activity_code IS 'Activity area code';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_loaded IS 'The date when the repair was loaded';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_due IS 'The date the repair is due';
 COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_completed IS 'The date the repair was completed';

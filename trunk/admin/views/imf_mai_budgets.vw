@@ -5,8 +5,8 @@ CREATE OR REPLACE FORCE VIEW IMF_MAI_BUDGETS
    NETWORK_ELEMENT_REFERENCE,
    NETWORK_ELEMENT_DESCRIPTION,
    NETWORK_SYSTEM_TYPE,
-   ADMIN_UNIT,
-   ADMIN_UNIT_ID,
+   ADMIN_UNIT_NAME,
+   ADMIN_UNIT_CODE,
    JOB_SIZE,      
    WORK_CATEGORY,
    WORK_CATEGORY_DESCRIPTION,
@@ -23,11 +23,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.1   Mar 18 2009 17:27:10   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.2   Mar 19 2009 17:34:00   drawat  $
 --       Module Name      : $Workfile:   imf_mai_budgets.vw  $
---       Date into PVCS   : $Date:   Mar 18 2009 17:27:10  $
---       Date fetched Out : $Modtime:   Mar 18 2009 17:20:18  $
---       Version          : $Revision:   1.1  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 13:03:22  $
+--       Version          : $Revision:   1.2  $
 -- Foundation view displaying budgets
 -------------------------------------------------------------------------   
      B.BUD_ID,
@@ -35,8 +35,8 @@ SELECT
      NE.NE_UNIQUE,
      NE.NE_DESCR,
      DECODE (B.BUD_SYS_FLAG, 'D', 'Trunk', 'Local'),
-     NAU.NAU_NAME ,
-     NAU.NAU_ADMIN_UNIT,
+     NAU.NAU_NAME admin_unit_name,
+     NAU.NAU_ADMIN_UNIT admin_unit_code,
      ( SELECT JS.JOB_DESCR 
        FROM   JOB_SIZES JS
        WHERE  JS.JOB_CODE = B.BUD_JOB_CODE ) job_size,
@@ -69,8 +69,8 @@ COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_ID IS 'Internal id for a netwo
 COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_REFERENCE IS 'The network element reference which in this case is a group code';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_DESCRIPTION IS 'The network element description which in this case is a group name';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_SYSTEM_TYPE IS 'The network type, L or T';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT IS 'The admin unit';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT_ID IS 'The admin unit id';
+COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT_NAME IS 'The admin unit name';
+COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT_CODE IS 'The admin unit code';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.JOB_SIZE IS 'The job size';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY IS 'The work category';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY_DESCRIPTION IS 'The work category description';

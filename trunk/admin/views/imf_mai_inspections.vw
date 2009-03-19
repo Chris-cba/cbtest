@@ -21,11 +21,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.1   Mar 18 2009 08:58:04   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.2   Mar 19 2009 17:34:00   drawat  $
 --       Module Name      : $Workfile:   imf_mai_inspections.vw  $
---       Date into PVCS   : $Date:   Mar 18 2009 08:58:04  $
---       Date fetched Out : $Modtime:   Mar 18 2009 08:51:58  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
+--       Date fetched Out : $Modtime:   Mar 19 2009 17:23:00  $
+--       Version          : $Revision:   3.2  $
 -- Foundation view displaying maintenance inspections
 -------------------------------------------------------------------------   
    are_rse_he_id,
@@ -36,16 +36,18 @@ SELECT
    are_st_chain,
    are_end_chain,
    are_peo_person_id_actioned,
-   hus_initials,
-   hus_username,
+   ( SELECT HUS.HUS_INITIALS
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_initials,
+   ( SELECT HUS.HUS_USERNAME
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_username,
    are_created_date,
    are_date_work_done,
    are_insp_load_date,
    (TRUNC(are_date_work_done) - TRUNC(SYSDATE)) days_before_inspection_due,
    ((are_date_work_done - SYSDATE)*24) hours_before_inspection_due   
-FROM activities_report,
-     hig_users
-WHERE are_peo_person_id_actioned = hus_user_id
+FROM activities_report
 WITH READ ONLY
 /
 
