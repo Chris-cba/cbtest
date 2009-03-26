@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.5   Mar 18 2009 14:21:54   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.6   Mar 26 2009 11:14:18   smarshall  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Mar 18 2009 14:21:54  $
---       Date fetched Out : $Modtime:   Mar 18 2009 14:17:58  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Mar 26 2009 11:14:18  $
+--       Date fetched Out : $Modtime:   Mar 26 2009 11:13:28  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.5  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.6  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -860,9 +860,10 @@ END synonym_exists;
 PROCEDURE create_view ( view_name      IN inv_item_types.ity_view_name%TYPE
                        ,inventory_type IN inv_item_types.ity_inv_code%TYPE
                        ,sys_flag       IN inv_item_types.ity_sys_flag%TYPE)IS
-       --
-       v_stg          VARCHAR2(2000) := 'Create or Replace force view '||view_name||
-                                        ' as select /* INDEX (INV_ITEMS_ALL IIT_INDEX_P2) */';
+       --SM 26032009 719068
+       --Increased the size of v_stg from 2000 to max.
+       v_stg          nm3type.max_varchar2 := 'Create or Replace force view '||view_name||
+                                              ' as select /* INDEX (INV_ITEMS_ALL IIT_INDEX_P2) */';
        lc_from        VARCHAR2(2000);
        s_stg          VARCHAR2(2000);
        v_query        INTEGER;
