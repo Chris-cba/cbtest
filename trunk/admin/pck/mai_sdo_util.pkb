@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.1   Feb 12 2009 17:30:34   mhuitson  $
---       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Feb 12 2009 17:30:34  $
---       Date fetched Out : $Modtime:   Feb 12 2009 15:40:04  $
---       SCCS Version     : $Revision:   2.1  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.2   Mar 27 2009 10:23:46   cstrettle  $
+--       Module Name      : $Workfile:   mai_sdo_util_fix.pkb  $
+--       Date into SCCS   : $Date:   Mar 27 2009 10:23:46  $
+--       Date fetched Out : $Modtime:   Mar 27 2009 10:20:08  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.1  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.2  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -495,6 +495,8 @@ BEGIN
   l_rec_nth.nth_y_column         := pi_y_column;
   l_rec_nth.nth_offset_field     := NULL;
   --
+  -- Move the l_rec_nth.nth_table_name :=  ;
+  -- into this IF statement and set the table_name attribute to be the feature table instaeaf of g_table_name
   IF b_using_xy
   THEN
     l_rec_nth.nth_feature_table := g_feature_tab_xy;
@@ -711,12 +713,17 @@ BEGIN
     nm3layer_tool.associate_base_linear_themes(pi_nth_theme_id => l_rec_nth_v.nth_theme_id);
     --
   END LOOP;
-  --
+  --   
   IF pi_snapping_trig = 'TRUE'
-   THEN
+   THEN   
       nm3sdm.create_nth_sdo_trigger(l_rec_nth.nth_theme_id);
   END IF;
   --
+  --CWS 719472
+     UPDATE nm_themes_all
+     SET nth_table_name = nth_feature_table
+     WHERE nth_theme_id = l_rec_nth.nth_theme_id;
+   
   create_lookups(pi_asset_type => pi_asset_type);
   --
 END make_base_sdo_layer;
