@@ -29,12 +29,15 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.2   Mar 19 2009 17:33:58   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.3   Apr 03 2009 15:10:14   smarshall  $
 --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   Mar 19 2009 17:33:58  $
---       Date fetched Out : $Modtime:   Mar 19 2009 10:05:40  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Apr 03 2009 15:10:14  $
+--       Date fetched Out : $Modtime:   Apr 03 2009 15:09:54  $
+--       Version          : $Revision:   3.3  $
 -- Foundation view displaying bill of quantities for a defect
+-------------------------------------------------------------------------
+-- SM 03042009
+-- Added rownum=1 to ICB inline sql to cater for ICBFGAC product option
 -------------------------------------------------------------------------   
    BI.BOQ_ID,
    BI.BOQ_DEFECT_ID,
@@ -53,7 +56,8 @@ SELECT
    BI.BOQ_ICB_WORK_CODE,
    (SELECT ICB.ICB_WORK_CATEGORY_NAME 
     FROM ITEM_CODE_BREAKDOWNS ICB
-    WHERE ICB.ICB_WORK_CODE = BI.BOQ_ICB_WORK_CODE),
+    WHERE ICB.ICB_WORK_CODE = BI.BOQ_ICB_WORK_CODE
+    	AND rownum = 1),
    BI.BOQ_DATE_CREATED,
    SI.STA_UNIT, 
    BI.BOQ_EST_QUANTITY,
