@@ -38,13 +38,16 @@ AS
    SELECT -------------------------------------------------------------------------
          --   PVCS Identifiers :-
          --
-         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.1   Mar 19 2009 13:02:34   smarshall  $
+         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.2   Apr 03 2009 15:08:46   smarshall  $
          --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-         --       Date into PVCS   : $Date:   Mar 19 2009 13:02:34  $
-         --       Date fetched Out : $Modtime:   Mar 19 2009 13:02:06  $
-         --       Version          : $Revision:   3.1  $
+         --       Date into PVCS   : $Date:   Apr 03 2009 15:08:46  $
+         --       Date fetched Out : $Modtime:   Apr 03 2009 15:07:32  $
+         --       Version          : $Revision:   3.2  $
          -- Foundation view displaying maintenance manager work order lines
          -------------------------------------------------------------------------
+         -- SM 03042009
+         -- Added rowid=1 to ICB inline sql to cater for ICBFGAC product option
+         -------------------------------------------------------------------------          
                                                    wol_id
                                                  , wol_descr
                                                  , wol_works_order_no
@@ -56,7 +59,8 @@ AS
                                                  , wol_icb_work_code 
                                                  , (SELECT icb_work_category_name
                                                     FROM item_code_breakdowns
-                                                    WHERE wol_icb_work_code = icb_work_code)
+                                                    WHERE wol_icb_work_code = icb_work_code
+                                                    	AND rownum = 1)
                                                  , wol_def_defect_id
                                                  , wol_rep_action_cat --defect_type 
                                                  , (SELECT hco_meaning 
