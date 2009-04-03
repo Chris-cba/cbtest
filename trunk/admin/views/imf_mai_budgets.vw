@@ -11,6 +11,8 @@ CREATE OR REPLACE FORCE VIEW IMF_MAI_BUDGETS
    WORK_CATEGORY,
    WORK_CATEGORY_DESCRIPTION,
    FINANCIAL_YEAR,
+   FINANCIAL_YEAR_START_DATE,
+   FINANCIAL_YEAR_END_DATE,   
    BUDGET,
    COMMITTED,
    ACTUAL,
@@ -23,13 +25,17 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.2   Mar 19 2009 17:34:00   drawat  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.3   Apr 03 2009 15:04:10   smarshall  $
 --       Module Name      : $Workfile:   imf_mai_budgets.vw  $
---       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
---       Date fetched Out : $Modtime:   Mar 19 2009 13:03:22  $
---       Version          : $Revision:   1.2  $
+--       Date into PVCS   : $Date:   Apr 03 2009 15:04:10  $
+--       Date fetched Out : $Modtime:   Apr 03 2009 15:03:40  $
+--       Version          : $Revision:   1.3  $
 -- Foundation view displaying budgets
--------------------------------------------------------------------------   
+-------------------------------------------------------------------------
+-- SM 03042009
+-- Added rowid=1 to ICB inline sql to cater for ICBFGAC product option
+-- Added FYR_START_DATE and FYR_END_DATE
+-------------------------------------------------------------------------     
      B.BUD_ID,
      B.BUD_RSE_HE_ID,
      NE.NE_UNIQUE,
@@ -45,8 +51,15 @@ SELECT
        FROM   ITEM_CODE_BREAKDOWNS ICB
        WHERE  B.BUD_ICB_ITEM_CODE = ICB.ICB_ITEM_CODE
        AND    B.BUD_ICB_SUB_ITEM_CODE = ICB.ICB_SUB_ITEM_CODE
-       AND    B.BUD_ICB_SUB_SUB_ITEM_CODE = ICB.ICB_SUB_SUB_ITEM_CODE ) work_category_description,
+       AND    B.BUD_ICB_SUB_SUB_ITEM_CODE = ICB.ICB_SUB_SUB_ITEM_CODE
+       AND    ROWNUM = 1 ) work_category_description,
      B.BUD_FYR_ID,
+     ( SELECT FYR_START_DATE
+     	 FROM   FINANCIAL_YEARS
+     	 WHERE  FYR_ID = B.BUD_FYR_ID),
+     ( SELECT FYR_END_DATE
+     	 FROM   FINANCIAL_YEARS
+     	 WHERE  FYR_ID = B.BUD_FYR_ID),     
      DECODE (B.BUD_VALUE, -1, 0, B.BUD_VALUE),
      NVL (B.BUD_COMMITTED, 0),
      NVL (B.BUD_ACTUAL, 0),
@@ -75,6 +88,8 @@ COMMENT ON COLUMN IMF_MAI_BUDGETS.JOB_SIZE IS 'The job size';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY IS 'The work category';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY_DESCRIPTION IS 'The work category description';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR IS 'The budget financial year';
+COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR_START_DATE IS 'The date the budget financial year starts';
+COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR_END_DATE IS 'The date the budget financial year ends';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.BUDGET IS 'The available budget';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.COMMITTED IS 'The budget of the work that is committed';
 COMMENT ON COLUMN IMF_MAI_BUDGETS.ACTUAL IS 'The actual cost of the work that was instructed';
