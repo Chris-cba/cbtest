@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/mig/mai_ddl.sql-arc   2.0   Jun 13 2007 16:46:24   smarshall  $
+REM @(#)$Header:   //vm_latest/archives/mai/mig/mai_ddl.sql-arc   2.1   Apr 27 2009 11:20:56   Ian Turnbull  $
 
 set echo off
 set linesize 120
@@ -48,12 +48,16 @@ DECLARE
 BEGIN
   OPEN ukp_licenced;
   FETCH ukp_licenced INTO l_dummy;
+-- UKP may not be licensed, but the data may be there.  So we need to create the table if its not there, 
+--or leave it and upgrade it if its not
+
    IF ukp_licenced%NOTFOUND THEN  --create required tables for UKP
      IF Nm3ddl.does_object_exist(p_object_name => 'UKPMS_PASS_ROAD_RUN_TIME_DETS'
                                ,p_object_type => 'TABLE') THEN
-       EXECUTE IMMEDIATE ('DROP TABLE UKPMS_PASS_ROAD_RUN_TIME_DETS');
-     END IF;
-     EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_PASS_ROAD_RUN_TIME_DETS'||
+       --ddl upgrades here
+       null;
+     else
+       EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_PASS_ROAD_RUN_TIME_DETS'||
  			'(UPRTD_PASS_ID VARCHAR2(20) NOT NULL'||
  			',UPRTD_RSE_HE_ID NUMBER(9) NOT NULL'||
  			',UPRTD_CVI_DVI_USED VARCHAR2(20)'||
@@ -64,12 +68,17 @@ BEGIN
  			',UPRTD_REC_TYPE VARCHAR2(1)'||
  			',UPRTD_START DATE'||
  			',UPRTD_END DATE )');
-
+     end if;
      IF Nm3ddl.does_object_exist(p_object_name => 'UKPMS_AUTOMATIC_PASS'
                                ,p_object_type => 'TABLE') THEN
-       EXECUTE IMMEDIATE ('DROP TABLE UKPMS_AUTOMATIC_PASS');
-     END IF;
-     EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_AUTOMATIC_PASS'||
+       --ddl upgrades here
+       update UKPMS_AUTOMATIC_PASS
+       set UAP_RUN_AGAINST_INVENTORY='Y'
+       where UAP_RUN_AGAINST_INVENTORY is null;
+
+       alter table UKPMS_AUTOMATIC_PASS modify UAP_RUN_AGAINST_INVENTORY default 'Y' not null;
+     else
+       EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_AUTOMATIC_PASS'||
  			'(UAP_AUTO_PASS VARCHAR2(20) NOT NULL'||
  			',UAP_AUTO_PASS_DESC VARCHAR2(80) NOT NULL'||
  			',UAP_RULE_SET VARCHAR2(20) NOT NULL'||
@@ -90,12 +99,17 @@ BEGIN
  			',UAP_PI_ONLY VARCHAR2(1) NOT NULL'||
  			',UAP_RUN_STATUS VARCHAR2(10) NOT NULL'||
  			',UAP_RUN_AGAINST_INVENTORY VARCHAR2(1) DEFAULT ''Y'' NOT NULL)');
-
+     end if
      IF Nm3ddl.does_object_exist(p_object_name => 'UKPMS_VIEW_DEFINITIONS'
                                ,p_object_type => 'TABLE') THEN
-       EXECUTE IMMEDIATE ('DROP TABLE UKPMS_VIEW_DEFINITIONS');
-     END IF;
-     EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_VIEW_DEFINITIONS'||
+       --ddl upgrades here
+       update UKPMS_VIEW_DEFINITIONS
+       set UVD_XSP_TYPE='F'
+       where UVD_XSP_TYPE is null;
+
+       alter table UKPMS_VIEW_DEFINITIONS modify UVD_XSP_TYPE default 'F' not null;
+     else
+       EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_VIEW_DEFINITIONS'||
 			'(UVD_INV_CODE VARCHAR2(10) NOT NULL'||
  			',UVD_SYS_FLAG VARCHAR2(1) NOT NULL'||
  			',UVD_VIEW_NAME VARCHAR2(30) NOT NULL'||
@@ -105,14 +119,16 @@ BEGIN
  			',UVD_RP20_META_FEATURE_CODE VARCHAR2(2)'||
  			',UVD_XSP_METHOD_IN_USE VARCHAR2(1)'||
  			',UVD_XSP_TYPE VARCHAR2(1) DEFAULT ''F'' NOT NULL)');
-
+     end if;
      IF Nm3ddl.does_object_exist(p_object_name => 'UKPMS_XSP_REVERSAL'
                                ,p_object_type => 'TABLE') THEN
-       EXECUTE IMMEDIATE ('DROP TABLE UKPMS_XSP_REVERSAL');
-     END IF;
-     EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_XSP_REVERSAL'||
+       --ddl upgrades here
+       null;
+     else
+       EXECUTE IMMEDIATE ('CREATE TABLE UKPMS_XSP_REVERSAL'||
 			'(UXR_NORMAL_XSP VARCHAR2(4) NOT NULL'||
  			',UXR_REVERSED_XSP VARCHAR2(4) NOT NULL)');
+     end if;
   END IF;
 END;
 /
