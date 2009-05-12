@@ -7,10 +7,14 @@ CREATE OR REPLACE FORCE VIEW imf_mai_inspections
    inspection_type_descr,
    inspection_start_offset,
    inspection_end_offset,
-   inspector_id,
-   inspector_initials,
-   inspector_name,
-   inspector_username,
+   primary_inspector_id,
+   primary_inspector_initials,
+   primary_inspector_name,
+   primary_inspector_username,
+   secondary_inspector_id,
+   secondary_inspector_initials,
+   secondary_inspector_name,
+   secondary_inspector_username,
    date_of_entry,
    date_inspected,
    date_loaded,
@@ -22,15 +26,18 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.3   Apr 03 2009 14:53:00   smarshall  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.4   May 12 2009 14:45:38   smarshall  $
 --       Module Name      : $Workfile:   imf_mai_inspections.vw  $
---       Date into PVCS   : $Date:   Apr 03 2009 14:53:00  $
---       Date fetched Out : $Modtime:   Apr 03 2009 14:52:46  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   May 12 2009 14:45:38  $
+--       Date fetched Out : $Modtime:   May 12 2009 14:41:24  $
+--       Version          : $Revision:   3.4  $
 -- Foundation view displaying maintenance inspections
 -------------------------------------------------------------------------
 -- SM 03042009
--- Added inspector_name
+-- Added inspector_name.
+-- SM 12052009
+-- Added secondary_inspector details and renamed inspector details to be
+-- primary_inspector details.
 -------------------------------------------------------------------------
    are_rse_he_id,
    are_report_id,
@@ -42,13 +49,23 @@ SELECT
    are_peo_person_id_actioned,
    ( SELECT HUS.HUS_INITIALS
        FROM HIG_USERS HUS
-      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_initials,
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) primary_inspector_initials,
    ( SELECT HUS.HUS_NAME
        FROM HIG_USERS HUS
-      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_name,
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) primary_inspector_name,
    ( SELECT HUS.HUS_USERNAME
        FROM HIG_USERS HUS
-      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) inspector_username,
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_ACTIONED ) primary_inspector_username,
+   are_peo_person_id_insp2,
+   ( SELECT HUS.HUS_INITIALS
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_INSP2 ) secondary_inspector_initials,
+   ( SELECT HUS.HUS_NAME
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_INSP2 ) secondary_inspector_name,
+   ( SELECT HUS.HUS_USERNAME
+       FROM HIG_USERS HUS
+      WHERE HUS.HUS_USER_ID = ARE_PEO_PERSON_ID_INSP2 ) secondary_inspector_username,      	
    are_created_date,
    are_date_work_done,
    are_insp_load_date,
@@ -67,10 +84,14 @@ COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspection_type IS 'Inspection type';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspection_type_descr IS 'Inspection type description';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspection_start_offset IS 'Start offset of the inspection';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspection_end_offset IS 'End offset of the inspection';
-COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspector_id IS 'Internal id for the inspector';
-COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspector_initials IS 'Inspector initials';
-COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspector_username IS 'Name of Inspector';
-COMMENT ON COLUMN IMF_MAI_INSPECTIONS.inspector_username IS 'Inspector username';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.primary_inspector_id IS 'Internal id for the Primary Inspector';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.primary_inspector_initials IS 'Primary Inspectors initials';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.primary_inspector_username IS 'Name of Primary Inspector';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.primary_inspector_username IS 'Primary Inspectors username';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.secondary_inspector_id IS 'Internal id for the Secondary Inspector';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.secondary_inspector_initials IS 'Secondary Inspectors initials';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.secondary_inspector_username IS 'Name of Secondary Inspector';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.secondary_inspector_username IS 'Secondary Inspectors username';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_of_entry IS 'Date of entry of the inspection';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_inspected IS 'The inspection date';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_loaded IS 'Date of the inspection details being loaded';
