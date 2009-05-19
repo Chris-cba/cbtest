@@ -1,8 +1,8 @@
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.1   Oct 05 2007 15:18:16   Chris Parkinson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.2   May 19 2009 10:24:04   jwadsworth  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into SCCS   : $Date:   Oct 05 2007 15:18:16  $
+--       Date into SCCS   : $Date:   May 19 2009 10:24:04  $
 --       Date fetched Out : $Modtime:   Oct 05 2007 15:15:36  $
---       SCCS Version     : $Revision:   2.1  $
+--       SCCS Version     : $Revision:   2.2  $
 --       based on @(#)mai.ind	1.14 04/02/07
 --
 -- Generated for Oracle 9i on Fri Oct 05  15:09:55 2007 by Server Generator 9.0.2.94.12
