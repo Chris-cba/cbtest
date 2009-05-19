@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.3   Nov 23 2007 11:12:46   Chris Parkinson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.4   May 19 2009 10:24:28   jwadsworth  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into SCCS   : $Date:   Nov 23 2007 11:12:46  $
+--       Date into SCCS   : $Date:   May 19 2009 10:24:28  $
 --       Date fetched Out : $Modtime:   Nov 23 2007 11:10:38  $
---       SCCS Version     : $Revision:   2.3  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on @(#)mai.tab	1.31 02/01/07
 --
 -- Generated for Oracle 9i on Fri Nov 23  08:01:16 2007 by Server Generator 9.0.2.94.12
