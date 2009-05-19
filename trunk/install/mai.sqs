@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.0   Jun 13 2007 16:32:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.1   May 19 2009 10:24:14   jwadsworth  $
 --       Module Name      : $Workfile:   mai.sqs  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:34  $
+--       Date into SCCS   : $Date:   May 19 2009 10:24:14  $
 --       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on mai.sqs	1.6 02/01/07
 --
 -- Generated for Oracle 9i on Mon Mar 27  14:22:58 2006 by Server Generator 9.0.2.94.12
