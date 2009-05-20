@@ -5,11 +5,11 @@ rem *******************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.1   Jun 19 2008 15:58:10   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.2   May 20 2009 15:27:58   mhuitson  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into SCCS   : $Date:   Jun 19 2008 15:58:10  $
---       Date fetched Out : $Modtime:   Jun 19 2008 15:55:38  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   May 20 2009 15:27:58  $
+--       Date fetched Out : $Modtime:   May 18 2009 11:47:52  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.16
 --
 -----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ begin
      mai_audit.wor_create(:new.wor_works_order_no
                          ,:new.wor_peo_person_id
                          ,:new.wor_mod_by_id);
-  else	
+  else
      mai_audit.wor_audit_setup(:old.wor_works_order_no
                               ,:old.wor_act_cost
                               ,:old.wor_date_confirmed
@@ -638,7 +638,7 @@ end;
 
 prompt Creating trigger DEF_UPDATE_DOC_STATUS
 
-CREATE OR REPLACE TRIGGER DEF_UPDATE_DOC_STATUS	
+CREATE OR REPLACE TRIGGER DEF_UPDATE_DOC_STATUS
 AFTER UPDATE OF	def_status_code	ON defects
 FOR EACH ROW
 
@@ -671,15 +671,15 @@ BEGIN
       OPEN  get_def_status;
       FETCH get_def_status INTO lnum;
       IF get_def_status%FOUND THEN
-         
+
          CLOSE get_def_status;
-         
+
          OPEN  get_doc_status;
          FETCH get_doc_status INTO lstatus;
          IF get_doc_status%FOUND THEN
-            
+
             CLOSE get_doc_status;
-            
+
             INSERT INTO doc_assocs
             (das_table_name, das_rec_id, das_doc_id)
             SELECT 'WORK_ORDERS', :new.def_works_order_no, d.doc_id
@@ -699,7 +699,7 @@ BEGIN
                             WHERE das_table_name = 'WORK_ORDERS'
                             AND   das_rec_id = :new.def_works_order_no
                             AND   das_doc_id = d.doc_id);
-           
+
            UPDATE docs
            SET  doc_status_code = lstatus,
             	doc_reason      =  'Work Order Raised : '||:new.def_works_order_no
@@ -715,17 +715,17 @@ BEGIN
            AND nvl(hsc_end_date, sysdate));
 
         ELSE
-     
+
            CLOSE get_doc_status;
-     
+
         END IF;
-     
+
      ELSE
-     
+
         CLOSE get_def_status;
-     
+
      END IF;
-  
+
   END IF;
 
 END;
@@ -838,7 +838,7 @@ declare
                        and :NEW.wol_status_code = hsc_status_code
                        and hsc_allow_feature3 = 'Y'
                        and sysdate between nvl(hsc_start_date, sysdate)
-                       and nvl(hsc_end_date, sysdate)); 
+                       and nvl(hsc_end_date, sysdate));
 --
   cursor get_doc_status is
     select hsc_status_code
@@ -913,7 +913,7 @@ declare
                        and :NEW.wol_status_code = hsc_status_code
                        and hsc_allow_feature7 = 'Y'
                        and sysdate between nvl(hsc_start_date, sysdate)
-                       and nvl(hsc_end_date, sysdate)); 
+                       and nvl(hsc_end_date, sysdate));
 --
   cursor get_doc_status is
     select hsc_status_code
@@ -956,45 +956,100 @@ end;
 prompt Creating Trigger DEF_DUE_DATE_TIME
 CREATE OR REPLACE TRIGGER DEF_DUE_DATE_TIME
 AFTER INSERT OR UPDATE
-of def_priority
+OF def_priority
   ,def_time_hrs
   ,def_time_mins
 ON DEFECTS
 FOR EACH ROW
 DECLARE
-   --
-   v_char_date varchar2(20);
-   v_date      date;
-   v_err       number;
-   v_outdate   date;
-   --
-   cursor c1
-   is select to_char(are_date_work_done,'DD-MON-YYYY') inspected
-            ,are_rse_he_id                             section
-            ,rep_action_cat                            repair_cat
-      from   activities_report
-            ,repairs
-      where  are_report_id     = :new.def_are_report_id
-      and    rep_def_defect_id = :new.def_defect_id;
-   --
-begin
+  --
+  TYPE rep_rec IS RECORD(are_date_work_done activities_report.are_date_work_done%TYPE
+                        ,are_rse_he_id      activities_report.are_rse_he_id%TYPE
+                        ,rep_action_cat     repairs.rep_action_cat%TYPE);
+  TYPE rep_tab IS TABLE OF rep_rec;
+  lt_rep rep_tab;
+  --
+  lv_def_date   date;
+  lv_action_cat repairs.rep_action_cat%TYPE;
+  lv_err        number;
+  lv_outdate    date;
+  --
+  PROCEDURE get_repairs
+    IS
+  BEGIN
     --
-    for i in c1
-    loop      v_char_date:=i.inspected||':'||nvl(:new.def_time_hrs,0)||':'||nvl(:new.def_time_mins,0);
-          v_date     :=to_date(v_char_date,'DD-MON-YYYY:HH24:MI');
-          mai.rep_date_due(v_date
-                          ,:new.def_atv_acty_area_code
-                          ,:new.def_priority
-                          ,i.repair_cat
-                          ,i.section
-                          ,v_outdate
-                          ,v_err);
-          update repairs
-          set    rep_date_due      = v_outdate
-          where  rep_def_defect_id = :new.def_defect_id
-          and    rep_action_cat    = i.repair_cat;
-     end loop;
-end;
+    SELECT are_date_work_done
+          ,are_rse_he_id
+          ,rep_action_cat
+      BULK COLLECT
+      INTO lt_rep
+      FROM activities_report
+          ,repairs
+     WHERE are_report_id     = :new.def_are_report_id
+       AND rep_def_defect_id = :new.def_defect_id
+         ;
+   --
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END;
+  --
+BEGIN
+  /*
+  ||Get Details Of Any Associated Repairs.
+  */
+  get_repairs;
+  /*
+  ||Recalculate The Date Due For Associated Repairs.
+  */
+  FOR i IN 1..lt_rep.count LOOP
+    /*
+    ||Calculate The Due Date.
+    */
+    IF ((hig.get_sysopt('REPSETPERD') = 'Y' AND :new.def_ity_sys_flag = 'D')
+        OR (hig.get_sysopt('REPSETPERL') = 'Y' AND :new.def_ity_sys_flag = 'L'))
+     AND (lt_rep(i).rep_action_cat = 'P' AND :new.def_priority = '1')
+     AND lt_rep.count = 1
+     THEN
+        /*
+        ||The Defect Only Has A Permanent Repair
+        ||So Use The Temporary Interval To Calculate
+        ||The Due Date.
+        */
+        lv_action_cat := 'T';
+        --
+    ELSE
+        lv_action_cat := lt_rep(i).rep_action_cat;
+    END IF;
+    --
+    lv_def_date := TO_DATE(TO_CHAR(TRUNC(lt_rep(i).are_date_work_done),'DD-MON-RRRR')
+                           ||ltrim(to_char(:new.def_time_hrs,'09'))
+                           ||ltrim(to_char(:new.def_time_mins,'09'))
+                          ,'DD-MON-RRRRHH24MI');
+    --
+    mai.rep_date_due(p_date               => lv_def_date
+                    ,p_atv_acty_area_code => :new.def_atv_acty_area_code
+                    ,p_dpr_priority       => :new.def_priority
+                    ,p_dpr_action_cat     => lv_action_cat
+                    ,p_heid               => lt_rep(i).are_rse_he_id
+                    ,p_out_date           => lv_outdate
+                    ,p_error              => lv_err);
+    /*
+    ||Update The Repair.
+    */
+    UPDATE repairs
+       SET rep_date_due      = lv_outdate
+     WHERE rep_def_defect_id = :new.def_defect_id
+       AND rep_action_cat    = lt_rep(i).rep_action_cat
+         ;
+    --
+  END LOOP;
+  --
+END;
 /
 
 CREATE OR REPLACE TRIGGER Works_order_FGAC
