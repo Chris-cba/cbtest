@@ -6,11 +6,11 @@ REM **************************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.4   Apr 07 2009 10:52:58   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.5   May 26 2009 11:06:14   mhuitson  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into SCCS   : $Date:   Apr 07 2009 10:52:58  $
---       Date fetched Out : $Modtime:   Apr 07 2009 10:52:20  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   May 26 2009 11:06:14  $
+--       Date fetched Out : $Modtime:   May 26 2009 11:05:10  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on 
 --
 -----------------------------------------------------------------------------
@@ -1063,7 +1063,7 @@ SELECT
 --  
         wol.wol_works_order_no
        ,wol.wol_id
-       ,def.def_locn_descr  
+       ,NVL(def.def_locn_descr,wol.wol_locn_descr) 
        ,rse.rse_unique     
        ,rse.rse_descr
        ,def.def_defect_id
