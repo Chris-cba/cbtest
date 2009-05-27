@@ -6,6 +6,7 @@ CREATE OR REPLACE FORCE VIEW imf_mai_work_order_lines ( work_order_line_id
                                                       , standard_item_sub_section_desc
                                                       , work_category
                                                       , work_category_descr
+                                                      , agency_code
                                                       , defect_id
                                                       , defect_type
                                                       , defect_type_descr 
@@ -38,11 +39,11 @@ AS
    SELECT -------------------------------------------------------------------------
          --   PVCS Identifiers :-
          --
-         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.2   Apr 03 2009 15:08:46   smarshall  $
+         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.3   May 27 2009 16:25:52   smarshall  $
          --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-         --       Date into PVCS   : $Date:   Apr 03 2009 15:08:46  $
-         --       Date fetched Out : $Modtime:   Apr 03 2009 15:07:32  $
-         --       Version          : $Revision:   3.2  $
+         --       Date into PVCS   : $Date:   May 27 2009 16:25:52  $
+         --       Date fetched Out : $Modtime:   May 27 2009 16:20:16  $
+         --       Version          : $Revision:   3.3  $
          -- Foundation view displaying maintenance manager work order lines
          -------------------------------------------------------------------------
          -- SM 03042009
@@ -61,6 +62,10 @@ AS
                                                     FROM item_code_breakdowns
                                                     WHERE wol_icb_work_code = icb_work_code
                                                     	AND rownum = 1)
+                                                 , (SELECT icb_agency_code
+                                                    FROM item_code_breakdowns
+                                                    WHERE wol_icb_work_code = icb_work_code
+                                                    	AND rownum = 1)   	
                                                  , wol_def_defect_id
                                                  , wol_rep_action_cat --defect_type 
                                                  , (SELECT hco_meaning 
@@ -117,6 +122,8 @@ COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.STANDARD_ITEM_SUB_SECTION_DESC IS 'St
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.WORK_CATEGORY IS 'Internal Cost Breakdown work code.';      
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.WORK_CATEGORY_DESCR IS 'Internal Cost Breakdown work description.';      
+
+COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.ICB_AGENCY_CODE IS 'Internal Agency code associated with the Cost Breakdown.';      
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.DEFECT_ID IS 'The internal id of a defect that may be on the works order line.';      
 
