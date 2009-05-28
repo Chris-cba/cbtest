@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.13   Mar 19 2009 14:07:00   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.14   May 28 2009 17:48:34   mhuitson  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Mar 19 2009 14:07:00  $
---       Date fetched Out : $Modtime:   Mar 19 2009 14:04:14  $
---       SCCS Version     : $Revision:   2.13  $
+--       Date into SCCS   : $Date:   May 28 2009 17:48:34  $
+--       Date fetched Out : $Modtime:   May 28 2009 16:53:24  $
+--       SCCS Version     : $Revision:   2.14  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.13  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.14  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -124,6 +124,97 @@ begin
     end if;
   END IF;
 end check_filename;
+---------------------------------------------------------------------
+PROCEDURE update_defect_date(p_def_id         IN defects.def_defect_id%TYPE
+                            ,p_date_compl     IN defects.def_date_compl%TYPE
+                            ,p_works_order_no IN work_orders.wor_works_order_no%TYPE
+                            ,p_wol_id         IN work_order_lines.wol_id%TYPE DEFAULT 0
+                            ,p_hour_compl     IN NUMBER DEFAULT 0
+                            ,p_mins_compl     IN NUMBER DEFAULT 0)
+  IS
+  /*
+  ||Local copy of maiwo.update_defect_date that prevents
+  ||the repair_date_complete being overwriten (717676).
+  ||This was originaly changed in maiwo but unfortunately
+  ||there are other modules (mai3800,mai3802 and mai3842)
+  ||that use the same procedure and rely on being able to
+  ||update the repair date regardless of whether it is
+  ||already populated.
+  ||
+  ||Idealy the procedure in maiwo would be changed to cater
+  ||for all modules that call it however this would probably
+  ||involve a new parameter and we need to send a fix out
+  ||without having to recompile the calling modules.
+  */
+  l_today date := SYSDATE;
+  --
+  CURSOR c1(cp_def_id defects.def_defect_id%TYPE)
+      IS
+  SELECT MAX(rep_date_completed)
+    FROM repairs
+   WHERE rep_def_defect_id = cp_def_id
+       ;
+  --
+  ldate repairs.rep_date_completed%TYPE;
+  --
+BEGIN
+  --
+  IF (p_wol_id is not null and p_wol_id <> 0)
+   THEN
+      UPDATE repairs
+         SET rep_date_completed = p_date_compl
+            ,rep_completed_hrs  = DECODE(p_date_compl,NULL,NULL,p_hour_compl)
+            ,rep_completed_mins = DECODE(p_date_compl,NULL,NULL,p_mins_compl)
+            ,rep_last_updated_date = l_today
+       WHERE rep_def_defect_id IN(SELECT wol.wol_def_defect_id
+                                    FROM work_order_lines wol
+                                   WHERE wol.wol_def_defect_id = p_def_id
+                                     AND wol.wol_def_defect_id = rep_def_defect_id
+                                     AND wol.wol_rep_action_cat = rep_action_cat
+                                     AND wol.wol_id = p_wol_id)
+         AND rep_date_completed IS NULL -- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
+           ;
+  ELSE
+      UPDATE repairs
+         SET rep_date_completed = p_date_compl
+            ,rep_completed_hrs  = decode(p_date_compl,null,null,p_hour_compl)
+            ,rep_completed_mins = decode(p_date_compl,null,null,p_mins_compl)
+            ,rep_last_updated_date = l_today
+       WHERE rep_def_defect_id IN(SELECT wol.wol_def_defect_id
+                                    FROM work_order_lines wol
+                                   WHERE wol.wol_def_defect_id = p_def_id
+                                     AND wol.wol_works_order_no = p_works_order_no
+                                     AND wol.wol_def_defect_id = rep_def_defect_id
+                                     AND wol.wol_rep_action_cat = rep_action_cat)
+         AND rep_date_completed IS NULL -- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
+           ;
+  END IF;
+  --
+  IF p_date_compl IS NOT NULL
+   THEN
+      OPEN  c1(p_def_id);
+      FETCH c1
+       INTO ldate;
+      CLOSE c1;
+      --
+      UPDATE defects
+         SET def_date_compl = ldate
+            ,def_last_updated_date = l_today
+       WHERE def_defect_id = p_def_id
+         AND NOT EXISTS(SELECT 1
+                          FROM repairs
+                         WHERE rep_def_defect_id = def_defect_id
+                           AND rep_date_completed is null)
+           ;
+  ELSE
+      UPDATE defects
+         SET def_date_compl = p_date_compl
+            ,def_last_updated_date = l_today
+       WHERE def_defect_id = p_def_id
+           ;
+  END IF;
+  --
+END update_defect_date;
 ---------------------------------------------------------------------
 -- reformat_cost_code function
 -- reformats cost centre code for Norfolk's May Gurney interface
@@ -4270,10 +4361,11 @@ BEGIN
         IF hig.get_user_or_sys_opt('WCCOMPLETE')='Y' then -- SM 06012009 717676
           --check to see if defect is complete already
           for c_defectsrec in c_defects(wol_rec.icwol_defect_id) loop
-            maiwo.update_defect_date( wol_rec.icwol_defect_id
-                                    , wol_rec.icwol_date_complete
-                                    , wol_rec.icwor_works_order_no  
-                                    , wol_rec.icwol_wol_id); -- SM 19032009 718508
+            --maiwo.update_defect_date( wol_rec.icwol_defect_id
+            update_defect_date( wol_rec.icwol_defect_id
+                              , wol_rec.icwol_date_complete
+                              , wol_rec.icwor_works_order_no  
+                              , wol_rec.icwol_wol_id); -- SM 19032009 718508
 
             UPDATE defects
             SET    def_status_code = (SELECT MAX(hsc_status_code)
@@ -4290,10 +4382,11 @@ BEGIN
           AND       def_defect_id = wol_rec.icwol_defect_id;          
           end loop;
         else
-          maiwo.update_defect_date( wol_rec.icwol_defect_id
-                                  , wol_rec.icwol_date_complete
-                                  , wol_rec.icwor_works_order_no  
-                                  , wol_rec.icwol_wol_id); -- SM 19032009 718508
+          --maiwo.update_defect_date( wol_rec.icwol_defect_id
+          update_defect_date( wol_rec.icwol_defect_id
+                            , wol_rec.icwol_date_complete
+                            , wol_rec.icwor_works_order_no  
+                            , wol_rec.icwol_wol_id); -- SM 19032009 718508
           UPDATE defects
           SET    def_status_code = (SELECT MAX(hsc_status_code)
                                     FROM   hig_status_codes
@@ -4969,9 +5062,10 @@ BEGIN
       IF wol_rec.icwor_claim_type = 'F' AND  -- not necessary for Post or Interim claims
          wol_rec.icwol_defect_id IS NOT NULL THEN -- skip for non defect WOLs
 
-        maiwo.update_defect_date(  wol_rec.icwol_defect_id
-                        ,wol_rec.icwol_date_complete
-                        ,wol_rec.icwor_works_order_no  );
+        --maiwo.update_defect_date(  wol_rec.icwol_defect_id
+        update_defect_date(wol_rec.icwol_defect_id
+                          ,wol_rec.icwol_date_complete
+                          ,wol_rec.icwor_works_order_no);
 
       UPDATE defects
       SET    def_status_code = (SELECT MAX(hsc_status_code)
