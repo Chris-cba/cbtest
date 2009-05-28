@@ -7,6 +7,7 @@ CREATE OR REPLACE FORCE VIEW imf_mai_work_order_lines ( work_order_line_id
                                                       , work_category
                                                       , work_category_descr
                                                       , agency_code
+                                                      , agency_code_descr
                                                       , defect_id
                                                       , defect_type
                                                       , defect_type_descr 
@@ -39,15 +40,17 @@ AS
    SELECT -------------------------------------------------------------------------
          --   PVCS Identifiers :-
          --
-         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.3   May 27 2009 16:25:52   smarshall  $
+         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.4   May 28 2009 10:19:00   smarshall  $
          --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-         --       Date into PVCS   : $Date:   May 27 2009 16:25:52  $
-         --       Date fetched Out : $Modtime:   May 27 2009 16:20:16  $
-         --       Version          : $Revision:   3.3  $
+         --       Date into PVCS   : $Date:   May 28 2009 10:19:00  $
+         --       Date fetched Out : $Modtime:   May 28 2009 10:16:56  $
+         --       Version          : $Revision:   3.4  $
          -- Foundation view displaying maintenance manager work order lines
          -------------------------------------------------------------------------
          -- SM 03042009
          -- Added rowid=1 to ICB inline sql to cater for ICBFGAC product option
+         -- SM 28052009
+         -- Added icb_agency_code and hau_name (agency_code_descr)
          -------------------------------------------------------------------------          
                                                    wol_id
                                                  , wol_descr
@@ -65,7 +68,13 @@ AS
                                                  , (SELECT icb_agency_code
                                                     FROM item_code_breakdowns
                                                     WHERE wol_icb_work_code = icb_work_code
-                                                    	AND rownum = 1)   	
+                                                    	AND rownum = 1)
+                                                 , (SELECT hau_name
+                                                    FROM hig_admin_units
+                                                    WHERE hau_authority_code = (SELECT icb_agency_code
+                                                                                FROM item_code_breakdowns
+                                                                                WHERE wol_icb_work_code = icb_work_code
+                                                    	                        AND rownum = 1))
                                                  , wol_def_defect_id
                                                  , wol_rep_action_cat --defect_type 
                                                  , (SELECT hco_meaning 
@@ -123,7 +132,9 @@ COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.WORK_CATEGORY IS 'Internal Cost Break
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.WORK_CATEGORY_DESCR IS 'Internal Cost Breakdown work description.';      
 
-COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.ICB_AGENCY_CODE IS 'Internal Agency code associated with the Cost Breakdown.';      
+COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.AGENCY_CODE IS 'Internal Agency code associated with the Cost Breakdown.';      
+
+COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.AGENCY_CODE_DESCR IS 'Internal Agency description associated with the Cost Breakdown.';      
 
 COMMENT ON COLUMN IMF_MAI_WORK_ORDER_LINES.DEFECT_ID IS 'The internal id of a defect that may be on the works order line.';      
 
