@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.1   Jan 19 2009 11:09:16   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.2   May 28 2009 17:51:34   mhuitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Jan 19 2009 11:09:16  $
---       Date fetched Out : $Modtime:   Jan 19 2009 11:07:28  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   May 28 2009 17:51:34  $
+--       Date fetched Out : $Modtime:   May 28 2009 16:14:38  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -150,77 +150,80 @@ CREATE OR REPLACE package body maiwo is
 ---------------------------------------------------------------------
 -- Updates the completed date on defect and repairs.
 --
-
-  procedure update_defect_date(p_def_id         in defects.def_defect_id%type
-                              ,p_date_compl     in defects.def_date_compl%type
-                              ,p_works_order_no in work_orders.wor_works_order_no%type
-                              ,p_wol_id         in work_order_lines.wol_id%type default 0
-                              ,p_hour_compl     in number default 0
-                              ,p_mins_compl     in number default 0) is
-
-    l_today date := sysdate;
-
-    cursor c1 is
-      select max(rep_date_completed)
-      from   repairs
-      where  rep_def_defect_id = p_def_id;
-
-    ldate repairs.rep_date_completed%type;
-
-  begin
-
-    if (p_wol_id is not null and p_wol_id <> 0) then
-       update repairs
-       set    rep_date_completed = p_date_compl
-             ,rep_completed_hrs  = decode(p_date_compl,null,null,p_hour_compl)
-             ,rep_completed_mins = decode(p_date_compl,null,null,p_mins_compl)
-             ,rep_last_updated_date = l_today
-       where rep_def_defect_id in
-             (select wol.wol_def_defect_id
-              from   work_order_lines wol
-              where  wol.wol_def_defect_id  = p_def_id
-              and    wol.wol_def_defect_id = rep_def_defect_id
-              and    wol.wol_rep_action_cat = rep_action_cat
-              and    wol.wol_id = p_wol_id)
-         and rep_date_completed is null;-- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
-    else
-       update repairs
-       set    rep_date_completed = p_date_compl
-             ,rep_completed_hrs  = decode(p_date_compl,null,null,p_hour_compl)
-             ,rep_completed_mins = decode(p_date_compl,null,null,p_mins_compl)
-             ,rep_last_updated_date = l_today
-       where rep_def_defect_id in
-             (select wol.wol_def_defect_id
-              from   work_order_lines wol
-              where  wol.wol_def_defect_id  = p_def_id
-              and    wol.wol_works_order_no = p_works_order_no
-              and    wol.wol_def_defect_id = rep_def_defect_id
-              and    wol.wol_rep_action_cat = rep_action_cat)
-         and rep_date_completed is null;-- SM 06012009 717676 repair may have already been completed by WC file. If so, shouldn't be updated by WI file
-    end if;
-
-    if p_date_compl is not null then
-       open c1;
-       fetch c1 into ldate;
-       close c1;
-
-       update defects
-       set    def_date_compl = ldate
-             ,def_last_updated_date = l_today
-       where  def_defect_id = p_def_id
-       and    not exists (select 1
-                          from   repairs
-                          where  rep_def_defect_id = def_defect_id
-                          and    rep_date_completed is null);
-    else
-       update defects
-       set    def_date_compl = p_date_compl
-             ,def_last_updated_date = l_today
-       where  def_defect_id = p_def_id;
-    end if;
-
-  end;
-
+PROCEDURE update_defect_date(p_def_id         IN defects.def_defect_id%TYPE
+                            ,p_date_compl     IN defects.def_date_compl%TYPE
+                            ,p_works_order_no IN work_orders.wor_works_order_no%TYPE
+                            ,p_wol_id         IN work_order_lines.wol_id%TYPE DEFAULT 0
+                            ,p_hour_compl     IN NUMBER DEFAULT 0
+                            ,p_mins_compl     IN NUMBER DEFAULT 0)
+  IS
+  --
+  l_today date := SYSDATE;
+  ldate repairs.rep_date_completed%TYPE;
+  --
+  CURSOR c1(cp_def_id defects.def_defect_id%TYPE)
+      IS
+  SELECT MAX(rep_date_completed)
+    FROM repairs
+   WHERE rep_def_defect_id = cp_def_id
+       ;
+  --
+BEGIN
+  --
+  IF (p_wol_id is not null and p_wol_id <> 0)
+   THEN
+      UPDATE repairs
+         SET rep_date_completed = p_date_compl
+            ,rep_completed_hrs  = DECODE(p_date_compl,NULL,NULL,p_hour_compl)
+            ,rep_completed_mins = DECODE(p_date_compl,NULL,NULL,p_mins_compl)
+            ,rep_last_updated_date = l_today
+       WHERE rep_def_defect_id IN(SELECT wol.wol_def_defect_id
+                                    FROM work_order_lines wol
+                                   WHERE wol.wol_def_defect_id = p_def_id
+                                     AND wol.wol_def_defect_id = rep_def_defect_id
+                                     AND wol.wol_rep_action_cat = rep_action_cat
+                                     AND wol.wol_id = p_wol_id)
+           ;
+  ELSE
+      UPDATE repairs
+         SET rep_date_completed = p_date_compl
+            ,rep_completed_hrs  = decode(p_date_compl,null,null,p_hour_compl)
+            ,rep_completed_mins = decode(p_date_compl,null,null,p_mins_compl)
+            ,rep_last_updated_date = l_today
+       WHERE rep_def_defect_id IN(SELECT wol.wol_def_defect_id
+                                    FROM work_order_lines wol
+                                   WHERE wol.wol_def_defect_id = p_def_id
+                                     AND wol.wol_works_order_no = p_works_order_no
+                                     AND wol.wol_def_defect_id = rep_def_defect_id
+                                     AND wol.wol_rep_action_cat = rep_action_cat)
+           ;
+  END IF;
+  --
+  IF p_date_compl IS NOT NULL
+   THEN
+      OPEN  c1(p_def_id);
+      FETCH c1
+       INTO ldate;
+      CLOSE c1;
+      --
+      UPDATE defects
+         SET def_date_compl = ldate
+            ,def_last_updated_date = l_today
+       WHERE def_defect_id = p_def_id
+         AND NOT EXISTS(SELECT 1
+                          FROM repairs
+                         WHERE rep_def_defect_id = def_defect_id
+                           AND rep_date_completed is null)
+           ;
+  ELSE
+      UPDATE defects
+         SET def_date_compl = p_date_compl
+            ,def_last_updated_date = l_today
+       WHERE def_defect_id = p_def_id
+           ;
+  END IF;
+  --
+END update_defect_date;
 ---------------------------------------------------------------------
 -- Updates the contract item usage figures.
 --
