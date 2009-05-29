@@ -19,18 +19,20 @@ CREATE OR REPLACE FORCE VIEW imf_mai_inspections
    date_inspected,
    date_loaded,
    days_before_inspection_due,
-   hours_before_inspection_due
+   hours_before_inspection_due,
+   initiation_type,
+   initiation_type_descr
 )
 AS
 SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.4   May 12 2009 14:45:38   smarshall  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.5   May 29 2009 10:31:40   smarshall  $
 --       Module Name      : $Workfile:   imf_mai_inspections.vw  $
---       Date into PVCS   : $Date:   May 12 2009 14:45:38  $
---       Date fetched Out : $Modtime:   May 12 2009 14:41:24  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   May 29 2009 10:31:40  $
+--       Date fetched Out : $Modtime:   May 29 2009 10:33:28  $
+--       Version          : $Revision:   3.5  $
 -- Foundation view displaying maintenance inspections
 -------------------------------------------------------------------------
 -- SM 03042009
@@ -70,7 +72,12 @@ SELECT
    are_date_work_done,
    are_insp_load_date,
    (TRUNC(are_date_work_done) - TRUNC(SYSDATE)) days_before_inspection_due,
-   ((are_date_work_done - SYSDATE)*24) hours_before_inspection_due   
+   ((are_date_work_done - SYSDATE)*24) hours_before_inspection_due,   
+   are_initiation_type initiation_type,
+   ( SELECT hco.hco_meaning
+       FROM hig_codes hco
+      WHERE hco.hco_domain = 'INITIATION_TYPE'
+        AND hco.hco_code = are_initiation_type ) initiation_type_descr
 FROM activities_report
 WITH READ ONLY
 /
@@ -97,4 +104,6 @@ COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_inspected IS 'The inspection date';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.date_loaded IS 'Date of the inspection details being loaded';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.days_before_inspection_due IS 'Days before an inspection is due';
 COMMENT ON COLUMN IMF_MAI_INSPECTIONS.hours_before_inspection_due IS 'Hours before an inspection is due';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.initiation_type IS 'Internal code of what initiated the inspection';
+COMMENT ON COLUMN IMF_MAI_INSPECTIONS.initiation_type_descr IS 'Description of what initiated the inspection';
 
