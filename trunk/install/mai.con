@@ -1,16 +1,43 @@
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.2   May 19 2009 10:23:54   jwadsworth  $
---       Module Name      : $Workfile:   mai.con  $
---       Date into SCCS   : $Date:   May 19 2009 10:23:54  $
---       Date fetched Out : $Modtime:   Oct 05 2007 15:16:30  $
---       SCCS Version     : $Revision:   2.2  $
---       based on sccsid @(#)mai.con	1.18 04/02/07
 --
--- Generated for Oracle 9i on Fri Oct 05  15:09:55 2007 by Server Generator 9.0.2.94.12
-  
-PROMPT Creating Primary Key on 'WORK_ORDER_PRIORITIES'
-ALTER TABLE WORK_ORDER_PRIORITIES
- ADD (CONSTRAINT WPR_PK PRIMARY KEY 
-  (WPR_ID))
+-- Generated for Oracle 10g on Fri May 29  16:22:08 2009 by Server Generator 10.1.2.9.28
+--
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.3   May 29 2009 17:11:28   jwadsworth  $
+--       Module Name      : $Workfile:   mai.con  $
+--       Date into PVCS   : $Date:   May 29 2009 17:11:28  $
+--       Date fetched Out : $Modtime:   May 29 2009 17:08:02  $
+--       PVCS Version     : $Revision:   2.3  $
+--
+-----------------------------------------------------------------------------
+-- Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+ 
+PROMPT Creating Primary Key on 'ACTIVITIES'
+ALTER TABLE ACTIVITIES
+ ADD (CONSTRAINT ATV_PK PRIMARY KEY 
+  (ATV_ACTY_AREA_CODE
+  ,ATV_DTP_FLAG))
+/
+
+PROMPT Creating Primary Key on 'CLAIM_PAYMENTS_AUDIT'
+ALTER TABLE CLAIM_PAYMENTS_AUDIT
+ ADD (CONSTRAINT CPA_PK PRIMARY KEY 
+  (CPA_ID))
+/
+
+PROMPT Creating Primary Key on 'MAI_BUDGET_ALLOCATIONS'
+ALTER TABLE MAI_BUDGET_ALLOCATIONS
+ ADD (CONSTRAINT MBA_PK PRIMARY KEY 
+  (MBA_NIT_INV_TYPE
+  ,MBA_NE_ID))
+/
+
+PROMPT Creating Primary Key on 'MAI_GMIS_LOAD_BATCHES'
+ALTER TABLE MAI_GMIS_LOAD_BATCHES
+ ADD (CONSTRAINT GLB_PK PRIMARY KEY 
+  (GLB_LOAD_BATCH))
 /
 
 PROMPT Creating Primary Key on 'MAI_INV_ACTIVITIES'
@@ -27,60 +54,24 @@ ALTER TABLE WORK_ORDERS
   (WOR_WORKS_ORDER_NO))
 /
 
-PROMPT Creating Primary Key on 'MAI_GMIS_LOAD_BATCHES'
-ALTER TABLE MAI_GMIS_LOAD_BATCHES
- ADD (CONSTRAINT GLB_PK PRIMARY KEY 
-  (GLB_LOAD_BATCH))
-/
-
-PROMPT Creating Primary Key on 'CLAIM_PAYMENTS_AUDIT'
-ALTER TABLE CLAIM_PAYMENTS_AUDIT
- ADD (CONSTRAINT CPA_PK PRIMARY KEY 
-  (CPA_ID))
-/
-
-PROMPT Creating Primary Key on 'MAI_BUDGET_ALLOCATIONS'
-ALTER TABLE MAI_BUDGET_ALLOCATIONS
- ADD (CONSTRAINT MBA_PK PRIMARY KEY 
-  (MBA_NIT_INV_TYPE
-  ,MBA_NE_ID))
-/
-
-PROMPT Creating Primary Key on 'ACTIVITIES'
-ALTER TABLE ACTIVITIES
- ADD (CONSTRAINT ATV_PK PRIMARY KEY 
-  (ATV_ACTY_AREA_CODE
-  ,ATV_DTP_FLAG))
+PROMPT Creating Primary Key on 'WORK_ORDER_PRIORITIES'
+ALTER TABLE WORK_ORDER_PRIORITIES
+ ADD (CONSTRAINT WPR_PK PRIMARY KEY 
+  (WPR_ID))
 /
 
 
-                                            
-PROMPT Creating Check Constraint on 'WORK_ORDERS'
-ALTER TABLE WORK_ORDERS
- ADD (CONSTRAINT WOR_REGISTER_FLAG_CHK CHECK (wor_register_flag IN ('N','Y')))
-/
-                                                 
+                                                                              
 PROMPT Creating Check Constraint on 'MAI_GMIS_LOAD_BATCHES'
 ALTER TABLE MAI_GMIS_LOAD_BATCHES
  ADD (CONSTRAINT GLB_LOAD_ERR_CHK1 CHECK (glb_load_errors IN ('Y', 'N')))
 /
-                                                        
-
-PROMPT Creating Foreign Key on 'MAI_INV_ACTIVITIES'
-ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
- MIA_ATV_FK FOREIGN KEY 
-  (MIA_ATV_ACTY_AREA_CODE
-  ,MIA_SYS_FLAG) REFERENCES ACTIVITIES
-  (ATV_ACTY_AREA_CODE
-  ,ATV_DTP_FLAG))
+                                                                  
+PROMPT Creating Check Constraint on 'WORK_ORDERS'
+ALTER TABLE WORK_ORDERS
+ ADD (CONSTRAINT WOR_REGISTER_FLAG_CHK CHECK (wor_register_flag IN ('N','Y')))
 /
-
-PROMPT Creating Foreign Key on 'MAI_INV_ACTIVITIES'
-ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
- MIA_NIT_FK FOREIGN KEY 
-  (MIA_NIT_INV_TYPE) REFERENCES NM_INV_TYPES_ALL
-  (NIT_INV_TYPE))
-/
+     
 
 PROMPT Creating Foreign Key on 'BUDGETS'
 ALTER TABLE BUDGETS ADD (CONSTRAINT
@@ -100,6 +91,22 @@ PROMPT Creating Foreign Key on 'MAI_BUDGET_ALLOCATIONS'
 ALTER TABLE MAI_BUDGET_ALLOCATIONS ADD (CONSTRAINT
  MBA_NIT_FK FOREIGN KEY 
   (MBA_NIT_INV_TYPE) REFERENCES NM_INV_TYPES_ALL
+  (NIT_INV_TYPE))
+/
+
+PROMPT Creating Foreign Key on 'MAI_INV_ACTIVITIES'
+ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
+ MIA_ATV_FK FOREIGN KEY 
+  (MIA_ATV_ACTY_AREA_CODE
+  ,MIA_SYS_FLAG) REFERENCES ACTIVITIES
+  (ATV_ACTY_AREA_CODE
+  ,ATV_DTP_FLAG))
+/
+
+PROMPT Creating Foreign Key on 'MAI_INV_ACTIVITIES'
+ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
+ MIA_NIT_FK FOREIGN KEY 
+  (MIA_NIT_INV_TYPE) REFERENCES NM_INV_TYPES_ALL
   (NIT_INV_TYPE))
 /
 
