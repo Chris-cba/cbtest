@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.14   May 28 2009 17:48:34   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.15   Jun 25 2009 10:35:26   mhuitson  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   May 28 2009 17:48:34  $
---       Date fetched Out : $Modtime:   May 28 2009 16:53:24  $
---       SCCS Version     : $Revision:   2.14  $
+--       Date into SCCS   : $Date:   Jun 25 2009 10:35:26  $
+--       Date fetched Out : $Modtime:   Jun 25 2009 10:32:10  $
+--       SCCS Version     : $Revision:   2.15  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.14  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.15  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -113,16 +113,24 @@ END get_body_version;
 --
 -----------------------------------------------------------------------------
 --
-function check_filename (filename varchar2) return boolean is
-begin
-  IF hig.get_user_or_sys_opt('ZEROPAD')='Y' THEN
-   nm_debug.debug(length(filename));
-    if length(filename) < 12 then
-      return false;
-    else 
-      return TRUE;
-    end if;
+FUNCTION check_filename(filename VARCHAR2)
+  RETURN BOOLEAN IS
+  --
+  lv_retval BOOLEAN := TRUE;
+  --
+BEGIN
+  --
+  IF hig.get_user_or_sys_opt('ZEROPAD')='Y'
+   THEN
+      nm_debug.debug(length(filename));
+      IF LENGTH(filename) < 12
+       THEN
+          lv_retval := FALSE;
+      END IF;
   END IF;
+  --
+  RETURN lv_retval;
+  --
 end check_filename;
 ---------------------------------------------------------------------
 PROCEDURE update_defect_date(p_def_id         IN defects.def_defect_id%TYPE
