@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.0   Jun 15 2009 21:02:04   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.1   Jul 16 2009 17:07:02   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Jun 15 2009 21:02:04  $
---       Date fetched Out : $Modtime:   Jun 15 2009 20:57:02  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Jul 16 2009 17:07:02  $
+--       Date fetched Out : $Modtime:   Jul 16 2009 17:02:14  $
+--       Version          : $Revision:   1.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -231,6 +231,62 @@ SET TERM OFF
 ALTER TABLE work_order_lines
   ADD (wol_locn_descr  VARCHAR2(120))
 /
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New tables for Contract User Security
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- New tables for Contract User Security
+-- 
+------------------------------------------------------------------
+CREATE TABLE contractor_roles
+  (cor_oun_org_id  NUMBER(8)    NOT NULL
+  ,cor_role        VARCHAR2(30) NOT NULL)
+/
+
+ALTER TABLE contractor_roles
+  ADD CONSTRAINT cor_pk
+  PRIMARY KEY(cor_oun_org_id,cor_role)
+/
+
+ALTER TABLE contractor_roles
+  ADD CONSTRAINT cor_hro_fk 
+  FOREIGN KEY(cor_role) 
+  REFERENCES hig_roles(hro_role)
+/
+
+CREATE INDEX cor_hro_fk
+  ON contractor_roles(cor_role)
+/
+
+CREATE TABLE contractor_users
+  (cou_oun_org_id   NUMBER(8) NOT NULL
+  ,cou_hus_user_id  NUMBER(9))
+/
+
+ALTER TABLE contractor_users
+  ADD CONSTRAINT cou_pk
+  PRIMARY KEY(cou_oun_org_id,cou_hus_user_id)
+/
+
+ALTER TABLE contractor_users
+  ADD CONSTRAINT cou_hus_fk 
+  FOREIGN KEY(cou_hus_user_id) 
+  REFERENCES hig_users(hus_user_id)
+/
+
+CREATE INDEX cou_hus_fk
+  ON contractor_users(cou_hus_user_id)
+/
+
+
 
 ------------------------------------------------------------------
 
