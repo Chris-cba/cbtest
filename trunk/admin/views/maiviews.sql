@@ -6,11 +6,11 @@ REM **************************************************************************
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.5   May 26 2009 11:06:14   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.6   Jul 16 2009 18:33:36   mhuitson  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into SCCS   : $Date:   May 26 2009 11:06:14  $
---       Date fetched Out : $Modtime:   May 26 2009 11:05:10  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Jul 16 2009 18:33:36  $
+--       Date fetched Out : $Modtime:   Jul 16 2009 18:29:06  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on 
 --
 -----------------------------------------------------------------------------
@@ -441,7 +441,7 @@ CREATE OR REPLACE FORCE VIEW V_MAI3806_DEF2
  REP_ATV_ACTY_AREA_CODE, REP_COMPLETED_HRS, REP_COMPLETED_MINS, REP_RSE_HE_ID)
 AS
 SELECT /*+ FIRST_ROWS_N */
-       wor.wor_works_order_no
+       wol.wol_works_order_no
       ,wol.wol_date_created
       ,wor.wor_est_complete
       ,wol.wol_date_complete
@@ -1127,6 +1127,117 @@ SELECT
 FROM activities_report 
 GROUP BY are_batch_id
 /
+
+----------------------------------------------------------------------------
+Prompt Creating View V_ALL_CONTRACTOR_USERS
+
+CREATE OR REPLACE FORCE VIEW v_all_contractor_users
+  (oun_org_id
+  ,hus_user_id
+  ,hus_initials
+  ,hus_name
+  ,hus_username
+  ,via_role)
+AS
+SELECT cou_oun_org_id oun_org_id
+      ,hus_user_id
+      ,hus_initials
+      ,hus_name
+      ,hus_username
+      ,'N' via_role
+  FROM contractor_users
+      ,hig_users
+ WHERE hus_user_id = cou_hus_user_id
+ UNION
+SELECT cor_oun_org_id oun_org_id
+      ,hus_user_id
+      ,hus_initials
+      ,hus_name
+      ,hus_username
+      ,'Y' via_role
+  FROM contractor_roles
+      ,hig_user_roles
+      ,hig_users
+ WHERE hus_username = hur_username
+   AND hur_role = cor_role
+   AND NOT EXISTS(SELECT 1
+                    FROM contractor_users
+                   WHERE cou_hus_user_id = hus_user_id)
+/
+
+----------------------------------------------------------------------------
+Prompt Creating View V_USER_CONTRACTORS
+
+CREATE OR REPLACE FORCE VIEW v_user_contractors
+  (oun_org_id)
+AS
+SELECT cou_oun_org_id oun_org_id
+  FROM contractor_users
+      ,hig_users
+ WHERE hus_username = USER
+   AND hus_user_id = cou_hus_user_id
+ UNION
+SELECT cor_oun_org_id oun_org_id
+  FROM contractor_roles
+      ,hig_user_roles
+ WHERE hur_username = USER
+   AND hur_role = cor_role
+/
+
+----------------------------------------------------------------------------
+Prompt Creating View V_USER_CONTRACTS
+
+CREATE OR REPLACE FORCE VIEW v_user_contracts
+  (con_id
+  ,con_code
+  ,con_name
+  ,con_admin_org_id
+  ,con_contr_org_id
+  ,con_start_date
+  ,con_end_date
+  ,con_status_code
+  ,con_external_ref
+  ,con_retention_rate
+  ,con_max_retention
+  ,con_liquid_damages
+  ,con_last_work_sheet_no
+  ,con_last_payment_no
+  ,con_last_wor_no
+  ,con_cost_code
+  ,con_spend_ytd
+  ,con_spend_to_date
+  ,con_damages_to_date
+  ,con_remarks
+  ,con_retention_to_date
+  ,con_year_end_date)
+AS
+SELECT con_id
+      ,con_code
+      ,con_name
+      ,con_admin_org_id
+      ,con_contr_org_id
+      ,con_start_date
+      ,con_end_date
+      ,con_status_code
+      ,con_external_ref
+      ,con_retention_rate
+      ,con_max_retention
+      ,con_liquid_damages
+      ,con_last_work_sheet_no
+      ,con_last_payment_no
+      ,con_last_wor_no
+      ,con_cost_code
+      ,con_spend_ytd
+      ,con_spend_to_date
+      ,con_damages_to_date
+      ,con_remarks
+      ,con_retention_to_date
+      ,con_year_end_date
+  FROM contracts
+      ,v_user_contractors
+ WHERE con_contr_org_id = oun_org_id
+/
+
 --
 -------------------------------------------------------------------------------------------------------------
 --
