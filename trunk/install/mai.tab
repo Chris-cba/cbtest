@@ -1,7 +1,18 @@
--- \\exdl12\dev\staff\James\scripts\mai.tab
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
 --
--- Generated for Oracle 10g on Tue Jun 09  14:42:34 2009 by Server Generator 10.1.2.9.28
- 
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.7   Jul 16 2009 18:08:08   Rob May  $
+--       Module Name      : $Workfile:   mai.tab  $
+--       Date into PVCS   : $Date:   Jul 16 2009 18:08:08  $
+--       Date fetched Out : $Modtime:   Jul 16 2009 17:59:24  $
+--       PVCS Version     : $Revision:   2.7  $
+--
+-----------------------------------------------------------------------------
+-- Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--
+-- Generated for Oracle 10g on Thu Jul 16  17:54:12 2009 by Server Generator 10.1.2.9.28
+
 
 
 PROMPT Creating Table 'ACTIVITIES'
@@ -306,6 +317,20 @@ CREATE TABLE CONTRACTOR_DISC_GROUPS
 /
 
 COMMENT ON TABLE CONTRACTOR_DISC_GROUPS IS 'Quantity Discount Group for a Contractor'
+/
+
+PROMPT Creating Table 'CONTRACTOR_ROLES'
+CREATE TABLE CONTRACTOR_ROLES
+ (COR_OUN_ORG_ID NUMBER(8) NOT NULL
+ ,COR_ROLE VARCHAR2(30) NOT NULL
+ )
+/
+
+PROMPT Creating Table 'CONTRACTOR_USERS'
+CREATE TABLE CONTRACTOR_USERS
+ (COU_OUN_ORG_ID NUMBER(8) NOT NULL
+ ,COU_HUS_USER_ID NUMBER(9) NOT NULL
+ )
 /
 
 PROMPT Creating Table 'CONTRACTS'

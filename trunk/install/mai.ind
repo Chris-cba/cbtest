@@ -1,18 +1,18 @@
---
--- Generated for Oracle 10g on Fri May 29  16:22:08 2009 by Server Generator 10.1.2.9.28
---
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.3   May 29 2009 17:12:26   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.4   Jul 16 2009 18:08:08   Rob May  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   May 29 2009 17:12:26  $
---       Date fetched Out : $Modtime:   May 29 2009 17:08:12  $
---       PVCS Version     : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Jul 16 2009 18:08:08  $
+--       Date fetched Out : $Modtime:   Jul 16 2009 17:59:36  $
+--       PVCS Version     : $Revision:   2.4  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
+--
+-- Generated for Oracle 10g on Thu Jul 16  17:54:13 2009 by Server Generator 10.1.2.9.28
+
 
 PROMPT Creating Index 'ATV_INDEX_P1'
 CREATE UNIQUE INDEX ATV_INDEX_P1 ON ACTIVITIES
@@ -154,6 +154,16 @@ CREATE INDEX CNB_INDEX_P1 ON CONTRACTOR_DISC_BANDS
  ,CNB_MIN_VALUE
  ,CNB_MAX_VALUE
  ,CNB_DISCOUNT)
+/
+
+PROMPT Creating Index 'COR_HRO_FK'
+CREATE INDEX COR_HRO_FK ON CONTRACTOR_ROLES
+ (COR_ROLE)
+/
+
+PROMPT Creating Index 'COU_HUS_FK'
+CREATE INDEX COU_HUS_FK ON CONTRACTOR_USERS
+ (COU_HUS_USER_ID)
 /
 
 PROMPT Creating Index 'CON_INDEX_P1'
