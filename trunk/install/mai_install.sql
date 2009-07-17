@@ -1,5 +1,5 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.8   Jan 26 2009 15:23:32   jwadsworth  $"'
+define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.9   Jul 17 2009 17:58:26   mhuitson  $"'
 
 REM Copyright (c) Exor Corporation Ltd, 2008
 
@@ -251,6 +251,7 @@ SET FEEDBACK ON
 start &&run_file
 SET FEEDBACK OFF
 --
+--
 ---------------------------------------------------------------------------------------------------
 --                        ****************   TRIGGERS  *******************
 SET TERM ON
@@ -278,6 +279,43 @@ from dual
 /
 SET FEEDBACK ON
 start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        *****************   MAISEC  *********************
+SET TERM ON
+prompt MAISEC...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'maisec.pkh' run_file
+from dual
+/
+SET FEEDBACK ON
+start '&&run_file'
+SET FEEDBACK OFF
+--
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'maisec.pkw' run_file
+from dual
+/
+SET FEEDBACK ON
+start '&&run_file'
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   POLICIES  ********************
+SET TERM ON
+prompt MAI Policies...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'mai_policy' run_file
+from dual
+/
+SET FEEDBACK ON
+start '&&run_file'
 SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
