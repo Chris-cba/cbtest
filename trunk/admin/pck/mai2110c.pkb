@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.2   Apr 07 2008 14:01:22   swilliams  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.3   Jul 21 2009 12:58:26   mhuitson  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Apr 07 2008 14:01:22  $
---       Date fetched Out : $Modtime:   Mar 14 2008 12:29:00  $
---       PVCS Version     : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Jul 21 2009 12:58:26  $
+--       Date fetched Out : $Modtime:   Apr 07 2009 09:42:24  $
+--       PVCS Version     : $Revision:   2.3  $
 --       Based on SCCS version :
 --
 --
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.2  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.3  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -76,7 +76,7 @@ PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
   BEGIN
     /*
     || Atttempt To Convert Value To Default Format
-    || If This Fails Then Use The Inv Code And Attribute To Find The Foramt Mask
+    || If This Fails Then Use The Inv Code And Attribute To Find The Format Mask
     || If There Isnt One Fail, If There Is One Convert The Value Using It
     || If This Fails Then We Are Out Of Options So Fail.
     */
@@ -534,6 +534,12 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
       INTO lt_ins_recs
       FROM hhinv_load_3 h
      WHERE h.he_id = lt_he_id(pi_index)
+       AND h.inv_code NOT IN(SELECT uvd_inv_code
+                               FROM nm_inv_types_all
+                                   ,ukpms_view_definitions
+                              WHERE uvd_feature_or_survey IN('F','S')
+                                AND uvd_inv_code = nit_inv_type
+                                AND nit_table_name IS NOT NULL)
      GROUP
         BY h.rec_seq_no,h.he_id,h.st_chain,h.end_chain
           ,h.x_sect,h.inv_code,h.invent_date,h.peo_invent_by_id
@@ -749,13 +755,20 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
           ,rec_seq_no
       BULK COLLECT
       INTO lt_ins2_recs
-      FROM hhinv_load_2 hh
+      FROM hhinv_load_2
      WHERE he_id = lt_he_id(pi_index)
        AND error_flg IS NULL
        AND inv_code IN(SELECT ity_inv_code
                          FROM inv_item_types ii
                         WHERE ii.ity_hhpos1 IS NULL
-                          AND ii.ity_sys_flag = hh.hhinv_ity_sys_flag)
+                          AND ii.ity_sys_flag = hhinv_ity_sys_flag)
+       AND inv_code NOT IN(SELECT uvd_inv_code
+                             FROM nm_inv_types_all
+                                 ,ukpms_view_definitions
+                            WHERE uvd_feature_or_survey IN('F','S')
+                              AND uvd_inv_code = nit_inv_type
+                              AND nit_table_name IS NOT NULL)
+
          ;
     --
     FOR j IN 1 .. lt_ins2_recs.count LOOP
