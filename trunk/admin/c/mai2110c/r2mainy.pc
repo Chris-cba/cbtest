@@ -2,8 +2,8 @@
 /* r2mainy.pc                      */
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
-/* static char *sccsid = "@(#)r2mainy.pc	1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.4  $ $Modtime:   Sep 30 2008 16:06:42  $";
+/* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.5  $ $Modtime:   Apr 07 2009 13:17:34  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -473,7 +473,7 @@ extern size_t buf_len, msg_len;
        num_attrib115         number,          /* Added For NM3 */
        det_xsp               varchar2(4),
        ity_sys_flag          varchar2(1));
-
+  /* For get_inv_to_end_date */
   int r_inv_he_id[100]
      ,inv_he_id
      ,r_inv_invent_date[100]
@@ -481,6 +481,13 @@ extern size_t buf_len, msg_len;
     ;
   VARCHAR r_inv_inv_type[100][5];
   VARCHAR inv_inv_type[5];
+  VARCHAR r_inv_table_name[100][31];
+  VARCHAR inv_table_name[31];
+  /* For process_ukp_assets */
+  VARCHAR r_ukp_asset_type[100][11];
+  VARCHAR ukp_asset_type[11];
+  VARCHAR r_ukp_asset_table[100][31];
+  VARCHAR ukp_asset_table[31];
 EXEC SQL END DECLARE SECTION;
 
 #define SQLCA_STORAGE_CLASS extern
@@ -1139,6 +1146,8 @@ int recalibrate_inv_chain()
  inventory item <> recorded max. chainage for the section.
 **************************************************************************/
   {
+  VARCHAR stmt_str[500];
+  
   EXEC SQL select nvl(min(hop_value),'N')
              into :recal_option
              from hig_options
@@ -1162,28 +1171,65 @@ int recalibrate_inv_chain()
       {
       sql_err("recalibrate_inv_chain(1)");
       }
+    /*------------------------------*/
+    /* Dymamic SQL Used Because The */
+    /* Pre-compiler Will Not Allow  */
+    /* In-line Views In SQL         */
+    /*------------------------------*/
+    stmt_str.len = 0;
+    strcpy(stmt_str.arr,"INSERT");
+    strcat(stmt_str.arr," INTO hhinv_temp_7883");
+    strcat(stmt_str.arr," SELECT he_id");
+    strcat(stmt_str.arr," ,GREATEST(NVL(MAX(NVL(end_chain, st_chain)),0)");
+    strcat(stmt_str.arr," ,(SELECT NVL(MAX(iit_end_chain),0)");
+    strcat(stmt_str.arr," FROM inv_items");
+    strcat(stmt_str.arr," WHERE iit_rse_he_id = he_id))");
+    strcat(stmt_str.arr," FROM road_segments_all");
+    strcat(stmt_str.arr," ,hhinv_load_2");
+    strcat(stmt_str.arr," WHERE NVL(error_flg,'N') != 'Y'");
+    strcat(stmt_str.arr," AND he_id = rse_he_id");
+    strcat(stmt_str.arr," AND rse_scl_sect_class <> 'NL'");
+    strcat(stmt_str.arr," GROUP BY he_id");
+    stmt_str.len = strlen(stmt_str.arr);
+    EXEC SQL EXECUTE IMMEDIATE :stmt_str;
 
-    EXEC SQL insert
-               into hhinv_temp_7883
-             select he_id
-                   ,greatest(max(nvl(end_chain, st_chain))
-                            ,max(nvl(iit_end_chain,0)))
-               from road_segments_all
-                   ,inv_items
+    if(sqlca.sqlcode < 0)
+      {
+      sql_err("recalibrate_inv_chain(2)");
+      }
+
+/* Replaced By Code Above, Changed To PLSQL To Allow The Use Of An Inline View.
+    EXEC SQL INSERT
+               INTO hhinv_temp_7883
+             SELECT he_id
+                   ,NVL(MAX(NVL(end_chain, st_chain)),0)
+               FROM road_segments_all
                    ,hhinv_load_2
-              where /*hhinv_ity_sys_flag = 'L'      --commented out for nm31
-                and*/ nvl(error_flg,'N') != 'Y'
-                and he_id = rse_he_id
-                and rse_scl_sect_class <> 'NL'
-                and he_id = iit_rse_he_id (+)
-              group
-                 by he_id
+              WHERE NVL(error_flg,'N') != 'Y'
+                AND he_id = rse_he_id
+                AND rse_scl_sect_class <> 'NL'
+              GROUP
+                 BY he_id
                   ;
     if(sqlca.sqlcode < 0)
       {
       sql_err("recalibrate_inv_chain(2)");
       }
 
+    EXEC SQL UPDATE hhinv_temp_7883
+                SET max_chain = (SELECT NVL(MAX(iit_end_chain),0)
+                                   FROM inv_items
+                                  WHERE iit_rse_he_id = he_id)
+              WHERE max_chain < (SELECT NVL(MAX(iit_end_chain),0)
+                                   FROM inv_items
+                                  WHERE iit_rse_he_id = he_id)
+                  ;
+
+    if(sqlca.sqlcode < 0)
+      {
+      sql_err("recalibrate_inv_chain(2B)");
+      }
+*/
     EXEC SQL create unique index hhinv_temp_7883_ind on hhinv_temp_7883 (he_id);
     if(sqlca.sqlcode < 0)
       {
@@ -1929,9 +1975,9 @@ nm_debug.debug_on;
                                 WHERE EXISTS(SELECT 1
                                                FROM nm_elements_all
                                               WHERE ne_id = lt_he_id(i)
-      				                                  AND ne_nt_type = nad_nt_type
-      					                                AND nvl(ne_gty_group_type,'$$$') = nvl(nad_gty_type,'$$$')
-    	  				                                AND nad_primary_ad = 'Y'))
+                                                AND ne_nt_type = nad_nt_type
+                                                AND nvl(ne_gty_group_type,'$$$') = nvl(nad_gty_type,'$$$')
+                                                AND nad_primary_ad = 'Y'))
            AND UPPER(ita_view_col_name) = 'RSE_LAST_SURVEYED'
              ;
         --
@@ -2293,21 +2339,29 @@ case 4 :  /***Welsh Office standard database structure***/
      return(FATAL);
  }
 
-end_date_old_inv()
+int end_date_old_inv()
 {
   int eof_inv = 0;
+  VARCHAR stmt_str[250];
+  char temp_str[100];
   EXEC SQL WHENEVER SQLERROR goto :end_date_err;
   EXEC SQL WHENEVER SQLWARNING goto :end_date_err;
 
   eof_inv = get_inv_to_end_date();
   while (!eof_inv)
     {
+    if((char*)inv_table_name.arr[0]=='\0')
+      {
+      /*---------------------------------*/
+      /* The Asset Type Table Name Is    */
+      /* NULL So Update nm_inv_items_all */
+      /*---------------------------------*/
       EXEC
        SQL
     UPDATE nm_inv_items_all
        SET iit_end_date = to_date(:inv_invent_date,'YYYYMMDD')
-     WHERE iit_end_date is null
-       AND iit_inv_type = mai.translate_mai_inv_type(:inv_inv_type)
+     WHERE iit_end_date IS NULL
+       AND iit_inv_type = :inv_inv_type
        AND iit_ne_id in(SELECT nm_ne_id_in  /* Section Is A Group Of ESU Datums  */
                           FROM nm_members   /* With Assets Located On The ESUs   */
                          WHERE nm_type = 'I'
@@ -2320,6 +2374,29 @@ end_date_old_inv()
                          WHERE nm_type = 'I'
                            AND nm_ne_id_of = :inv_he_id)
          ;
+      }
+    else
+      {
+      /*-------------------------------*/
+      /* UKPMS Assets Can Be Stored In */
+      /* Their Own Table So A Dynamic  */
+      /* Update Statement Is Needed.   */
+      /*-------------------------------*/
+      stmt_str.len = 0;
+      sprintf(stmt_str.arr,"UPDATE %s\n",(char*)inv_table_name.arr);
+      sprintf(stmt_str.arr,"   SET iit_end_date = to_date(%d,'YYYYMMDD')\n",inv_invent_date);
+      strcat(stmt_str.arr,temp_str);
+      strcat(stmt_str.arr," WHERE iit_end_date IS NULL\n");
+      sprintf(stmt_str.arr,"   AND iit_inv_type = '%s'\n",(char*)inv_inv_type.arr);
+      strcat(stmt_str.arr,temp_str);
+      sprintf(stmt_str.arr,"   AND iit_rse_he_id = %d",inv_he_id);
+      strcat(stmt_str.arr,temp_str);
+      stmt_str.len = strlen(stmt_str.arr);
+      /*-----------------------*/
+      /* Execute The Statement */
+      /*-----------------------*/
+      EXEC SQL EXECUTE IMMEDIATE :stmt_str;
+      }
     eof_inv = get_inv_to_end_date();
     }
   EXEC SQL WHENEVER SQLERROR continue;
@@ -2343,16 +2420,19 @@ int get_inv_to_end_date()
     where      = 100;
 
     EXEC SQL DECLARE C_ITEMS CURSOR
-          FOR SELECT distinct he_id
-                    ,to_char(invent_date,'YYYYMMDD')
-                    ,inv_code
-                FROM hhinv_load_2
-                    ,inv_item_types
-               WHERE ity_close_existing  = 'Y'
-                 AND ity_inv_code        = inv_code
-                 AND ity_sys_flag        = hhinv_ity_sys_flag
-                 AND NVL(error_flg,'N') != 'Y'
-                 AND full_partial_ind    = 'F'
+          FOR SELECT distinct h.he_id
+                    ,to_char(h.invent_date,'YYYYMMDD')
+                    ,nit.nit_inv_type
+                    ,nit.nit_table_name
+                FROM hhinv_load_2 h
+                    ,inv_type_translations ity
+                    ,nm_inv_types_all nit
+               WHERE nit.nit_inv_type = ity.nit_inv_type
+                 AND ity.ity_close_existing = 'Y'
+                 AND ity.ity_inv_code = h.inv_code
+                 AND ity.ity_sys_flag = h.hhinv_ity_sys_flag
+                 AND NVL(h.error_flg,'N') != 'Y'
+                 AND h.full_partial_ind = 'F'
                    ;
     EXEC SQL OPEN C_ITEMS;
     }
@@ -2370,6 +2450,7 @@ int get_inv_to_end_date()
               INTO :r_inv_he_id
                   ,:r_inv_invent_date
                   ,:r_inv_inv_type
+                  ,:r_inv_table_name
                   ;
 
     this_time = sqlca.sqlerrd[2] - till_now;
@@ -2389,6 +2470,10 @@ int get_inv_to_end_date()
   r_inv_inv_type[where].arr[r_inv_inv_type[where].len] = '\0';
   strcpy((char*)inv_inv_type.arr, (char*)r_inv_inv_type[where].arr);
   inv_inv_type.len = r_inv_inv_type[where].len;
+
+  r_inv_table_name[where].arr[r_inv_table_name[where].len] = '\0';
+  strcpy((char*)inv_table_name.arr, (char*)r_inv_table_name[where].arr);
+  inv_table_name.len = r_inv_table_name[where].len;
 
   where++;
 
@@ -2701,9 +2786,9 @@ int check_point_cont()
                            ERROR_FLG = 'Y'
                      WHERE exists(SELECT 'A'
                                     FROM INV_ITEM_TYPES ITY
-                                   WHERE HHL2.INV_CODE     =  ITY.ITY_INV_CODE
+                                   WHERE HHL2.INV_CODE = ITY.ITY_INV_CODE
                                      AND HHL2.HHINV_ITY_SYS_FLAG = ITY.ITY_SYS_FLAG
-                                     AND ITY.ITY_pnt_or_cont    =  'P' )
+                                     AND ITY.ITY_pnt_or_cont = 'P' )
                        AND HHL2.END_CHAIN !=  HHL2.ST_CHAIN
                        AND hhl2.ERROR_FLG IS NULL
                          ;
@@ -2714,8 +2799,8 @@ int check_point_cont()
                            ERROR_FLG = 'Y'
                      WHERE exists(SELECT 'A'
                                     FROM INV_ITEM_TYPES ITY
-                                   WHERE  HHL2.INV_CODE     =  ITY.ITY_INV_CODE
-                                     AND    ITY.ITY_pnt_or_cont    =  'P' )
+                                   WHERE HHL2.INV_CODE = ITY.ITY_INV_CODE
+                                     AND ITY.ITY_pnt_or_cont = 'P' )
                        AND HHL2.END_CHAIN !=  HHL2.ST_CHAIN
                        AND hhl2.ERROR_FLG IS NULL
                          ;
@@ -2731,7 +2816,7 @@ int check_point_cont()
             WHERE EXISTS(SELECT 'A'
                            FROM inv_item_types ity
                           WHERE hhl2.inv_code = ity.ity_inv_code
-                            AND ity.ity_pnt_or_cont =  'C')
+                            AND ity.ity_pnt_or_cont = 'C')
               AND hhl2.st_chain = hhl2.end_chain
               AND hhl2.error_flg IS NULL
                 ;
@@ -4674,16 +4759,317 @@ int values_to_attri()
     return(SUCCESS);
  }
 
+int process_ukp_assets()
+{
+  int eof_inv_types,error_occured=0;
+  VARCHAR stmt_str[8000];
+  char temp_str[100];
+  EXEC SQL WHENEVER sqlerror continue;
+  EXEC SQL WHENEVER sqlwarning continue;
+  /*-------------------------*/
+  /* Get The UKP Asset Types */
+  /*-------------------------*/
+  eof_inv_types = get_ukp_inv_types();
+  while (!eof_inv_types)
+    {
+    /*---------------------------------------------*/
+    /* Build The Insert Statement For HHINV_LOAD_3 */
+    /*---------------------------------------------*/
+    stmt_str.len = 0;
+    sprintf(stmt_str.arr,"INSERT INTO %s\n",(char*)ukp_asset_table.arr);
+    strcat(stmt_str.arr,"      (iit_ne_id           ,iit_rse_he_id       ,iit_st_chain\n");
+    strcat(stmt_str.arr,"      ,iit_end_chain       ,iit_x_sect          ,iit_inv_type\n");
+    strcat(stmt_str.arr,"      ,iit_peo_invent_by_id,iit_start_date      ,iit_invent_date\n");
+    strcat(stmt_str.arr,"      ,iit_ity_sys_flag    ,iit_coord_flag      ,iit_admin_unit\n");
+    strcat(stmt_str.arr,"      ,iit_length          ,iit_gap             ,iit_width\n");
+    strcat(stmt_str.arr,"      ,iit_height          ,iit_height_2        ,iit_distance\n");
+    strcat(stmt_str.arr,"      ,iit_angle           ,iit_no_of_units     ,iit_power\n");
+    strcat(stmt_str.arr,"      ,iit_type            ,iit_class           ,iit_material\n");
+    strcat(stmt_str.arr,"      ,iit_colour          ,iit_owner           ,iit_method\n");
+    strcat(stmt_str.arr,"      ,iit_options         ,iit_description     ,iit_id_code\n");
+    strcat(stmt_str.arr,"      ,iit_diagram         ,iit_photo           ,iit_note\n");
+    strcat(stmt_str.arr,"      ,iit_instal_date     ,iit_itemcode        ,iit_xtra_char_1\n");
+    strcat(stmt_str.arr,"      ,iit_xtra_date_1     ,iit_xtra_domain_1   ,iit_xtra_number_1\n");
+    strcat(stmt_str.arr,"      ,iit_primary_key     ,iit_foreign_key     ,iit_descr\n");
+    strcat(stmt_str.arr,"      ,iit_located_by      ,iit_position        ,iit_x_coord\n");
+    strcat(stmt_str.arr,"      ,iit_y_coord         ,iit_inv_ownership   ,iit_lco_lamp_config_id\n");
+    strcat(stmt_str.arr,"      ,iit_oun_org_id_elec_board                ,iit_prov_flag\n");
+    strcat(stmt_str.arr,"      ,iit_rev_by          ,iit_rev_date        ,iit_offset\n");
+    strcat(stmt_str.arr,"      ,iit_x               ,iit_y               ,iit_z\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib16    ,iit_num_attrib17    ,iit_num_attrib18\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib19    ,iit_num_attrib20    ,iit_num_attrib21\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib22    ,iit_num_attrib23    ,iit_num_attrib24\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib25    ,iit_chr_attrib26    ,iit_chr_attrib27\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib28    ,iit_chr_attrib29    ,iit_chr_attrib30\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib31    ,iit_chr_attrib32    ,iit_chr_attrib33\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib34    ,iit_chr_attrib35    ,iit_chr_attrib36\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib37    ,iit_chr_attrib38    ,iit_chr_attrib39\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib40    ,iit_chr_attrib41    ,iit_chr_attrib42\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib43    ,iit_chr_attrib44    ,iit_chr_attrib45\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib46    ,iit_chr_attrib47    ,iit_chr_attrib48\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib49    ,iit_chr_attrib50    ,iit_chr_attrib51\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib52    ,iit_chr_attrib53    ,iit_chr_attrib54\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib55    ,iit_chr_attrib56    ,iit_chr_attrib57\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib58    ,iit_chr_attrib59    ,iit_chr_attrib60\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib61    ,iit_chr_attrib62    ,iit_chr_attrib63\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib64    ,iit_chr_attrib65    ,iit_chr_attrib66\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib67    ,iit_chr_attrib68    ,iit_chr_attrib69\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib70    ,iit_chr_attrib71    ,iit_chr_attrib72\n");
+    strcat(stmt_str.arr,"      ,iit_chr_attrib73    ,iit_chr_attrib74    ,iit_chr_attrib75\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib76    ,iit_num_attrib77    ,iit_num_attrib78\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib79    ,iit_num_attrib80    ,iit_num_attrib81\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib82    ,iit_num_attrib83    ,iit_num_attrib84\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib85    ,iit_date_attrib86   ,iit_date_attrib87\n");
+    strcat(stmt_str.arr,"      ,iit_date_attrib88   ,iit_date_attrib89   ,iit_date_attrib90\n");
+    strcat(stmt_str.arr,"      ,iit_date_attrib91   ,iit_date_attrib92   ,iit_date_attrib93\n");
+    strcat(stmt_str.arr,"      ,iit_date_attrib94   ,iit_date_attrib95   ,iit_num_attrib96\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib97    ,iit_num_attrib98    ,iit_num_attrib99\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib100   ,iit_num_attrib101   ,iit_num_attrib102\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib103   ,iit_num_attrib104   ,iit_num_attrib105\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib106   ,iit_num_attrib107   ,iit_num_attrib108\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib109   ,iit_num_attrib110   ,iit_num_attrib111\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib112   ,iit_num_attrib113   ,iit_num_attrib114\n");
+    strcat(stmt_str.arr,"      ,iit_num_attrib115   ,iit_det_xsp)\n");
+    strcat(stmt_str.arr,"SELECT h.rec_seq_no        ,h.he_id             ,round(h.st_chain,3)\n");
+    strcat(stmt_str.arr,"      ,round(h.end_chain,3),h.x_sect            ,h.inv_code\n");
+    strcat(stmt_str.arr,"      ,h.peo_invent_by_id  ,TRUNC(h.invent_date),h.invent_date\n");
+    strcat(stmt_str.arr,"      ,h.ity_sys_flag      ,'I'                 ,ne_admin_unit\n");
+    strcat(stmt_str.arr,"      ,max(h.length)       ,max(h.gap)          ,max(h.width)\n");
+    strcat(stmt_str.arr,"      ,max(h.height)       ,max(h.height_2)     ,max(h.distance)\n");
+    strcat(stmt_str.arr,"      ,max(h.angle)        ,max(h.no_of_units)  ,max(h.power)\n");
+    strcat(stmt_str.arr,"      ,max(h.type)         ,max(h.class)        ,max(h.material)\n");
+    strcat(stmt_str.arr,"      ,max(h.colour)       ,max(h.owner)        ,max(h.method)\n");
+    strcat(stmt_str.arr,"      ,max(h.options)      ,max(h.description)  ,max(h.id_code)\n");
+    strcat(stmt_str.arr,"      ,max(h.diagram)      ,max(h.photo)        ,max(h.note)\n");
+    strcat(stmt_str.arr,"      ,max(h.instal_date)  ,max(h.itemcode)     ,max(xtra_char_1)\n");
+    strcat(stmt_str.arr,"      ,max(xtra_date_1)    ,max(h.xtra_domain_1),max(h.xtra_number_1)\n");
+    strcat(stmt_str.arr,"      ,NVL(max(h.primary_key),h.rec_seq_no),max(h.foreign_key),max(descr)\n");
+    strcat(stmt_str.arr,"      ,max(located_by)     ,max(position)       ,max(x_coord)\n");
+    strcat(stmt_str.arr,"      ,max(y_coord)        ,max(inv_ownership)  ,max(lco_lamp_config_id)\n");
+    strcat(stmt_str.arr,"      ,max(oun_org_id_elec_board)               ,max(prov_flag)\n");
+    strcat(stmt_str.arr,"      ,max(rev_by)         ,max(rev_date)       ,max(offset)\n");
+    strcat(stmt_str.arr,"      ,max(x)              ,max(y)              ,max(z)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib16) ,max(h.num_attrib17) ,max(h.num_attrib18)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib19) ,max(h.num_attrib20) ,max(h.num_attrib21)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib22) ,max(h.num_attrib23) ,max(h.num_attrib24)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib25) ,max(h.chr_attrib26) ,max(h.chr_attrib27)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib28) ,max(h.chr_attrib29) ,max(h.chr_attrib30)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib31) ,max(h.chr_attrib32) ,max(h.chr_attrib33)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib34) ,max(h.chr_attrib35) ,max(h.chr_attrib36)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib37) ,max(h.chr_attrib38) ,max(h.chr_attrib39)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib40) ,max(h.chr_attrib41) ,max(h.chr_attrib42)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib43) ,max(h.chr_attrib44) ,max(h.chr_attrib45)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib46) ,max(h.chr_attrib47) ,max(h.chr_attrib48)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib49) ,max(h.chr_attrib50) ,max(h.chr_attrib51)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib52) ,max(h.chr_attrib53) ,max(h.chr_attrib54)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib55) ,max(h.chr_attrib56) ,max(h.chr_attrib57)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib58) ,max(h.chr_attrib59) ,max(h.chr_attrib60)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib61) ,max(h.chr_attrib62) ,max(h.chr_attrib63)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib64) ,max(h.chr_attrib65) ,max(h.chr_attrib66)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib67) ,max(h.chr_attrib68) ,max(h.chr_attrib69)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib70) ,max(h.chr_attrib71) ,max(h.chr_attrib72)\n");
+    strcat(stmt_str.arr,"      ,max(h.chr_attrib73) ,max(h.chr_attrib74) ,max(h.chr_attrib75)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib76) ,max(h.num_attrib77) ,max(h.num_attrib78)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib79) ,max(h.num_attrib80) ,max(h.num_attrib81)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib82) ,max(h.num_attrib83) ,max(h.num_attrib84)\n");
+    strcat(stmt_str.arr,"      ,max(h.num_attrib85) ,max(h.date_attrib86),max(h.date_attrib87)\n");
+    strcat(stmt_str.arr,"      ,max(h.date_attrib88),max(h.date_attrib89),max(h.date_attrib90)\n");
+    strcat(stmt_str.arr,"      ,max(h.date_attrib91),max(h.date_attrib92),max(h.date_attrib93)\n");
+    strcat(stmt_str.arr,"      ,max(h.date_attrib94),max(h.date_attrib95),max(num_attrib96)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib97)   ,max(num_attrib98)   ,max(num_attrib99)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib100)  ,max(num_attrib101)  ,max(num_attrib102)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib103)  ,max(num_attrib104)  ,max(num_attrib105)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib106)  ,max(num_attrib107)  ,max(num_attrib108)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib109)  ,max(num_attrib110)  ,max(num_attrib111)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib112)  ,max(num_attrib113)  ,max(num_attrib114)\n");
+    strcat(stmt_str.arr,"      ,max(num_attrib115)  ,max(h.det_xsp)\n");
+    strcat(stmt_str.arr,"  FROM nm_elements_all\n");
+    strcat(stmt_str.arr,"      ,hhinv_load_3 h\n");
+    sprintf(temp_str," WHERE h.inv_code = '%s'\n",(char*)ukp_asset_type.arr);
+    strcat(stmt_str.arr,temp_str);
+    strcat(stmt_str.arr,"   AND h.he_id = ne_id\n");
+    strcat(stmt_str.arr," GROUP\n");
+    strcat(stmt_str.arr,"    BY h.rec_seq_no        ,h.he_id             ,round(h.st_chain,3)\n");
+    strcat(stmt_str.arr,"      ,round(h.end_chain,3),h.x_sect            ,h.inv_code\n");
+    strcat(stmt_str.arr,"      ,h.peo_invent_by_id  ,TRUNC(h.invent_date),h.invent_date\n");
+    strcat(stmt_str.arr,"      ,h.ity_sys_flag      ,ne_admin_unit\n");
+    strcat(stmt_str.arr,"HAVING COUNT(h.error_flg) = 0");
+    stmt_str.len = strlen(stmt_str.arr);
+    /*------------------------------*/
+    /* Execute The Insert Statement */
+    /*------------------------------*/
+    EXEC SQL EXECUTE IMMEDIATE :stmt_str;
+    /*----------------------*/
+    /* Deal With Any Errors */
+    /*----------------------*/
+    if(sqlca.sqlcode < 0)
+      {
+      error_occured = 1;
+      buf_len = sizeof(sqlerrmsg);
+      sqlglm(sqlerrmsg,&buf_len,&msg_len);
+      fprintf(fi,"Error: Occured In process_ukp_assets While Inserting %s Assets From HHINV_LOAD_3\n%.*s\n\n",(char*)ukp_asset_type.arr,msg_len,sqlerrmsg);
+      fprintf(fi,"\n%.*s\n",sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);
+      fprintf(fi,"in \"%.*s...\'\n",oraca.orastxt.orastxtl, oraca.orastxt.orastxtc);
+      fprintf(fi,"on line %d of %.*s.\n\n",oraca.oraslnr, oraca.orasfnm.orasfnml,oraca.orasfnm.orasfnmc);
+      fflush(fi);
+      sprintf(pipe_msg,"Error: Occured In process_ukp_assets While Inserting %s Assets From HHINV_LOAD_3\n%.*s\n\n",(char*)ukp_asset_type.arr,msg_len,sqlerrmsg);
+      write_pipe(fi,pipe_msg);
+      }
+    else
+      /*-------------------------------*/
+      /* Increment The C_cards Counter */
+      /*-------------------------------*/
+      C_cards += sqlca.sqlerrd[2];
+    /*---------------------------------------------*/
+    /* Build The Insert Statement For HHINV_LOAD_2 */
+    /*---------------------------------------------*/
+    stmt_str.len = 0;
+    sprintf(stmt_str.arr,"INSERT INTO %s\n",(char*)ukp_asset_table.arr);
+    strcat(stmt_str.arr,"      (iit_ne_id           ,iit_rse_he_id       ,iit_st_chain\n");
+    strcat(stmt_str.arr,"      ,iit_end_chain       ,iit_x_sect          ,iit_inv_type\n");
+    strcat(stmt_str.arr,"      ,iit_peo_invent_by_id,iit_start_date      ,iit_invent_date\n");
+    strcat(stmt_str.arr,"      ,iit_ity_sys_flag    ,iit_coord_flag      ,iit_admin_unit\n");
+    strcat(stmt_str.arr,"      ,iit_primary_key)\n");
+    strcat(stmt_str.arr,"SELECT h.rec_seq_no        ,h.he_id             ,round(h.st_chain,3)\n");
+    strcat(stmt_str.arr,"      ,round(h.end_chain,3),h.x_sect            ,h.inv_code\n");
+    strcat(stmt_str.arr,"      ,h.peo_invent_by_id  ,TRUNC(h.invent_date),h.invent_date\n");
+    strcat(stmt_str.arr,"      ,h.hhinv_ity_sys_flag,'I'                 ,ne_admin_unit\n");
+    strcat(stmt_str.arr,"      ,h.rec_seq_no\n");
+    strcat(stmt_str.arr,"  FROM nm_elements_all\n");
+    strcat(stmt_str.arr,"      ,hhinv_load_2 h\n");
+    sprintf(temp_str," WHERE h.inv_code = '%s'\n",(char*)ukp_asset_type.arr);
+    strcat(stmt_str.arr,temp_str);
+    strcat(stmt_str.arr,"   AND h.error_flg IS NULL\n");
+    strcat(stmt_str.arr,"   AND h.inv_code IN(SELECT ity_inv_code\n");
+    strcat(stmt_str.arr,"                       FROM inv_type_translations itt\n");
+    strcat(stmt_str.arr,"                      WHERE itt.ity_hhpos1 IS NULL\n");
+    strcat(stmt_str.arr,"                        AND itt.ity_sys_flag = h.hhinv_ity_sys_flag)\n");
+    strcat(stmt_str.arr,"   AND h.he_id = ne_id");
+    stmt_str.len = strlen(stmt_str.arr);
+    /*------------------------------*/
+    /* Execute The Insert Statement */
+    /*------------------------------*/
+    EXEC SQL EXECUTE IMMEDIATE :stmt_str;
+    /*----------------------*/
+    /* Deal With Any Errors */
+    /*----------------------*/
+    if(sqlca.sqlcode < 0)
+      {
+      error_occured = 1;
+      buf_len = sizeof(sqlerrmsg);
+      sqlglm(sqlerrmsg,&buf_len,&msg_len);
+      fprintf(fi,"Error: Occured In process_ukp_assets While Inserting %s Assets From HHINV_LOAD_2\n%.*s\n\n",(char*)ukp_asset_type.arr,msg_len,sqlerrmsg);
+      fprintf(fi,"\n%.*s\n",sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);
+      fprintf(fi,"in \"%.*s...\'\n",oraca.orastxt.orastxtl, oraca.orastxt.orastxtc);
+      fprintf(fi,"on line %d of %.*s.\n\n",oraca.oraslnr, oraca.orasfnm.orasfnml,oraca.orasfnm.orasfnmc);
+      fflush(fi);
+      sprintf(pipe_msg,"Error: Occured In process_ukp_assets While Inserting %s Assets From HHINV_LOAD_2\n%.*s\n\n",(char*)ukp_asset_type.arr,msg_len,sqlerrmsg);
+      write_pipe(fi,pipe_msg);
+      }
+    else
+      /*-------------------------------*/
+      /* Increment The C_cards Counter */
+      /*-------------------------------*/
+      C_cards += sqlca.sqlerrd[2];
+    /*-------------------------------*/
+    /* Check For Further Asset Types */
+    /*-------------------------------*/
+    eof_inv_types = get_inv_to_end_date();
+    }
+  if(error_occured)
+    return(FAIL);
+  else
+    return(SUCCESS);
+} /* process_ukp_assets */
+
+int get_ukp_inv_types()
+{
+  static int first_time= 1, till_now, this_time, where;
+
+  if(first_time)
+    {
+    first_time = 0;
+    till_now   = 0;
+    this_time  = 100;
+    where      = 100;
+
+    EXEC SQL DECLARE C_INV_TYPES CURSOR
+          FOR SELECT uvd_inv_code
+                    ,nit_table_name
+                FROM nm_inv_types_all
+                    ,ukpms_view_definitions
+               WHERE uvd_feature_or_survey IN('F','S')
+                 AND uvd_inv_code = nit_inv_type
+                 AND nit_table_name IS NOT NULL
+                 AND (EXISTS(SELECT 'x'
+                               FROM hhinv_load_3
+                              WHERE inv_code = uvd_inv_code)
+                     OR
+                      EXISTS(SELECT 'x'
+                               FROM hhinv_load_2
+                              WHERE inv_code = uvd_inv_code))
+                   ;
+    EXEC SQL OPEN C_INV_TYPES;
+    }
+
+  if(this_time == where)
+    {
+    if(this_time < 100)             /* Last FETCH reached EOR */
+      {
+      EXEC SQL CLOSE C_INV_TYPES;
+      first_time = 1;
+      return(EOF);
+      }
+
+    EXEC SQL FETCH C_INV_TYPES
+              INTO :r_ukp_asset_type
+                  ,:r_ukp_asset_table
+                  ;
+
+    this_time = sqlca.sqlerrd[2] - till_now;
+    till_now += this_time;
+    where = 0;
+    if(this_time == 0)              /* This FETCH was reading nothing */
+      {
+      EXEC SQL CLOSE C_INV_TYPES;
+      first_time = 1;
+      return(EOF);
+      }
+    }
+
+  r_ukp_asset_type[where].arr[r_ukp_asset_type[where].len] = '\0';
+  strcpy((char*)ukp_asset_type.arr, (char*)r_ukp_asset_type[where].arr);
+  ukp_asset_type.len = r_ukp_asset_type[where].len;
+
+  r_ukp_asset_table[where].arr[r_ukp_asset_table[where].len] = '\0';
+  strcpy((char*)ukp_asset_table.arr, (char*)r_ukp_asset_table[where].arr);
+  ukp_asset_table.len = r_ukp_asset_table[where].len;
+
+  where++;
+
+  return(SUCCESS);
+
+} /* get_ukp_inv_types */
+
 int load_into_invent()
 {
-  EXEC SQL BEGIN DECLARE SECTION;
-    int   errors_occured=0,records_created=0;
-    short ierrors_occured,irecords_created;
-  EXEC SQL END DECLARE SECTION;
   /*---------------------------*/
   /* Call PLSQL Procedure To   */
   /* Create The Assets In NM3  */
   /*---------------------------*/
+  EXEC SQL BEGIN DECLARE SECTION;
+    int     errors_occured=0,records_created=0;
+    short   ierrors_occured,irecords_created;
+  EXEC SQL END DECLARE SECTION;
+
+  /*---------------------------*/
+  /* Process UKP Assets Into   */
+  /* Their Own Tables First    */
+  /*---------------------------*/
+  process_ukp_assets();
+  /*------------------------*/
+  /* Process Non UKP Assets */
+  /*------------------------*/
   EXEC SQL EXECUTE
     DECLARE
       lv_error PLS_INTEGER;
@@ -5422,6 +5808,11 @@ int index_load_3_msg()
                ON HHINV_LOAD_3(REC_SEQ_NO);
   if(sqlca.sqlcode < 0)
     sql_err("index_load_3_msg(2)");
+
+  EXEC SQL CREATE UNIQUE INDEX HHINV_LOAD_3_UK1
+               ON HHINV_LOAD_3(REC_SEQ_NO,ATTRIBUTE);
+  if(sqlca.sqlcode < 0)
+    sql_err("index_load_3_msg(3)");
 
   return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
   } /* index_load_3_msg */
