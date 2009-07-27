@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.2   Mar 27 2009 10:23:46   cstrettle  $
---       Module Name      : $Workfile:   mai_sdo_util_fix.pkb  $
---       Date into SCCS   : $Date:   Mar 27 2009 10:23:46  $
---       Date fetched Out : $Modtime:   Mar 27 2009 10:20:08  $
---       SCCS Version     : $Revision:   2.2  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.3   Jul 27 2009 10:42:38   aedwards  $
+--       Module Name      : $Workfile:   mai_sdo_util.pkb  $
+--       Date into SCCS   : $Date:   Jul 27 2009 10:42:38  $
+--       Date fetched Out : $Modtime:   Jul 27 2009 10:42:22  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.2  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.3  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -750,8 +750,13 @@ BEGIN
       /*
       ||Generate the shape.
       */
-      nm3sdo_gdo.set_gtype(pi_gtype => pi_geo_type);
-      lv_shape := nm3sdo_gdo.get_geom_from_xys(pi_tab_xys => pi_tab_xy);
+      --nm3sdo_gdo.set_gtype(pi_gtype => pi_geo_type);
+      --lv_shape := nm3sdo_gdo.get_geom_from_xys(pi_tab_xys => pi_tab_xy);
+      --
+      -- AE Use nm3sdo_geom API instead for 4100
+      -- 
+        lv_shape := nm3sdo_geom.get_geom_from_xys(p_tab_xys => pi_tab_xy
+                                                , p_gtype   => pi_geo_type);
       /*
       ||Update the shape table.
       */
