@@ -1,0 +1,1028 @@
+CREATE OR REPLACE PACKAGE mai AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.4   Jul 30 2009 18:34:10   mhuitson  $
+--       Module Name      : $Workfile:   mai.pkh  $
+--       Date into SCCS   : $Date:   Jul 30 2009 18:34:10  $
+--       Date fetched Out : $Modtime:   Jul 24 2009 17:06:54  $
+--       SCCS Version     : $Revision:   2.4  $
+--       Based on SCCS Version     : 1.27
+--
+-- MAINTENANCE MANAGER application generic utilities
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)mai.pck	1.35 05/08/03'
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--
+--<GLOBVAR>
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.4  $';
+    g_application_owner		  VARCHAR2(30);
+    g_language			        VARCHAR2(30);
+    g_thing_already_exists	VARCHAR2(2000);
+    g_thing_does_not_exist	VARCHAR2(2000);
+    g_product               VARCHAR2(6);
+    g_context               VARCHAR2(30) := 'ICB_'||substr(hig.get_application_owner/*HIG.GET_OWNER('HIG_PRODUCTS')*/,1,26);
+    g_works_order_no        WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE;
+    g_wo_no                 WORK_ORDERS.WOR_WORKS_ORDER_NO%TYPE;
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+--<TYPE>
+TYPE defects_rec
+  IS RECORD(iit_inv_type     nm_inv_items_all.iit_inv_type%TYPE
+           ,nit_descr        nm_inv_types_all.nit_descr%TYPE
+           ,iit_descr        nm_inv_items_all.iit_descr%TYPE
+           ,iit_primary_key  nm_inv_items_all.iit_primary_key%TYPE
+           ,def_defect_id    defects.def_defect_id%TYPE
+           ,rep_date_due     repairs.rep_date_due%TYPE
+           );
+TYPE defects_tab IS TABLE OF defects_rec INDEX BY BINARY_INTEGER;
+--
+TYPE net_defects_rec
+  IS RECORD(ne_unique      nm_elements.ne_unique%TYPE
+           ,ne_descr       nm_elements.ne_descr%TYPE
+           ,def_defect_id  defects.def_defect_id%TYPE
+           ,def_easting    defects.def_easting%TYPE
+           ,def_northing   defects.def_northing%TYPE
+           ,rep_date_due   repairs.rep_date_due%TYPE
+           );
+TYPE net_defects_tab IS TABLE OF net_defects_rec INDEX BY BINARY_INTEGER;
+--
+TYPE tre_boqs_rec
+  IS RECORD(boq_sta_item_code       boq_items.boq_sta_item_code%TYPE
+           ,sta_item_name           standard_items.sta_item_name%TYPE
+           ,sta_unit                standard_items.sta_unit%TYPE
+           ,sta_dim1_text           standard_items.sta_dim1_text%TYPE
+           ,sta_dim2_text           standard_items.sta_dim2_text%TYPE
+           ,sta_dim3_text           standard_items.sta_dim3_text%TYPE
+           ,sta_min_quantity        standard_items.sta_min_quantity%TYPE
+           ,sta_max_quantity        standard_items.sta_max_quantity%TYPE
+           ,sta_rogue_flag          standard_items.sta_rogue_flag%TYPE
+           ,sta_labour_units        standard_items.sta_labour_units%TYPE
+           ,boq_est_dim1            boq_items.boq_est_dim1%TYPE
+           ,boq_est_dim2            boq_items.boq_est_dim2%TYPE
+           ,boq_est_dim3            boq_items.boq_est_dim3%TYPE
+           ,boq_est_quantity        boq_items.boq_est_quantity%TYPE
+           ,boq_est_rate            boq_items.boq_est_rate%TYPE
+           ,boq_est_cost            boq_items.boq_est_cost%TYPE
+           ,boq_est_labour          boq_items.boq_est_labour%TYPE
+           );
+TYPE tre_boqs_tab IS TABLE OF tre_boqs_rec INDEX BY BINARY_INTEGER;
+--
+TYPE def_inv_rec
+  IS RECORD(def_defect_id    defects.def_defect_id%TYPE
+           ,def_iit_item_id  defects.def_iit_item_id%TYPE
+           ,def_ity_inv_code defects.def_ity_inv_code%TYPE
+           ,rep_date_due     repairs.rep_date_due%TYPE);
+TYPE def_inv_tab IS TABLE OF def_inv_rec INDEX BY binary_integer;
+--
+TYPE def_net_rec
+  IS RECORD(def_defect_id    defects.def_defect_id%TYPE
+           ,def_rse_he_id    defects.def_rse_he_id%TYPE
+           ,def_easting    defects.def_easting%TYPE
+           ,def_northing   defects.def_northing%TYPE
+           ,rep_date_due     repairs.rep_date_due%TYPE);
+TYPE def_net_tab IS TABLE OF def_net_rec INDEX BY binary_integer;
+--
+TYPE rep_tab IS TABLE OF repairs%ROWTYPE INDEX BY binary_integer;
+--
+TYPE boq_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE parent_asset_rec IS RECORD(item_id     nm_inv_items_all.iit_ne_id%TYPE
+                               ,inv_type    nm_inv_types_all.nit_inv_type%TYPE
+                               ,primary_key nm_inv_items_all.iit_primary_key%TYPE
+                               ,descr       nm_inv_items_all.iit_descr%TYPE
+                               ,road_id     nm_elements_all.ne_id%TYPE
+                               ,x           nm_inv_items_all.iit_x%TYPE
+                               ,y           nm_inv_items_all.iit_y%TYPE);
+TYPE parent_asset_tab IS TABLE OF parent_asset_rec INDEX BY BINARY_INTEGER;
+--
+TYPE child_asset_rec IS RECORD(parent_inv_type nm_inv_types_all.nit_inv_type%TYPE
+                              ,parent_primary  nm_inv_items_all.iit_primary_key%TYPE
+                              ,parent_descr    nm_inv_items_all.iit_descr%TYPE
+                              ,ne_id           nm_elements.ne_id%TYPE
+                              ,x               nm_inv_items_all.iit_x%TYPE
+                              ,y               nm_inv_items_all.iit_y%TYPE
+                              ,child_item_id   nm_inv_items_all.iit_ne_id%TYPE
+                              ,child_inv_type  nm_inv_types_all.nit_inv_type%TYPE
+                              ,child_primary   nm_inv_items_all.iit_primary_key%TYPE
+                              ,child_descr     nm_inv_items_all.iit_descr%TYPE);
+TYPE child_asset_tab IS TABLE OF child_asset_rec INDEX BY BINARY_INTEGER;
+--
+TYPE wol_id_tab IS TABLE OF work_order_lines.wol_id%TYPE INDEX BY BINARY_INTEGER;
+--
+--</TYPE>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="SET_WO_NO">
+PROCEDURE set_wo_no(pi_wo_no IN work_orders.wor_works_order_no%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_WO_NO">
+FUNCTION get_wo_no RETURN work_orders.wor_works_order_no%TYPE;
+--</PROC>
+--
+-------------------------------------------------------------------------------
+-- 
+--<PROC NAME="CONTIST_STILL_IN_DATE">
+FUNCTION contract_still_in_date(p_wo_no work_order_lines.wol_works_order_no%TYPE)
+  RETURN BOOLEAN;
+--</PROC>
+--  
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="SET_CONTEXT">
+-- Function to set the Context. SM-07102004
+  PROCEDURE set_context (pi_namespace IN varchar2
+                        ,pi_attribute IN varchar2
+                        ,pi_value     IN varchar2
+                        );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="GET_CONTEXT">
+-- Function to retrieve Context. SM-07102004
+  FUNCTION get_context (pi_namespace IN varchar2
+                       ,pi_attribute IN varchar2
+                       ) RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="WOL_ID_NEXTSEQ">
+-- Function to retrieve the next WOL_ID from the sequence. SM-19012006
+  FUNCTION wol_id_nextseq
+           RETURN number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="BOQ_ID_NEXTSEQ">
+-- Function to retrieve the next BOQ_ID from the sequence. SM-19012006
+  FUNCTION boq_id_nextseq
+           RETURN number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="cre_boq_items">
+  FUNCTION cre_boq_items
+        ( p_defect_id          IN	boq_items.boq_defect_id%TYPE
+         ,p_rep_action_cat     IN	boq_items.boq_rep_action_cat%TYPE
+         ,p_oun_org_id         IN	hig_admin_units.hau_admin_unit%TYPE
+         ,p_treat_code         IN	treatments.tre_treat_code%TYPE
+         ,p_defect_code        IN	defects.def_defect_code%TYPE
+         ,p_sys_flag           IN	road_segments_all.rse_sys_flag%TYPE
+         ,p_atv_acty_area_code IN	activities.atv_acty_area_code%TYPE
+         ,p_tremodlev          IN	NUMBER
+         ,p_attr_value         IN	NUMBER
+        ) RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="parse_inv_condition">
+     FUNCTION parse_inv_condition (instring VARCHAR2) RETURN VARCHAR2 ;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="parse_inv_condition">
+FUNCTION parse_inv_condition(p_instring   VARCHAR2
+                            ,p_asset_type nm_inv_types_all.nit_inv_type%TYPE)
+  RETURN VARCHAR2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="calculate_inv_quantity">
+  PROCEDURE calculate_inv_quantity
+        (he_id        IN     road_segments_all.rse_he_id%TYPE ,
+         calc_type    IN     standard_items.sta_calc_type%TYPE,
+         item_code    IN     schedule_items.schi_sta_item_code%TYPE,
+         quantity     IN OUT schedule_items.schi_calc_quantity%TYPE);
+
+PROCEDURE upd_schd_items_and_roads(pi_schd_id IN schedules.schd_id%TYPE);         
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="update_schedule_quantity_assets">
+PROCEDURE upd_schedule_quantity_assets(pi_schd_id  IN schedules.schd_id%TYPE
+                                     ,pi_group_id IN road_segs.rse_he_id%TYPE
+                                     ,pi_item_code IN standard_items.sta_item_code%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="pop_schd_roads">
+PROCEDURE pop_schd_roads(pi_schd_id IN schedules.schd_id%type
+                        ,pi_group_id IN road_groups.rse_he_id%type
+                        ,pi_item_code IN standard_items.sta_item_code%type);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="calculate_inv_quantity_assets">
+  PROCEDURE calculate_inv_quantity_assets
+        (p_schd_id    IN     schedules.schd_id%TYPE,
+         he_id        IN     road_segments_all.rse_he_id%TYPE ,
+         calc_type    IN     standard_items.sta_calc_type%TYPE,
+         item_code    IN     schedule_items.schi_sta_item_code%TYPE,
+         item_id      IN OUT inv_items_all.iit_item_id%TYPE,
+         quantity     IN OUT schedule_items.schi_calc_quantity%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="rep_date_due">
+  PROCEDURE rep_date_due (
+            p_date               IN DATE
+           ,p_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE
+           ,p_dpr_priority       IN defect_priorities.dpr_priority%TYPE
+           ,p_dpr_action_cat     IN defect_priorities.dpr_action_cat%TYPE
+           ,p_heid               IN road_segments_all.rse_he_id%TYPE
+           ,p_out_date           OUT DATE
+           ,p_error              OUT NUMBER);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="view_exists">
+    FUNCTION view_exists( inv_view_name IN inv_item_types.ity_view_name%TYPE )
+    RETURN BOOLEAN;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="view_in_use">
+    FUNCTION view_in_use(view_name IN inv_item_types.ity_view_name%TYPE)
+    RETURN BOOLEAN;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="synonym_exists">
+    FUNCTION synonym_exists(P_SYNONYM IN inv_item_types.ity_view_name%TYPE)
+    RETURN BOOLEAN;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_view">
+    PROCEDURE create_view (view_name     IN inv_item_types.ity_view_name%TYPE
+                          ,inventory_type IN inv_item_types.ity_inv_code%TYPE
+                          ,sys_flag       IN inv_item_types.ity_sys_flag%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_inv_view">
+    PROCEDURE create_inv_view(view_name   IN inv_item_types.ity_view_name%TYPE
+                             ,inventory_type IN inv_item_types.ity_inv_code%TYPE
+                             ,sys_flag    IN inv_item_types.ity_sys_flag%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- Start off functions and procedures used in mai3899, the manual inspection
+-- entry screen
+--
+  FUNCTION activities_report_id( p_rse_he_id		IN road_segs.rse_he_id%TYPE
+					  ,p_maint_insp_flag	IN activities_report.are_maint_insp_flag%TYPE
+					  ,p_date_work_done	IN activities_report.are_date_work_done%TYPE
+					  ,p_initiation_type	IN activities_report.are_initiation_type%TYPE
+					  ,p_person_id_actioned	IN activities_report.are_peo_person_id_actioned%TYPE
+					  ,p_person_id_insp2	IN activities_report.are_peo_person_id_insp2%TYPE
+					  ,p_surface		IN activities_report.are_surface_condition%TYPE
+					  ,p_weather		IN activities_report.are_weather_condition%TYPE
+					  ,p_acty_area_code	IN activities.atv_acty_area_code%TYPE
+				 	  ,p_start_chain		IN activities_report.are_st_chain%TYPE
+					  ,p_end_chain		IN activities_report.are_end_chain%TYPE
+) RETURN NUMBER;
+
+-------------------------------------------------------------------------------
+--
+-- Start off functions and procedures used in mai3899, the manual inspection
+-- entry screen
+--
+  FUNCTION activities_report_id( p_rse_he_id		IN road_segs.rse_he_id%TYPE
+					  ,p_maint_insp_flag	IN activities_report.are_maint_insp_flag%TYPE
+					  ,p_date_work_done	IN activities_report.are_date_work_done%TYPE
+					  ,p_initiation_type	IN activities_report.are_initiation_type%TYPE
+					  ,p_person_id_actioned	IN activities_report.are_peo_person_id_actioned%TYPE
+					  ,p_person_id_insp2	IN activities_report.are_peo_person_id_insp2%TYPE
+					  ,p_surface		IN activities_report.are_surface_condition%TYPE
+					  ,p_weather		IN activities_report.are_weather_condition%TYPE
+					  ,p_acty_area_code	IN activities.atv_acty_area_code%TYPE
+				 	  ,p_start_chain		IN activities_report.are_st_chain%TYPE
+					  ,p_end_chain		IN activities_report.are_end_chain%TYPE
+					  ,p_created_date         IN activities_report.are_created_date%TYPE
+) RETURN NUMBER;
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="activities_report_id">
+FUNCTION activities_report_id(p_batch_id            IN activities_report.are_batch_id%TYPE
+                             ,p_rse_he_id           IN road_segs.rse_he_id%TYPE
+                             ,p_maint_insp_flag     IN activities_report.are_maint_insp_flag%TYPE
+                             ,p_date_work_done      IN activities_report.are_date_work_done%TYPE
+                             ,p_initiation_type     IN activities_report.are_initiation_type%TYPE
+                             ,p_person_id_actioned  IN activities_report.are_peo_person_id_actioned%TYPE
+                             ,p_person_id_insp2     IN activities_report.are_peo_person_id_insp2%TYPE
+                             ,p_surface             IN activities_report.are_surface_condition%TYPE
+                             ,p_weather             IN activities_report.are_weather_condition%TYPE
+                             ,p_acty_area_code      IN activities.atv_acty_area_code%TYPE
+                             ,p_start_chain         IN activities_report.are_st_chain%TYPE
+                             ,p_end_chain           IN activities_report.are_end_chain%TYPE
+                             ,p_created_date        IN activities_report.are_created_date%TYPE) RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="delete_activities_report">
+    PROCEDURE delete_activities_report
+                           (p_report_id IN activities_report.are_report_id%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="delete_are_defects">
+  PROCEDURE delete_are_defects
+                           (p_report_id IN activities_report.are_report_id%TYPE);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_defect">
+  FUNCTION create_defect (
+		p_rse_he_id				IN	defects.def_rse_he_id%TYPE
+		,p_iit_item_id			IN	defects.def_iit_item_id%TYPE
+		,p_st_chain				IN	defects.def_st_chain%TYPE
+		,p_report_id			IN	defects.def_are_report_id%TYPE
+		,p_acty_area_code			IN	defects.def_atv_acty_area_code%TYPE
+		,p_siss_id				IN	defects.def_siss_id%TYPE
+		,p_works_order_no			IN	defects.def_works_order_no%TYPE
+		,p_defect_code			IN	defects.def_defect_code%TYPE
+		,p_orig_priority			IN	defects.def_orig_priority%TYPE
+		,p_priority				IN	defects.def_priority%TYPE
+		,p_status_code			IN	defects.def_status_code%TYPE
+		,p_area				IN	defects.def_area%TYPE
+		,p_are_id_not_found		IN	defects.def_are_id_not_found%TYPE
+		,p_coord_flag			IN	defects.def_coord_flag%TYPE
+		,p_defect_class			IN	defects.def_defect_class%TYPE
+		,p_defect_descr			IN	defects.def_defect_descr%TYPE
+		,p_defect_type_descr		IN	defects.def_defect_type_descr%TYPE
+		,p_diagram_no			IN	defects.def_diagram_no%TYPE
+		,p_height				IN	defects.def_height%TYPE
+		,p_ident_code			IN	defects.def_ident_code%TYPE
+		,p_ity_inv_code			IN	defects.def_ity_inv_code%TYPE
+		,p_ity_sys_flag			IN	defects.def_ity_sys_flag%TYPE
+		,p_length				IN	defects.def_length%TYPE
+		,p_locn_descr			IN	defects.def_locn_descr%TYPE
+		,p_maint_wo				IN	defects.def_maint_wo%TYPE
+		,p_mand_adv				IN	defects.def_mand_adv%TYPE
+		,p_notify_org_id			IN	defects.def_notify_org_id%TYPE
+		,p_number				IN	defects.def_number%TYPE
+		,p_per_cent				IN	defects.def_per_cent%TYPE
+		,p_per_cent_orig			IN	defects.def_per_cent_orig%TYPE
+		,p_per_cent_rem			IN	defects.def_per_cent_rem%TYPE
+		,p_rechar_org_id			IN	defects.def_rechar_org_id%TYPE
+		,p_serial_no			IN	defects.def_serial_no%TYPE
+		,p_skid_coeff			IN	defects.def_skid_coeff%TYPE
+		,p_special_instr			IN	defects.def_special_instr%TYPE
+		,p_time_hrs				IN	defects.def_time_hrs%TYPE
+		,p_time_mins			IN	defects.def_time_mins%TYPE
+		,p_update_inv			IN	defects.def_update_inv%TYPE
+		,p_x_sect				IN	defects.def_x_sect%TYPE
+            ,p_easting				IN	defects.def_easting%TYPE
+		,p_northing				IN	defects.def_northing%TYPE
+		,p_response_category		IN	defects.def_response_category%TYPE
+) RETURN NUMBER;
+--
+-- </PROC>
+--SM-26-NOV-2003
+--Added p_date_created and doubled up the create_defect call.
+-- <PROC NAME="create_defect">
+  FUNCTION create_defect (
+		p_rse_he_id				IN	defects.def_rse_he_id%TYPE
+		,p_iit_item_id			IN	defects.def_iit_item_id%TYPE
+		,p_st_chain				IN	defects.def_st_chain%TYPE
+		,p_report_id			IN	defects.def_are_report_id%TYPE
+		,p_acty_area_code			IN	defects.def_atv_acty_area_code%TYPE
+		,p_siss_id				IN	defects.def_siss_id%TYPE
+		,p_works_order_no			IN	defects.def_works_order_no%TYPE
+		,p_defect_code			IN	defects.def_defect_code%TYPE
+		,p_orig_priority			IN	defects.def_orig_priority%TYPE
+		,p_priority				IN	defects.def_priority%TYPE
+		,p_status_code			IN	defects.def_status_code%TYPE
+		,p_area				IN	defects.def_area%TYPE
+		,p_are_id_not_found		IN	defects.def_are_id_not_found%TYPE
+		,p_coord_flag			IN	defects.def_coord_flag%TYPE
+		,p_defect_class			IN	defects.def_defect_class%TYPE
+		,p_defect_descr			IN	defects.def_defect_descr%TYPE
+		,p_defect_type_descr		IN	defects.def_defect_type_descr%TYPE
+		,p_diagram_no			IN	defects.def_diagram_no%TYPE
+		,p_height				IN	defects.def_height%TYPE
+		,p_ident_code			IN	defects.def_ident_code%TYPE
+		,p_ity_inv_code			IN	defects.def_ity_inv_code%TYPE
+		,p_ity_sys_flag			IN	defects.def_ity_sys_flag%TYPE
+		,p_length				IN	defects.def_length%TYPE
+		,p_locn_descr			IN	defects.def_locn_descr%TYPE
+		,p_maint_wo				IN	defects.def_maint_wo%TYPE
+		,p_mand_adv				IN	defects.def_mand_adv%TYPE
+		,p_notify_org_id			IN	defects.def_notify_org_id%TYPE
+		,p_number				IN	defects.def_number%TYPE
+		,p_per_cent				IN	defects.def_per_cent%TYPE
+		,p_per_cent_orig			IN	defects.def_per_cent_orig%TYPE
+		,p_per_cent_rem			IN	defects.def_per_cent_rem%TYPE
+		,p_rechar_org_id			IN	defects.def_rechar_org_id%TYPE
+		,p_serial_no			IN	defects.def_serial_no%TYPE
+		,p_skid_coeff			IN	defects.def_skid_coeff%TYPE
+		,p_special_instr			IN	defects.def_special_instr%TYPE
+		,p_time_hrs				IN	defects.def_time_hrs%TYPE
+		,p_time_mins			IN	defects.def_time_mins%TYPE
+		,p_update_inv			IN	defects.def_update_inv%TYPE
+		,p_x_sect				IN	defects.def_x_sect%TYPE
+    ,p_easting				IN	defects.def_easting%TYPE
+		,p_northing				IN	defects.def_northing%TYPE
+		,p_response_category		IN	defects.def_response_category%TYPE
+		,p_date_created			in	defects.def_created_date%TYPE
+) RETURN NUMBER;
+-- </PROC>
+--
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="create_defect">
+-- Added by DC 16-2-03 Added a overloaded function to make things a little easier to call from pl/sql
+FUNCTION create_defect(p_defect_rec IN defects%ROWTYPE) RETURN NUMBER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="create_defect">
+FUNCTION create_defect(pi_insp_rec           IN activities_report%ROWTYPE
+                      ,pi_defect_rec         IN defects%ROWTYPE
+                      ,pi_repair_tab         IN rep_tab
+                      ,pi_boq_tab            IN boq_tab) RETURN NUMBER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_repair">
+     FUNCTION create_repair (
+                 p_defect_id		IN	repairs.rep_def_defect_id%TYPE
+		,p_action_cat		IN	repairs.rep_action_cat%TYPE
+		,p_rse_he_id		IN	repairs.rep_rse_he_id%TYPE
+		,p_treat_code		IN	repairs.rep_tre_treat_code%TYPE
+		,p_acty_area_code	IN	repairs.rep_atv_acty_area_code%TYPE
+		,p_date_due		IN	repairs.rep_date_due%TYPE
+		,p_descr		IN	repairs.rep_descr%TYPE
+		,p_local_date_due	IN	repairs.rep_local_date_due%TYPE
+		,p_old_due_date		IN	repairs.rep_old_due_date%TYPE) RETURN NUMBER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_tre_boqs">
+PROCEDURE get_tre_boqs(pi_admin_unit         IN     nm_admin_units_all.nau_admin_unit%TYPE
+                      ,pi_treat_code         IN     treatment_models.tmo_tre_treat_code%TYPE
+                      ,pi_atv_acty_area_code IN     treatment_models.tmo_atv_acty_area_code%TYPE
+                      ,pi_defect_code        IN     treatment_models.tmo_dty_defect_code%TYPE
+                      ,pi_sys_flag           IN     treatment_models.tmo_sys_flag%TYPE
+                      ,po_results            IN OUT tre_boqs_tab);
+--
+-- </PROC>
+-----------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_defects_created">
+PROCEDURE get_defects_created(pi_batch_id IN     activities_report.are_batch_id%TYPE
+                             ,po_results  IN OUT defects_tab);
+-- </PROC>
+-- </PROC>
+-----------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_net_defects_created">
+PROCEDURE get_net_defect_created(pi_batch_id IN     activities_report.are_batch_id%TYPE
+                                ,po_results  IN OUT net_defects_tab);
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_gdo_for_mai3801">
+PROCEDURE create_gdo_for_mai3801(pi_batch_id   IN  activities_report.are_batch_id%TYPE
+                                ,po_session_id OUT gis_data_objects.gdo_session_id%TYPE);
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="create_doc_assocs">
+     FUNCTION create_doc_assocs (
+		p_table_name		IN	doc_assocs.das_table_name%TYPE
+	       ,p_rec_id   		IN	doc_assocs.das_rec_id%TYPE
+	       ,p_doc_id        	IN	doc_assocs.das_doc_id%TYPE) RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="delete_doc_assocs">
+     FUNCTION delete_doc_assocs (
+		p_table_name		IN	doc_assocs.das_table_name%TYPE
+		,p_rec_id    		IN	doc_assocs.das_rec_id%TYPE
+		,p_doc_id   		IN	doc_assocs.das_doc_id%TYPE) RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_hco_seq">
+     FUNCTION get_hco_seq ( domain_value IN hig_codes.hco_domain%TYPE
+                           ,code_value   IN hig_codes.hco_code%TYPE) RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="reverse_chain_inventory">
+     PROCEDURE reverse_chain_inventory
+  	 	(pn_rse_he_id           IN     NUMBER,
+                 pc_road_characteristic IN     VARCHAR2,
+		 pd_start_date          IN     DATE,
+                 pd_end_date            IN     DATE,
+                 pc_ukpms               IN     VARCHAR2,
+                 pc_item_id             IN     VARCHAR2,
+                 pc_new_xsp             IN     VARCHAR2,
+                 pc_dummy1              IN     VARCHAR2,
+                 pc_dummy2              IN     VARCHAR2,
+                 pc_dummy3              IN     VARCHAR2,
+                 pn_rows_processed      IN OUT NUMBER);
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="calc_st_chain">
+     FUNCTION calc_st_chain( p_st_chain road_sections.rse_length%TYPE
+                           , p_end_chain road_sections.rse_length%TYPE
+                           , p_he_id road_sections.rse_he_id%TYPE) RETURN NUMBER ;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_icb_fgac_context">
+    FUNCTION get_icb_fgac_context(top boolean, lc_agency varchar2) return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_icb_fgac_context">
+     FUNCTION get_icb_fgac_context(top boolean) return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_icb_fgac_context">
+     FUNCTION get_icb_fgac_context(lc_agency varchar2) return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="icb_fgac_predicate">
+     FUNCTION icb_fgac_predicate (schema_in varchar2,
+                                    name_in varchar2) return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="icb_budget_fgac_predicate">
+     FUNCTION icb_budget_fgac_predicate(schema_in varchar2,
+                                          name_in varchar2)return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="icb_wo_fgac_predicate">
+     FUNCTION icb_wo_fgac_predicate(schema_in varchar2,
+                                      name_in varchar2)return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_auto_def_priority">
+     FUNCTION get_auto_def_priority(p_rse_he_id     in number,
+	     		            p_network_type  in varchar2,
+                                    p_activity_code in varchar2,
+                                    p_defect_code   in varchar2) return varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_view_name">
+FUNCTION get_view_name (p_inv_code IN inv_item_types.ity_inv_code%TYPE
+                       ,p_sys_flag IN inv_item_types.ity_sys_flag%TYPE) RETURN varchar2;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="is_asset_located">
+FUNCTION asset_is_located(p_inv_type  nm_inv_types_all.nit_inv_type%TYPE
+                         ,p_iit_ne_id nm_inv_items_all.iit_ne_id%TYPE) RETURN BOOLEAN;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_budget_allocation">
+FUNCTION get_budget_allocation(p_inv_type  nm_inv_types_all.nit_inv_type%TYPE
+                              ,p_iit_ne_id nm_inv_items_all.iit_ne_id%TYPE) RETURN nm_elements_all.ne_id%TYPE;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_budget_allocation">
+FUNCTION get_budget_allocation(p_iit_ne_id nm_inv_items_all.iit_ne_id%TYPE) RETURN nm_elements_all.ne_id%TYPE;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="translate_inv_type">
+FUNCTION translate_nm_inv_type(p_inv_type nm_inv_types_all.nit_inv_type%TYPE) RETURN inv_type_translations.ity_inv_code%TYPE;
+
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="translate_inv_type">
+FUNCTION translate_mai_inv_type(p_inv_type inv_type_translations.ity_inv_code%TYPE) RETURN inv_type_translations.nit_inv_type%TYPE;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="budget_allocation_used">
+FUNCTION budget_allocation_used(p_nit_inv_type nm_inv_types_all.nit_inv_type%TYPE
+                               ,p_ne_id        nm_elements_all.ne_id%TYPE) RETURN BOOLEAN;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_def_asset_fields">
+PROCEDURE get_def_asset_fields(pi_nit_inv_type IN  nm_inv_types_all.nit_inv_type%TYPE
+                              ,pi_iit_ne_id    IN  nm_inv_items_all.iit_ne_id%TYPE
+                              ,po_iit_primary  OUT VARCHAR2
+                              ,po_iit_descr    OUT VARCHAR2);
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_nm3extent_c_route">
+FUNCTION get_nm3extent_c_route RETURN nm_pbi_query_results.nqr_source%TYPE;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_nm3extent_c_route">
+FUNCTION get_nm3extent_c_roi_temp_ne RETURN VARCHAR2;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+-- <PROC NAME="get_gis_sys_flag">
+FUNCTION get_gis_sys_flag(p_gis_session_id IN gis_data_objects.gdo_session_id%TYPE) RETURN VARCHAR2;
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+--<PROC NAME="MAKE_DEFECT_SECURE_VIEW">
+--
+  PROCEDURE make_defect_secure_view;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="MAKE_DEFECT_SPATIAL_LAYER">
+-- AE - removed at release 3211
+--  PROCEDURE make_defect_spatial_layer
+--              ( pi_theme_name      IN NM_THEMES_ALL.nth_theme_name%TYPE
+--              , pi_base_layer      IN NM_THEMES_ALL.nth_base_theme%TYPE DEFAULT NULL
+--              , pi_use_xy          IN BOOLEAN DEFAULT FALSE
+--              );
+----</PROC>
+--
+-------------------------------------------------------------------------------
+--
+--<PROC NAME="GENERATE_WORKS_ORDER_NO">
+  FUNCTION generate_works_order_no( p_con_id         IN contracts.con_id%type
+                                  , p_admin_unit     IN hig_admin_units.hau_admin_unit%type
+                                  , p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
+								  , p_raise_not_found IN BOOLEAN DEFAULT FALSE
+                                   ) RETURN VARCHAR2;
+----</PROC>
+--
+-------------------------------------------------------------------------------
+--
+--<PROC NAME="CREATE_WO_HEADER">
+--
+  FUNCTION create_wo_header
+        ( P_WOR_WORKS_ORDER_NO             IN WORK_ORDERS.WOR_WORKS_ORDER_NO%TYPE
+        , P_WOR_SYS_FLAG                   IN WORK_ORDERS.WOR_SYS_FLAG%TYPE
+        , P_WOR_RSE_HE_ID_GROUP            IN WORK_ORDERS.WOR_RSE_HE_ID_GROUP%TYPE
+        , P_WOR_FLAG                       IN WORK_ORDERS.WOR_FLAG%TYPE
+        , P_WOR_CON_ID                     IN WORK_ORDERS.WOR_CON_ID%TYPE
+        , P_WOR_ACT_COST_CODE              IN WORK_ORDERS.WOR_ACT_COST_CODE%TYPE
+        , P_WOR_ACT_BALANCING_SUM          IN WORK_ORDERS.WOR_ACT_BALANCING_SUM%TYPE
+        , P_WOR_ACT_COST                   IN WORK_ORDERS.WOR_ACT_COST%TYPE
+        , P_WOR_ACT_LABOUR                 IN WORK_ORDERS.WOR_ACT_LABOUR%TYPE
+        , P_WOR_AGENCY                     IN WORK_ORDERS.WOR_AGENCY%TYPE
+        , P_WOR_ARE_SCHED_ACT_FLAG         IN WORK_ORDERS.WOR_ARE_SCHED_ACT_FLAG%TYPE
+        , P_WOR_CHEAPEST_FLAG              IN WORK_ORDERS.WOR_CHEAPEST_FLAG%TYPE
+        , P_WOR_CLOSED_BY_ID               IN WORK_ORDERS.WOR_CLOSED_BY_ID%TYPE
+        , P_WOR_COC_COST_CENTRE            IN WORK_ORDERS.WOR_COC_COST_CENTRE%TYPE
+        , P_WOR_COST_RECHARG               IN WORK_ORDERS.WOR_COST_RECHARG%TYPE
+        , P_WOR_DATE_CLOSED                IN WORK_ORDERS.WOR_DATE_CLOSED%TYPE
+        , P_WOR_DATE_CONFIRMED             IN WORK_ORDERS.WOR_DATE_CONFIRMED%TYPE
+        , P_WOR_DATE_MOD                   IN WORK_ORDERS.WOR_DATE_MOD%TYPE
+        , P_WOR_DATE_RAISED                IN WORK_ORDERS.WOR_DATE_RAISED%TYPE
+        , P_WOR_DESCR                      IN WORK_ORDERS.WOR_DESCR%TYPE
+        , P_WOR_DIV_CODE                   IN WORK_ORDERS.WOR_DIV_CODE%TYPE
+        , P_WOR_DTP_EXPEND_CODE            IN WORK_ORDERS.WOR_DTP_EXPEND_CODE%TYPE
+        , P_WOR_EST_BALANCING_SUM          IN WORK_ORDERS.WOR_EST_BALANCING_SUM%TYPE
+        , P_WOR_EST_COMPLETE               IN WORK_ORDERS.WOR_EST_COMPLETE%TYPE
+        , P_WOR_EST_COST                   IN WORK_ORDERS.WOR_EST_COST%TYPE
+        , P_WOR_EST_LABOUR                 IN WORK_ORDERS.WOR_EST_LABOUR%TYPE
+        , P_WOR_ICB_ITEM_CODE              IN WORK_ORDERS.WOR_ICB_ITEM_CODE%TYPE
+        , P_WOR_ICB_SUB_ITEM_CODE          IN WORK_ORDERS.WOR_ICB_SUB_ITEM_CODE%TYPE
+        , P_WOR_ICB_SUB_SUB_ITEM_CODE      IN WORK_ORDERS.WOR_ICB_SUB_SUB_ITEM_CODE%TYPE
+        , P_WOR_JOB_NUMBER                 IN WORK_ORDERS.WOR_JOB_NUMBER%TYPE
+        , P_WOR_LAST_PRINT_DATE            IN WORK_ORDERS.WOR_LAST_PRINT_DATE%TYPE
+        , P_WOR_LA_EXPEND_CODE             IN WORK_ORDERS.WOR_LA_EXPEND_CODE%TYPE
+        , P_WOR_MOD_BY_ID                  IN WORK_ORDERS.WOR_MOD_BY_ID%TYPE
+        , P_WOR_OUN_ORG_ID                 IN WORK_ORDERS.WOR_OUN_ORG_ID%TYPE
+        , P_WOR_PEO_PERSON_ID              IN WORK_ORDERS.WOR_PEO_PERSON_ID%TYPE
+        , P_WOR_PRICE_TYPE                 IN WORK_ORDERS.WOR_PRICE_TYPE%TYPE
+        , P_WOR_REMARKS                    IN WORK_ORDERS.WOR_REMARKS%TYPE
+        , P_WOR_ROAD_TYPE                  IN WORK_ORDERS.WOR_ROAD_TYPE%TYPE
+        , P_WOR_RSE_HE_ID_LINK             IN WORK_ORDERS.WOR_RSE_HE_ID_LINK%TYPE
+        , P_WOR_SCHEME_REF                 IN WORK_ORDERS.WOR_SCHEME_REF%TYPE
+        , P_WOR_SCHEME_TYPE                IN WORK_ORDERS.WOR_SCHEME_TYPE%TYPE
+        , P_WOR_SCORE                      IN WORK_ORDERS.WOR_SCORE%TYPE
+        , P_WOR_YEAR_CODE                  IN WORK_ORDERS.WOR_YEAR_CODE%TYPE
+        , P_WOR_INTERIM_PAYMENT_FLAG       IN WORK_ORDERS.WOR_INTERIM_PAYMENT_FLAG%TYPE
+        , P_WOR_RISK_ASSESSMENT_FLAG       IN WORK_ORDERS.WOR_RISK_ASSESSMENT_FLAG%TYPE
+        , P_WOR_METHOD_STATEMENT_FLAG      IN WORK_ORDERS.WOR_METHOD_STATEMENT_FLAG%TYPE
+        , P_WOR_WORKS_PROGRAMME_FLAG       IN WORK_ORDERS.WOR_WORKS_PROGRAMME_FLAG%TYPE
+        , P_WOR_ADDITIONAL_SAFETY_FLAG     IN WORK_ORDERS.WOR_ADDITIONAL_SAFETY_FLAG%TYPE
+        , P_WOR_DEF_CORRECTION             IN WORK_ORDERS.WOR_DEF_CORRECTION%TYPE
+        , P_WOR_DEF_CORRECTION_ACCEPT      IN WORK_ORDERS.WOR_DEF_CORRECTION_ACCEPTABLE%TYPE
+        , P_WOR_CORR_EXTENSION_TIME        IN WORK_ORDERS.WOR_CORR_EXTENSION_TIME%TYPE
+        , P_WOR_REVISED_COMP_DATE          IN WORK_ORDERS.WOR_REVISED_COMP_DATE%TYPE
+        , P_WOR_PRICE_VARIATION            IN WORK_ORDERS.WOR_PRICE_VARIATION%TYPE
+        , P_WOR_COMMENCE_BY                IN WORK_ORDERS.WOR_COMMENCE_BY%TYPE
+        , P_WOR_ACT_COMMENCE_BY            IN WORK_ORDERS.WOR_ACT_COMMENCE_BY%TYPE
+        , P_WOR_DEF_CORRECTION_PERIOD      IN WORK_ORDERS.WOR_DEF_CORRECTION_PERIOD%TYPE
+        , P_WOR_REASON_NOT_CHEAPEST        IN WORK_ORDERS.WOR_REASON_NOT_CHEAPEST%TYPE
+        , P_WOR_PRIORITY                   IN WORK_ORDERS.WOR_PRIORITY%TYPE
+        , P_WOR_PERC_ITEM_COMP             IN WORK_ORDERS.WOR_PERC_ITEM_COMP%TYPE
+        , P_WOR_CONTACT                    IN WORK_ORDERS.WOR_CONTACT%TYPE
+        , P_WOR_DATE_RECEIVED              IN WORK_ORDERS.WOR_DATE_RECEIVED%TYPE
+        , P_WOR_RECEIVED_BY                IN WORK_ORDERS.WOR_RECEIVED_BY%TYPE
+        , P_WOR_RECHARGEABLE               IN WORK_ORDERS.WOR_RECHARGEABLE%TYPE
+        , P_WOR_SUPP_DOCUMENTS             IN WORK_ORDERS.WOR_SUPP_DOCUMENTS%TYPE
+        , P_WOR_EARLIEST_START_DATE        IN WORK_ORDERS.WOR_EARLIEST_START_DATE%TYPE
+        , P_WOR_PLANNED_COMP_DATE          IN WORK_ORDERS.WOR_PLANNED_COMP_DATE%TYPE
+        , P_WOR_LATEST_COMP_DATE           IN WORK_ORDERS.WOR_LATEST_COMP_DATE%TYPE
+        , P_WOR_SITE_COMPLETE_DATE         IN WORK_ORDERS.WOR_SITE_COMPLETE_DATE%TYPE
+        , P_WOR_EST_DURATION               IN WORK_ORDERS.WOR_EST_DURATION%TYPE
+        , P_WOR_ACT_DURATION               IN WORK_ORDERS.WOR_ACT_DURATION%TYPE
+        , P_WOR_CERT_COMPLETE              IN WORK_ORDERS.WOR_CERT_COMPLETE%TYPE
+        , P_WOR_CON_CERT_COMPLETE          IN WORK_ORDERS.WOR_CON_CERT_COMPLETE%TYPE
+        , P_WOR_AGREED_BY                  IN WORK_ORDERS.WOR_AGREED_BY%TYPE
+        , P_WOR_AGREED_BY_DATE             IN WORK_ORDERS.WOR_AGREED_BY_DATE%TYPE
+        , P_WOR_CON_AGREED_BY              IN WORK_ORDERS.WOR_CON_AGREED_BY%TYPE
+        , P_WOR_CON_AGREED_BY_DATE         IN WORK_ORDERS.WOR_CON_AGREED_BY_DATE%TYPE
+        , P_WOR_LATE_COSTS                 IN WORK_ORDERS.WOR_LATE_COSTS%TYPE
+        , P_WOR_LATE_COST_CERTIFIED_BY     IN WORK_ORDERS.WOR_LATE_COST_CERTIFIED_BY%TYPE
+        , P_WOR_LATE_COST_CERTIFIED_DATE   IN WORK_ORDERS.WOR_LATE_COST_CERTIFIED_DATE%TYPE
+        , P_WOR_LOCATION_PLAN              IN WORK_ORDERS.WOR_LOCATION_PLAN%TYPE
+        , P_WOR_UTILITY_PLANS              IN WORK_ORDERS.WOR_UTILITY_PLANS%TYPE
+--        , P_WOR_STREETWORK_NOTICE          IN WORK_ORDERS.WOR_STREETWORK_NOTICE%TYPE
+        , P_WOR_WORK_RESTRICTIONS          IN WORK_ORDERS.WOR_WORK_RESTRICTIONS%TYPE
+		, P_WOR_REGISTER_FLAG              IN work_orders.wor_register_flag%TYPE
+		, P_WOR_REGISTER_STATUS            IN work_orders.wor_register_status%TYPE	      
+        ) RETURN NUMBER; 
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+--<PROC NAME="CREATE_WOL">
+--
+  FUNCTION create_wol
+        ( P_WOL_ID                 IN WORK_ORDER_LINES.WOL_ID%TYPE default 0
+        , P_WOL_WORKS_ORDER_NO     IN WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE default 0
+        , P_WOL_RSE_HE_ID          IN WORK_ORDER_LINES.WOL_RSE_HE_ID%TYPE default 0
+        , P_WOL_SISS_ID            IN WORK_ORDER_LINES.WOL_SISS_ID%TYPE default 0
+        , P_WOL_ICB_WORK_CODE      IN WORK_ORDER_LINES.WOL_ICB_WORK_CODE%TYPE default 0
+        , P_WOL_DEF_DEFECT_ID      IN WORK_ORDER_LINES.WOL_DEF_DEFECT_ID%TYPE default null
+        , P_WOL_REP_ACTION_CAT     IN WORK_ORDER_LINES.WOL_REP_ACTION_CAT%TYPE default null
+        , P_WOL_SCHD_ID            IN WORK_ORDER_LINES.WOL_SCHD_ID%TYPE default null
+        , P_WOL_CNP_ID             IN WORK_ORDER_LINES.WOL_CNP_ID%TYPE default null
+        , P_WOL_ACT_AREA_CODE      IN WORK_ORDER_LINES.WOL_ACT_AREA_CODE%TYPE default null
+        , P_WOL_ACT_COST           IN WORK_ORDER_LINES.WOL_ACT_COST%TYPE default null
+        , P_WOL_ACT_LABOUR         IN WORK_ORDER_LINES.WOL_ACT_LABOUR%TYPE default null
+        , P_WOL_ARE_END_CHAIN      IN WORK_ORDER_LINES.WOL_ARE_END_CHAIN%TYPE default null
+        , P_WOL_ARE_REPORT_ID      IN WORK_ORDER_LINES.WOL_ARE_REPORT_ID%TYPE default null
+        , P_WOL_ARE_ST_CHAIN       IN WORK_ORDER_LINES.WOL_ARE_ST_CHAIN%TYPE default null
+        , P_WOL_CHECK_CODE         IN WORK_ORDER_LINES.WOL_CHECK_CODE%TYPE default null
+        , P_WOL_CHECK_COMMENTS     IN WORK_ORDER_LINES.WOL_CHECK_COMMENTS%TYPE default null
+        , P_WOL_CHECK_DATE         IN WORK_ORDER_LINES.WOL_CHECK_DATE%TYPE default null
+        , P_WOL_CHECK_ID           IN WORK_ORDER_LINES.WOL_CHECK_ID%TYPE default null
+        , P_WOL_CHECK_PEO_ID       IN WORK_ORDER_LINES.WOL_CHECK_PEO_ID%TYPE default null
+        , P_WOL_CHECK_RESULT       IN WORK_ORDER_LINES.WOL_CHECK_RESULT%TYPE default null
+        , P_WOL_DATE_COMPLETE      IN WORK_ORDER_LINES.WOL_DATE_COMPLETE%TYPE default null
+        , P_WOL_DATE_CREATED       IN WORK_ORDER_LINES.WOL_DATE_CREATED%TYPE default null
+        , P_WOL_DATE_PAID          IN WORK_ORDER_LINES.WOL_DATE_PAID%TYPE default null
+        , P_WOL_DESCR              IN WORK_ORDER_LINES.WOL_DESCR%TYPE default null
+        , P_WOL_DISCOUNT           IN WORK_ORDER_LINES.WOL_DISCOUNT%TYPE default null
+        , P_WOL_EST_COST           IN WORK_ORDER_LINES.WOL_EST_COST%TYPE default null
+        , P_WOL_EST_LABOUR         IN WORK_ORDER_LINES.WOL_EST_LABOUR%TYPE default null
+        , P_WOL_FLAG               IN WORK_ORDER_LINES.WOL_FLAG%TYPE default null
+        , P_WOL_MONTH_DUE          IN WORK_ORDER_LINES.WOL_MONTH_DUE%TYPE default null
+        , P_WOL_ORIG_EST           IN WORK_ORDER_LINES.WOL_ORIG_EST%TYPE default null
+        , P_WOL_PAYMENT_CODE       IN WORK_ORDER_LINES.WOL_PAYMENT_CODE%TYPE default null
+        , P_WOL_QUANTITY           IN WORK_ORDER_LINES.WOL_QUANTITY%TYPE default null
+        , P_WOL_RATE               IN WORK_ORDER_LINES.WOL_RATE%TYPE default null
+        , P_WOL_SS_TRE_TREAT_CODE  IN WORK_ORDER_LINES.WOL_SS_TRE_TREAT_CODE%TYPE default null
+        , P_WOL_STATUS             IN WORK_ORDER_LINES.WOL_STATUS%TYPE default null
+        , P_WOL_STATUS_CODE        IN WORK_ORDER_LINES.WOL_STATUS_CODE%TYPE default null
+        , P_WOL_UNIQUE_FLAG        IN WORK_ORDER_LINES.WOL_UNIQUE_FLAG%TYPE default null
+        , P_WOL_WORK_SHEET_DATE    IN WORK_ORDER_LINES.WOL_WORK_SHEET_DATE%TYPE default null
+        , P_WOL_WORK_SHEET_ISSUE   IN WORK_ORDER_LINES.WOL_WORK_SHEET_ISSUE%TYPE default null
+        , P_WOL_WORK_SHEET_NO      IN WORK_ORDER_LINES.WOL_WORK_SHEET_NO%TYPE default null
+        , P_WOL_WOR_FLAG           IN WORK_ORDER_LINES.WOL_WOR_FLAG%TYPE default null
+        , P_WOL_DATE_REPAIRED      IN WORK_ORDER_LINES.WOL_DATE_REPAIRED%TYPE default null
+        , P_WOL_INVOICE_STATUS     IN WORK_ORDER_LINES.WOL_INVOICE_STATUS%TYPE default null
+        , P_WOL_BUD_ID             IN WORK_ORDER_LINES.WOL_BUD_ID%TYPE default null
+        , P_WOL_UNPOSTED_EST       IN WORK_ORDER_LINES.WOL_UNPOSTED_EST%TYPE default null
+        , P_WOL_IIT_ITEM_ID        IN WORK_ORDER_LINES.WOL_IIT_ITEM_ID%TYPE default null
+        , P_WOL_GANG               IN WORK_ORDER_LINES.WOL_GANG%TYPE default null
+        , P_WOL_REGISTER_FLAG      IN WORK_ORDER_LINES.WOL_REGISTER_FLAG%TYPE default 'N'
+        , pi_zeroize               IN BOOLEAN DEFAULT FALSE
+        )  RETURN NUMBER;
+--
+-- </PROC>
+-------------------------------------------------------------------------------
+--
+--<PROC NAME="COPY_WORKS_ORDER">
+--
+  FUNCTION copy_works_order
+        ( pi_wor_works_order_no             IN work_orders.wor_works_order_no%TYPE
+        ) RETURN work_orders.wor_works_order_no%TYPE;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="copy_wol">
+--
+PROCEDURE copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                  ,pi_wol_id IN work_order_lines.wol_id%TYPE);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="count_wols_for_register">
+-- Get count of lines on a works order that are instructed but not sent to streetworks/tma register - called in MAI3800
+FUNCTION count_wols_for_register (pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_swm_notices_for_wo">
+-- Get count of streetworks notices for a given works order - called in MAI3800
+FUNCTION count_swm_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_tma_notices_for_wo">
+-- Get count of tma notices for a given works order - called in MAI3800
+FUNCTION count_tma_notices_for_wo(pi_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_swm_notices_for_wol">
+FUNCTION count_tma_notices_for_wol(pi_wol_id IN work_order_lines.wol_id%TYPE)
+  RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="count_wols">
+-- Get count of wols of given type
+FUNCTION count_wols(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                   ,pi_wol_flag           IN work_order_lines.wol_flag%TYPE DEFAULT NULL
+                   ) 
+  RETURN PLS_INTEGER;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="wols_of_given_type_exist">
+-- returns TRUE if there is a wol with wol_flag = given flag
+FUNCTION wols_of_given_type_exist(pi_works_order_no IN work_orders.wor_works_order_no%TYPE
+                                 ,pi_wol_flag       IN work_order_lines.wol_flag%TYPE) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="wol_can_be_copied">
+FUNCTION wol_can_be_copied(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                          ,pi_wol_id             IN work_order_lines.wol_id%TYPE) RETURN VARCHAR;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="check_wol_can_be_copied">
+PROCEDURE check_wol_can_be_copied(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                                 ,pi_wol_id             IN work_order_lines.wol_id%TYPE);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="wo_can_be_copied">
+FUNCTION wo_can_be_copied(pi_wor_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN VARCHAR;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="check_wo_can_be_copied">
+PROCEDURE check_wo_can_be_copied(pi_wor_works_order_no IN work_orders.wor_works_order_no%TYPE);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="determine_reg_status_for_flag">
+FUNCTION determine_reg_status_for_flag(pi_works_order_no    IN work_orders.wor_works_order_no%TYPE
+                                      ,pi_wor_register_flag IN work_orders.wor_register_flag%TYPE
+                                      ,pi_wol_id            IN work_order_lines.wol_id%TYPE DEFAULT NULL)
+  RETURN work_orders.wor_register_status%TYPE;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wol_register_bs_trg">
+PROCEDURE wol_register_bs_trg;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wol_register_iud_trg">
+PROCEDURE wol_register_iud_trg(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wol_register_as_trg">
+PROCEDURE wol_register_as_trg;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="date_from_priority">
+PROCEDURE date_from_priority (
+   p_wpr_id        IN       WORK_ORDER_PRIORITIES.wpr_id%TYPE,
+   p_date          IN       DATE,
+   p_target_date   OUT      DATE,
+   p_error         OUT      VARCHAR2
+);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="set_child_asset_params">
+
+PROCEDURE set_child_asset_params(pi_parent_tab IN parent_asset_tab
+                                ,pi_child_type IN nm_inv_types_all.nit_inv_type%TYPE);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_child_assets">
+PROCEDURE get_child_assets(po_child_assets IN OUT child_asset_tab);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_wo_wol_ids">
+FUNCTION get_wo_wol_ids(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN wol_id_tab;
+--
+-- </PROC>
+
+-----------------------------------------------------------------------------
+--
+-- <PRAGMA>
+--     PRAGMA RESTRICT_REFERENCES(get_hco_seq           , wnds);
+--     PRAGMA RESTRICT_REFERENCES(get_version           , wnds);
+--     PRAGMA RESTRICT_REFERENCES(calc_st_chain         , wnds);
+--     PRAGMA RESTRICT_REFERENCES(translate_nm_inv_type , wnds);
+--     PRAGMA RESTRICT_REFERENCES(translate_mai_inv_type, wnds);
+--     PRAGMA RESTRICT_REFERENCES(budget_allocation_used, wnds);
+---     PRAGMA RESTRICT_REFERENCES(get_gis_sys_flag, wnds, wnps);
+-- </PRAGMA>
+END mai;
+/
