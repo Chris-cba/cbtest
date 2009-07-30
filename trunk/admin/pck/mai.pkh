@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.3   Feb 12 2009 17:19:50   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.4   Jul 30 2009 18:34:10   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Feb 12 2009 17:19:50  $
---       Date fetched Out : $Modtime:   Feb 03 2009 13:31:00  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jul 30 2009 18:34:10  $
+--       Date fetched Out : $Modtime:   Jul 24 2009 17:06:54  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.4  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -223,6 +223,8 @@ FUNCTION parse_inv_condition(p_instring   VARCHAR2
          calc_type    IN     standard_items.sta_calc_type%TYPE,
          item_code    IN     schedule_items.schi_sta_item_code%TYPE,
          quantity     IN OUT schedule_items.schi_calc_quantity%TYPE);
+
+PROCEDURE upd_schd_items_and_roads(pi_schd_id IN schedules.schd_id%TYPE);         
 --
 -- </PROC>
 -------------------------------------------------------------------------------
