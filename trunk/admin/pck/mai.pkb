@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.6   Mar 26 2009 11:14:18   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.7   Jul 30 2009 18:59:22   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Mar 26 2009 11:14:18  $
---       Date fetched Out : $Modtime:   Mar 26 2009 11:13:28  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Jul 30 2009 18:59:22  $
+--       Date fetched Out : $Modtime:   Jul 30 2009 18:56:22  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.6  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.7  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -29,7 +29,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
    g_child_asset_type  nm_inv_types_all.nit_inv_type%TYPE;
 
    g_swr_licenced      BOOLEAN;
-   g_tma_licenced      BOOLEAN;   
+   g_tma_licenced      BOOLEAN;
 --
 -----------------------------------------------------------------------------
 --
@@ -118,7 +118,7 @@ END get_wo_no;
           when no_data_found then
             raise_application_error(-20001, 'Road segment not found: rse_he_id='||p_ne_id);
         end;
-    end; 
+    end;
 --
 -------------------------------------------------------------------------------
 -- Parse an inventory condition for cyclic maintenance inventory rules.
@@ -127,13 +127,13 @@ FUNCTION contract_still_in_date(p_wo_no work_order_lines.wol_works_order_no%TYPE
   --
 cursor get_contract_details is
 select distinct con.con_year_end_date
-from work_orders wo,     
+from work_orders wo,
 	   contracts con,
-	   work_order_lines wol	 
+	   work_order_lines wol
 where con.con_id = wo.wor_con_id
 and wol.wol_id = p_wo_no -- 34177
 and con.con_year_end_date is not null
-and wo.wor_works_order_no = wol.wol_works_order_no;  
+and wo.wor_works_order_no = wol.wol_works_order_no;
   --
 l_con_year_end_date contracts.con_year_end_date%TYPE := sysdate;
 BEGIN
@@ -365,33 +365,30 @@ PROCEDURE calculate_inv_quantity(he_id     IN     road_segments_all.rse_he_id%TY
                                 ,item_code IN     schedule_items.schi_sta_item_code%TYPE
                                 ,quantity  IN OUT schedule_items.schi_calc_quantity%TYPE) IS
   --
-  CURSOR c1(cp_he_id     road_segments_all.rse_he_id%TYPE
-           ,cp_item_code schedule_items.schi_sta_item_code%TYPE)
-      IS
-  SELECT 'SELECT i1.iit_end_chain,i1.iit_st_chain,i1.iit_width,i1.iit_height'
-        ||',i1.iit_ity_inv_code,i1.iit_ity_sys_flag,i1.iit_x_sect,r1.rel_factor'
-        ||' FROM road_segments_all,inv_items_all i1,related_inventory r1'
-        ||' WHERE r1.rel_sta_item_code = '||''''||cp_item_code||''''
-        ||' AND r1.rel_ity_inv_code = i1.iit_ity_inv_code'
-        ||' AND r1.rel_ity_sys_flag = i1.iit_ity_sys_flag'
-        ||' AND '||''''||SYSDATE||''''||' BETWEEN i1.iit_cre_date AND NVL(i1.iit_end_date, sysdate)'
-        ||' AND i1.iit_rse_he_id = rse_he_id'
-        ||' AND i1.iit_ity_sys_flag = rse_sys_flag'
-        ||' AND '||''''||SYSDATE||''''||' BETWEEN rse_start_date AND NVL(rse_end_date,sysdate)'
-        ||' AND rse_he_id = '||TO_CHAR(cp_he_id)
-        ||DECODE(r2.rel_condition, NULL, NULL,' AND '||REPLACE(LOWER(r2.rel_condition),'iit','i1.iit'))
-    FROM related_inventory r2
-   WHERE r2.rel_sta_item_code = cp_item_code
-       ;
+  lt_query nm3type.tab_varchar32767;
   --
-  CURSOR c2(cp_he_id            nm_elements_all.ne_id%TYPE
-           ,cp_iit_ity_inv_code inv_items_all.iit_ity_inv_code%TYPE
-           ,cp_iit_ity_sys_flag inv_items_all.iit_ity_sys_flag%TYPE
-           ,cp_iit_end_chain    inv_items_all.iit_end_chain%TYPE
-           ,cp_iit_x_sect       inv_items_all.iit_x_sect%TYPE)
+  lv_tot_qty     NUMBER;
+  lv_iit_width2  inv_items_all.iit_width%TYPE;
+  --
+  TYPE calc_rec IS RECORD(iit_end_chain     inv_items_all.iit_end_chain%TYPE
+                         ,iit_st_chain      inv_items_all.iit_st_chain%TYPE
+                         ,iit_width         inv_items_all.iit_width%TYPE
+                         ,iit_height        inv_items_all.iit_height%TYPE
+                         ,iit_ity_inv_code  inv_items_all.iit_ity_inv_code%TYPE
+                         ,iit_ity_sys_flag  inv_items_all.iit_ity_sys_flag%TYPE
+                         ,iit_x_sect        inv_items_all.iit_x_sect%TYPE
+                         ,rel_factor        related_inventory.rel_factor%TYPE);
+  TYPE calc_tab IS TABLE OF calc_rec;
+  lt_calc calc_tab;
+  --
+  CURSOR c2(cp_he_id             nm_elements_all.ne_id%TYPE
+           ,cp_iit_ity_inv_code  inv_items_all.iit_ity_inv_code%TYPE
+           ,cp_iit_ity_sys_flag  inv_items_all.iit_ity_sys_flag%TYPE
+           ,cp_iit_end_chain     inv_items_all.iit_end_chain%TYPE
+           ,cp_iit_x_sect        inv_items_all.iit_x_sect%TYPE)
       IS
   SELECT iit_width
-    FROM inv_items_all
+    FROM inv_items_all_section
    WHERE iit_rse_he_id       = cp_he_id
      AND iit_ity_inv_code    = cp_iit_ity_inv_code
      AND iit_ity_sys_flag    = cp_iit_ity_sys_flag
@@ -401,131 +398,235 @@ PROCEDURE calculate_inv_quantity(he_id     IN     road_segments_all.rse_he_id%TY
                      AND NVL(iit_end_date,SYSDATE)
        ;
   --
-  lv_query             VARCHAR2(32767);
-  lv_cursor_id         INTEGER;
-  lv_row_count         INTEGER;
-  lv_tot_qty           NUMBER;
-  lv_iit_end_chain     inv_items_all.iit_end_chain%TYPE;
-  lv_iit_st_chain      inv_items_all.iit_st_chain%TYPE;
-  lv_iit_width         inv_items_all.iit_width%TYPE;
-  lv_iit_width2        inv_items_all.iit_width%TYPE;
-  lv_iit_height        inv_items_all.iit_height%TYPE;
-  lv_iit_ity_inv_code  inv_items_all.iit_ity_inv_code%TYPE;
-  lv_iit_ity_sys_flag  inv_items_all.iit_ity_sys_flag%TYPE;
-  lv_iit_x_sect        inv_items_all.iit_x_sect%TYPE;
-  lv_rel_factor        related_inventory.rel_factor%TYPE;
+  PROCEDURE get_rel
+    IS
+  BEGIN
+    --
+    SELECT 'SELECT iit_end_chain,iit_st_chain,iit_width,iit_height'
+          ||',iit_ity_inv_code,iit_ity_sys_flag,iit_x_sect,'||to_char(rel_factor)
+          ||' FROM inv_items_all_section,nm_elements '
+          ||' WHERE ne_id = '||TO_CHAR(he_id)
+          ||' AND ne_id = iit_rse_he_id'
+          ||' AND iit_ity_inv_code = '||nm3flx.string(rel_ity_inv_code)
+          ||' AND iit_ity_sys_flag = '||nm3flx.string(rel_ity_sys_flag)
+          ||DECODE(rel_condition, NULL, NULL,' AND '||rel_condition)
+          ||' AND SYSDATE BETWEEN iit_cre_date AND NVL(iit_end_date,SYSDATE)'
+      BULK COLLECT
+      INTO lt_query
+      FROM related_inventory
+     WHERE rel_sta_item_code = item_code
+         ;
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END get_rel;
   --
 BEGIN
-  --
-  nm_debug.debug_on;
-  --
-  OPEN  c1(he_id,item_code);
-  FETCH c1
-   INTO lv_query;
-  CLOSE c1;
-  --
-  higgri.parse_query(lv_query,lv_cursor_id);          -- parse the query
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,1,lv_iit_end_chain);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,2,lv_iit_st_chain);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,3,lv_iit_width);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,4,lv_iit_height);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,5,lv_iit_ity_inv_code,4);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,6,lv_iit_ity_sys_flag,1);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,7,lv_iit_x_sect,4);
-  DBMS_SQL.DEFINE_COLUMN(lv_cursor_id,8,lv_rel_factor);
-  --
-  lv_row_count := DBMS_SQL.EXECUTE(lv_cursor_id);    -- execute query
-  --
-  nm_debug.debug('row count : '||to_char(lv_row_count));
-  --
-  LOOP
+  /*
+  ||Get The Query To Return The Assets Related
+  ||To The Standard Item And Section.
+  */
+  get_rel;
+  /*
+  ||Execute Each Query Returned And Calaculate
+  ||The Cumulative Quatity.
+  */
+  FOR i IN 1..lt_query.count LOOP
     --
-    IF DBMS_SQL.FETCH_ROWS(lv_cursor_id) > 0         -- fetch back from cursor
-     THEN
-        --
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,1,lv_iit_end_chain);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,2,lv_iit_st_chain);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,3,lv_iit_width);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,4,lv_iit_height);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,5,lv_iit_ity_inv_code);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,6,lv_iit_ity_sys_flag);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,7,lv_iit_x_sect);
-        DBMS_SQL.COLUMN_VALUE(lv_cursor_id,8,lv_rel_factor);
-        --
+    BEGIN
+      /*
+      ||Execute The Query.
+      */
+      EXECUTE IMMEDIATE lt_query(i) BULK COLLECT INTO lt_calc;
+      /*
+      ||Calculate The Quantity.
+      */
+      FOR j IN 1..lt_calc.count LOOP
         IF calc_type = 'N'
          THEN
-            lv_tot_qty := nvl(lv_tot_qty,0) + (1 * lv_rel_factor);
+            lv_tot_qty := nvl(lv_tot_qty,0) + (1 * lt_calc(j).rel_factor);
         ELSIF calc_type = 'L'
          THEN
-            lv_tot_qty := nvl(lv_tot_qty,0) + ((NVL(lv_iit_end_chain,lv_iit_st_chain) - lv_iit_st_chain)
-                                          * lv_rel_factor);
+            lv_tot_qty := nvl(lv_tot_qty,0) + ((NVL(lt_calc(j).iit_end_chain,lt_calc(j).iit_st_chain)-lt_calc(j).iit_st_chain)
+                                               * lt_calc(j).rel_factor);
         ELSIF calc_type = 'A'
          THEN
-            lv_tot_qty := nvl(lv_tot_qty,0) + ((NVL(lv_iit_width, 0) * NVL(lv_iit_height, 0))
-                                          * lv_rel_factor);
+            lv_tot_qty := nvl(lv_tot_qty,0) + ((NVL(lt_calc(j).iit_width,0) * NVL(lt_calc(j).iit_height,0))
+                                               * lt_calc(j).rel_factor);
         ELSIF calc_type = 'T'
          THEN
             --
-            OPEN  c2(he_id,lv_iit_ity_inv_code,lv_iit_ity_sys_flag,lv_iit_end_chain,lv_iit_x_sect);
+            OPEN  c2(he_id
+                    ,lt_calc(j).iit_ity_inv_code
+                    ,lt_calc(j).iit_ity_sys_flag
+                    ,lt_calc(j).iit_end_chain
+                    ,lt_calc(j).iit_x_sect);
             FETCH c2
              INTO lv_iit_width2;
             CLOSE c2;
             --
             IF NVL(lv_iit_width2,0) = 0
              THEN
-                lv_iit_width2 := NVL(lv_iit_width,0);
+                lv_iit_width2 := NVL(lt_calc(j).iit_width,0);
             END IF;
             --
-            lv_tot_qty := NVL(lv_tot_qty,0) + ((NVL(lv_iit_width,0) + lv_iit_width2) * 0.5
-                                               *(NVL(lv_iit_end_chain,lv_iit_st_chain) - lv_iit_st_chain)
-                                               *lv_rel_factor);
+            lv_tot_qty := NVL(lv_tot_qty,0) + ((NVL(lt_calc(j).iit_width,0) + lv_iit_width2)
+                                               * 0.5
+                                               *(NVL(lt_calc(j).iit_end_chain,lt_calc(j).iit_st_chain)-lt_calc(j).iit_st_chain)
+                                               *lt_calc(j).rel_factor);
             --
         END IF;
-        --
-    ELSE
-        --
-        EXIT;
-        --
-    END IF;
-    --
+      END LOOP;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          NULL;
+      WHEN others
+       THEN
+          RAISE;
+    END;
   END LOOP;
-  --
-  DBMS_SQL.CLOSE_CURSOR(lv_cursor_id);               -- close cursor
-  --
-  quantity := NVL(lv_tot_qty,0);                     -- pass calculated value back
-  --
-  nm_debug.debug('quantity : '||to_char(quantity));
-  nm_debug.debug_off;
+  /*
+  ||Return The Total Quantity.
+  */
+  quantity := NVL(lv_tot_qty,0);
   --
 END calculate_inv_quantity;
 --
+PROCEDURE upd_schd_items_and_roads(pi_schd_id IN schedules.schd_id%TYPE)
+  IS
+  --
+  lv_qty     schedule_items.schi_calc_quantity%type:=0;
+  lv_total_qty  schedule_items.schi_calc_quantity%type:=0;
+  --
+  TYPE items_rec IS RECORD(schr_sta_item_code schedule_roads.schr_sta_item_code%TYPE
+                          ,sta_calc_type      standard_items.sta_calc_type%TYPE);
+  TYPE items_tab IS TABLE OF items_rec;
+  lt_items items_tab;
+  --
+  TYPE roads_tab IS TABLE OF schedule_roads.schr_rse_he_id%TYPE;
+  lt_roads roads_tab;
+  --
+  TYPE qty_tab IS TABLE OF schedule_roads.schr_calc_quantity%TYPE INDEX BY BINARY_INTEGER;
+  lt_qty qty_tab;
+  --
+  PROCEDURE get_items
+    IS
+  BEGIN
+    SELECT DISTINCT schr_sta_item_code
+          ,sta_calc_type
+      BULK COLLECT
+      INTO lt_items
+      FROM related_inventory
+          ,standard_items
+          ,schedule_roads
+     WHERE rel_sta_item_code = sta_item_code
+       AND sta_item_code = schr_sta_item_code
+       AND schr_schd_id = pi_schd_id
+         ;
+  END get_items;
+  --
+  PROCEDURE get_roads
+    IS
+  BEGIN
+    SELECT DISTINCT schr_rse_he_id
+      BULK COLLECT
+      INTO lt_roads
+      FROM schedule_roads
+     WHERE schr_schd_id = pi_schd_id
+         ;
+  END get_roads;
+  --
+BEGIN
+  /*
+  ||Get The Standard Items To Calculate Quantities For.
+  */
+  get_items;
+  /*
+  ||Get The Sections To Be Processed.
+  */
+  get_roads;
+  /*
+  ||Calculate The Quantities For Each Standard Item.
+  */
+  FOR i IN 1..lt_items.count LOOP
+    /*
+    ||Zero The Item Total Quantity.
+    */
+    lv_total_qty := 0;
+    /*
+    ||Calaculate The Items Quantity For Each Section.
+    */
+    FOR j IN 1..lt_roads.count LOOP
+      --
+      mai.calculate_inv_quantity(lt_roads(j)
+                                ,lt_items(i).sta_calc_type
+                                ,lt_items(i).schr_sta_item_code
+                                ,lv_qty);
+      --
+      lt_qty(j) := lv_qty;
+      lv_total_qty := lv_total_qty + lt_qty(j);
+      --
+    END LOOP;
+    /*
+    ||Update The Section Quantities.
+    */
+    FORALL k IN 1..lt_roads.count
+    UPDATE schedule_roads
+       SET schr_act_quantity  = lt_qty(k)
+          ,schr_calc_quantity = lt_qty(k)
+          ,schr_last_updated  = SYSDATE
+     WHERE schr_sta_item_code = lt_items(i).schr_sta_item_code
+       AND schr_rse_he_id     = lt_roads(k)
+       AND schr_schd_id       = pi_schd_id
+           ;
+    /*
+    ||Update The Standard Item Total Quantity.
+    */
+    UPDATE schedule_items
+       SET schi_last_updated  = SYSDATE
+          ,schi_act_quantity  = lv_total_qty
+          ,schi_calc_quantity = lv_total_qty
+     WHERE schi_sta_item_code = lt_items(i).schr_sta_item_code
+       and schi_schd_id       = pi_schd_id
+         ;
+    --
+  END LOOP;
+  --
+END upd_schd_items_and_roads;
 --
-PROCEDURE pop_schd_roads(pi_schd_id IN schedules.schd_id%type
-                        ,pi_group_id IN road_groups.rse_he_id%type
+PROCEDURE pop_schd_roads(pi_schd_id   IN schedules.schd_id%type
+                        ,pi_group_id  IN road_groups.rse_he_id%type
                         ,pi_item_code IN standard_items.sta_item_code%type) IS
 BEGIN
-  insert into schedule_roads
-             (schr_schd_id
-             ,schr_sta_item_code
-             ,schr_rse_he_id
-             ,schr_act_quantity
-             ,schr_last_updated
-             )
-  select      pi_schd_id
-             ,pi_item_code
-             ,rsm_rse_he_id_of
-             ,'0'
-             ,sysdate
-  from        road_seg_membs
-  where       rsm_type = 'S'
-  and         rsm_end_date is null
-  connect by prior rsm_rse_he_id_of = rsm_rse_he_id_in
-  start with rsm_rse_he_id_in = pi_group_id;
+  insert
+    into schedule_roads
+        (schr_schd_id
+        ,schr_sta_item_code
+        ,schr_rse_he_id
+        ,schr_act_quantity
+        ,schr_last_updated)
+  select pi_schd_id
+        ,pi_item_code
+        ,rsm_rse_he_id_of
+        ,'0'
+        ,sysdate
+    from road_seg_membs
+   where rsm_type = 'S'
+     and rsm_end_date is null
+ connect by prior rsm_rse_he_id_of = rsm_rse_he_id_in
+   start with rsm_rse_he_id_in = pi_group_id
+       ;
 END pop_schd_roads;
 --
 --
-PROCEDURE upd_schedule_quantity_assets(pi_schd_id  IN schedules.schd_id%TYPE
-                                      ,pi_group_id IN road_segs.rse_he_id%TYPE
+PROCEDURE upd_schedule_quantity_assets(pi_schd_id   IN schedules.schd_id%TYPE
+                                      ,pi_group_id  IN road_segs.rse_he_id%TYPE
                                       ,pi_item_code IN standard_items.sta_item_code%TYPE) IS
 
   /*
@@ -537,16 +638,6 @@ PROCEDURE upd_schedule_quantity_assets(pi_schd_id  IN schedules.schd_id%TYPE
   lv_item_id   inv_items_all.iit_item_id%type;
   lv_quantity  number:=0;
   lv_tot       number:=0;
-  --
-  CURSOR Get_Network(cp_group_id road_segs.rse_he_id%TYPE)
-      IS
-  SELECT rsm_rse_he_id_of  section
-    FROM road_seg_membs
-   WHERE rsm_type = 'S'
-     AND rsm_end_date IS NULL
- CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-   START WITH rsm_rse_he_id_in = cp_group_id
-       ;
   --
   CURSOR c1(cp_schd_id schedules.schd_id%TYPE)
       IS
@@ -562,6 +653,29 @@ PROCEDURE upd_schedule_quantity_assets(pi_schd_id  IN schedules.schd_id%TYPE
      AND sta_item_code      = schi_sta_item_code
        ;
   --
+  TYPE roads_tab IS TABLE of nm_elements_all.ne_id%TYPE;
+  lt_roads roads_tab;
+  --
+  PROCEDURE get_network
+    IS
+  BEGIN
+    --
+    SELECT schr_rse_he_id
+      BULK COLLECT
+      INTO lt_roads
+      FROM schedule_roads
+     WHERE schr_schd_id = pi_schd_id
+       AND schr_sta_item_code = pi_item_code
+         ;
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END get_network;
+  --
 BEGIN
   --
   DELETE
@@ -569,24 +683,27 @@ BEGIN
    WHERE schr_schd_id=pi_schd_id
        ;
 
-     --
-     -- NM 04-AUG-2005: Changes made to replicate those done by SM for v2.
-     --
-     pop_schd_roads(pi_schd_id
-                   ,pi_group_id
-                   ,pi_item_code);
+  --
+  -- NM 04-AUG-2005: Changes made to replicate those done by SM for v2.
+  --
+  pop_schd_roads(pi_schd_id
+                ,pi_group_id
+                ,pi_item_code);
 
   --
-  FOR i IN get_network(pi_group_id) LOOP
+  get_network;
+  --
+  FOR i IN 1..lt_roads.count LOOP
     --
     FOR j IN c1(pi_schd_id) LOOP
       --
       calculate_inv_quantity_assets(pi_schd_id
-                                   ,i.section
+                                   ,lt_roads(i)
                                    ,lv_calc_type
                                    ,j.schi_sta_item_code
                                    ,lv_item_id
                                    ,lv_quantity);
+      --
     END LOOP;
     --
   END LOOP;
@@ -609,24 +726,11 @@ PROCEDURE calculate_inv_quantity_assets(p_schd_id    IN     schedules.schd_id%TY
                                        ,item_id      IN OUT inv_items_all.iit_item_id%TYPE
                                        ,quantity     IN OUT schedule_items.schi_calc_quantity%TYPE) IS
   --
-  CURSOR c1(cp_he_id     road_segments_all.rse_he_id%TYPE
-           ,cp_item_code schedule_items.schi_sta_item_code%TYPE)
-      IS
-  SELECT 'select iit_item_id,count(*) '
-        ||'from inv_items_all,road_segments_all,related_inventory r1 '
-        ||'where rse_he_id ='||TO_CHAR(cp_he_id)
-        ||' and iit_ity_inv_code = r1.rel_ity_inv_code'
-        ||' and iit_ity_sys_flag = r1.rel_ity_sys_flag'
-        ||' and iit_rse_he_id='||TO_CHAR(cp_he_id)
-        ||' and r1.rel_sta_item_code = '||''''||cp_item_code||''''
-        ||' and '||''''||SYSDATE||''''||' between iit_cre_date and nvl(iit_end_date, sysdate)'
-        ||' and '||''''||SYSDATE||''''||' between rse_start_date and nvl(rse_end_date,sysdate)'
-        ||' and iit_ity_sys_flag = rse_sys_flag '
-        ||DECODE(r2.rel_condition, NULL, NULL,' AND '||r2.rel_condition)
-        ||' group by iit_item_id'
-    FROM related_inventory r2
-   WHERE r2.rel_sta_item_code = cp_item_code
-       ;
+  lt_query nm3type.tab_varchar32767;
+  --
+  TYPE iit_item_id_tab IS TABLE OF inv_items_all.iit_item_id%TYPE;
+  lt_iit_item_id iit_item_id_tab;
+  lt_count nm3type.tab_number;
   --
   l_query     VARCHAR2(32767);
   l_cursor_id INTEGER;
@@ -634,62 +738,87 @@ PROCEDURE calculate_inv_quantity_assets(p_schd_id    IN     schedules.schd_id%TY
   lcnt        NUMBER;
   lid         NUMBER;
   --
+  PROCEDURE get_rel
+    IS
+  BEGIN
+    --
+    SELECT 'SELECT iit_item_id,count(*)'
+         ||' FROM inv_items_all_section,nm_elements'
+         ||' WHERE ne_id ='||TO_CHAR(he_id)
+         ||' AND ne_id = iit_rse_he_id'
+         ||' AND iit_ity_inv_code = '||nm3flx.string(rel_ity_inv_code)
+         ||' AND iit_ity_sys_flag = '||nm3flx.string(rel_ity_sys_flag)
+         ||' AND SYSDATE BETWEEN iit_cre_date AND NVL(iit_end_date, sysdate)'
+         ||DECODE(rel_condition,NULL,NULL,' AND '||rel_condition)
+         ||' GROUP BY iit_item_id'
+      BULK COLLECT
+      INTO lt_query
+      FROM related_inventory
+     WHERE rel_sta_item_code = item_code
+         ;
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END get_rel;
+  --
 BEGIN
   --
-  nm_debug.debug_on;
+  --nm_debug.debug_on;
   --
-  OPEN  c1(he_id,item_code);
-  FETCH c1
-   INTO l_query;
-  CLOSE c1;
-  nm_debug.debug(l_query);
-  higgri.parse_query(l_query,l_cursor_id);          -- parse the query
-  DBMS_SQL.DEFINE_COLUMN(l_cursor_id,1,lid);        -- define col to return
-  DBMS_SQL.DEFINE_COLUMN(l_cursor_id,2,lcnt);       -- define col to return
-  l_status := DBMS_SQL.EXECUTE(l_cursor_id);        -- execute query
-  LOOP
+  get_rel;
+  --
+  FOR i IN 1..lt_query.count LOOP
     --
-    IF DBMS_SQL.FETCH_ROWS(l_cursor_id) > 0
-     THEN
+    nm_debug.debug(lt_query(i));
+    BEGIN
+      EXECUTE IMMEDIATE lt_query(i) BULK COLLECT INTO lt_iit_item_id
+                                                     ,lt_count
+                                                     ;
+      --
+      FOR j IN 1..lt_iit_item_id.count LOOP
         --
-        DBMS_SQL.COLUMN_VALUE(l_cursor_id,1,lid);  -- assign to variable
-        DBMS_SQL.COLUMN_VALUE(l_cursor_id,2,lcnt); -- assign to variable
+        INSERT
+          INTO schedule_roads
+              (schr_schd_id
+              ,schr_sta_item_code
+              ,schr_rse_he_id
+              ,schr_calc_quantity
+              ,schr_act_quantity
+              ,schr_last_updated
+              ,schr_iit_item_id)
+        VALUES(p_schd_id
+              ,item_code
+              ,he_id
+              ,lt_count(j)
+              ,0
+              ,SYSDATE
+              ,lt_iit_item_id(j))
+             ;
         --
-        IF lcnt>0
-         THEN
-            INSERT
-              INTO schedule_roads
-                  (schr_schd_id
-                  ,schr_sta_item_code
-                  ,schr_rse_he_id
-                  ,schr_calc_quantity
-                  ,schr_act_quantity
-                  ,schr_last_updated
-                  ,schr_iit_item_id)
-            VALUES(p_schd_id
-                  ,item_code
-                  ,he_id
-                  ,lcnt
-                  ,0
-                  ,SYSDATE
-                  ,lid)
-                 ;
-        END IF;
-        --
-    ELSE
-        --
-        EXIT;
-        --
-    END IF;
-    --
+      END LOOP;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          NULL;
+      WHEN others
+       THEN
+          RAISE;
+    END;
   END LOOP;
+  /*
+  ||Doesn't make any sense to pass these back.
+  ||Previous code was just passing back the last
+  ||Asset processed.
+  */
+  quantity := 0;             -- pass calculated value back
+  item_id  := 0;             -- pass the asset id's back
   --
-  DBMS_SQL.CLOSE_CURSOR(l_cursor_id);  -- close cursor
-  --
-  quantity := NVL(lcnt,0);             -- pass calculated value back
-  item_id  := NVL(lid,0);              -- pass the asset id's back
-  --
-  nm_debug.debug_off;
+  --nm_debug.debug_off;
   --
 END calculate_inv_quantity_assets;
 
@@ -1943,7 +2072,7 @@ BEGIN
   check_rse_admin_unit(
      p_ne_id  => pi_insp_rec.are_rse_he_id
     ,p_user   => user
-  );	
+  );
   --
   -- Create Inspection.
   --
@@ -3999,7 +4128,7 @@ begin
       hig.raise_ner(pi_appl => 'MAI'
 	               ,pi_id   => 917);
   END IF;
-  
+
   return l_wor_no;
 exception
   when record_locked then
@@ -4167,7 +4296,7 @@ END;
 --        , P_WOR_STREETWORK_NOTICE          IN WORK_ORDERS.WOR_STREETWORK_NOTICE%TYPE
         , P_WOR_WORK_RESTRICTIONS          IN WORK_ORDERS.WOR_WORK_RESTRICTIONS%TYPE
 		, P_WOR_REGISTER_FLAG              IN work_orders.wor_register_flag%TYPE
-		, P_WOR_REGISTER_STATUS            IN work_orders.wor_register_status%TYPE      
+		, P_WOR_REGISTER_STATUS            IN work_orders.wor_register_status%TYPE
         )  RETURN NUMBER IS
 
     l_works_order_no    work_orders.wor_works_order_no%TYPE;
@@ -4176,8 +4305,8 @@ END;
 
   	g_works_order_no := generate_works_order_no(p_con_id          => P_WOR_CON_ID
                                               , p_admin_unit      => nm3get.get_hus(pi_hus_username => USER, pi_raise_not_found => FALSE).hus_admin_unit
-                                              , p_raise_not_found => TRUE);											   
-												   
+                                              , p_raise_not_found => TRUE);
+
   	insert into work_orders
   	          ( WOR_WORKS_ORDER_NO
                   , WOR_SYS_FLAG
@@ -4263,7 +4392,7 @@ END;
 --                  , WOR_STREETWORK_NOTICE
                   , WOR_WORK_RESTRICTIONS
 		          , WOR_REGISTER_FLAG
-       		      , WOR_REGISTER_STATUS	      
+       		      , WOR_REGISTER_STATUS
                   ) VALUES
                   ( g_works_order_no
                   , P_WOR_SYS_FLAG
@@ -4285,7 +4414,7 @@ END;
                   , P_WOR_DATE_MOD
                   , P_WOR_DATE_RAISED
 --                  , P_WOR_DESCR||'/'||P_WOR_WORKS_ORDER_NO||'/'||g_works_order_no
-                  , P_WOR_DESCR 
+                  , P_WOR_DESCR
                   , P_WOR_DIV_CODE
                   , P_WOR_DTP_EXPEND_CODE
                   , P_WOR_EST_BALANCING_SUM
@@ -4350,9 +4479,9 @@ END;
 --                  , P_WOR_STREETWORK_NOTICE
                   , P_WOR_WORK_RESTRICTIONS
                   , P_WOR_REGISTER_FLAG
-       		      , P_WOR_REGISTER_STATUS	
+       		      , P_WOR_REGISTER_STATUS
                   );
-				  
+
 RETURN( SQL%rowcount );
 
 EXCEPTION
@@ -4370,17 +4499,17 @@ EXCEPTION
 FUNCTION wol_can_be_copied(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
                           ,pi_wol_id             IN work_order_lines.wol_id%TYPE) RETURN VARCHAR IS
 
-                        
+
 BEGIN
 
 --
 -- If the current line is a DEFECT OR if Work Order is COMPLETED then copy not permitted
--- 
+--
   IF maiwo.get_wo(pi_wor_works_order_no => pi_wol_works_order_no).WOR_DATE_CLOSED IS NULL AND maiwo.get_wol(pi_wol_id => pi_wol_id).wol_flag != 'D' THEN
     RETURN(nm3type.c_true);
   ELSE
     RETURN(nm3type.c_false);
-  END IF;    
+  END IF;
 
 
 END wol_can_be_copied;
@@ -4389,41 +4518,41 @@ END wol_can_be_copied;
 --
 PROCEDURE check_wol_can_be_copied(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
                                  ,pi_wol_id             IN work_order_lines.wol_id%TYPE) IS
-                                 
+
 BEGIN
 
  IF wol_can_be_copied(pi_wol_works_order_no => pi_wol_works_order_no
                      ,pi_wol_id             => pi_wol_id) = nm3type.c_false THEN
    hig.raise_ner(pi_appl => 'MAI'
                 ,pi_id   => 916
-                ,pi_supplementary_info => 'wol_id => '||pi_wol_id ); 
-                     
- END IF;                     
+                ,pi_supplementary_info => 'wol_id => '||pi_wol_id );
+
+ END IF;
 
 END check_wol_can_be_copied;
 --
 ---------------------------------------------------------------------------------------------------
--- 
+--
 FUNCTION wo_can_be_copied(pi_wor_works_order_no IN work_orders.wor_works_order_no%TYPE) RETURN VARCHAR IS
 
-                        
+
 BEGIN
 
 --
 -- If Work Order ONLY has DEFECT Lines on it then COPY should be greyed out.
--- 
+--
   IF NVL(hig.get_user_or_sys_opt('WORREFGEN'),'M') != 'M'
   AND (wols_of_given_type_exist(pi_works_order_no => pi_wor_works_order_no
                              ,pi_wol_flag       => 'M') -- cyclic maintenance lines
        OR
        wols_of_given_type_exist(pi_works_order_no => pi_wor_works_order_no
-                               ,pi_wol_flag       => 'O')  -- scheme lines 
-      ) THEN                           
+                               ,pi_wol_flag       => 'O')  -- scheme lines
+      ) THEN
     RETURN(nm3type.c_TRUE);
   ELSE
     RETURN(nm3type.c_FALSE);
 
-  END IF;    
+  END IF;
 
 
 END wo_can_be_copied;
@@ -4436,8 +4565,8 @@ BEGIN
 
  IF wo_can_be_copied(pi_wor_works_order_no => pi_wor_works_order_no) = nm3type.c_FALSE THEN
     hig.raise_ner(pi_appl => 'MAI'
-                 ,pi_id   => 915 
-                 ,pi_supplementary_info => 'wor_works_order_no => '||pi_wor_works_order_no ); 
+                 ,pi_id   => 915
+                 ,pi_supplementary_info => 'wor_works_order_no => '||pi_wor_works_order_no );
  END IF;
 
 END check_wo_can_be_copied;
@@ -4447,7 +4576,7 @@ END check_wo_can_be_copied;
 -- GJ 9th August 2006
 -- Not sure if create_wol is used by anything other than copy_wol - but I didn't want
 -- to be invasive which is why I added a new parameter pi_zeroize_boq_items which is defaulted
--- 
+--
 -- if you set this to TRUE - which is what it is set to by copy_wol - it will copy boq items
 -- across with zero/null quantities
 --
@@ -4511,11 +4640,11 @@ END check_wo_can_be_copied;
   where boq_wol_id = p_wol_id;
 
   l_boq_rec   boq_items%ROWTYPE;
-  
+
   l_wol_id          work_order_lines.wol_id%TYPE := wol_id_nextseq;
   l_wol_act_cost    work_order_lines.wol_act_cost%TYPE;
   l_wol_act_labour  work_order_lines.wol_act_labour%TYPE;
-  l_wol_est_cost    work_order_lines.wol_est_cost%TYPE;   
+  l_wol_est_cost    work_order_lines.wol_est_cost%TYPE;
   l_wol_est_labour  work_order_lines.wol_est_labour%TYPE;
 
 
@@ -4529,24 +4658,24 @@ END check_wo_can_be_copied;
   l_error number;
 
   BEGIN
-  
- 
+
+
       open c2;
       fetch c2 into l_status_code;
       close c2;
-      
+
       IF pi_zeroize THEN
         l_wol_act_cost    := 0;
         l_wol_act_labour  := 0;
-        l_wol_est_cost    := 0;   
+        l_wol_est_cost    := 0;
         l_wol_est_labour  := 0;
       ELSE
         l_wol_act_cost    := p_wol_act_cost;
         l_wol_act_labour  := p_wol_act_labour;
-        l_wol_est_cost    := p_wol_est_cost;   
+        l_wol_est_cost    := p_wol_est_cost;
         l_wol_est_labour  := p_wol_est_labour;
-      END IF;                               
-      
+      END IF;
+
       insert into work_order_lines
                 ( WOL_ID
                 , WOL_WORKS_ORDER_NO
@@ -4649,7 +4778,7 @@ END check_wo_can_be_copied;
                 , P_WOL_REGISTER_FLAG
                 );
       for c1rec in c1(p_wol_id) loop
-      
+
         IF pi_zeroize THEN
 
            --
@@ -4659,18 +4788,18 @@ END check_wo_can_be_copied;
            --
            --   boq_est_quantity     0
            --   boq_est_rate         bring thru
-           --   boq_est_cost         0 
+           --   boq_est_cost         0
            --   boq_est_labour       0
-           -- 
+           --
            --   boq_est_dim1         0
            --   boq_est_dim2         0 if there is a value already otherwise null
            --   boq_est_dim3         0 if there is a value already otherwise null
            --
            -- all of actual's are inserted as null
- 
+
           c1rec.boq_est_quantity := 0;
           c1rec.boq_est_cost := 0;
-          c1rec.boq_est_labour := 0;                     
+          c1rec.boq_est_labour := 0;
           c1rec.boq_est_dim1 := 0;
 
           IF c1rec.boq_est_dim2 IS NOT NULL THEN
@@ -4678,14 +4807,14 @@ END check_wo_can_be_copied;
           ELSE
            c1rec.boq_est_dim2 := Null;
           END IF;
-          
+
           IF c1rec.boq_est_dim3 IS NOT NULL THEN
            c1rec.boq_est_dim3 := 0;
           ELSE
            c1rec.boq_est_dim3 := Null;
-          END IF; 
-          
-        END IF;        
+          END IF;
+
+        END IF;
 
         l_error := cre_boq_items2( p_boq_work_flag      => c1rec.boq_work_flag
                                  , p_boq_defect_id      => c1rec.boq_defect_id
@@ -4701,7 +4830,7 @@ END check_wo_can_be_copied;
                                  , p_boq_est_cost       => c1rec.boq_est_cost
                                  , p_boq_est_labour     => c1rec.boq_est_labour
                                  , p_boq_id             => boq_id_nextseq);
-                                
+
 
       end loop;
 RETURN( SQL%rowcount );
@@ -4733,13 +4862,13 @@ EXCEPTION
     l_retval            work_orders.wor_works_order_no%TYPE;
 
   BEGIN
-  
+
    --
    -- belt and braces cos in MAI3800 a when-new-record instance trigger on B1 should
-   -- disable the Copy button 
+   -- disable the Copy button
    --
-    check_wo_can_be_copied(pi_wor_works_order_no => pi_wor_works_order_no);				   
-	    
+    check_wo_can_be_copied(pi_wor_works_order_no => pi_wor_works_order_no);
+
     l_wor_rec := maiwo.get_wo(pi_wor_works_order_no => pi_wor_works_order_no);
 
 
@@ -4754,7 +4883,7 @@ EXCEPTION
     l_wor_rec.wor_mod_by_id := null;
     l_wor_rec.wor_date_mod := SYSDATE;
     l_wor_rec.wor_date_raised := SYSDATE;
-    l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';	
+    l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';
     l_wor_rec.wor_est_balancing_sum := null;
     l_wor_rec.wor_est_complete := null;
     l_wor_rec.wor_est_cost := null;
@@ -4786,7 +4915,7 @@ EXCEPTION
     l_wor_rec.wor_late_costs := null;
     l_wor_rec.wor_late_cost_certified_by := null;
     l_wor_rec.wor_late_cost_certified_date := null;
-    
+
     l_error := create_wo_header( p_wor_works_order_no             => l_wor_rec.wor_works_order_no
                                , p_wor_sys_flag                   => l_wor_rec.wor_sys_flag
                                , p_wor_rse_he_id_group            => l_wor_rec.wor_rse_he_id_group
@@ -4870,14 +4999,14 @@ EXCEPTION
                                , p_wor_utility_plans              => l_wor_rec.wor_utility_plans
 --                               , p_wor_streetwork_notice          => l_wor_rec.wor_streetwork_notice
                                , p_wor_work_restrictions          => l_wor_rec.wor_work_restrictions
-                               , p_wor_register_flag              => l_wor_rec.wor_register_flag							   
-                               , p_wor_register_status            => l_wor_rec.wor_register_status);							   
+                               , p_wor_register_flag              => l_wor_rec.wor_register_flag
+                               , p_wor_register_status            => l_wor_rec.wor_register_status);
 
     l_retval :=  g_works_order_no;  -- set by calling mai.create_wo_header;
 
 
     for c1rec in c1(pi_wor_works_order_no) loop
-    
+
      l_error := create_wol(p_wol_id                 => c1rec.wol_id
                          , p_wol_works_order_no     => l_retval
                          , p_wol_rse_he_id          => c1rec.wol_rse_he_id
@@ -4902,7 +5031,7 @@ EXCEPTION
                          , p_wol_date_complete      => Null
                          , p_wol_date_created       => sysdate
                          , p_wol_date_paid          => Null
-                         , p_wol_descr              => c1rec.wol_descr 
+                         , p_wol_descr              => c1rec.wol_descr
                          , p_wol_discount           => c1rec.wol_discount
                          , p_wol_est_cost           => 0
                          , p_wol_est_labour         => 0
@@ -4927,8 +5056,8 @@ EXCEPTION
                          , p_wol_iit_item_id        => c1rec.wol_iit_item_id
                          , p_wol_gang               => c1rec.wol_gang
                          , p_wol_register_flag      => c1rec.wol_register_flag
-                         , pi_zeroize               => TRUE);    
-    
+                         , pi_zeroize               => TRUE);
+
     end loop;
 
   RETURN(l_retval);
@@ -4942,15 +5071,15 @@ PROCEDURE copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%
 
  l_wol_rec work_order_lines%ROWTYPE;
  l_integer PLS_INTEGER;
-                  
+
 BEGIN
- 
+
    check_wol_can_be_copied(pi_wol_works_order_no => pi_wol_works_order_no
                           ,pi_wol_id             => pi_wol_id);
 
    l_wol_rec := maiwo.get_wol(pi_wol_id => pi_wol_id);
-   
-  
+
+
    l_integer := create_wol(p_wol_id                 => l_wol_rec.wol_id
                          , p_wol_works_order_no     => l_wol_rec.wol_works_order_no
                          , p_wol_rse_he_id          => l_wol_rec.wol_rse_he_id
@@ -4975,7 +5104,7 @@ BEGIN
                          , p_wol_date_complete      => Null
                          , p_wol_date_created       => sysdate
                          , p_wol_date_paid          => Null
-                         , p_wol_descr              => 'COPY OF '||l_wol_rec.wol_id 
+                         , p_wol_descr              => 'COPY OF '||l_wol_rec.wol_id
                          , p_wol_discount           => l_wol_rec.wol_discount
                          , p_wol_est_cost           => 0
                          , p_wol_est_labour         => 0
@@ -5027,7 +5156,7 @@ BEGIN
                                                 FROM hig_status_codes
                                                WHERE hsc_domain_code = ''WORK_ORDER_LINES''
                                                  AND hsc_allow_feature1 = ''Y'')';
-                                              
+
       IF g_swr_licenced THEN
         l_sql := l_sql ||' and not exists (select 1 from swr_id_mapping where sim_origin = ''WOL'' and sim_primary_key_value = wol_id)';
       END IF;
@@ -5075,8 +5204,8 @@ BEGIN
        USING pi_works_order_no;
        FETCH l_refcur INTO l_retval;
        CLOSE l_refcur;
-       
-     END IF;       
+
+     END IF;
 
      RETURN(NVL(l_retval,0));
 
@@ -5116,7 +5245,7 @@ BEGIN
          FETCH l_refcur INTO l_retval;
          CLOSE l_refcur;
          --
-     END IF;       
+     END IF;
      --
      RETURN(NVL(l_retval,0));
      --
@@ -5152,7 +5281,7 @@ BEGIN
        INTO l_retval;
       CLOSE l_refcur;
       --
-  END IF;       
+  END IF;
   --
   RETURN(NVL(l_retval,0));
   --
@@ -5161,8 +5290,8 @@ END count_tma_notices_for_wol;
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION count_wols(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
-                   ,pi_wol_flag           IN work_order_lines.wol_flag%TYPE DEFAULT NULL) 
-  RETURN PLS_INTEGER 
+                   ,pi_wol_flag           IN work_order_lines.wol_flag%TYPE DEFAULT NULL)
+  RETURN PLS_INTEGER
 IS
 
  l_retval PLS_INTEGER;
@@ -5192,18 +5321,18 @@ BEGIN
 
   RETURN(count_wols(pi_wol_works_order_no => pi_works_order_no
                    ,pi_wol_flag           => pi_wol_flag) >0);
- 
+
 END wols_of_given_type_exist;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION determine_reg_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE
                              ,pi_wol_id         IN work_order_lines.wol_id%TYPE DEFAULT NULL)
-  RETURN work_orders.wor_register_status%TYPE IS 
+  RETURN work_orders.wor_register_status%TYPE IS
   --
   l_sql    nm3type.max_varchar2;
-  l_retval work_orders.wor_register_status%TYPE; 
-  --  
+  l_retval work_orders.wor_register_status%TYPE;
+  --
 BEGIN
   --
   IF g_tma_licenced
@@ -5243,7 +5372,7 @@ BEGIN
       --
   END IF;
   --
-  RETURN l_retval; 
+  RETURN l_retval;
   --
 EXCEPTION
   WHEN no_data_found
@@ -5269,7 +5398,7 @@ BEGIN
    AND NOT hig.is_product_licensed(pi_product => 'TMA')
    THEN
       hig.raise_ner(pi_appl => 'MAI'
-                   ,pi_id   => 918);  
+                   ,pi_id   => 918);
   END IF;
   --
   IF pi_wor_register_flag = 'N'
@@ -5291,7 +5420,7 @@ PROCEDURE wol_register_bs_trg IS
 BEGIN
 
  --
- -- Clear out the global pl/sql table that will be populated by 
+ -- Clear out the global pl/sql table that will be populated by
  -- wol_register_iud_trg
  --
  g_tab_register_wols.DELETE;
@@ -5325,20 +5454,20 @@ BEGIN
  FOR i IN 1..g_tab_register_wols.COUNT LOOP
 
    IF g_tab_register_wols(i) !=  l_last_wol_works_order_no THEN
-    
+
        l_last_wol_works_order_no := g_tab_register_wols(i);
-	 
+
        --
-       -- touch the associated work order so that the 
+       -- touch the associated work order so that the
        -- work_order_register_trg trigger cuts in and re-evaluates
        -- the wor_register_status flag
-       -- 
+       --
        update work_orders
        set    wor_register_flag = wor_register_flag
        where  wor_works_order_no = l_last_wol_works_order_no
        and    wor_register_flag = 'Y';
-	   
-   END IF;	    	   
+
+   END IF;
 
  END LOOP;
 
@@ -5518,13 +5647,13 @@ BEGIN  /* mai - automatic variables */
   /* return the language under which the application is running */
   g_language := 'ENGLISH';
 
-  
+
   g_swr_licenced := nm3ddl.does_object_exist(p_object_name => 'SWR_ID_MAPPING'
                                             ,p_object_type => 'TABLE');
-                                            
+
 
   g_tma_licenced := nm3ddl.does_object_exist(p_object_name => 'TMA_ID_MAPPING'
-                                            ,p_object_type => 'TABLE');                                            
+                                            ,p_object_type => 'TABLE');
 
 END mai;
 /
