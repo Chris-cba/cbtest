@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.1   Jul 16 2009 17:07:02   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.2   Jul 31 2009 15:40:30   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Jul 16 2009 17:07:02  $
---       Date fetched Out : $Modtime:   Jul 16 2009 17:02:14  $
---       Version          : $Revision:   1.1  $
+--       Date into PVCS   : $Date:   Jul 31 2009 15:40:30  $
+--       Date fetched Out : $Modtime:   Jul 31 2009 15:37:04  $
+--       Version          : $Revision:   1.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -53,7 +53,7 @@ SET TERM OFF
 ------------------------------------------------------------------
 -- 
 -- DEVELOPMENT COMMENTS (KIERAN DAWSON)
--- log 716904 & log 719542 DDL changes to update HE_ID max length from 8 to 9 and RSE_DESCR from 80 to 240
+-- log 716904 and log 719542 DDL changes to update HE_ID max length from 8 to 9 and RSE_DESCR from 80 to 240
 -- 
 ------------------------------------------------------------------
 ALTER TABLE IFF_SECT_STACK
@@ -237,13 +237,13 @@ ALTER TABLE work_order_lines
 
 ------------------------------------------------------------------
 SET TERM ON
-PROMPT New tables for Contract User Security
+PROMPT New tables for Contractor User Security
 SET TERM OFF
 
 ------------------------------------------------------------------
 -- 
 -- DEVELOPMENT COMMENTS (MIKE HUITSON)
--- New tables for Contract User Security
+-- New tables for Contractor User Security
 -- 
 ------------------------------------------------------------------
 CREATE TABLE contractor_roles
@@ -287,6 +287,126 @@ CREATE INDEX cou_hus_fk
 /
 
 
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New inventory translation view for Cyclic Maintenance
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Standard version of inv_items_all_section, for conflated networks please run the script inv_items_all_section.sql after this upgrade.
+-- 
+-- 
+------------------------------------------------------------------
+CREATE OR REPLACE FORCE VIEW inv_items_all_section
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.2   Jul 31 2009 15:40:30   mhuitson  $
+--       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
+--       Date into SCCS   : $Date:   Jul 31 2009 15:40:30  $
+--       Date fetched Out : $Modtime:   Jul 31 2009 15:37:04  $
+--       SCCS Version     : $Revision:   1.2  $
+--       Based on SCCS Version     : 1.14
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+  (IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
+  IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,
+  IIT_RSE_HE_ID, IIT_ST_CHAIN, IIT_ANGLE, IIT_ANGLE_TXT,
+  IIT_CLASS, IIT_CLASS_TXT, IIT_COLOUR, IIT_COLOUR_TXT,
+  IIT_COORD_FLAG, IIT_DESCRIPTION, IIT_DIAGRAM, IIT_DISTANCE,
+  IIT_END_CHAIN, IIT_END_DATE, IIT_GAP, IIT_HEIGHT,
+  IIT_HEIGHT_2, IIT_ID_CODE, IIT_INSTAL_DATE, IIT_INVENT_DATE,
+  IIT_INV_OWNERSHIP, IIT_ITEMCODE, IIT_LCO_LAMP_CONFIG_ID,
+  IIT_LENGTH, IIT_MATERIAL, IIT_MATERIAL_TXT, IIT_METHOD,
+  IIT_METHOD_TXT, IIT_NOTE, IIT_NO_OF_UNITS, IIT_OPTIONS,
+  IIT_OPTIONS_TXT, IIT_OUN_ORG_ID_ELEC_BOARD, IIT_OWNER,
+  IIT_OWNER_TXT, IIT_PEO_INVENT_BY_ID, IIT_PHOTO, IIT_POWER,
+  IIT_PROV_FLAG, IIT_REV_BY, IIT_REV_DATE, IIT_TYPE,
+  IIT_TYPE_TXT, IIT_WIDTH, IIT_XTRA_CHAR_1, IIT_XTRA_DATE_1,
+  IIT_XTRA_DOMAIN_1, IIT_XTRA_DOMAIN_TXT_1, IIT_XTRA_NUMBER_1,
+  IIT_X_SECT, IIT_PRIMARY_KEY, IIT_FOREIGN_KEY, IIT_DET_XSP,
+  IIT_OFFSET, IIT_NUM_ATTRIB16, IIT_NUM_ATTRIB17,
+  IIT_NUM_ATTRIB18, IIT_NUM_ATTRIB19, IIT_NUM_ATTRIB20,
+  IIT_NUM_ATTRIB21, IIT_NUM_ATTRIB22, IIT_NUM_ATTRIB23,
+  IIT_NUM_ATTRIB24, IIT_NUM_ATTRIB25, IIT_CHR_ATTRIB26,
+  IIT_CHR_ATTRIB27, IIT_CHR_ATTRIB28, IIT_CHR_ATTRIB29,
+  IIT_CHR_ATTRIB30, IIT_CHR_ATTRIB31, IIT_CHR_ATTRIB32,
+  IIT_CHR_ATTRIB33, IIT_CHR_ATTRIB34, IIT_CHR_ATTRIB35,
+  IIT_CHR_ATTRIB36, IIT_CHR_ATTRIB37, IIT_CHR_ATTRIB38,
+  IIT_CHR_ATTRIB39, IIT_CHR_ATTRIB40, IIT_CHR_ATTRIB41,
+  IIT_CHR_ATTRIB42, IIT_CHR_ATTRIB43, IIT_CHR_ATTRIB44,
+  IIT_CHR_ATTRIB45, IIT_CHR_ATTRIB46, IIT_CHR_ATTRIB47,
+  IIT_CHR_ATTRIB48, IIT_CHR_ATTRIB49, IIT_CHR_ATTRIB50,
+  IIT_CHR_ATTRIB51, IIT_CHR_ATTRIB52, IIT_CHR_ATTRIB53,
+  IIT_CHR_ATTRIB54, IIT_CHR_ATTRIB55, IIT_CHR_ATTRIB56,
+  IIT_CHR_ATTRIB57, IIT_CHR_ATTRIB58, IIT_CHR_ATTRIB59,
+  IIT_CHR_ATTRIB60, IIT_CHR_ATTRIB61, IIT_CHR_ATTRIB62,
+  IIT_CHR_ATTRIB63, IIT_CHR_ATTRIB64, IIT_CHR_ATTRIB65,
+  IIT_CHR_ATTRIB66, IIT_CHR_ATTRIB67, IIT_CHR_ATTRIB68,
+  IIT_CHR_ATTRIB69, IIT_CHR_ATTRIB70, IIT_CHR_ATTRIB71,
+  IIT_CHR_ATTRIB72, IIT_CHR_ATTRIB73, IIT_CHR_ATTRIB74,
+  IIT_CHR_ATTRIB75, IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77,
+  IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80,
+  IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83,
+  IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
+  IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
+  IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
+  IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95)
+AS
+SELECT IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
+       IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,
+       IIT_RSE_HE_ID, IIT_ST_CHAIN, IIT_ANGLE, IIT_ANGLE_TXT,
+       IIT_CLASS, IIT_CLASS_TXT, IIT_COLOUR, IIT_COLOUR_TXT,
+       IIT_COORD_FLAG, IIT_DESCRIPTION, IIT_DIAGRAM, IIT_DISTANCE,
+       IIT_END_CHAIN, IIT_END_DATE, IIT_GAP, IIT_HEIGHT,
+       IIT_HEIGHT_2, IIT_ID_CODE, IIT_INSTAL_DATE, IIT_INVENT_DATE,
+       IIT_INV_OWNERSHIP, IIT_ITEMCODE, IIT_LCO_LAMP_CONFIG_ID,
+       IIT_LENGTH, IIT_MATERIAL, IIT_MATERIAL_TXT, IIT_METHOD,
+       IIT_METHOD_TXT, IIT_NOTE, IIT_NO_OF_UNITS, IIT_OPTIONS,
+       IIT_OPTIONS_TXT, IIT_OUN_ORG_ID_ELEC_BOARD, IIT_OWNER,
+       IIT_OWNER_TXT, IIT_PEO_INVENT_BY_ID, IIT_PHOTO, IIT_POWER,
+       IIT_PROV_FLAG, IIT_REV_BY, IIT_REV_DATE, IIT_TYPE,
+       IIT_TYPE_TXT, IIT_WIDTH, IIT_XTRA_CHAR_1, IIT_XTRA_DATE_1,
+       IIT_XTRA_DOMAIN_1, IIT_XTRA_DOMAIN_TXT_1, IIT_XTRA_NUMBER_1,
+       IIT_X_SECT, IIT_PRIMARY_KEY, IIT_FOREIGN_KEY, IIT_DET_XSP,
+       IIT_OFFSET, IIT_NUM_ATTRIB16, IIT_NUM_ATTRIB17,
+       IIT_NUM_ATTRIB18, IIT_NUM_ATTRIB19, IIT_NUM_ATTRIB20,
+       IIT_NUM_ATTRIB21, IIT_NUM_ATTRIB22, IIT_NUM_ATTRIB23,
+       IIT_NUM_ATTRIB24, IIT_NUM_ATTRIB25, IIT_CHR_ATTRIB26,
+       IIT_CHR_ATTRIB27, IIT_CHR_ATTRIB28, IIT_CHR_ATTRIB29,
+       IIT_CHR_ATTRIB30, IIT_CHR_ATTRIB31, IIT_CHR_ATTRIB32,
+       IIT_CHR_ATTRIB33, IIT_CHR_ATTRIB34, IIT_CHR_ATTRIB35,
+       IIT_CHR_ATTRIB36, IIT_CHR_ATTRIB37, IIT_CHR_ATTRIB38,
+       IIT_CHR_ATTRIB39, IIT_CHR_ATTRIB40, IIT_CHR_ATTRIB41,
+       IIT_CHR_ATTRIB42, IIT_CHR_ATTRIB43, IIT_CHR_ATTRIB44,
+       IIT_CHR_ATTRIB45, IIT_CHR_ATTRIB46, IIT_CHR_ATTRIB47,
+       IIT_CHR_ATTRIB48, IIT_CHR_ATTRIB49, IIT_CHR_ATTRIB50,
+       IIT_CHR_ATTRIB51, IIT_CHR_ATTRIB52, IIT_CHR_ATTRIB53,
+       IIT_CHR_ATTRIB54, IIT_CHR_ATTRIB55, IIT_CHR_ATTRIB56,
+       IIT_CHR_ATTRIB57, IIT_CHR_ATTRIB58, IIT_CHR_ATTRIB59,
+       IIT_CHR_ATTRIB60, IIT_CHR_ATTRIB61, IIT_CHR_ATTRIB62,
+       IIT_CHR_ATTRIB63, IIT_CHR_ATTRIB64, IIT_CHR_ATTRIB65,
+       IIT_CHR_ATTRIB66, IIT_CHR_ATTRIB67, IIT_CHR_ATTRIB68,
+       IIT_CHR_ATTRIB69, IIT_CHR_ATTRIB70, IIT_CHR_ATTRIB71,
+       IIT_CHR_ATTRIB72, IIT_CHR_ATTRIB73, IIT_CHR_ATTRIB74,
+       IIT_CHR_ATTRIB75, IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77,
+       IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80,
+       IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83,
+       IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
+       IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
+       IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
+       IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95
+  FROM inv_items_all
+/
 
 ------------------------------------------------------------------
 
