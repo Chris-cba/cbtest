@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.2   Jul 31 2009 15:40:30   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.3   Aug 06 2009 15:50:22   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Jul 31 2009 15:40:30  $
---       Date fetched Out : $Modtime:   Jul 31 2009 15:37:04  $
---       Version          : $Revision:   1.2  $
+--       Date into PVCS   : $Date:   Aug 06 2009 15:50:22  $
+--       Date fetched Out : $Modtime:   Aug 06 2009 15:48:12  $
+--       Version          : $Revision:   1.3  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -180,19 +180,25 @@ ALTER TABLE PBI_QUERY
 MODIFY(QRY_RSE_HE_ID NUMBER(9));
 
 ALTER TABLE HHINV_ITEM_ERR_2
-MODIFY(HE_ID NUMBER(9));
+MODIFY(HE_ID           NUMBER
+      ,REC_SEQ_NO      NUMBER
+      ,SECT_HDR_SEQ_NO NUMBER);
 
 ALTER TABLE HHINV_ITEM_ERR_3
-MODIFY(HE_ID NUMBER(9));
+MODIFY(HE_ID      NUMBER
+      ,REC_SEQ_NO NUMBER);
 
 ALTER TABLE TEMP_LOAD_2
-MODIFY(HE_ID NUMBER(9));
+MODIFY(HE_ID NUMBER);
 
 ALTER TABLE HHINV_LOAD_2
-MODIFY(HE_ID NUMBER(9));
+MODIFY(HE_ID           NUMBER
+      ,REC_SEQ_NO      NUMBER
+      ,SECT_HDR_SEQ_NO NUMBER);
 
 ALTER TABLE HHINV_LOAD_3
-MODIFY(HE_ID NUMBER(9));
+MODIFY(HE_ID      NUMBER
+      ,REC_SEQ_NO NUMBER);
 
 ALTER TABLE SCHEDULE_ROADS
 MODIFY(SCHR_IIT_ITEM_ID NUMBER(9));
@@ -308,11 +314,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.2   Jul 31 2009 15:40:30   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.3   Aug 06 2009 15:50:22   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Jul 31 2009 15:40:30  $
---       Date fetched Out : $Modtime:   Jul 31 2009 15:37:04  $
---       SCCS Version     : $Revision:   1.2  $
+--       Date into SCCS   : $Date:   Aug 06 2009 15:50:22  $
+--       Date fetched Out : $Modtime:   Aug 06 2009 15:48:12  $
+--       SCCS Version     : $Revision:   1.3  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
