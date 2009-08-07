@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.7   Jul 16 2009 18:08:08   Rob May  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.8   Aug 07 2009 17:34:48   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Jul 16 2009 18:08:08  $
---       Date fetched Out : $Modtime:   Jul 16 2009 17:59:24  $
---       PVCS Version     : $Revision:   2.7  $
+--       Date into PVCS   : $Date:   Aug 07 2009 17:34:48  $
+--       Date fetched Out : $Modtime:   Aug 07 2009 17:22:52  $
+--       PVCS Version     : $Revision:   2.8  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Thu Jul 16  17:54:12 2009 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri Aug 07  17:22:08 2009 by Server Generator 10.1.2.9.28
 
 
 
@@ -671,13 +671,13 @@ COMMENT ON TABLE HHINV_ITEM_ERR_1 IS '- Retrofitted'
 PROMPT Creating Table 'HHINV_ITEM_ERR_2'
 CREATE TABLE HHINV_ITEM_ERR_2
  (END_CHAIN NUMBER NOT NULL
- ,HE_ID NUMBER(9,0) NOT NULL
+ ,HE_ID NUMBER NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
  ,LINKCODE VARCHAR2(10) NOT NULL
- ,REC_SEQ_NO NUMBER(8,0) NOT NULL
+ ,REC_SEQ_NO NUMBER NOT NULL
  ,RUN_NUM NUMBER(5,0) NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
- ,SECT_HDR_SEQ_NO NUMBER(8,0) NOT NULL
+ ,SECT_HDR_SEQ_NO NUMBER NOT NULL
  ,ST_CHAIN NUMBER NOT NULL
  ,ERROR_MSG VARCHAR2(4000)
  ,HHATTR1 VARCHAR2(32)
@@ -850,10 +850,10 @@ COMMENT ON TABLE HHINV_ITEM_ERR_2 IS '- Retrofitted'
 PROMPT Creating Table 'HHINV_ITEM_ERR_3'
 CREATE TABLE HHINV_ITEM_ERR_3
  (ATTRIBUTE VARCHAR2(32) NOT NULL
- ,HE_ID NUMBER(9,0) NOT NULL
+ ,HE_ID NUMBER NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
  ,LINKCODE VARCHAR2(10) NOT NULL
- ,REC_SEQ_NO NUMBER(8,0) NOT NULL
+ ,REC_SEQ_NO NUMBER NOT NULL
  ,RUN_NUM NUMBER(5,0) NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
  ,ERROR_MSG VARCHAR2(4000)
@@ -884,12 +884,12 @@ COMMENT ON TABLE HHINV_LOAD_1 IS '- Retrofitted'
 PROMPT Creating Table 'HHINV_LOAD_2'
 CREATE TABLE HHINV_LOAD_2
  (END_CHAIN NUMBER NOT NULL
- ,HE_ID NUMBER(9,0) NOT NULL
+ ,HE_ID NUMBER NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
  ,LINKCODE VARCHAR2(10) NOT NULL
- ,REC_SEQ_NO NUMBER(8,0) NOT NULL
+ ,REC_SEQ_NO NUMBER NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
- ,SECT_HDR_SEQ_NO NUMBER(8,0) NOT NULL
+ ,SECT_HDR_SEQ_NO NUMBER NOT NULL
  ,ST_CHAIN NUMBER NOT NULL
  ,ERROR_FLG VARCHAR2(1)
  ,ERROR_MSG VARCHAR2(4000)
@@ -1062,8 +1062,8 @@ COMMENT ON TABLE HHINV_LOAD_2 IS '- Retrofitted'
 
 PROMPT Creating Table 'HHINV_LOAD_3'
 CREATE TABLE HHINV_LOAD_3
- (REC_SEQ_NO NUMBER(8) NOT NULL
- ,HE_ID NUMBER(9,0) NOT NULL
+ (REC_SEQ_NO NUMBER NOT NULL
+ ,HE_ID NUMBER NOT NULL
  ,LINKCODE VARCHAR2(10) NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
@@ -2506,7 +2506,7 @@ COMMENT ON TABLE TEMP_DEFECTS IS 'temporary table dropped and re-created by bpr1
 PROMPT Creating Table 'TEMP_LOAD_2'
 CREATE TABLE TEMP_LOAD_2
  (SECT_HDR_SEQ_NO NUMBER(8) NOT NULL
- ,HE_ID NUMBER(9) NOT NULL
+ ,HE_ID NUMBER NOT NULL
  ,LINKCODE VARCHAR2(30) NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
