@@ -3,7 +3,7 @@
 /* static char *sccsid = "@(#)r4proh.pc	1.2 09/27/06"; */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.1  $ $Modtime:   Aug 06 2009 18:42:18  $";
 
 
 /* ============================================================================
@@ -178,7 +178,7 @@ extern char attribute[2];
    {
       puts("Activity Attribute RseHeId Report Id Status");
       puts("-------------------------------------------");
-      printf("%8s %9s %7ld %9d %6s\n\n",sqlacty.arr
+      printf("%8s %9s %ld %9d %6s\n\n",sqlacty.arr
                                  ,attribute
                                  ,sqlheid
                                  ,sqlrep

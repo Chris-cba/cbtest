@@ -3,7 +3,7 @@
 /* static char *sccsid = "@(#)r4prog.pc	1.4 02/15/07"; */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4prog.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4prog.pc  $ $Revision:   2.1  $ $Modtime:   Aug 06 2009 11:16:02  $";
 
 /* ============================================================================
  *          [ PROGREC - Prosess 'G' (Header) Records ]
@@ -558,7 +558,7 @@ printf("%-6s %-4s %-4s %-6s %-8s %-7s %-5s %-4s %-4s %-7s NO\n\n"
     {
     puts("Agency Linkcode Section Rse_He_Id Length Sys_Flag DTP_ROAD");
     puts("----------------------------------------------------------");
-    printf("%-6s %-8s %-7s %-8d %-6d %-8s",sqlagency.arr
+    printf("%-6s %-8s %-7s %-9d %-6d %-8s",sqlagency.arr
                                           ,sqllink.arr
                                           ,sqlsec.arr
                                           ,id
