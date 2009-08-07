@@ -12,7 +12,8 @@
    DESCRIPTION  : client-server conversion
 **********************************************************************/
 
-static char *sccsid="@(#)mai2105.pc	1.1 09/16/03";
+/* static char *sccsid="@(#)mai2105.pc	1.1 09/16/03"; */
+static char *sccsid = "$Workfile:   mai2105.pc  $ $Revision:   2.1  $ $Modtime:   Aug 07 2009 16:51:46  $";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -31,17 +32,17 @@ EXEC SQL BEGIN DECLARE SECTION;
 /*for inserts into temp table*/
      VARCHAR sql_st_chain[50][6];
      VARCHAR sql_end_chain[50][6];
-     VARCHAR sql_grp_id[50][20];
+     VARCHAR sql_grp_id[50][31];
      VARCHAR sql_grp_type[50][5];
-     VARCHAR sql_c_card[50][200];
+     VARCHAR sql_c_card[50][300];
 
 /*for retrieving info*/
-     VARCHAR sql_rse_group[20];
+     VARCHAR sql_rse_group[31];
      VARCHAR sql_rse_grp_type[5];
 
      VARCHAR sect_no[5];
      VARCHAR sect_id[20];
-     VARCHAR sect_c_card[200];
+     VARCHAR sect_c_card[300];
      VARCHAR sys_date[25];
      VARCHAR h_dummy[80];
 EXEC SQL END DECLARE SECTION;
@@ -85,7 +86,7 @@ long int i, noargs, c_in_count = 0;
 char line[200],rectype;
 char st_chain[6], end_chain[6];
 char dummy[200];
-char grp[20];
+char grp[31];
 char grp_type[5];
 FILE *lfi;    /* load (input) file */
 #ifndef ibm
@@ -135,12 +136,12 @@ FILE *lfi;    /* load (input) file */
     }
 
    EXEC SQL DECLARE BPR2105_TMP TABLE 
-			(GRP_ID      VARCHAR(20),
+			(GRP_ID      VARCHAR(30),
              GRP_TYPE    VARCHAR(5),
              START_CHAIN CHAR (9),
 	      	 END_CHAIN   CHAR (9),
 			 C_CARD	  	 CHAR(178));
-   EXEC SQL CREATE TABLE BPR2105_TMP (GRP_ID      VARCHAR(20),
+   EXEC SQL CREATE TABLE BPR2105_TMP (GRP_ID      VARCHAR(30),
                                       GRP_TYPE    VARCHAR(5),
                                       START_CHAIN CHAR (9),
 				      END_CHAIN   CHAR (9),
