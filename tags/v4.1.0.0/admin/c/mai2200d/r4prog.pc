@@ -1,0 +1,642 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4prog.pc	1.4 02/15/07"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4prog.pc  $ $Revision:   2.1  $ $Modtime:   Aug 06 2009 11:16:02  $";
+
+/* ============================================================================
+ *          [ PROGREC - Prosess 'G' (Header) Records ]
+ * ============================================================================
+ * Purpose:  To get  information from the next "G" (section header) record.
+ *
+ * Type:  boolean progrec();
+ *
+ * Calling Sequence:   progrec( &reportid,section,&heid,inspdates,insptime
+ *                     inspector,&seqid,&reverse,&slength )
+ *
+ * Output:        boolean progrec TRUE = got start of new section OK.
+ *                     FALSE = No more sections in this
+ *                             batch.
+ *
+ *     int     reportid   Report id generated for this inspection report
+ *                        on this section.
+ *
+ *     char    section[12] String containing link & section
+ *                       name.
+ *
+ *     int     heid    Highway Element id of section.
+ *
+ *     char    inspdate[7] Date of Inspection as "MMYYDD".
+ *
+ *     char    inspector[2] Inspector's Initials.
+ *
+ *     int     seqid   Sequence number of "G" record.
+ *
+ *     int     revlen if not 0 Inspection was done in reverse -
+ *             all chainages must be subtracted from revlen.
+ *
+ *     int     slength length of section.
+ *
+ * ============================================================================
+ * Notes: This function does not insert the new row into ACTIVITIES_REPORT.
+ *   CHANGE HISTORY :-
+ *   DATE         : 10-MAY-91
+ *   CHANGED BY   : Steve Voller
+ *   DESCRIPTION  : Enhancements iro RMMS Amendment Set VI changes.
+ *                  Amend call to rmmstype since date and county are now
+ *                  returned for use in def_rs_rep later.
+ *
+ *   CHANGE HISTORY :-
+ *   DATE         : 28-MAY-91
+ *   CHANGED BY   : Steve Voller
+ *   DESCRIPTION  : Redefine pointer variables below to be arrays
+ *                  following compilation problems with RS6000 port IBM
+ *
+ *   DATE         : 01-SEP-97
+ *   CHANGED BY   : Garry Fletcher
+ *   DESCRIPTION  : 1.7 > 2.1 Database Conversion
+ *
+ *   DATE         : 31-10-97
+ *   CHANGED BY   : G Fletcher
+ *   DESCRIPTION  : client-server conversion
+ * ============================================================================
+ */
+
+#include <stdio.h>
+#include <ctype.h>
+
+extern PREPARED;                          /* Codes array prepared            */
+extern NO_DUMMY;                          /* Dummy inspection                */
+extern MAXENDCHAIN;                       /* Maximum end chainage value      */
+extern DTP_ROAD;                          /* DTp or Local road processed     */
+extern short EXDebug;
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+EXEC SQL BEGIN DECLARE SECTION;
+     varchar vsys_flag[2]        /*System flag                               */
+            ,sqlsec[6]           /*Section                                   */
+            ,sqlagency[5]        /*Agency                                    */
+            ,sqlii[5]            /*Primary inspectors initials               */
+            ,sqlii2[5]           /*Secondary inspectors initials      ***    */
+            ,sqllink[11]         /*Linkcode                                  */
+;
+
+     long int *pid               /*Inspectors person identifier              */
+             ,*pid2              /*secondary inspectors identifier    ***    */
+             ,id                 /*Section rse_he_id                         */
+             ,length             /*Section length                            */
+;
+     short int ipid              /* Primary inspector indicator variable     */
+              ,ipid2             /* Secondary inspector indicator variable   */
+              ,ilength
+;
+     static char    date[10]     /*Current date                              */
+                   ,county[40]   /*Maintaining Authority                     */
+;
+EXEC SQL END DECLARE SECTION;
+
+
+BOOLEAN progrec( long int *reportid           /* report id generated for this inspection  */
+		,char section[]               /* string containing link and section name  */
+		,long int *heid               /* highway element id of section            */
+		,char inspdate[]              /* date inspection took place               */
+		,char insptime[]              /* time inspection took place               */
+		,long int *pinspector         /* Primary inspector                        */
+		,long int *pinspector2        /* Secondary inspector                      */
+		,long int *seqid              /* sequence number of the 'G' record        */
+		,long int *slength            /* length of the section                    */
+		,BOOLEAN *reverse             /* reverse TRUE if inspection done in       */
+		,char who[]                   /* redefine as array rs6000 problems        */
+		,char inspflag[]              /* redefine as array rs6000 problems        */
+		,char sys_flag[]              /* dtp flag added                           */
+		,char direction[]             /* Survey direction                         */
+		,char surface[]               /* Road surface condition code              */
+		,char weather[]               /* Road weather conditiion code             */
+		,long int *responsible        /* Agency responsible for the section       */
+		)
+{
+
+char *strs[20]                           /* 20 char pointer array           */
+     ,text[1000]                         /* 200 character record text buffer*/
+     ,dummy[120]                         /* Dummy function parameter value. */
+     ,msg[200]
+;
+long int novalue=0                       /* Dummy return value field        */
+;
+int   rectype                            /* Record type                     */
+     ,i                                  /* Incremental counter             */
+     ,no                                 /* Error counter for 'G' record    */
+     ,fld_cnt                            /* Field counter(differentiator)   */
+     ,status                             /* Function status code            */
+     /*,int_fld                            Field number of initiation type */
+;
+static BOOLEAN fstcall = TRUE;           /* Boolean for single execution    */
+extern BOOLEAN AUTO_SAFETY;              /* Is automatic safety required    */
+extern BOOLEAN FIRSTREC;
+extern BOOLEAN ENHANCED;
+
+extern int g_rseheid;
+extern int g_link;
+extern int g_section;
+extern int g_firstinsp;
+extern int g_date;
+extern int g_time;
+extern int g_inspection;
+extern int g_init_fld;
+extern int g_direction;
+extern int g_secinsp;
+extern int g_weather;
+extern int g_surfcond;
+extern int g_sectdesc;
+
+/* ========================================================================
+ * Note : the sql pointers point to the variable arguments of the function
+ * ========================================================================
+ */
+   length=*slength;
+
+   if (EXDebug && G_REC)
+      printf("getproc .... r4prog.pc ... get 'G' record details\n");
+
+   if (FIRSTREC)
+   {
+      rectype= gethhrectype(1); /* Get next '1' record details  */
+
+      if (rectype == '1')
+      {
+         rectype=gethhrec('1',8200,seqid,text); /* Get next 'G' record details  */
+         ENHANCED= TRUE;
+         g_rseheid   = 0;
+         g_link      = 1;
+         g_section   = 2;
+         g_firstinsp = 3;
+         g_date      = 4;
+         g_time      = 5;
+         g_inspection= 6;
+         g_init_fld  = 7;
+         g_direction = 8;
+         g_secinsp   = 9;
+         g_weather   = 10;
+         g_surfcond  = 11;
+         g_sectdesc  = 12;
+         write_pipe(NULL,"INFO: Processing ENHANCED format data file.");
+      }
+      else
+      {
+         g_link      = 0;
+         g_section   = 1;
+         g_firstinsp = 2;
+         g_date      = 3;
+         g_inspection= 4;
+         g_init_fld  = 5;
+         g_direction = 6;
+         g_weather   = 7;
+         g_surfcond  = 8;
+         g_sectdesc  = 9;
+         write_pipe(NULL,"INFO: Processing RMMS format data file.");
+      }
+
+      FIRSTREC= FALSE;
+   }
+
+   rectype=gethhrec('G',8200,seqid,text); /* Get next 'G' record details  */
+
+/* =============================================================================
+ * G record ?  if not finished batch
+ * =============================================================================
+ */
+
+   if (rectype != 'G')
+      return(EOF);
+
+/* =============================================================================
+ * Errors encountered in getting G record - Put and commit errors
+ * and reinitialise  error stack since these errors cannot belong to this
+ * section
+ * =============================================================================
+ */
+   if (iserror(&no))
+   {
+      puterror();
+      reset();
+   }
+
+/* =============================================================================
+ * Find the fields in the record and check for correct number
+ * For rline350 there will be 10 fields, for normal there will be 7
+ * =============================================================================
+ */
+
+   fld_cnt=getstrs(text,strs);
+
+/* =============================================================================
+ * The product requires to work for both the standard loader that is used
+ * by Oracle*Highways and by the Roadline 350 product. It is terefore
+ * necessary to indicate which product is being used. This will be achieved
+ * by a boolean function named RLINE3350. The value of the boolean function
+ * will be determined by the number of fields within the section header
+ * record ( as follows )
+ * =============================================================================
+ */
+
+/* =============================================================================
+ * If the product being used is identified as being Roadline 350 then the max
+ * chainage value should be set to 999999 . If the product being used is the
+ * stanard product then the maximum chainage value being used should be set to
+ * 9999 .
+ * =============================================================================
+ */
+  if ( ENHANCED )
+  {
+    MAXENDCHAIN= 999999;
+  }
+  else
+  {
+    /* it remains unchanged and is 9999 */
+  }
+
+/* ============================================================================
+ * At this point the program will know wether we are dealing with Roadline350
+ * or with a standard inspection file. It is only at this time that the prepare
+ * function should be executed.
+ *
+ * New validation preparation file used to load code values into
+ * validation structure. r4prepare.pc
+ * ============================================================================
+ */
+
+  if ( date_check(strs[g_date])==SUCCESS) /* Validate inspection date        */
+  {                                  /* This function should check both */
+     strcpy(inspdate,strs[g_date]);       /* the format of the date and that */
+     *(inspdate+6)='\0';             /* all date characters are digits. */
+
+/*
+ *=============================================================================
+ * The following code is new code and replaces the code that is beneath.
+ * It may be that this code extends the performance time for the loader
+ * and so the original code may have to be re-substituted at the end of
+ * the day.
+ * The prepare function should be used for Non-Roadline 350 also.
+ *=============================================================================
+ */
+   if (!PREPARED)
+   {
+     while (1)                     /* Infinite loop.                      */
+     {                             /* Passed parameter is inspection date */
+      if ((status=prepare(inspdate))!=SUCCESS)
+      {
+/* ============================================================================
+ * The following should detect an error and should increment the value of the
+ * MAXCODES and re-define the array. Unfortionately this does not work and the
+ * program will therefore have to put out an error message informing the user
+ * that the vaue of MAXCODES be incremented in the rmms.h file and the program
+ * should then be recompiled.
+ * ============================================================================
+ */
+        if (status == 999)                       /* Insufficient array size */
+        {
+                write_pipe(NULL,"prepare(). Array Limit exceeded.");
+                write_pipe(NULL,"This is a fatal error and the module has been aborted.");
+	    	EXEC SQL ROLLBACK WORK;
+	  		jobend(EXJobId,1,"prepare() Array limit exceeded");
+	    	EXEC SQL COMMIT WORK;
+	    	dblogoff();
+              exit(EX_FAIL);
+        }
+        else
+        {
+          fprintf(stderr,"Error in preparing data.\n");
+          break;
+        }
+     }
+     else
+       break;
+   }
+  }
+  }
+  else
+  {
+     pusherror(*seqid,8203);          /* Invalid initiation inspection date  */
+     no++;                            /* Increment 'G' error counter         */
+     return(FALSE);
+  }
+
+  if(ENHANCED)
+    {
+    if(time_check(strs[g_time])!=SUCCESS)     /* Validate inspection time    */
+      {
+      pusherror(*seqid,8204);                 /* Invalid Inspection time     */
+      no++;                                   /* Increment 'G' error counter      */
+      return(FALSE);
+      }
+    else
+      {
+      strcpy(insptime,strs[g_time]);          /* Copy the inspection time    */
+      *(insptime+4)='\0';                     /* Terminate the time          */
+      }
+    }
+  else
+    strcpy(insptime,"0000");
+    
+  /* Make sure the Inspection Date and Time is not in the future */
+
+  if(check_datetime(inspdate,insptime)!=SUCCESS)
+    {
+    pusherror(*seqid,8203);                   /* Invalid initiation inspection date  */
+    no++;                                     /* Increment 'G' error counter         */
+    return(FALSE);
+    }
+
+/*
+ *=============================================================================
+ * Cech the value contained within the strings array.
+ * If the initiation type is valid then copy the value into the appropreate
+ * initiation type array or else display an appropreate error message.
+ * The validation applies to both the Roadline 350 product and thhe standard
+ * inspection product also.
+ *=============================================================================
+ */
+
+  if (validate_code(5,strs[g_init_fld],&novalue)!=SUCCESS)
+  {                                       /* code                           */
+    pusherror(*seqid,8202);               /* Initiation code is not         */
+    no++;                                 /* Increment 'G' error counter    */
+    return(FALSE);                        /* recognised.                    */
+  }
+  else
+  {
+     strcpy(who,strs[g_init_fld]);          /* It the value of the initiation */
+     *(who+3)='\0';                       /* code is valid then terminate.  */
+  }
+
+  if (strcmp(who,"DUM")==0)               /* Initiation code is DUM         */
+     NO_DUMMY=FALSE;                      /* Dummy inspection               */
+  else
+     NO_DUMMY=TRUE;
+
+/* =============================================================================
+ * Check inspection type. Use the g_init_fld variable to locate inspection
+ * type.
+ * =============================================================================
+ */
+
+   if (rmcaseup(*strs[g_inspection]) != 'S'
+    && rmcaseup(*strs[g_inspection]) != 'D')
+   {
+      *inspflag = '?';                /* Set the survey flag to '?' if fail*/
+      pusherror(*seqid,8205);         /* Invalid survey type               */
+      no++;                           /* Increment 'G' error counter       */
+      return(FALSE);
+   }
+   else
+      *inspflag = *strs[g_inspection];  /* Set the inspection flag           */
+   *(inspflag+1)='\0';                /* Terminate the inspection flag     */
+
+     *direction=*strs[g_direction];
+   *(direction+1)='\0';
+
+   if (is_yn(direction)!=SUCCESS)     /* Validate survey direction.        */
+   {
+     pusherror(*seqid,8206);          /* Invalid survey direction indicator*/
+     no++;                            /* Increment 'G' error counter      */
+     return(FALSE);
+   }
+   else
+   {
+       if (*strs[g_direction] == 'Y')      /* Same for both standard and */
+          *reverse = TRUE;                /* rline350 products          */
+       else
+          *reverse = FALSE;
+   }
+
+/* =============================================================================
+ * Obtain the road surface condition and the weather.
+ * =============================================================================
+ */
+
+   /* set to null to start with */
+   *(surface) = '\0';
+   *(weather) = '\0';
+
+   if ( ((ENHANCED) && (fld_cnt > 10)) ||
+        ((!ENHANCED) && (fld_cnt > 7))  )
+   {
+     /* the weather an surfcond might not be there */
+  	 if ( strlen( strs[g_weather]) >0 &&
+	  	    strlen( strs[g_surfcond]) >0 )
+		 	{
+      strcpy(weather,strs[g_weather]); /* Obtain the weather condition       */
+      strcpy(surface,strs[g_surfcond]); /* Obtain the road surface condition  */
+			}
+   }
+   else
+   {
+      *(surface) = '\0';
+      *(weather) = '\0';
+   }
+
+   if (*(surface)!='\0')
+   if (validate_code(12,surface,&novalue)!=SUCCESS)
+   {
+     pusherror(*seqid,8211);           /* Invalid Road Surface condition code */
+     no++;                             /* Increment 'G' error counter      */
+     return(FALSE);
+   }
+
+   if (*(weather)!='\0')
+   if (validate_code(13,weather,&novalue)!=SUCCESS)
+   {
+     pusherror(*seqid,8212);           /* Invalid Weather condition code      */
+     no++;                             /* Increment 'G' error counter      */
+     return(FALSE);
+   }
+
+/* =============================================================================
+ * Get the linkcode and section to query the road segments table
+ * =============================================================================
+ */
+    strcpy(sqlsec.arr,strs[g_section]);                     /* copy section number   */
+    sqlsec.len = strlen(sqlsec.arr);                /* set length of sqlsec  */
+    sqlsec.arr[sqlsec.len]='\0';                    /* Terminate section     */
+
+    switch (rmmstype(date,county))                  /* Database type         */
+    {
+        case 4: strcpy(sqllink.arr,(strs[g_link]));      /* Set linkcode value    */
+                sqllink.len = strlen(sqllink.arr);  /* Set linkcode length   */
+                sqllink.arr[sqllink.len]='\0';      /* Terminate linkcode    */
+                break;
+       default: strcpy(sqllink.arr,(strs[g_link]+4));    /* Linkcode with no agent*/
+                strncpy(sqlagency.arr,strs[g_link],4);   /* Set agency value.     */
+                sqlagency.len=strlen(sqlagency.arr);/* Set agency length     */
+                sqlagency.arr[sqlagency.len]='\0';  /* Terminate agency      */
+                sqllink.len=strlen(sqllink.arr);    /* Set linkcode length   */
+                sqllink.arr[sqllink.len]='\0';      /* Terminate linkcode    */
+                break;
+    }
+
+/* ============================================================================
+ * Concat linkcode and section into section.
+ * For both Roadline and Non-Roadline products the section must be in the form
+ * of  <agency-linkcode>/<section> where agency=4, linkcode=6 and section=5
+ * characters long. The section must be padded with zeros.
+ * ============================================================================
+ */
+    strcpy(section,strs[g_link]);            /* Copy the linkcode            */
+    strcat(section,"/");                    /* Append a slash character     */
+    strcat(section,strs[g_section]);                /* Append section number        */
+
+    if (EXDebug && G_REC)
+    {
+    puts("");
+  puts("Indate Time Init Agency Linkcode Section SType Dir SCon Weather Auto ");
+  puts("---------------------------------------------------------------------");
+    if (AUTO_SAFETY)
+printf("%-6s %-4s %-4s %-6s %-8s %-7s %-5s %-4s %-4s %-7s Auto\n\n"
+                                                            ,inspdate
+                                                            ,insptime
+                                                            ,who
+                                                            ,sqlagency.arr
+                                                            ,sqllink.arr
+                                                            ,sqlsec.arr
+                                                            ,inspflag
+                                                            ,direction
+                                                            ,surface
+                                                            ,weather);
+    else
+printf("%-6s %-4s %-4s %-6s %-8s %-7s %-5s %-4s %-4s %-7s NO\n\n"
+                                                            ,inspdate
+                                                            ,insptime
+                                                            ,who
+                                                            ,sqlagency.arr
+                                                            ,sqllink.arr
+                                                            ,sqlsec.arr
+                                                            ,inspflag
+                                                            ,direction
+                                                            ,surface
+                                                            ,weather);
+   }
+/* ============================================================================
+ * Get the road segments record for this section
+ * ============================================================================
+ */
+
+  if(ENHANCED)
+    {
+    if(*(strs[g_rseheid])!='\0')
+      id = atoi(strs[g_rseheid]);
+    else
+      id=0;
+    }
+  else
+    id=0;
+
+  if(validate_section(sqlagency.arr
+                     ,sqllink.arr
+                     ,sqlsec.arr
+                     ,&id
+                     ,&length
+                     ,responsible
+                     ,&dummy
+                     ,&vsys_flag.arr)!=SUCCESS)      /* Validate survey    */
+    {
+    pusherror(*seqid,8207);                      /* Invalid Linkcode/Section*/
+    no++;                               /* Increment 'G' error counter      */
+    return(FALSE);
+    }
+
+  if(*vsys_flag.arr=='L')             /* If the system flag for the section */
+    DTP_ROAD=FALSE;                    /* is 'L' then we are dealing with a  */
+  else                                 /* LOCAL road or else we are dealiing */
+    DTP_ROAD=TRUE;                     /* with a DTp road.                   */
+
+
+  if(EXDebug && G_REC )
+    {
+    puts("Agency Linkcode Section Rse_He_Id Length Sys_Flag DTP_ROAD");
+    puts("----------------------------------------------------------");
+    printf("%-6s %-8s %-7s %-9d %-6d %-8s",sqlagency.arr
+                                          ,sqllink.arr
+                                          ,sqlsec.arr
+                                          ,id
+                                          ,length
+                                          ,vsys_flag.arr );
+    if(DTP_ROAD)
+      printf(".. TRUE\n");
+    else
+      printf(".. FALSE\n");
+    }
+
+  *sys_flag=rmcaseup(vsys_flag.arr[0]);
+
+/*============================================================================
+ * If the user wants to automatically generate a safety inspection with
+ * a detailed inspection, increment control codes again.
+ *============================================================================
+ */
+
+    if ((AUTO_SAFETY) && (*sys_flag =='L') && (inspflag[0]=='D'))
+       getnextid("ARE_REPORT_ID",TRUE);
+
+    *slength = length;                 /* Set the section length variable     */
+    *heid    = id;                     /* Set the section rse_he_id           */
+
+    strcpy(sqlii.arr,strs[g_firstinsp]);         /* Set the primary inspectors initials */
+    sqlii.len = strlen(sqlii.arr);     /* Set the length of the initials      */
+    sqlii.arr[sqlii.len] ='\0';        /* Terminate the initials              */
+
+/*
+ *========================================================================
+ * Validate the primary inspector.
+ * This function requires that the inspectors id be returned.
+ *========================================================================
+ */
+    if (validate_code(10,strs[g_firstinsp],pinspector)!=SUCCESS )
+    {
+       pusherror(*seqid,8208);          /* Primary inspector cannot be       */
+       no++;                             /* Increment 'G' error counter      */
+       return(FALSE);
+    }
+
+/*
+ *========================================================================
+ * Validate the secondary inspector. Secondary inspector may be null.
+ * This function requires that the inspectors id be returned.
+ *========================================================================
+ */
+
+   if (ENHANCED)
+   {
+      if (*(strs[g_secinsp])!='\0')   /* If a secondary inspector has been entered.  */
+      if (validate_code(10,strs[g_secinsp],pinspector2)!=SUCCESS )
+      {
+         pusherror(*seqid,8209); /* Secondary inspector cannot be located.   */
+         no++;                           /* Increment 'G' error counter      */
+         return(FALSE);
+      }
+   }
+
+   *reportid = getnextid("ARE_REPORT_ID",TRUE); /* Obtain the next available */
+                                                /* activities report id.     */
+
+   if ((EXDebug) && (G_REC))
+   {
+      printf("Record Type : %c\n",rectype);
+      printf("Link Code   : %s\n",sqllink.arr);
+      printf("Section     : %s\n",sqlsec.arr);
+      printf("Sys flag    : %c\n",*sys_flag);
+      printf("Inspector   : %d\n",*pinspector);
+      printf("Date        : %s\n",inspdate);
+      printf("Time        : %s\n",insptime);
+      printf("Initiation  : %s\n",who);
+      printf("Direction   : %s\n",direction);
+      printf("Inspector2  : %d\n",*pinspector2);
+      printf("Responsible : %d\n",*responsible);
+   }
+
+   return(TRUE);
+
+} /* PROGREC END BRACE */
