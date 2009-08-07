@@ -1,5 +1,6 @@
 /* SCCS ID keywords, do not remove */
-static char *sccsid = "@(#)r5cha.pc	1.2 10/23/03";
+/* static char *sccsid = "@(#)r5cha.pc	1.2 10/23/03"; */
+static char *sccsid = "$Workfile:   r5cha.pc  $ $Revision:   2.1  $ $Modtime:   Aug 07 2009 15:31:08  $";
 
 /************************************************************ 
 * Standard I/O definition header file.                      *
@@ -436,12 +437,12 @@ return(1);
 
 static char *sel_sections =  
 "SELECT ISS_RSE_HE_ID,ISS_RSE_LINKCODE,ISS_RSE_SECT_NO,\
-ISS_RSE_PUS_NODE_ID_ST,ISS_RSE_PUS_NODE_ID_END,ISS_RSE_DESCR \
+ISS_RSE_PUS_NODE_ID_ST,ISS_RSE_PUS_NODE_ID_END,SUBSTR(ISS_RSE_DESCR,1,80) \
 FROM IFF_SECT_STACK WHERE ISS_SESSION = USERENV('SESSIONID')";
 
 static char *sel_all_sections = 
 "SELECT RSE_HE_ID,RSE_AGENCY||RSE_LINKCODE,RSE_SECT_NO,\
-RSE_PUS_NODE_ID_ST,RSE_PUS_NODE_ID_END,RSE_DESCR FROM ROAD_SECTIONS \
+RSE_PUS_NODE_ID_ST,RSE_PUS_NODE_ID_END,SUBSTR(RSE_DESCR,1,80) FROM ROAD_SECTIONS \
 WHERE RSE_SYS_FLAG like upper(:sys_flag) ORDER BY RSE_HE_ID";
 
 
