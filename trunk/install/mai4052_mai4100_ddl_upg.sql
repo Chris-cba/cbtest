@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.4   Aug 10 2009 12:42:18   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.5   Aug 11 2009 11:52:34   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Aug 10 2009 12:42:18  $
---       Date fetched Out : $Modtime:   Aug 10 2009 12:39:58  $
---       Version          : $Revision:   1.4  $
+--       Date into PVCS   : $Date:   Aug 11 2009 11:52:34  $
+--       Date fetched Out : $Modtime:   Aug 11 2009 11:48:44  $
+--       Version          : $Revision:   1.5  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -180,38 +180,38 @@ ALTER TABLE PBI_QUERY
 MODIFY(QRY_RSE_HE_ID NUMBER(9));
 
 ALTER TABLE HHINV_ITEM_ERR_1
-  MODIFY(REC_SEQ_NO       NUMBER
-        ,HWAY_SEQ_NO      NUMBER
-        ,SECT_HDR_SEQ_NO  NUMBER);
+  MODIFY(REC_SEQ_NO       NUMBER(38)
+        ,HWAY_SEQ_NO      NUMBER(38)
+        ,SECT_HDR_SEQ_NO  NUMBER(38));
 
 ALTER TABLE HHINV_ITEM_ERR_2
-MODIFY(HE_ID           NUMBER
-      ,REC_SEQ_NO      NUMBER
-      ,SECT_HDR_SEQ_NO NUMBER);
+MODIFY(HE_ID           NUMBER(38)
+      ,REC_SEQ_NO      NUMBER(38)
+      ,SECT_HDR_SEQ_NO NUMBER(38));
 
 ALTER TABLE HHINV_ITEM_ERR_3
-MODIFY(HE_ID      NUMBER
-      ,REC_SEQ_NO NUMBER);
+MODIFY(HE_ID      NUMBER(38)
+      ,REC_SEQ_NO NUMBER(38));
 
 ALTER TABLE TEMP_LOAD_2
-MODIFY(HE_ID NUMBER);
+MODIFY(HE_ID NUMBER(38));
 
 ALTER TABLE HHINV_LOAD_2
-MODIFY(HE_ID           NUMBER
-      ,REC_SEQ_NO      NUMBER
-      ,SECT_HDR_SEQ_NO NUMBER);
+MODIFY(HE_ID           NUMBER(38)
+      ,REC_SEQ_NO      NUMBER(38)
+      ,SECT_HDR_SEQ_NO NUMBER(38));
 
 ALTER TABLE HHINV_LOAD_3
-MODIFY(HE_ID      NUMBER
-      ,REC_SEQ_NO NUMBER);
+MODIFY(HE_ID      NUMBER(38)
+      ,REC_SEQ_NO NUMBER(38));
 
 ALTER TABLE HHINV_ODL_LOG
-  MODIFY(LAST_SEQ_NO   NUMBER
-        ,NEW_SEQ_NO    NUMBER
-        ,Z_REC_SEQ_NO  NUMBER);
+  MODIFY(LAST_SEQ_NO   NUMBER(38)
+        ,NEW_SEQ_NO    NUMBER(38)
+        ,Z_REC_SEQ_NO  NUMBER(38));
 
 ALTER TABLE HHINV_RUN_LOG
-  MODIFY(MAX_SEQ_NO  NUMBER);
+  MODIFY(MAX_SEQ_NO  NUMBER(38));
 
 ALTER TABLE SCHEDULE_ROADS
 MODIFY(SCHR_IIT_ITEM_ID NUMBER(9));
@@ -327,11 +327,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.4   Aug 10 2009 12:42:18   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.5   Aug 11 2009 11:52:34   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Aug 10 2009 12:42:18  $
---       Date fetched Out : $Modtime:   Aug 10 2009 12:39:58  $
---       SCCS Version     : $Revision:   1.4  $
+--       Date into SCCS   : $Date:   Aug 11 2009 11:52:34  $
+--       Date fetched Out : $Modtime:   Aug 11 2009 11:48:44  $
+--       SCCS Version     : $Revision:   1.5  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
