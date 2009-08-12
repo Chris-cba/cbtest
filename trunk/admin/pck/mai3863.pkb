@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.4   Dec 19 2008 15:02:50   smarshall  $
- --       Module Name      : $Workfile:   mai3863_ks1.pkb  $
- --       Date into SCCS   : $Date:   Dec 19 2008 15:02:50  $
- --       Date fetched Out : $Modtime:   Dec 19 2008 15:01:16  $
- --       SCCS Version     : $Revision:   2.4  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.5   Aug 12 2009 11:26:44   cstrettle  $
+ --       Module Name      : $Workfile:   mai3863.pkb  $
+ --       Date into SCCS   : $Date:   Aug 12 2009 11:26:44  $
+ --       Date fetched Out : $Modtime:   Jul 03 2009 13:55:28  $
+ --       SCCS Version     : $Revision:   2.5  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -515,7 +515,7 @@ IS
            ita_validate_yn      ||','||
            ita_manditory_yn rec
     FROM   inv_type_attribs
-    WHERE  ita_disp_seq_no !=99
+    WHERE  ita_inspectable !='N'-- ita_disp_seq_no !=99 CWS 02/07/09
     AND    INSTR(sysflags,ita_ity_sys_flag)>0
     AND    ita_end_date IS NULL
     AND    ( FAsset IS NULL
