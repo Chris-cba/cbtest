@@ -3,7 +3,7 @@
 /* static char *sccsid = "@(#)r4proh.pc	1.2 09/27/06"; */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.1  $ $Modtime:   Aug 06 2009 18:42:18  $";
+static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.2  $ $Modtime:   Aug 12 2009 14:02:26  $";
 
 
 /* ============================================================================
@@ -77,8 +77,8 @@ static   long int sqlrep             /* Activities report id            */
                  ,seqid              /* Sequence number                 */
                  ,sqlheid            /* Highways element                */
                  ,noargs             /* Number of arguments             */
-                 ,i_sqlpart[80]      /*                                 */
-                 ,i_sqlrep[80]       /*                                 */
+                 ,i_sqlpart[500]      /*                                 */
+                 ,i_sqlrep[500]       /*                                 */
                  ,sqlend             /* End chainage value              */
                  ,sqlst              /* Start chainage value            */
                  ,sqllength          /* Section length                  */
@@ -86,16 +86,16 @@ static   long int sqlrep             /* Activities report id            */
 static   varchar  date_last[7]       /*                                 */
                  ,sqlinit[4]         /* Initiation Type                 */
                  ,sqlacty[3]         /* Activity code                   */
-                 ,i_sqlacty[80][3]   /* Activity code array             */
-                 ,i_sqlstat[80][2]   /* Activity status array           */
-                 ,i_sqlnot[80][2]    /*                                 */
+                 ,i_sqlacty[500][3]   /* Activity code array             */
+                 ,i_sqlstat[500][2]   /* Activity status array           */
+                 ,i_sqlnot[500][2]    /*                                 */
 ;
-static   short    ii_sqlnot[80]      /*                                 */
-                 ,ii_sqlpart[80]     /*                                 */
+static   short    ii_sqlnot[500]      /*                                 */
+                 ,ii_sqlpart[500]     /*                                 */
                  ,i_dummy            /* Dummy argument indicator var    */
 ;
 varchar  full_date[19]               /* The current date.               */
-        ,i_full_date[80][19]         /* The current full date format    */
+        ,i_full_date[500][19]         /* The current full date format    */
         ,v_dummy[10]                 /* Dummy argument for select       */
         ,i_sys_flag[2]
 ;
@@ -116,7 +116,7 @@ long int length;                         /* Section length                  */
 char sys_flag;
 { /* Prohrec start brace*/
 
-char *strs[80]                           /* Array of string pointers        */
+char *strs[500]                           /* Array of string pointers        */
     ,text[1000]                          /* Text array buffer               */
 ;
 int  count;                              /* Array element counter                 */
@@ -198,7 +198,7 @@ void arl_insert()
 {
    int i;
 
-   for (i=0;i<80;i++)
+   for (i=0;i<noargs;i++)
    {
       full_date.arr[full_date.len] = '\n';
       strcpy(i_full_date[i].arr,full_date.arr);
