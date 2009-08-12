@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.8   Aug 07 2009 17:34:48   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.9   Aug 12 2009 11:23:08   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Aug 07 2009 17:34:48  $
---       Date fetched Out : $Modtime:   Aug 07 2009 17:22:52  $
---       PVCS Version     : $Revision:   2.8  $
+--       Date into PVCS   : $Date:   Aug 12 2009 11:23:08  $
+--       Date fetched Out : $Modtime:   Aug 11 2009 11:51:46  $
+--       PVCS Version     : $Revision:   2.9  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Aug 07  17:22:08 2009 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Tue Aug 11  11:51:06 2009 by Server Generator 10.1.2.9.28
 
 
 
@@ -660,8 +660,8 @@ CREATE TABLE HHINV_ITEM_ERR_1
  ,REC_SEQ_NO NUMBER(38,0) NOT NULL
  ,RUN_NUM NUMBER(5,0) NOT NULL
  ,ERROR_MSG VARCHAR2(4000)
- ,HWAY_SEQ_NO NUMBER(8,0)
- ,SECT_HDR_SEQ_NO NUMBER(8,0)
+ ,HWAY_SEQ_NO NUMBER(38,0)
+ ,SECT_HDR_SEQ_NO NUMBER(38,0)
  )
 /
 
@@ -1235,9 +1235,9 @@ CREATE TABLE HHINV_ODL_LOG
  ,RUN_DATE DATE NOT NULL
  ,RUN_USER VARCHAR2(30) NOT NULL
  ,INVENT_BY VARCHAR2(30)
- ,LAST_SEQ_NO NUMBER(8,0)
- ,NEW_SEQ_NO NUMBER(8,0)
- ,Z_REC_SEQ_NO NUMBER(8,0)
+ ,LAST_SEQ_NO NUMBER(38,0)
+ ,NEW_SEQ_NO NUMBER(38,0)
+ ,Z_REC_SEQ_NO NUMBER(38,0)
  )
 /
 
@@ -1252,7 +1252,7 @@ CREATE TABLE HHINV_RUN_LOG
  ,ERROR_MSG VARCHAR2(4000)
  ,ITEM_CNT NUMBER(38,0)
  ,ITEM_ERR_CNT NUMBER(38,0)
- ,MAX_SEQ_NO NUMBER(8,0)
+ ,MAX_SEQ_NO NUMBER(38,0)
  ,SECTION_CNT NUMBER(38,0)
  ,SECTION_ERR_CNT NUMBER(38,0)
  )
