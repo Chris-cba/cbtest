@@ -1,0 +1,393 @@
+
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r4proh.pc	1.2 09/27/06"; */
+
+/*PVCS keyword, do not remove */
+static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.2  $ $Modtime:   Aug 12 2009 14:02:26  $";
+
+
+/* ============================================================================
+ *
+ *                              P R O H R E C
+ * Purpose: To get and process the next 'H' record containing activities
+ * addressed during the current inspection.
+ *
+ * Type:  boolean prohrec();
+ *
+ * Calling
+ * Sequence:              prohrec(reportid,&error)
+ *
+ * Input: int     reportid   Report ID allocated by progrec to 
+ *                        the current section's inspection report.
+ *
+ * Output:        boolean prohrec TRUE  = 'H' record found and processed
+ *                              OK
+ *                     FALSE = Error, see error code.
+ *
+ *     int     error   1 = H record found & processed OK
+ *                     2 = ORACLE error occured.
+ *                     2000 = No 'H' record found
+ *                     1040 = Invalid activity code on 'H'
+ *                            record.
+ *
+ * Effects:       If OK new rows inserted into ACT_REPORT_LINES.
+ *     COMMIT not done.
+ *
+ *==============================================================================
+ */
+
+#include <stdio.h>
+
+/* ============ Application specific preprocessor commands ===================
+ *   CHANGE HISTORY :-                                                 
+ *   DATE         : 10-JUL-91                                          
+ *   CHANGED BY   : Steve Voller                                       
+ *   DESCRIPTION  : Correct bug for PC versions. Ensure that when the  
+ *                  code is run on a PC then atol is used instead of    
+ *                  atoi. Bug advised by R. Strong 26/6/91 following   
+ *                  problems at Parkman Associates.                     
+ *                                                                      
+ *   Date         : 16-Nov-1995                                         
+ *   Changed By   : H.Buckley                                          
+ *   Description  : Parkmans are developing a new product named Roadline
+ *                  350 and the product does have 'H' records but does  
+ *                  NOT maintain any data for this record type.        
+ *                  Modifications will have to be made therefore to     
+ *                  enable this program to function with th Roadline    
+ *                  350 software.                                       
+ *                                                                      
+ * DATE         : 31-10-97
+ * CHANGED BY   : G Fletcher
+ * DESCRIPTION  : client-server conversion
+  ============================================================================
+*/
+
+#include "rmms.h"                    /* Standard rmms header file       */
+
+#define SQLCA_STORAGE_CLASS extern 
+EXEC SQL INCLUDE sqlext.h;
+extern BOOLEAN RLINE350;
+extern short EXDebug;
+extern char pipe_msg[254];
+
+
+
+EXEC SQL BEGIN DECLARE SECTION;
+static   long int sqlrep             /* Activities report id            */
+                 ,seqid              /* Sequence number                 */
+                 ,sqlheid            /* Highways element                */
+                 ,noargs             /* Number of arguments             */
+                 ,i_sqlpart[500]      /*                                 */
+                 ,i_sqlrep[500]       /*                                 */
+                 ,sqlend             /* End chainage value              */
+                 ,sqlst              /* Start chainage value            */
+                 ,sqllength          /* Section length                  */
+;
+static   varchar  date_last[7]       /*                                 */
+                 ,sqlinit[4]         /* Initiation Type                 */
+                 ,sqlacty[3]         /* Activity code                   */
+                 ,i_sqlacty[500][3]   /* Activity code array             */
+                 ,i_sqlstat[500][2]   /* Activity status array           */
+                 ,i_sqlnot[500][2]    /*                                 */
+;
+static   short    ii_sqlnot[500]      /*                                 */
+                 ,ii_sqlpart[500]     /*                                 */
+                 ,i_dummy            /* Dummy argument indicator var    */
+;
+varchar  full_date[19]               /* The current date.               */
+        ,i_full_date[500][19]         /* The current full date format    */
+        ,v_dummy[10]                 /* Dummy argument for select       */
+        ,i_sys_flag[2]
+;
+EXEC SQL END DECLARE SECTION;
+
+
+BOOLEAN prohrec(reportid,error,heid,length,sys_flag)
+/* ==================== Argument definition area ==============================
+ *   report id allocated by by progrec to the current sections inspection   
+ *   report.                                                                
+ * ============================================================================
+ */
+long int reportid;                       /* report identification           */
+long int *error;                         /* error code                      */
+long int heid;                           /* previously retrived highway     */
+                                         /* element id                      */
+long int length;                         /* Section length                  */
+char sys_flag;
+{ /* Prohrec start brace*/
+
+char *strs[500]                           /* Array of string pointers        */
+    ,text[1000]                          /* Text array buffer               */
+;
+int  count;                              /* Array element counter                 */
+BOOLEAN is_ok;                           /* Indicates wether query was successful */
+extern char attribute[2];
+
+   sqlrep  = reportid;
+   sqlheid = heid;
+
+   if (gethhrec('H',8220,&seqid,text) == EOF)
+   {
+      *error = 8104;                       /* 'H' (Activities) record required*/
+      return(FALSE);                       /* but not found.                  */
+   }
+
+   noargs = getstrs(text,strs);            /* Obtain the number of fields */
+
+/* ===========================================================================
+ * The 'H' record should contain one or more inspection activities     
+ * These activities should be comma separated values.   
+ * ===========================================================================
+ */
+   is_ok=TRUE;
+
+   i_sys_flag.arr[0] = sys_flag;
+   i_sys_flag.arr[1] = '\0';
+   i_sys_flag.len = 1;
+
+   for (count=0;count<noargs;count++)
+   {
+      strcpy(sqlacty.arr,strs[count]);     /* strip attribute          */
+      slen_varchar(sqlacty);
+      term_varchar(sqlacty);   
+      strcpy(attribute,sqlacty.arr);       /* copy attribute value     */
+
+           EXEC SQL SELECT 'exists'
+                    INTO   :v_dummy:i_dummy 
+                    FROM   activities
+                    WHERE  atv_acty_area_code = :sqlacty
+                    and    atv_dtp_flag = :i_sys_flag;
+
+           oraerror("PROHREC");
+
+           if (ORANOREC)
+           {  
+              pusherror(seqid,8221); 
+              is_ok=FALSE;
+           }
+
+   i_sqlrep[count] = reportid;
+
+   strcpy(i_sqlacty[count].arr,strs[count]);
+   i_sqlacty[count].len = 2;
+
+   i_sqlstat[count].arr[0] = 'C';
+   i_sqlstat[count].len = 1;
+
+   if ( EXDebug  && H_REC)
+   {
+      puts("Activity Attribute RseHeId Report Id Status");
+      puts("-------------------------------------------");
+      printf("%8s %9s %ld %9d %6s\n\n",sqlacty.arr
+                                 ,attribute
+                                 ,sqlheid
+                                 ,sqlrep
+                                 ,i_sqlstat[count].arr);
+      }
+  }
+return(is_ok);
+
+} /* .....................................................Prohrec end brace */
+
+/* =============================================================================
+ * Function : arl_insert()
+ * Purpose  : Insert into activity report lines table.
+ * =============================================================================
+ */
+void arl_insert()
+{
+   int i;
+
+   for (i=0;i<noargs;i++)
+   {
+      full_date.arr[full_date.len] = '\n';
+      strcpy(i_full_date[i].arr,full_date.arr);
+      i_full_date[i].len=full_date.len;
+   }
+
+   EXEC SQL FOR :noargs INSERT INTO ACT_REPORT_LINES
+                        (ARL_NOT_SEQ_FLAG 
+                        ,ARL_ATV_ACTY_AREA_CODE 
+                        ,ARL_ARE_REPORT_ID 
+                        ,ARL_ACT_STATUS 
+                        ,ARL_REPORT_ID_PART_OF 
+                        ,ARL_CREATED_DATE 
+                        ,ARL_LAST_UPDATED_DATE)
+                        VALUES
+                        (:i_sqlnot:ii_sqlnot 
+                        ,:i_sqlacty 
+                        ,:i_sqlrep 
+                        ,:i_sqlstat 
+                        ,:i_sqlpart:ii_sqlpart 
+                        ,to_date(:i_full_date,'DD-MON-RR:HH24:MI:SS') 
+                        ,to_date(:i_full_date,'DD-MON-RR:HH24:MI:SS'));
+
+   oraerror("PROHREC");
+}
+/* ==========================================================================
+ * Function : arl_set_stat()
+ * Purpose  : Set activity report lines status.
+ * ==========================================================================
+ */
+arl_set_stat(heid,slength,stchain,endchain,reportid,inspdate,init)
+long int heid                                      /* Highway element        */
+        ,slength                                   /* Section length         */
+        ,stchain                                   /* Start chainage         */
+        ,endchain                                  /* End chainage           */
+        ,reportid                                  /* Activities report id   */
+;
+char *inspdate                                     /* Inspection date        */
+    ,*init                                         /* Initiation Type        */
+;
+/* ============================================================================ 
+ */
+{
+  int count;                                      /* Function counter       */
+  long int date;                                  /* Date as integer        */
+  long int last_date;
+  char temp[254];
+
+  sqlrep    = reportid;                           /* Report id              */
+  sqlheid   = heid;                               /* Highway element        */
+  date      = atoi(inspdate);                     /* Inspection date        */
+  sqlend    = endchain;                           /* End chainage           */
+  sqlst     = stchain;                            /* Start chainage         */
+  sqllength = slength;                            /* Section length         */
+  
+  strcpy((char*)sqlinit.arr,init);                /* Initiation Type        */
+  sqlinit.len = strlen(init);
+
+  if(date > 510000)
+    {
+    date += 19000000;
+    }
+  else
+    {
+    date += 20000000;
+    }
+
+  for(count=0;count<noargs;count++)       /* For all inspection activities */
+    {
+    strcpy((char*)sqlacty.arr,(char*)i_sqlacty[count].arr);
+    sqlacty.len = 2;
+
+    EXEC SQL select nvl(to_char(max(are3.are_date_work_done),'RRMMDD'),'510101')
+               into :date_last
+               from activities_report are3
+                   ,act_report_lines  arl3
+              where arl3.arl_atv_acty_area_code = :sqlacty
+                and arl3.arl_act_status         = 'C'
+                and arl3.arl_are_report_id      = are3.are_report_id
+                and are3.are_rse_he_id          = :sqlheid
+                and are3.are_initiation_type    = :sqlinit
+                  ;
+    oraerror("ARL_SET_STAT");
+
+    if(sqlca.sqlerrd[2] == 0)
+      {
+      return(TRUE);
+      }
+    date_last.arr[date_last.len] = '\0';
+
+    last_date = atol(date_last.arr);
+    if(last_date > 510000)
+      {
+      last_date += 19000000;
+      }
+    else
+      {
+      last_date += 20000000;
+      }
+
+    if( slength < (endchain - stchain + 20) )
+      {
+      *i_sqlstat[count].arr = 'C';
+      i_sqlstat[count].len = 1;
+      ii_sqlpart[count]    = -1;
+
+      if(last_date > date)
+        {
+        *i_sqlnot[count].arr = 'A';
+        i_sqlnot[count].len = 1;
+        ii_sqlnot[count] = 0;
+        pusherror(seqid,8500);        /* Inspection date is less than previously */
+        }                                /* loaded inspection.                      */
+      else
+        {
+        ii_sqlnot[count] = -1;
+        EXEC SQL
+        UPDATE ACT_REPORT_LINES
+           SET ARL_ACT_STATUS = 'I'
+              ,ARL_CREATED_DATE = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+         WHERE ARL_ATV_ACTY_AREA_CODE = :sqlacty
+           AND ARL_ACT_STATUS = 'O'
+           AND ARL_ARE_REPORT_ID IN(SELECT ARE_REPORT_ID
+                                      FROM ACTIVITIES_REPORT
+                                     WHERE ARE_RSE_HE_ID = :sqlheid
+                                       AND ARE_DATE_WORK_DONE >= TO_DATE(:date_last,'RRMMDD'))
+             ;
+        }
+        /* update all parts to ignored as complete */
+      }
+    else
+      {
+      if(last_date > date)
+        {
+        *i_sqlnot[count].arr = 'A';
+        i_sqlnot[count].len = 1;
+        ii_sqlnot[count] = 0;
+        *i_sqlstat[count].arr = 'I';
+        i_sqlstat[count].len = 1;
+        pusherror(seqid,8500);
+        }
+      else
+        {
+        ii_sqlnot[count] = -1;
+
+        EXEC SQL
+        update act_report_lines
+           set arl_act_status = 'P'
+              ,arl_report_id_part_of = :sqlrep
+              ,arl_last_updated_date = to_date(:full_date,'DD-MON-RR:HH24:MI:SS')
+         where arl_atv_acty_area_code = :sqlacty
+           and arl_act_status = 'O'
+           and arl_are_report_id in
+                (select are_report_id
+                   from activities_report are
+                  where are_rse_he_id = :sqlheid
+                    and are_date_work_done >= to_date(:date_last,'RRMMDD')
+                    and exists
+                       (select arl_atv_acty_area_code
+                              ,sum(are_end_chain - are_st_chain)
+                          from activities_report are3,act_report_lines arl3
+                         where arl3.arl_are_report_id = are3.are_report_id
+                           and arl3.arl_act_status = 'O'
+                           and arl3.arl_atv_acty_area_code = :sqlacty
+                           and arl3.arl_are_report_id = are3.are_report_id
+                           and are3.are_rse_he_id = are.are_rse_he_id
+                           and are_date_work_done >= to_date(:date_last,'RRMMDD')
+                         group
+                            by arl3.arl_atv_acty_area_code
+                        having sum(are3.are_end_chain - are3.are_st_chain)
+                               + count(are3.are_st_chain)*10 + (:sqlend - :sqlst)
+                               > :sqllength))
+             ;
+        oraerror("ARL_SET_STAT");
+
+        if(sqlca.sqlerrd[2] > 0)
+          {
+          *i_sqlstat[count].arr = 'C';
+          i_sqlstat[count].len = 1;
+          i_sqlpart[count] =  reportid;
+          ii_sqlpart[count] = 0;
+          }
+        else
+          {
+          *i_sqlstat[count].arr = 'O';
+          i_sqlstat[count].len = 1;
+          ii_sqlpart[count] = -1;
+          }
+        }
+      }
+    } /* FOR end brace */
+} /* ARL_SET_STAT end brace */
