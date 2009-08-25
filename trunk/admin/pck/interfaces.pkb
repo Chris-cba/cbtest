@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.15   Jun 25 2009 10:35:26   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.16   Aug 25 2009 16:17:42   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jun 25 2009 10:35:26  $
---       Date fetched Out : $Modtime:   Jun 25 2009 10:32:10  $
---       SCCS Version     : $Revision:   2.15  $
+--       Date into SCCS   : $Date:   Aug 25 2009 16:17:42  $
+--       Date fetched Out : $Modtime:   Aug 25 2009 15:47:14  $
+--       SCCS Version     : $Revision:   2.16  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.15  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.16  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -705,7 +705,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
                                                                                             ,TO_CHAR(iwor_commence_by, g_date_format)||' '||NVL(TO_CHAR(iwor_commence_by, g_time_format),'00:00:01'))
                                             ,DECODE(TO_CHAR(iwor_commence_by, g_date_format),NVL(TO_CHAR(iwor_commence_by, g_date_format),1),TO_CHAR(iwor_commence_by, g_date_format)))||','||iwor_fyr_id
         order_record
-       ,iwor_descr
+       ,Replace(Replace(iwor_descr,Chr(10),' '),Chr(13),' ') iwor_descr
        ,LTRIM(TO_CHAR(iwor_cost,'9999999990.00')) iwor_cost
        ,iwor_transaction_id
        ,iwor_works_order_no
@@ -851,14 +851,23 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
            ','||TO_CHAR(iboq_parent_boq_id)||
            ','||iboq_percent_band_comp||
            ','||iboq_rogue_item||
-           ','||iboq_rogue_item_desc boq_record
+           ','||Replace(Replace(iboq_rogue_item_desc,Chr(10),' '),Chr(13),' ') boq_record
     FROM interface_boq
    WHERE iboq_transaction_id = c_transaction_id
      AND iboq_wol_id = c_wol_id
        ;
   --
   l_def_details def%ROWTYPE;
-  l_bud_bid varchar2(20);
+  l_bud_bid varchar2(20); 
+  l_cnt     Number ;
+  l_clm_rec Number ;
+  l_clm_tot Number ;
+  CURSOR   c_get_oun
+  IS
+  SELECT  *
+  FROM    org_units
+  WHERE   oun_contractor_id = p_contractor_id ;
+  l_oun_rec org_units%ROWTYPE;
   --
 BEGIN
   --
@@ -974,11 +983,30 @@ BEGIN
            AND iwor_works_order_no = l_wor_rec.iwor_works_order_no
              ;
       END LOOP;
+      SELECT Count(0)
+      INTO   l_cnt 
+      FROM   clm_contractor_interface
+      WHERE  cci_oun_id IN (SELECT oun.oun_id 
+                            FROM   clm_org_units oun
+                                  ,org_units     mm_oun
+                            WHERE  oun_contractor_id = p_contractor_id
+                            AND    oun_org_id = oun.oun_mai_oun_id );
+      IF l_cnt > 0
+      THEN
+          OPEN  c_get_oun;
+          FETCH c_get_oun INTO l_oun_rec ;
+          CLOSE c_get_oun;  
+          clm_cim_interface.generate_wor_file(pi_oun_mai_id  => l_oun_rec.oun_org_id 
+                                             ,pi_file_handle => l_fhand
+                                             ,pi_seq_no      => p_seq_no
+                                             ,po_tot_rec     => l_clm_rec
+                                             ,po_tot_amt     => l_clm_tot);
+      END IF ;
       --
       COMMIT;
       -- write a check record
-      UTL_FILE.PUT_LINE(l_fhand, '20,'||TO_CHAR(l_no_of_recs)||','
-                                      ||LTRIM(TO_CHAR(l_total_cost,'9999999990.00')));
+      UTL_FILE.PUT_LINE(l_fhand, '20,'||TO_CHAR(l_no_of_recs+Nvl(l_clm_rec,0))||','
+                                      ||LTRIM(TO_CHAR(l_total_cost+Nvl(l_clm_tot,0),'9999999990.00')));
       UTL_FILE.FFLUSH(l_fhand);
       --
   END IF;
@@ -2374,7 +2402,11 @@ END;
 -- validating a completion record).
 --
 
-PROCEDURE validate_completion_data(p_ih_id IN interface_headers.ih_id%TYPE) IS
+PROCEDURE validate_completion_data(p_ih_id IN interface_headers.ih_id%TYPE) 
+IS
+--
+   l_option hig_options.hop_value%TYPE := hig.get_sysopt('COMPLEDATE');
+--
 BEGIN
 
   UPDATE interface_headers
@@ -2386,20 +2418,119 @@ BEGIN
   SET    ic_error = NULL
         ,ic_status = DECODE(ic_status, 'R', 'P', ic_status)
   WHERE ic_ih_id = p_ih_id;
+  
 
   validate_contractor(p_ih_id);
   validate_check_rec(p_ih_id);
-  validate_wor_no(p_ih_id);
-  validate_wor_con(p_ih_id);
-  validate_wol_id(p_ih_id);
-  validate_defect_id(p_ih_id);
-  validate_schd_id(p_ih_id);
-  validate_def_wol(p_ih_id);
-  validate_wor_wol(p_ih_id);
-  validate_not_complete(p_ih_id);
-  validate_status_codes(p_ih_id);
-  validate_date_complete(p_ih_id);
 
+  FOR ic IN (SELECT ic.rowid ic_rowid
+             FROM   interface_completions ic
+             WHERE  ic_ih_id = p_ih_id
+             AND    NOT  (ic_works_order_no like 'FAU%CLM' OR
+                          ic_works_order_no  like 'WOR%CLM') 
+            )
+  LOOP
+      --Validate Work Order
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Invalid Works Order Number. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   work_orders
+                         WHERE  wor_works_order_no =  ic_works_order_no)
+      AND    rowid = ic.ic_rowid ;
+      --Validate the Contractor on thw WOR
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Works Order has not been issued to this Contractor. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                        FROM   work_orders
+                              ,org_units
+                              ,contracts
+                              ,interface_headers
+                        WHERE  wor_works_order_no = ic_works_order_no
+                        AND    wor_con_id = con_id
+                        AND    con_contr_org_id = oun_org_id
+                        AND    oun_contractor_id = ih_contractor_id
+                        AND    ih_id = ic_ih_id)
+      AND    rowid = ic.ic_rowid;
+      --Validate the WOL
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Invalid Work Order Line. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   work_order_lines
+                         WHERE  wol_id =  ic_wol_id)
+      AND    rowid = ic.ic_rowid;
+      --Validate the defect on the WOL
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Invalid Defect. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   defects
+                         WHERE  def_defect_id = ic_defect_id)
+      AND    ic_defect_id IS NOT NULL
+      AND    rowid = ic.ic_rowid;
+      --Validate the schedule
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Invalid Schedule. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   schedules
+                         WHERE  schd_id = ic_schd_id)
+      AND    ic_schd_id IS NOT NULL
+      AND    rowid = ic.ic_rowid;
+      --Validate te Defect againt the WOL
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Defect not on this Work Order Line. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   work_order_lines
+                         WHERE  wol_id = ic_wol_id
+                         AND    wol_def_defect_id = ic_defect_id)
+      AND    ic_defect_id IS NOT NULL
+      AND    rowid = ic.ic_rowid;
+      --Validate the WOL against the WOR
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Work Order Line not on this Work Order. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  NOT EXISTS (SELECT 1
+                         FROM   work_order_lines
+                         WHERE  wol_id = ic_wol_id
+                         AND    wol_works_order_no = ic_works_order_no)
+      AND    rowid = ic.ic_rowid;
+      --Check if WOR ALready complete
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'Work already complete. ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  EXISTS (SELECT 1
+                     FROM   work_order_lines
+                     WHERE  wol_id = ic_wol_id
+                     AND    wol_date_repaired IS NOT NULL/*= g_wol_comp_status*/)
+      AND    rowid = ic.ic_rowid;
+      --Validate the status of the WOL
+      UPDATE interface_completions
+      SET    ic_error = SUBSTR(ic_error||'More than one (WORK_ORDER_LINES) status code with feature 7 ', 1, 254)
+            ,ic_status = 'R'
+      WHERE  1 < (SELECT COUNT(1)
+                  FROM   hig_status_codes
+                  WHERE  hsc_allow_feature7 = 'Y'
+                  AND    hsc_domain_code = 'WORK_ORDER_LINES')
+      AND    rowid = ic.ic_rowid;
+      --Validet the WOR dates
+      IF l_option = 'N' 
+      then
+          UPDATE interface_completions
+          SET    ic_error = SUBSTR(ic_error||'Completed date must be >= Instructed Date and not in the future. ', 1, 254)
+                ,ic_status = 'R'
+          WHERE (EXISTS (SELECT 1
+                         FROM  work_orders
+                         WHERE  wor_works_order_no = ic_works_order_no
+                         AND  NVL(wor_date_confirmed, ic_date_completed + 1) > ic_date_completed)
+          OR    ic_date_completed > SYSDATE)
+          AND    rowid = ic.ic_rowid; 
+      END IF;
+  END LOOP ;
+  clm_cim_interface.validate_completion_data(p_ih_id);
 END;
 
 ---------------------------------------------------------------------
@@ -3113,6 +3244,7 @@ PROCEDURE completion_file_ph1( p_contractor_id    IN varchar2
   invalid_filename EXCEPTION;
   
 l_count number := 0;
+l_auto_load    Boolean := FALSE;
 BEGIN
 
   BEGIN
@@ -3149,6 +3281,7 @@ BEGIN
         UTL_FILE.FCLOSE(l_fhand);
             IF hig.get_sysopt('XTRIFLDS') IN ('2-4-0')
               THEN
+               l_auto_load := TRUE;
                 auto_load_file(l_ih_id
                               ,l_record
                               ,l_error);
@@ -3161,9 +3294,10 @@ BEGIN
         p_error := SQLERRM;
 
   END;
-
-  validate_completion_data(l_ih_id);
-
+  IF NOT l_auto_load 
+  THEN
+      validate_completion_data(l_ih_id);
+  END IF ;
   COMMIT;
 
 END;
@@ -3186,8 +3320,10 @@ PROCEDURE completion_file_ph2(p_ih_id IN interface_headers.ih_id%TYPE) IS
   select * 
       from interface_completions_all, work_order_lines
       where ic_ih_id = pi_ih_id
-      	and ic_wol_id = wol_id
-      	and ic_defect_id = wol_def_defect_id;
+      and ic_wol_id = wol_id
+      and ic_defect_id = wol_def_defect_id
+      AND    NOT  (ic_works_order_no like 'FAU%CLM' OR
+                          ic_works_order_no  like 'WOR%CLM');
 
   cursor c_defects ( pi_def_defect_id repairs.rep_def_defect_id%TYPE ) is
   select * 
@@ -3301,74 +3437,68 @@ WHERE 'exists' IN (SELECT 'exists'
                  WHERE ic_status = 'P'
                  AND ic_ih_id = p_ih_id);
 
-  UPDATE work_order_lines
-  SET   wol_status_code = (
-                           SELECT MAX(hsc_status_code)
-                           FROM   hig_status_codes
-                           WHERE  hsc_allow_feature7 = 'Y'
-                           AND    hsc_domain_code = 'WORK_ORDER_LINES'
-                           AND    g_today BETWEEN NVL(hsc_start_date, g_today) AND NVL(hsc_end_date, g_today)
+FOR ic IN (SELECT ic.rowid ic_rowid,ic.*
+           FROM   interface_completions_all ic
+           WHERE  ic_ih_id = p_ih_id
+           AND    ic_status = 'P'
+           AND    NOT  (ic_works_order_no like 'FAU%CLM' OR
+                        ic_works_order_no  like 'WOR%CLM')
+          )  
+LOOP
+    UPDATE work_order_lines
+    SET   wol_status_code = (
+                             SELECT MAX(hsc_status_code)
+                             FROM   hig_status_codes
+                             WHERE  hsc_allow_feature7 = 'Y'
+                             AND    hsc_domain_code = 'WORK_ORDER_LINES'
+                             AND    g_today BETWEEN NVL(hsc_start_date, g_today) AND NVL(hsc_end_date, g_today)
                           )
-  WHERE wol_date_repaired IS NULL
-  AND   wol_id IN (
-                   SELECT ic_wol_id
-                   FROM   interface_completions
-                   WHERE  ic_status = 'P'
-                   AND    ic_ih_id = p_ih_id
-                  )
-  AND   wol_status_code IN (
-                            SELECT hsc_status_code
-                            FROM   hig_status_codes
-                            WHERE  hsc_allow_feature1 = 'Y'
-                            AND    hsc_domain_code = 'WORK_ORDER_LINES'
-                            AND    g_today BETWEEN NVL(hsc_start_date, g_today) AND NVL(hsc_end_date, g_today)
-                           );
-  -- Update the repair date of the WOL to show when work was completed,
-  -- providing the repair date has not already been set.
-  ----------------------------------------------------------------------
-  UPDATE work_order_lines
-  SET   wol_date_repaired = (
-                             SELECT ic_date_completed
-                             FROM   interface_completions
-                             WHERE  ic_status = 'P'
-                             AND    ic_ih_id = p_ih_id
-                             AND    ic_wol_id = wol_id
-                            )
-  WHERE wol_date_repaired IS NULL
-  AND   wol_id IN (
-                   SELECT ic_wol_id
-                   FROM   interface_completions
-                   WHERE  ic_status = 'P'
-                   AND    ic_ih_id = p_ih_id
-                  );
+    WHERE wol_date_repaired IS NULL
+    AND   wol_id  = ic.ic_wol_id
+    AND   wol_status_code IN (
+                              SELECT hsc_status_code
+                              FROM   hig_status_codes
+                              WHERE  hsc_allow_feature1 = 'Y'
+                              AND    hsc_domain_code = 'WORK_ORDER_LINES'
+                              AND    g_today BETWEEN NVL(hsc_start_date, g_today) AND NVL(hsc_end_date, g_today)
+                             );
+    -- Update the repair date of the WOL to show when work was completed,
+    -- providing the repair date has not already been set.
+    ----------------------------------------------------------------------
+    UPDATE work_order_lines
+    SET   wol_date_repaired = (
+                               SELECT ic_date_completed
+                               FROM   interface_completions
+                               WHERE  ic_status = 'P'
+                               AND    ic_ih_id = p_ih_id
+                               AND    ic_wol_id = wol_id
+                              )
+    WHERE wol_date_repaired IS NULL
+    AND   wol_id  = ic.ic_wol_id;
 
-  -- Cancel the status of all the WOLs that have just been processed.
-  -------------------------------------------------------------------
-  UPDATE interface_completions
-  SET    ic_status = NULL
-  WHERE  ic_status = 'P'
-  AND    ic_ih_id = p_ih_id
-  AND EXISTS (
-              SELECT 1
-              FROM work_order_lines
-              WHERE wol_id = ic_wol_id
-              AND wol_date_repaired = ic_date_completed
-             );
+    UPDATE interface_completions
+    SET    ic_status = NULL
+    WHERE  ic_status = 'P'
+    AND    rowid = ic.ic_rowid ;
+END LOOP;
+ 
+-- Call CLM CIM Interface
+clm_cim_interface.completion_file_ph2(p_ih_id);
 
-  -- Add error message to any the WOLs that were not processed.
-  -------------------------------------------------------------
-  UPDATE interface_completions
-  SET    ic_error = SUBSTR(ic_error||'Repair Date already set. ', 1, 254)
-        ,ic_status = 'R'
-  WHERE  ic_status = 'P'
-  AND    ic_ih_id = p_ih_id;
+    -- Add error message to any the WOLs that were not processed.
+    -------------------------------------------------------------
+    UPDATE interface_completions
+    SET    ic_error = SUBSTR(ic_error||'Repair Date already set. ', 1, 254)
+          ,ic_status = 'R'
+    WHERE  ic_status = 'P'
+    AND    ic_ih_id = p_ih_id;
 
-  -- Archive the header record if no child records exist.
-  -------------------------------------------------------
-  UPDATE interface_headers
-  SET    ih_status = NULL
-  WHERE  ih_id = p_ih_id
-  AND NOT EXISTS (
+    -- Archive the header record if no child records exist.
+    -------------------------------------------------------
+   UPDATE interface_headers
+   SET    ih_status = NULL
+   WHERE  ih_id = p_ih_id
+   AND NOT EXISTS (
                   SELECT 1
                   FROM   interface_completions
                   WHERE  ic_ih_id = p_ih_id
