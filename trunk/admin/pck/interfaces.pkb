@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.16   Aug 25 2009 16:17:42   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.17   Aug 27 2009 09:14:34   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 25 2009 16:17:42  $
---       Date fetched Out : $Modtime:   Aug 25 2009 15:47:14  $
---       SCCS Version     : $Revision:   2.16  $
+--       Date into SCCS   : $Date:   Aug 27 2009 09:14:34  $
+--       Date fetched Out : $Modtime:   Aug 26 2009 16:47:56  $
+--       SCCS Version     : $Revision:   2.17  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.16  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.17  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -1312,7 +1312,7 @@ BEGIN
                        AND  NVL(wor_date_confirmed, ic_date_completed + 1) > ic_date_completed)
        OR    ic_date_completed > SYSDATE)
       AND    ic_ih_id = p_ih_id;
-
+ 
   END IF;
 
 END;
@@ -3509,7 +3509,10 @@ clm_cim_interface.completion_file_ph2(p_ih_id);
                  );
 
   COMMIT;
-
+Exception
+   WHEN no_data_found
+   THEN
+       Null;
 END;
 ---------------------------------------------------------------------
 -- Validates all data processed in a Claim file. Called from the
