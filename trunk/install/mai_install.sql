@@ -1,5 +1,5 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.9   Jul 17 2009 17:58:26   mhuitson  $"'
+define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.10   Aug 27 2009 12:02:52   malexander  $"'
 
 REM Copyright (c) Exor Corporation Ltd, 2008
 
@@ -113,11 +113,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.0.5.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.1.0.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.0.5.0'
+                                ,p_VERSION        => '4.1.0.0'
                                 );
 END;
 /
