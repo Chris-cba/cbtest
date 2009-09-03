@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.6  $ $Modtime:   Aug 06 2009 15:38:38  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.7  $ $Modtime:   Aug 11 2009 12:14:38  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -64,15 +64,15 @@ VARCHAR ins_sqlerrmsg[512];
 extern size_t buf_len, msg_len;
 
   EXEC SQL declare hhinv_temp_7883 table
-      (he_id     number
+      (he_id     NUMBER(38,0)
       ,max_chain number);
 
   EXEC SQL declare sctdtail table
-      (sct_id  number
+      (sct_id  NUMBER(38,0)
       ,date_fn date);
 
   EXEC SQL declare road_sect_ora table
-      (rse_he_id                   number
+      (rse_he_id                   NUMBER(38,0)
       ,rse_unique                  varchar2(20)
       ,rse_admin_unit              number(8)
       ,rse_type                    varchar2(1)
@@ -137,9 +137,9 @@ extern size_t buf_len, msg_len;
       ,rse_suffix                  varchar2(2));
 
   EXEC SQL DECLARE HHINV_LOAD_2 TABLE
-      (rec_seq_no        number,
-       sect_hdr_seq_no   number,
-       he_id             number,
+      (rec_seq_no        NUMBER(38,0),
+       sect_hdr_seq_no   NUMBER(38,0),
+       he_id             NUMBER(38,0),
        linkcode          varchar2(10),
        section_code      varchar2(5),
        inv_code          varchar2(4),
@@ -310,8 +310,8 @@ extern size_t buf_len, msg_len;
        hhinv_ity_sys_flag varchar2(1) );
 
   EXEC SQL DECLARE HHINV_LOAD_3 TABLE
-      (rec_seq_no            number,
-       he_id                 number,
+      (rec_seq_no            NUMBER(38,0),
+       he_id                 NUMBER(38,0),
        linkcode              varchar2(10),
        section_code          varchar2(5),
        inv_code              varchar2(4),
@@ -1166,7 +1166,7 @@ int recalibrate_inv_chain()
     {
     write_pipe(NULL,"INFO: Recalibration is being applied to this load.");
 
-    EXEC SQL create table hhinv_temp_7883 (he_id number, max_chain number);
+    EXEC SQL create table hhinv_temp_7883 (he_id NUMBER(38,0), max_chain number);
     if(sqlca.sqlcode < 0)
       {
       sql_err("recalibrate_inv_chain(1)");
@@ -1752,7 +1752,7 @@ int upd_x_length()
                         and   nvl(hhl2b.error_flg,'N') != 'Y');
                         ---------------------------------------     */
   EXEC SQL create table hhinv_temp_7883
-           (he_id number, max_chain number);
+           (he_id NUMBER(38,0), max_chain number);
         if (sqlca.sqlcode < 0)
                 sql_err("upd_x_length(1)");
 
@@ -1856,7 +1856,7 @@ int upd_x_length()
                      --------------------------------------------     */
 
   EXEC SQL create table hhinv_temp_7883
-           (he_id number, max_chain number);
+           (he_id NUMBER(38,0), max_chain number);
         if (sqlca.sqlcode < 0)
                 sql_err("upd_x_length(8)");
 
@@ -5456,8 +5456,8 @@ int dl_lo_3()
   case 1 :
   case 4 :
   EXEC SQL CREATE TABLE HHINV_LOAD_3
-                    (REC_SEQ_NO            NUMBER(9)     NOT NULL,
-                     HE_ID                 NUMBER(8,0)   NOT NULL,
+                    (REC_SEQ_NO            NUMBER(38,0)     NOT NULL,
+                     HE_ID                 NUMBER(38,0)   NOT NULL,
                      LINKCODE              VARCHAR2(10)  NOT NULL,
                      SECTION_CODE          VARCHAR2(5)   NOT NULL,
                      INV_CODE              VARCHAR2(4)   NOT NULL,
@@ -5621,8 +5621,8 @@ int dl_lo_3()
      break;
   default:
   EXEC SQL CREATE TABLE HHINV_LOAD_3
-                    (REC_SEQ_NO            NUMBER(9)     NOT NULL,
-                     HE_ID                 NUMBER(8,0)   NOT NULL,
+                    (REC_SEQ_NO            NUMBER(38,0)     NOT NULL,
+                     HE_ID                 NUMBER(38,0)   NOT NULL,
                      LINKCODE              VARCHAR2(10)  NOT NULL,
                      SECTION_CODE          VARCHAR2(5)   NOT NULL,
                      INV_CODE              VARCHAR2(4)   NOT NULL,

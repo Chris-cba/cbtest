@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.4  $ $Modtime:   Oct 21 2008 12:28:34  $";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.5  $ $Modtime:   Sep 03 2009 13:21:32  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -394,7 +394,7 @@ VARCHAR userid[66];
   EXEC SQL DECLARE HHINV_LOAD_1 TABLE
                   (REC_TYPE   VARCHAR2(1),
                    FULL_VALUE VARCHAR2(2000),
-                   REC_SEQ_NO NUMBER,
+                   REC_SEQ_NO NUMBER(38,0),
                    INVENT_BY  VARCHAR2(30),
                    LOAD_DATE  DATE,
                    ERROR_MSG  VARCHAR2(4000));
@@ -1485,20 +1485,20 @@ int trans_to_hold()
    ************************************************************************* */
  {
   EXEC SQL DROP TABLE HHINV_HOLD_1;
-        if (sqlca.sqlcode < 0)
-                sql_err("trans_to_hold(1)");
+    if (sqlca.sqlcode < 0)
+      sql_err("trans_to_hold(1)");
 
   EXEC SQL RENAME HHINV_LOAD_1 TO HHINV_HOLD_1;
-        if (sqlca.sqlcode < 0)
-                sql_err("trans_to_hold(2)");
+    if (sqlca.sqlcode < 0)
+      sql_err("trans_to_hold(2)");
 
   EXEC SQL CREATE TABLE HHINV_LOAD_1
-                  (REC_TYPE   VARCHAR2(1)   NOT NULL,
-                   FULL_VALUE VARCHAR2(2000) NOT NULL,
-                   REC_SEQ_NO NUMBER        NOT NULL,
-                   INVENT_BY  VARCHAR2(30),
-                   LOAD_DATE  DATE,
-                   ERROR_MSG  VARCHAR2(4000));
+                       (REC_TYPE   VARCHAR2(1)    NOT NULL
+                       ,FULL_VALUE VARCHAR2(2000) NOT NULL
+                       ,REC_SEQ_NO NUMBER(38,0)   NOT NULL
+                       ,INVENT_BY  VARCHAR2(30)
+                       ,LOAD_DATE  DATE
+                       ,ERROR_MSG  VARCHAR2(4000));
         if (sqlca.sqlcode < 0)
                 sql_err("trans_to_hold(3)");
 
