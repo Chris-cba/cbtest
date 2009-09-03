@@ -1,9 +1,21 @@
-rem "@(#)mai2110_tab_cre.sql	1.1 09/08/03"
-create table hhinv_temp_7883
-           (he_id number(9), max_chain number(6))
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/c/mai2110c/mai2110_tab_cre.sql-arc   2.2   Sep 03 2009 13:33:46   mhuitson  $
+--       Module Name      : $Workfile:   mai2110_tab_cre.sql  $
+--       Date into PVCS   : $Date:   Sep 03 2009 13:33:46  $
+--       Date fetched Out : $Modtime:   Sep 03 2009 13:33:02  $
+--       PVCS Version     : $Revision:   2.2  $
+--
+CREATE TABLE hhinv_temp_7883
+            (he_id     NUMBER(38,0)
+            ,max_chain NUMBER(6))
 /
-create table road_sect_ora as select * from road_segments_all where rownum < 1
+CREATE TABLE road_sect_ora
+          AS SELECT *
+               FROM road_segments_all
+              WHERE rownum < 1
 /
-create table SCTDTAIL (sct_id number(8),
-date_fn date)
+CREATE TABLE sctdtail
+            (sct_id  NUMBER(38,0)
+            ,date_fn DATE)
 /
