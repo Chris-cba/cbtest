@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.17   Aug 27 2009 09:14:34   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.18   Sep 03 2009 12:54:38   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 27 2009 09:14:34  $
---       Date fetched Out : $Modtime:   Aug 26 2009 16:47:56  $
---       SCCS Version     : $Revision:   2.17  $
+--       Date into SCCS   : $Date:   Sep 03 2009 12:54:38  $
+--       Date fetched Out : $Modtime:   Sep 02 2009 13:58:00  $
+--       SCCS Version     : $Revision:   2.18  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.17  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.18  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -983,24 +983,31 @@ BEGIN
            AND iwor_works_order_no = l_wor_rec.iwor_works_order_no
              ;
       END LOOP;
-      SELECT Count(0)
-      INTO   l_cnt 
-      FROM   clm_contractor_interface
-      WHERE  cci_oun_id IN (SELECT oun.oun_id 
-                            FROM   clm_org_units oun
-                                  ,org_units     mm_oun
-                            WHERE  oun_contractor_id = p_contractor_id
-                            AND    oun_org_id = oun.oun_mai_oun_id );
-      IF l_cnt > 0
+      IF hig.is_product_licensed('CLM')
       THEN
-          OPEN  c_get_oun;
-          FETCH c_get_oun INTO l_oun_rec ;
-          CLOSE c_get_oun;  
-          clm_cim_interface.generate_wor_file(pi_oun_mai_id  => l_oun_rec.oun_org_id 
-                                             ,pi_file_handle => l_fhand
-                                             ,pi_seq_no      => p_seq_no
-                                             ,po_tot_rec     => l_clm_rec
-                                             ,po_tot_amt     => l_clm_tot);
+          interfaces.g_file_handle := l_fhand ;      
+          Execute Immediate ' SELECT Count(0) '||                             
+                            ' FROM   clm_contractor_interface '||
+                            ' WHERE  cci_oun_id IN (SELECT oun.oun_id  '||
+                            '                       FROM   clm_org_units oun '||
+                            '                             ,org_units     mm_oun '||
+                            '                       WHERE  oun_contractor_id = :1 '||
+                            '                       AND    oun_org_id = oun.oun_mai_oun_id )    '||
+                            ' AND    cci_status != ''P'' '  INTO l_cnt Using p_contractor_id ;
+
+          IF l_cnt > 0
+          THEN
+              OPEN  c_get_oun;
+              FETCH c_get_oun INTO l_oun_rec ;
+              CLOSE c_get_oun;
+              Execute Immediate 'BEGIN '||  
+                                '   clm_cim_interface.generate_wor_file(pi_oun_mai_id  => :1   '||
+                                '                                      ,pi_file_handle => interfaces.g_file_handle '||
+                                '                                      ,pi_seq_no      => :2   '||
+                                '                                      ,po_tot_rec     => :3   '||
+                                '                                      ,po_tot_amt     => :4); '||
+                                'END; ' Using l_oun_rec.oun_org_id,p_seq_no, Out l_clm_rec,Out l_clm_tot ;
+          END IF ;
       END IF ;
       --
       COMMIT;
@@ -2530,7 +2537,12 @@ BEGIN
           AND    rowid = ic.ic_rowid; 
       END IF;
   END LOOP ;
-  clm_cim_interface.validate_completion_data(p_ih_id);
+  IF hig.is_product_licensed('CLM')
+  THEN      
+      Execute Immediate 'BEGIN '||
+                        '   clm_cim_interface.validate_completion_data(:1); '||
+                        'END; ' Using p_ih_id ;
+  END IF ;
 END;
 
 ---------------------------------------------------------------------
@@ -3483,7 +3495,12 @@ LOOP
 END LOOP;
  
 -- Call CLM CIM Interface
-clm_cim_interface.completion_file_ph2(p_ih_id);
+IF hig.is_product_licensed('CLM')
+THEN      
+    Execute Immediate 'BEGIN '||
+                      '   clm_cim_interface.completion_file_ph2(:1); '||
+                      'END; ' Using p_ih_id ;
+END IF ;
 
     -- Add error message to any the WOLs that were not processed.
     -------------------------------------------------------------
