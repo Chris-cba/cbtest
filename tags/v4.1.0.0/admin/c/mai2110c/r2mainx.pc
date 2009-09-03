@@ -1,0 +1,3201 @@
+/*--------------------------------*/
+/* r2mainx.pc                      */
+/*--------------------------------*/
+/* SCCS ID keyword, do not remove */
+/* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.5  $ $Modtime:   Sep 03 2009 13:21:32  $";
+
+#define BOOLEAN int
+#define FALSE 0
+#define TRUE  1
+#include <stdio.h>
+#include <string.h>
+
+#ifdef ibm
+#define SUCCESS 0
+#define FAIL    8
+#define FATAL   16
+#else
+#define SUCCESS 0
+#define FAIL    1
+#define FATAL   2
+#endif
+
+/************************************************************
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/
+
+EXEC SQL BEGIN DECLARE SECTION;
+int rmms_flag;
+char err_msg[60];
+VARCHAR idxmsg[60];
+short idxmsg_i;
+varchar c_sys_flag[50][1];                          /* system ownership flag */
+char linkcode[10];
+long int run_num;
+long int run_stat;
+long int num_runs;
+long int tot_run;
+short tot_run_i;
+long int tot_err;
+long int tot_ph2;
+long int tot_at_err;
+long int icode;
+short icode_i;
+long int newerr_1;
+long int newerr_2;
+long int newerr_3;
+long int new_sect;
+long int newsec_err;
+long int cur_run_stat;
+long int cnt_good_itm_2;
+VARCHAR tab_exist_msg[60];
+VARCHAR tab_name[32];
+VARCHAR date_time[31];
+
+long int c_count;
+VARCHAR c_text[50][2000];
+long int c_seq1[50];
+long int c_seq2[50];
+long int c_heid[50];
+VARCHAR c_scl_class[50][3];
+VARCHAR c_linkcode[50][11];
+VARCHAR c_section_code[50][6];
+VARCHAR c_inv_item[50][5];
+VARCHAR c_characteristic[50][1];
+VARCHAR c_survey_length[50][7];
+VARCHAR c_survey_direction[50][2];
+VARCHAR c_sub_section_length[50][7];
+VARCHAR c_full_partial_ind[50][2];
+long int c_peo_id[50];
+VARCHAR c_date[50][9];
+VARCHAR c_xsect[50][5];
+VARCHAR c_stch[50][20];
+VARCHAR c_endch[50][20];
+VARCHAR c_pos1[50][33];
+VARCHAR c_att1[50][501];
+VARCHAR c_pos2[50][33];
+VARCHAR c_att2[50][501];
+VARCHAR c_pos3[50][33];
+VARCHAR c_att3[50][501];
+VARCHAR c_pos4[50][33];
+VARCHAR c_att4[50][501];
+VARCHAR c_pos5[50][33];
+VARCHAR c_att5[50][501];
+VARCHAR c_pos6[50][33];
+VARCHAR c_att6[50][501];
+VARCHAR c_pos7[50][33];
+VARCHAR c_att7[50][501];
+VARCHAR c_pos8[50][33];
+VARCHAR c_att8[50][501];
+VARCHAR c_pos9[50][33];
+VARCHAR c_att9[50][501];
+VARCHAR c_pos10[50][33];
+VARCHAR c_att10[50][501];
+
+VARCHAR c_pos11[50][33];
+VARCHAR c_att11[50][501];
+VARCHAR c_pos12[50][33];
+VARCHAR c_att12[50][501];
+VARCHAR c_pos13[50][33];
+VARCHAR c_att13[50][501];
+VARCHAR c_pos14[50][33];
+VARCHAR c_att14[50][501];
+VARCHAR c_pos15[50][33];
+VARCHAR c_att15[50][501];
+
+VARCHAR c_pos16[50][33];
+VARCHAR c_att16[50][501];
+VARCHAR c_pos17[50][33];
+VARCHAR c_att17[50][501];
+VARCHAR c_pos18[50][33];
+VARCHAR c_att18[50][501];
+VARCHAR c_pos19[50][33];
+VARCHAR c_att19[50][501];
+VARCHAR c_pos20[50][33];
+VARCHAR c_att20[50][501];
+VARCHAR c_pos21[50][33];
+VARCHAR c_att21[50][501];
+VARCHAR c_pos22[50][33];
+VARCHAR c_att22[50][501];
+VARCHAR c_pos23[50][33];
+VARCHAR c_att23[50][501];
+VARCHAR c_pos24[50][33];
+VARCHAR c_att24[50][501];
+VARCHAR c_pos25[50][33];
+VARCHAR c_att25[50][501];
+VARCHAR c_pos26[50][33];
+VARCHAR c_att26[50][501];
+VARCHAR c_pos27[50][33];
+VARCHAR c_att27[50][501];
+VARCHAR c_pos28[50][33];
+VARCHAR c_att28[50][501];
+VARCHAR c_pos29[50][33];
+VARCHAR c_att29[50][501];
+VARCHAR c_pos30[50][33];
+VARCHAR c_att30[50][501];
+VARCHAR c_pos31[50][33];
+VARCHAR c_att31[50][501];
+VARCHAR c_pos32[50][33];
+VARCHAR c_att32[50][501];
+VARCHAR c_pos33[50][33];
+VARCHAR c_att33[50][501];
+VARCHAR c_pos34[50][33];
+VARCHAR c_att34[50][501];
+VARCHAR c_pos35[50][33];
+VARCHAR c_att35[50][501];
+VARCHAR c_pos36[50][33];
+VARCHAR c_att36[50][501];
+VARCHAR c_pos37[50][33];
+VARCHAR c_att37[50][501];
+VARCHAR c_pos38[50][33];
+VARCHAR c_att38[50][501];
+VARCHAR c_pos39[50][33];
+VARCHAR c_att39[50][501];
+VARCHAR c_pos40[50][33];
+VARCHAR c_att40[50][501];
+VARCHAR c_pos41[50][33];
+VARCHAR c_att41[50][501];
+VARCHAR c_pos42[50][33];
+VARCHAR c_att42[50][501];
+VARCHAR c_pos43[50][33];
+VARCHAR c_att43[50][501];
+VARCHAR c_pos44[50][33];
+VARCHAR c_att44[50][501];
+VARCHAR c_pos45[50][33];
+VARCHAR c_att45[50][501];
+VARCHAR c_pos46[50][33];
+VARCHAR c_att46[50][501];
+VARCHAR c_pos47[50][33];
+VARCHAR c_att47[50][501];
+VARCHAR c_pos48[50][33];
+VARCHAR c_att48[50][501];
+VARCHAR c_pos49[50][33];
+VARCHAR c_att49[50][501];
+VARCHAR c_pos50[50][33];
+VARCHAR c_att50[50][501];
+VARCHAR c_pos51[50][33];
+VARCHAR c_att51[50][501];
+VARCHAR c_pos52[50][33];
+VARCHAR c_att52[50][501];
+VARCHAR c_pos53[50][33];
+VARCHAR c_att53[50][501];
+VARCHAR c_pos54[50][33];
+VARCHAR c_att54[50][501];
+VARCHAR c_pos55[50][33];
+VARCHAR c_att55[50][501];
+VARCHAR c_pos56[50][33];
+VARCHAR c_att56[50][501];
+VARCHAR c_pos57[50][33];
+VARCHAR c_att57[50][501];
+VARCHAR c_pos58[50][33];
+VARCHAR c_att58[50][501];
+VARCHAR c_pos59[50][33];
+VARCHAR c_att59[50][501];
+VARCHAR c_pos60[50][33];
+VARCHAR c_att60[50][501];
+VARCHAR c_pos61[50][33];
+VARCHAR c_att61[50][501];
+VARCHAR c_pos62[50][33];
+VARCHAR c_att62[50][501];
+VARCHAR c_pos63[50][33];
+VARCHAR c_att63[50][501];
+VARCHAR c_pos64[50][33];
+VARCHAR c_att64[50][501];
+VARCHAR c_pos65[50][33];
+VARCHAR c_att65[50][501];
+VARCHAR c_pos66[50][33];
+VARCHAR c_att66[50][501];
+VARCHAR c_pos67[50][33];
+VARCHAR c_att67[50][501];
+VARCHAR c_pos68[50][33];
+VARCHAR c_att68[50][501];
+VARCHAR c_pos69[50][33];
+VARCHAR c_att69[50][501];
+VARCHAR c_pos70[50][33];
+VARCHAR c_att70[50][501];
+VARCHAR c_pos71[50][33];
+VARCHAR c_att71[50][501];
+VARCHAR c_pos72[50][33];
+VARCHAR c_att72[50][501];
+VARCHAR c_pos73[50][33];
+VARCHAR c_att73[50][501];
+VARCHAR c_pos74[50][33];
+VARCHAR c_att74[50][501];
+VARCHAR c_pos75[50][33];
+VARCHAR c_att75[50][501];
+
+
+VARCHAR full_date[19];
+short ic_survey_length[50];
+short ic_survey_direction[50];
+short ic_sub_section_length[50];
+short ic_full_partial_ind[50];
+short ic_xsect[50];
+short ic_stch[50];
+short ic_endch[50];
+short ic_inv_item[50];
+short ic_pos1[50];
+short ic_att1[50];
+short ic_pos2[50];
+short ic_att2[50];
+short ic_pos3[50];
+short ic_att3[50];
+short ic_pos4[50];
+short ic_att4[50];
+short ic_pos5[50];
+short ic_att5[50];
+short ic_pos6[50];
+short ic_att6[50];
+short ic_pos7[50];
+short ic_att7[50];
+short ic_pos8[50];
+short ic_att8[50];
+short ic_pos9[50];
+short ic_att9[50];
+short ic_pos10[50];
+short ic_att10[50];
+
+short ic_pos11[50];
+short ic_att11[50];
+short ic_pos12[50];
+short ic_att12[50];
+short ic_pos13[50];
+short ic_att13[50];
+short ic_pos14[50];
+short ic_att14[50];
+short ic_pos15[50];
+short ic_att15[50];
+
+short ic_pos16[50];
+short ic_att16[50];
+short ic_pos17[50];
+short ic_att17[50];
+short ic_pos18[50];
+short ic_att18[50];
+short ic_pos19[50];
+short ic_att19[50];
+short ic_pos20[50];
+short ic_att20[50];
+short ic_pos21[50];
+short ic_att21[50];
+short ic_pos22[50];
+short ic_att22[50];
+short ic_pos23[50];
+short ic_att23[50];
+short ic_pos24[50];
+short ic_att24[50];
+short ic_pos25[50];
+short ic_att25[50];
+short ic_pos26[50];
+short ic_att26[50];
+short ic_pos27[50];
+short ic_att27[50];
+short ic_pos28[50];
+short ic_att28[50];
+short ic_pos29[50];
+short ic_att29[50];
+short ic_pos30[50];
+short ic_att30[50];
+short ic_pos31[50];
+short ic_att31[50];
+short ic_pos32[50];
+short ic_att32[50];
+short ic_pos33[50];
+short ic_att33[50];
+short ic_pos34[50];
+short ic_att34[50];
+short ic_pos35[50];
+short ic_att35[50];
+short ic_pos36[50];
+short ic_att36[50];
+short ic_pos37[50];
+short ic_att37[50];
+short ic_pos38[50];
+short ic_att38[50];
+short ic_pos39[50];
+short ic_att39[50];
+short ic_pos40[50];
+short ic_att40[50];
+short ic_pos41[50];
+short ic_att41[50];
+short ic_pos42[50];
+short ic_att42[50];
+short ic_pos43[50];
+short ic_att43[50];
+short ic_pos44[50];
+short ic_att44[50];
+short ic_pos45[50];
+short ic_att45[50];
+short ic_pos46[50];
+short ic_att46[50];
+short ic_pos47[50];
+short ic_att47[50];
+short ic_pos48[50];
+short ic_att48[50];
+short ic_pos49[50];
+short ic_att49[50];
+short ic_pos50[50];
+short ic_att50[50];
+short ic_pos51[50];
+short ic_att51[50];
+short ic_pos52[50];
+short ic_att52[50];
+short ic_pos53[50];
+short ic_att53[50];
+short ic_pos54[50];
+short ic_att54[50];
+short ic_pos55[50];
+short ic_att55[50];
+short ic_pos56[50];
+short ic_att56[50];
+short ic_pos57[50];
+short ic_att57[50];
+short ic_pos58[50];
+short ic_att58[50];
+short ic_pos59[50];
+short ic_att59[50];
+short ic_pos60[50];
+short ic_att60[50];
+short ic_pos61[50];
+short ic_att61[50];
+short ic_pos62[50];
+short ic_att62[50];
+short ic_pos63[50];
+short ic_att63[50];
+short ic_pos64[50];
+short ic_att64[50];
+short ic_pos65[50];
+short ic_att65[50];
+short ic_pos66[50];
+short ic_att66[50];
+short ic_pos67[50];
+short ic_att67[50];
+short ic_pos68[50];
+short ic_att68[50];
+short ic_pos69[50];
+short ic_att69[50];
+short ic_pos70[50];
+short ic_att70[50];
+short ic_pos71[50];
+short ic_att71[50];
+short ic_pos72[50];
+short ic_att72[50];
+short ic_pos73[50];
+short ic_att73[50];
+short ic_pos74[50];
+short ic_att74[50];
+short ic_pos75[50];
+short ic_att75[50];
+
+
+VARCHAR userid[66];
+
+  EXEC SQL DECLARE HHINV_LOAD_1 TABLE
+                  (REC_TYPE   VARCHAR2(1),
+                   FULL_VALUE VARCHAR2(2000),
+                   REC_SEQ_NO NUMBER(38,0),
+                   INVENT_BY  VARCHAR2(30),
+                   LOAD_DATE  DATE,
+                   ERROR_MSG  VARCHAR2(4000));
+EXEC SQL END DECLARE SECTION;
+
+EXEC SQL INCLUDE sqlext.h;
+EXEC SQL INCLUDE SQLCPR.H;
+/* Variables used by sqlglm() to output the full error message */
+char   sqlerrmsg[512];
+size_t buf_len, msg_len;
+
+short EXDebug;
+char  *EXRepOutpath;
+char  pipe_msg[254];
+int   status = 0;
+FILE  *fi;
+
+main(argc,argv)
+/* *************************************************************************
+   * MAIN function called by none.                                         *
+   *                                                                       *
+   *               calls time_check                                        *
+   *                     lock_tables                                       *
+   *                     get_run_num                                       *
+   *                     last_fin_ok                                       *
+   *                     log_run_strt                                      *
+   *                     last_not_strt                                     *
+   *                     bad_1                                             *
+   *                     stage_1                                           *
+   *                     stage_2                                           *
+   *                     stage_3                                           *
+   *                     stage_4                                           *
+   *                     stage_5                                           *
+   *                     finish                                            *
+   *                     sql_err                                           *
+   ************************************************************************* */
+int argc;
+char *argv[];
+ {
+	jobmain(argc,argv);
+
+  	get_params(0);
+
+
+  EXEC SQL SELECT to_number(HOP_VALUE),
+                  to_char(sysdate,'DD-MON-YY:HH24:MI:SS')
+           INTO :rmms_flag,:full_date
+           FROM HIG_OPTIONS
+		   WHERE HOP_ID='RMMSFLAG'
+		   AND   HOP_PRODUCT='HIG';
+
+  if(EXDebug)
+    {
+    printf ("\nDate is %s\n",full_date.arr);
+    strcpy(pipe_msg,"Date is ");
+    strcat(pipe_msg,(char *)full_date.arr);
+    write_pipe(fi,pipe_msg);
+    }
+
+  switch  (rmms_flag)
+  {
+     case 1 : write_pipe(fi,"Database type is : Oracle DTp Standard");
+              printf("\nDatabase type is : Oracle DTp Standard\n");
+              break;
+
+     case 2 : write_pipe(fi,"Database type is : Hims/Oracle Hybrid");
+              printf("\nDatabase type is : Hims/Oracle Hybrid\n");
+              break;
+
+     case 3 : write_pipe(fi,"Database type is : Maintenance Manager");
+              printf("\nDatabase type is : Maintenance Manager\n");
+              break;
+
+     case 4 : write_pipe(fi,"Database type is : Welsh Office Standard");
+              printf("\nDatabase type is : Welsh Office Standard\n");
+              break;
+
+     default :  write_pipe(fi,"Database type unknown");
+                printf("\nDatabase type unknown\n");
+                break;
+   }
+
+
+  time_check();
+
+  if ( ( status = lock_tables() ) != SUCCESS )
+   {
+	sql_err("main(1)");
+   }
+
+  if ( ( fi = fopen(EXRepOutpath,"w") ) == NULL )
+   {
+    write_pipe(fi,"ERROR: Output Print File not Open BPR-8177");
+    printf("\nERROR: Output Print File not Open BPR-8177\n");
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,EXRepOutpath);
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+  fprintf(fi,"\nINFO: BEGINNING START UP STAGE AT :- %s BPR-8506\n",
+          date_time.arr);
+  printf("\nINFO: BEGINNING START UP STAGE AT :- %s BPR-8506\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: BEGINNING START UP STAGE AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR8506");
+  write_pipe(fi,pipe_msg);
+
+  if ( ( status = get_run_num() ) != SUCCESS )
+   {
+	 sql_err("main(2)");
+   }
+
+  fprintf(fi,"\nINFO: Identification Number of Last Run :- %d BPR-8507\n",
+          run_num);
+  fprintf(fi,"\nINFO: Run Status of Last Run :- %d BPR-8508\n",run_stat);
+  fprintf(fi,"\nINFO: Number of times Last Run restarted :- %d BPR-8508\n",
+          num_runs);
+
+
+  if ( run_stat == 10 )
+   {
+    if ( ( status = last_fin_ok() )  != SUCCESS )
+     {
+	  EXEC SQL ROLLBACK WORK;
+	  jobend(EXJobId,1,"last_fin_ok failed");
+	  EXEC SQL COMMIT WORK;
+	  dblogoff();
+      exit(FAIL);
+     }
+    goto main_0;
+   }
+
+  if ( ( status = log_run_strt() ) != SUCCESS )
+   {
+	sql_err("main(3)");
+   }
+
+  if ( run_stat == 1 )
+   {
+    goto main_1;
+   }
+
+  if ( run_stat == 2 )
+   {
+    goto main_2;
+   }
+
+  if ( run_stat == 3 )
+   {
+    goto main_3;
+   }
+
+  if ( run_stat == 4 )
+   {
+    goto main_4;
+   }
+
+  if ( run_stat == 5 )
+   {
+    goto main_5;
+   }
+
+  if ( run_stat == 0 )
+   {
+    if ( ( status = last_not_start() )  != SUCCESS )
+     {
+	  EXEC SQL ROLLBACK WORK;
+	  jobend(EXJobId,1,"last_not_start failed");
+	  EXEC SQL COMMIT WORK;
+	  dblogoff();
+      exit(FAIL);
+     }
+   }
+
+  else
+   {
+    bad_1();
+    exit(FAIL);
+   }
+
+ main_0:
+  if ( ( status = stage_1() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"stage_1 failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+ main_1:
+  if ( ( status = stage_2() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"stage_2 failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+ main_2:
+  if ( ( status = stage_3() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"stage_3 failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+ main_3:
+  if ( ( status = stage_4() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"stage_4 failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+ main_4:
+  if ( ( status = stage_5() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"stage_4 failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+ main_5:
+  if ( ( status = finish() ) != SUCCESS )
+   {
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"finish failed");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+    exit(FAIL);
+   }
+
+  jobend(EXJobId,0,"");
+  EXEC SQL COMMIT WORK;
+  dblogoff();
+  exit(SUCCESS);
+ }
+
+/* *************************************************************************
+                  end of main function
+   ************************************************************************* */
+
+int stage_1()
+/* *************************************************************************
+   * STAGE 1 called by main function                                       *
+   *                                                                       *
+   *         calls time_check                                              *
+   *               stat_upd_run_log                                        *
+   *               trans_to_hold                                           *
+   ************************************************************************* */
+ {
+  time_check();
+
+  printf("\nINFO: STARTING PHASE 1 AT :- %s BPR-8510\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING PHASE 1 AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR8510");
+  write_pipe(fi,pipe_msg);
+
+  fprintf(fi,"\nINFO: STARTING PHASE 1 AT :- %s BPR-8510\n",date_time.arr);
+  cur_run_stat = 1;
+
+  if ( ( status = stat_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = trans_to_hold() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(SUCCESS);
+ }
+
+/* *************************************************************************
+   *              end of stage 1                                           *
+   ************************************************************************* */
+
+
+int stage_2()
+/* *************************************************************************
+   * STAGE 2 called by main function                                       *
+   *                                                                       *
+   *         calls time_check                                              *
+   *               upd_x_range                                             *
+   *               err_file_proc                                           *
+   *               c_get_total                                             *
+   *               bad_2                                                   *
+   *               copy_data_1                                             *
+   *               c_ph2_get_total                                         *
+   *               pull_unknown                                            *
+   *               ct_1_nw_err                                             *
+   *               upd_x_1                                                 *
+   *               stat_upd_run_log                                        *
+   *               commit                                                  *
+   *               build_index                                             *
+   ************************************************************************* */
+ {
+  time_check();
+
+  printf("\nINFO: STARTING PHASE 2 AT :- %s BPR-8511\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING PHASE 2 AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR8511");
+  write_pipe(fi,pipe_msg);
+
+  fprintf(fi,"\nINFO: STARTING PHASE 2 AT :- %s BPR-8511\n",date_time.arr);
+
+  if ( ( status = upd_x_range() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = err_file_proc() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = c_get_total() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( tot_run_i < 0 )
+   {
+    bad_2();
+    return(FAIL);
+   }
+
+  if ( ( status = copy_data_1() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = c_ph2_get_total() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( tot_ph2 < 0 )
+   {
+    bad_2();
+    return(FAIL);
+   }
+
+  if ( tot_ph2 != tot_run )
+   {
+    if ( ( status = pull_unknown() ) != SUCCESS )
+     {
+      return(status);
+     }
+
+    if ( ( status = ct_1_nw_err() ) != SUCCESS )
+     {
+      return(status);
+     }
+
+    fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Run :-");
+    fprintf(fi," %d BPR-8512\n",tot_run);
+    fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of ");
+    fprintf(fi,"Phase 2 :- %d BPR-8516\n",tot_ph2);
+    fprintf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+
+    if ( tot_ph2 + newerr_1 != tot_run )
+     {
+      bad_2();
+      return(FAIL);
+     }
+
+    if ( ( status = upd_x_1() ) != SUCCESS )
+     {
+      return(status);
+     }
+
+   }
+
+  cur_run_stat = 2;
+
+  if ( ( status = stat_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = commit() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = build_index() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(status);
+
+ }
+
+/* *************************************************************************
+         end of stage 2
+   ************************************************************************* */
+
+
+int stage_3()
+/* *************************************************************************
+   * STAGE 3 called by main function                                       *
+   *                                                                       *
+   *         call time_check                                               *
+   *              section_check                                            *
+   *              bring_in_err_2                                           *
+   *              del_old_err_2                                            *
+   *              ck_ch_vs_leng                                            *
+   *              upd_inv_for_sect_2                                       *
+   *              upd_x_length                                             *
+   *              ck_chain                                                 *
+   *              check_point_cont                                         *
+   *              pull_off_inv_bad                                         *
+   *              ct_2_nw_err                                              *
+   *              count_good_2                                             *
+   *              commit                                                   *
+   *              stat_upd_run_log                                         *
+   ************************************************************************* */
+ {
+  time_check();
+
+  fprintf(fi,"\nINFO: STARTING PHASE 3 AT :- %s BPR-8513\n",date_time.arr);
+  printf("\nINFO: STARTING PHASE 3 AT :- %s BPR-8513\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING PHASE 3 AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR8513");
+  write_pipe(fi,pipe_msg);
+
+  if ( ( status = section_check() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = bring_in_err_2() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = del_old_err_2() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = ck_ch_vs_leng() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = check_surv_direction() ) != SUCCESS)
+   {
+    return(status);
+   }
+
+  if ( ( status = check_contiguous_gap() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = validate_mc_data_direction() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = upd_inv_for_sect_2() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/*==================================*/
+/* upd_x_length has been commented  */
+/* out for Version 3 due to the     */
+/* difference in the way the network*/
+/* is edited in NM3                 */
+/*==================================*/
+/*
+  if ( ( status = upd_x_length() ) != SUCCESS )
+   {
+    return(status);
+   }
+*/
+  if((status = upd_last_surveyed()) != SUCCESS)
+    {
+    fprintf(fi,"\nWarning : Unable To Update Section Last Surveyed Date\n\n");
+    fflush(fi);
+    }
+
+  if ( ( status = check_first_sub_section() ) != SUCCESS)
+  {
+    return(status);
+  }
+
+  if (( status = set_surv_direction() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+/*
+  if (( status = upd_l2_xsp() ) != SUCCESS )
+  {
+    return(status);
+  }
+*/
+
+  if (( status = set_dflt_xsp() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = check_sub_section() ) != SUCCESS)
+  {
+    return(status);
+  }
+
+  if (( status = set_new_length() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = create_sub_section() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = get_seq_no() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = add_sub_section() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = truncate_survey() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+  if ( ( status = inc_sect_log() ) != SUCCESS )
+  {
+    return(status);
+  }
+
+
+  if ( ( status = recalibrate_inv_chain() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = reverse_machine_data_chs() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = reverse_skid_results() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = reverse_chainage() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = check_contiguous_overlap() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = recalibrate_inv_chain() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = ck_chain() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = check_point_cont() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = end_date_old_inv() ) != SUCCESS)
+   {
+    return(status);
+   }
+
+  if ( ( status = pull_off_inv_bad() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = ct_2_nw_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = count_good_2() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  fprintf(fi,"\nINFO: Run Number :- %d BPR-8514\n",run_num);
+  fprintf(fi,"\nINFO: Last Itemcode :- %d BPR-8515\n",icode);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Run :-");
+  fprintf(fi," %d BPR-8512\n",tot_run);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Phase 2 :-");
+  fprintf(fi," %d BPR-8516\n",tot_ph2);
+  fprintf(fi,"\nINFO: Processed Item Count :- %d BPR-8517\n",cnt_good_itm_2);
+  fprintf(fi,"\nINFO: Error :- %d BPR-8524\n",newerr_2);
+
+  cur_run_stat = 3;
+
+  if ( ( status = stat_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = commit() ) != SUCCESS )
+   {
+    return(status);
+   }
+  if ( ( status = index_load_3_msg() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(status);
+
+ }
+/* *************************************************************************
+     end of stage 3
+   ************************************************************************* */
+
+int stage_4()
+/* *************************************************************************
+   * STAGE 4 called by main function                                       *
+   *                                                                       *
+   *         calls time_check                                              *
+   *               cre_attri_rows                                          *
+   *               check_format                                            *
+   *               min_max_mand                                            *
+   *               check_domain                                            *
+   *               ct_3_nw_err                                             *
+   *               pull_into_err_3                                         *
+   *               pull inv_due_attr                                       *
+   *               upd_x_err_2                                             *
+   *               stat_upd_run_log                                        *
+   *               commit                                                  *
+   *                                                                       *
+   ************************************************************************* */
+ {
+  time_check();
+
+  fprintf(fi,"\nINFO: STARTING PHASE 4 AT :- %s BPR-8519\n",date_time.arr);
+  printf("\nINFO: STARTING PHASE 4 AT :- %s BPR-8519\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING PHASE 4 AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR-8519");
+  write_pipe(fi,pipe_msg);
+
+  if ( ( status = cre_attri_rows() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = check_format() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = min_max_mand() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if  ( ( status = check_domain() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = ct_3_nw_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( newerr_3 != 0 || newerr_2 != 0)
+   {
+    if ( newerr_3 != 0 )
+     {
+      if ( ( status = pull_into_err_3() ) != SUCCESS )
+       {
+        return(status);
+       }
+
+      if ( ( status = pull_inv_due_attr() ) != SUCCESS )
+       {
+        return(status);
+       }
+     }
+    if ( ( status = upd_x_err_2() ) != SUCCESS )
+     {
+      return(status);
+     }
+
+   }
+
+  cur_run_stat = 4;
+
+  if ( ( status = stat_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = commit() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(status);
+
+ }
+
+/* *************************************************************************
+       end of stage 4
+   ************************************************************************* */
+
+
+int stage_5()
+/* *************************************************************************
+   * STAGE 5 called by main function                                       *
+   *                                                                       *
+   *         calls time_check                                              *
+   *               values_to_attri                                         *
+   *               load_into_invent                                        *
+   *               cpy_invent_no_attri                                     *
+   *               stat_upd_run_log                                      *
+   *               commit                                                  *
+   *                                                                       *
+   ************************************************************************* */
+ {
+  time_check();
+
+  fprintf(fi,"\nINFO: STARTING PHASE 5 AT :- %s BPR-8520\n",date_time.arr);
+  printf("\nINFO: STARTING PHASE 5 AT :- %s BPR-8520\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING PHASE 5 AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR-8520");
+  write_pipe(fi,pipe_msg);
+
+  if ( ( status = values_to_attri() ) != SUCCESS )
+   {
+    return(status);
+   }
+  /*---------------------------------*/
+  /* Commit The Changes Above Before */
+  /* Attempting To Create The Assets */
+  /*---------------------------------*/
+  if ( ( status = commit() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = load_into_invent() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* Load Into Invent Now Deals With Both Items That Have */
+/* Attributes And Those That Don't So No Need To Call   */
+/* cpy_invent_no_attri()                                */
+/*
+  if ( ( status = cpy_invent_no_attri() ) !=SUCCESS )
+   {
+    return(status);
+   }
+*/
+
+  cur_run_stat = 5;
+
+  if ( ( status = stat_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = commit() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(status);
+
+ }
+
+/* *************************************************************************
+       end of stage 5
+   ************************************************************************* */
+
+
+
+int finish()
+/* *************************************************************************
+   * FINISH called by main function                                        *
+   *                                                                       *
+   *        calls ct_1_nw_err                                              *
+   *              ct_2_nw_err                                              *
+   *              ct_3_nw_err                                              *
+   *              count_sect_err                                           *
+   *              re_set_sect                                              *
+   *              c_get_total                                              *
+   *              stat_upd_run_log                                         *
+   ************************************************************************* */
+ {
+  time_check();
+
+  fprintf(fi,"\nINFO: STARTING FINISH PHASE AT :- %s BPR-8521\n",date_time.arr);
+  printf("\nINFO: STARTING FINISH PHASE AT :- %s BPR-8521\n",date_time.arr);
+  strcpy(pipe_msg,"INFO: STARTING FINISH PHASE AT :- ");
+  strcat(pipe_msg,(char *)date_time.arr);
+  strcat(pipe_msg," BPR-8521");
+  write_pipe(fi,pipe_msg);
+
+/* ARCHANGES2 Start Looking for core dump */
+printf ("do: if ( ( status = ct_1_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = ct_1_nw_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = ct_2_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = ct_2_nw_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = ct_3_nw_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = ct_3_nw_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = count_sect_err() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = count_sect_err() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = re_set_sect() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = re_set_sect() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+/* ARCHANGES2 Start Looking for core dump */
+  printf("\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+  printf("\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
+  printf("\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
+  printf("\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
+/* ARCHANGES2 End Looking for core dump */
+
+  fprintf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+  fprintf(fi,"\nINFO: Error 2 :- %d BPR-8526\n",newerr_2);
+  fprintf(fi,"\nINFO: Error 3 :- %d BPR-8527\n",newerr_3);
+  fprintf(fi,"\nINFO: Sect Error :- %d BPR-8528\n",newsec_err);
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( tot_run_i < 0 )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( tot_run_i < 0 )
+   {
+    if ( ( status = c_get_total() ) != SUCCESS )
+     {
+      return(status);
+     }
+   }
+
+  cur_run_stat = 10;
+
+/* ARCHANGES2 Start Looking for core dump */
+printf("do: if ( ( status = fin_upd_run_log() ) != SUCCESS )\n");
+/* ARCHANGES2 End Looking for core dump */
+  if ( ( status = fin_upd_run_log() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  return(SUCCESS);
+
+ }
+
+int lock_tables()
+ {
+  EXEC SQL LOCK TABLE HHINV_RUN_LOG
+           IN   EXCLUSIVE MODE;
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+int get_run_num()
+/* ************************************************************************
+   Get last run number. Each completed run has a run number, restarts do not
+   get a new number. Checks on success of last run to see if it finished
+   If not will take it on and attempt to complete it.
+  ************************************************************************* */
+ {
+  EXEC SQL SELECT RUN_NUM,RUN_STAT,NO_OF_RUNS,MAX_SEQ_NO
+           INTO   :run_num, :run_stat, :num_runs,:icode
+           FROM   HHINV_RUN_LOG
+           WHERE  RUN_NUM
+           =
+         ( SELECT MAX(RUN_NUM)
+           FROM   HHINV_RUN_LOG );
+
+  if ((sqlca.sqlerrd[2] == 0) || (sqlca.sqlcode < 0))
+  {
+    sql_err("get_run_num");
+  }
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+
+
+int last_fin_ok()
+/* *************************************************************************
+   ************************************************************************* */
+ {
+  if ( ( status = cleanup_last_run() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  run_num++;
+  fprintf(fi,"\nINFO: Identification number for new Run :- %d\n",run_num);
+  if ( ( status = get_last_itemcode() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( icode_i != 0 )
+   {
+    bad_1();
+    return(FAIL);
+   }
+
+ /* CRE_RUN_LOG_ENT -  Adds a record to the run log to say we are starting
+                       a new run. */
+
+  EXEC SQL INSERT INTO HHINV_RUN_LOG
+                  (RUN_NUM,FST_RUN_DATE,LST_RUN_DATE,NO_OF_RUNS,
+                   RUN_STAT,RUN_STAGE,MAX_SEQ_NO,SECTION_ERR_CNT,
+                   ITEM_CNT,ITEM_ERR_CNT,SECTION_CNT,ERROR_MSG)
+           VALUES (:run_num,SYSDATE,SYSDATE,1,0,'FATL',:icode,
+                   NULL,NULL,NULL,NULL,'SEVERE PROCESSING ERROR OCCURED');
+
+/* RE_SUB_SECTIONS -  Called if including corrected sections. Resets the section
+                      log table to say they are now part of this run. */
+
+  EXEC SQL UPDATE HHINV_SECT_LOG
+           SET    ERROR_MSG = NULL,
+                  ERROR_LEVEL = NULL,
+                  SUCCESS_STAT = 0,
+                  LST_RUN_NUM = :run_num
+           WHERE  RE_SUB_FLG  = 'Y';
+
+	if (sqlca.sqlcode < 0)
+		sql_err("last_fin_ok");
+	else
+  	 	return(SUCCESS);
+ }
+
+
+int log_run_strt()
+/* *************************************************************************
+   Called when restart a run after it had previously failed. Records that
+   the run is being restarted.
+   ************************************************************************* */
+ {
+
+  EXEC SQL UPDATE HHINV_RUN_LOG
+           SET    LST_RUN_DATE = SYSDATE,
+                  NO_OF_RUNS = NO_OF_RUNS + 1,
+                  RUN_STAGE = 'FATL',
+                  ERROR_MSG = 'SEVERE ERROR DURING RERUN'
+           WHERE  RUN_NUM = :run_num;
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+
+
+int last_not_start()
+/* *************************************************************************
+   ************************************************************************* */
+ {
+
+  if ( ( status = cleanup_last_run() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( ( status = get_last_itemcode() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if ( icode_i != 0 )
+   {
+    bad_1();
+    return(FAIL);
+   }
+
+  if ( ( status = upd_x_range() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+ }
+
+int bad_1()
+/* *************************************************************************
+   ************************************************************************* */
+ {
+
+  char temp[10];
+
+  fprintf(fi,"\nINFO: Current Run Number :- %d BPR-8522\n",run_num);
+  fprintf(fi,"\nINFO: Last Itemcode Allocated Unique Identifier for each ");
+  fprintf(fi,"Inventory Item :- %d BPR-8523\n",icode);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Run :-");
+  fprintf(fi," %d BPR-8512\n",tot_run);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Phase 2 :-");
+  fprintf(fi," %d BPR-8516\n",tot_ph2);
+
+  printf("\nINFO: Current Run Number :- %d BPR-8522\n",run_num);
+  i_toa(run_num,temp);
+  strcpy(pipe_msg,"INFO: Current Run Number :- ");
+  strcat(pipe_msg,temp);
+  write_pipe(fi,pipe_msg);
+
+  printf("\nINFO: Last Itemcode Allocated Unique Identifier for each ");
+  printf("Inventory Item :- %d BPR-8523\n",icode);
+  i_toa(icode,temp);
+  strcpy(pipe_msg,"INFO: Last Itemcode Allocated Unique Identifier for each");
+  strcat(pipe_msg,"Inventory Item :- ");
+  strcat(pipe_msg,temp);
+  strcat(pipe_msg," BPR-8523");
+  write_pipe(fi,pipe_msg);
+
+
+  EXEC SQL ROLLBACK WORK;
+  jobend(EXJobId,1,"No Icode");
+  EXEC SQL COMMIT WORK;
+  dblogoff();
+  fclose(fi);
+ }
+
+
+int trans_to_hold()
+/* *************************************************************************
+   Transfer data from hhinv_load_1 to hhinv_hold_1 and initialize
+   hhinv_load_1 for next run
+   ************************************************************************* */
+ {
+  EXEC SQL DROP TABLE HHINV_HOLD_1;
+    if (sqlca.sqlcode < 0)
+      sql_err("trans_to_hold(1)");
+
+  EXEC SQL RENAME HHINV_LOAD_1 TO HHINV_HOLD_1;
+    if (sqlca.sqlcode < 0)
+      sql_err("trans_to_hold(2)");
+
+  EXEC SQL CREATE TABLE HHINV_LOAD_1
+                       (REC_TYPE   VARCHAR2(1)    NOT NULL
+                       ,FULL_VALUE VARCHAR2(2000) NOT NULL
+                       ,REC_SEQ_NO NUMBER(38,0)   NOT NULL
+                       ,INVENT_BY  VARCHAR2(30)
+                       ,LOAD_DATE  DATE
+                       ,ERROR_MSG  VARCHAR2(4000));
+        if (sqlca.sqlcode < 0)
+                sql_err("trans_to_hold(3)");
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+
+ }
+
+
+
+
+int err_file_proc()
+/* *************************************************************************
+   If processing corrected inventory items, pull in corrected records from
+   error_file into mainline processing file and delete from error_file those
+   records just copied into mainline processing file
+   ************************************************************************* */
+ {
+
+  EXEC SQL INSERT INTO  HHINV_HOLD_1
+                       (REC_TYPE,FULL_VALUE,REC_SEQ_NO,INVENT_BY)
+
+           SELECT 'C',HHI1.FULL_VALUE,HHI1.REC_SEQ_NO,HHI1.INVENT_BY
+           FROM   HHINV_ITEM_ERR_1  HHI1
+           WHERE  HHI1.HWAY_SEQ_NO IN
+
+         ( SELECT REC_SEQ_NO
+           FROM   HHINV_SECT_LOG HHSl
+           WHERE  RE_SUB_FLG = 'Y'
+           AND    LST_RUN_NUM = :run_num );
+        if (sqlca.sqlcode < 0)
+                sql_err("err_file_proc(1)");
+
+
+
+  EXEC SQL DELETE FROM HHINV_ITEM_ERR_1 HHI1
+           WHERE  HHI1.HWAY_SEQ_NO IN
+
+         ( SELECT REC_SEQ_NO
+           FROM   HHINV_SECT_LOG HHSl
+           WHERE  RE_SUB_FLG = 'Y'
+           AND    LST_RUN_NUM = :run_num );
+        if (sqlca.sqlcode < 0)
+                sql_err("err_file_proc(2)");
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+int bad_2()
+/* *************************************************************************
+   report from stage 2 errors
+   ************************************************************************* */
+ {
+
+  EXEC SQL ROLLBACK WORK;
+  jobend(EXJobId,1,"No Icode");
+  EXEC SQL COMMIT WORK;
+  dblogoff();
+  fprintf(fi,"\nINFO: Run Number :- %d BPR-8514\n",run_num);
+  fprintf(fi,"\nINFO: Last Itemcode :- %d BPR-8515\n",icode);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Run :-");
+  fprintf(fi," %d BPR-8512\n",tot_run);
+  fprintf(fi,"\nINFO: Total Number of Inventory Items at Start of Phase 2");
+  fprintf(fi," %d BPR-8516\n",tot_ph2);
+  fprintf(fi,"\nINFO: Error 1 :- %d BPR-8525\n",newerr_1);
+
+  fclose(fi);
+ }
+
+
+
+int copy_data_1()
+/* ************************************************************************
+     Break up records into fields and at same time update with section
+     details. Move records into Load_2 as do this.
+   ************************************************************************ */
+ {
+ int noargs,i,norecs = 0,fin_yn = 0;
+ char *strs[100];
+
+ if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
+ {
+    EXEC SQL DECLARE CX1 CURSOR FOR
+                   SELECT
+                   HHA.REC_SEQ_NO,
+                   HHSl.REC_SEQ_NO,
+                   HHSl.HE_ID,
+                   HHSl.SCL_CLASS,
+                   HHSl.LINKCODE,
+                   HHSl.SECTION_CODE,
+                   HHSl.PEO_INVENT_BY_ID,
+                   HHSl.SUB_SECTION_LENGTH,
+                   decode(HHSl.FULL_PARTIAL_IND,'P','P','F'),
+                   HHSl.SURVEY_LENGTH,
+                   HHSl.DIRECT_RUN,
+                   TO_CHAR(HHSl.INVENT_DATE,'YYMMDD'),
+                   HHA.FULL_VALUE,
+                   NVL(ITY.ITY_ROAD_CHARACTERISTIC,'A'),
+                   ITY.ITY_HHPOS1,
+                   ITY.ITY_HHPOS2,
+                   ITY.ITY_HHPOS3,
+                   ITY.ITY_HHPOS4,
+                   ITY.ITY_HHPOS5,
+                   ITY.ITY_HHPOS6,
+                   ITY.ITY_HHPOS7,
+                   ITY.ITY_HHPOS8,
+                   ITY.ITY_HHPOS9,
+                   ITY.ITY_HHPOS10,
+                   ITY.ITY_HHPOS11,
+                   ITY.ITY_HHPOS12,
+                   ITY.ITY_HHPOS13,
+                   ITY.ITY_HHPOS14,
+                   ITY.ITY_HHPOS15,
+                   ITY.ITY_HHPOS16,
+                   ITY.ITY_HHPOS17,
+                   ITY.ITY_HHPOS18,
+                   ITY.ITY_HHPOS19,
+                   ITY.ITY_HHPOS20,
+                   ITY.ITY_HHPOS21,
+                   ITY.ITY_HHPOS22,
+                   ITY.ITY_HHPOS23,
+                   ITY.ITY_HHPOS24,
+                   ITY.ITY_HHPOS25,
+                   ITY.ITY_HHPOS26,
+                   ITY.ITY_HHPOS27,
+                   ITY.ITY_HHPOS28,
+                   ITY.ITY_HHPOS29,
+                   ITY.ITY_HHPOS30,
+                   ITY.ITY_HHPOS31,
+                   ITY.ITY_HHPOS32,
+                   ITY.ITY_HHPOS33,
+                   ITY.ITY_HHPOS34,
+                   ITY.ITY_HHPOS35,
+                   ITY.ITY_HHPOS36,
+                   ITY.ITY_HHPOS37,
+                   ITY.ITY_HHPOS38,
+                   ITY.ITY_HHPOS39,
+                   ITY.ITY_HHPOS40,
+                   ITY.ITY_HHPOS41,
+                   ITY.ITY_HHPOS42,
+                   ITY.ITY_HHPOS43,
+                   ITY.ITY_HHPOS44,
+                   ITY.ITY_HHPOS45,
+                   ITY.ITY_HHPOS46,
+                   ITY.ITY_HHPOS47,
+                   ITY.ITY_HHPOS48,
+                   ITY.ITY_HHPOS49,
+                   ITY.ITY_HHPOS50,
+                   ITY.ITY_HHPOS51,
+                   ITY.ITY_HHPOS52,
+                   ITY.ITY_HHPOS53,
+                   ITY.ITY_HHPOS54,
+                   ITY.ITY_HHPOS55,
+                   ITY.ITY_HHPOS56,
+                   ITY.ITY_HHPOS57,
+                   ITY.ITY_HHPOS58,
+                   ITY.ITY_HHPOS59,
+                   ITY.ITY_HHPOS60,
+                   ITY.ITY_HHPOS61,
+                   ITY.ITY_HHPOS62,
+                   ITY.ITY_HHPOS63,
+                   ITY.ITY_HHPOS64,
+                   ITY.ITY_HHPOS65,
+                   ITY.ITY_HHPOS66,
+                   ITY.ITY_HHPOS67,
+                   ITY.ITY_HHPOS68,
+                   ITY.ITY_HHPOS69,
+                   ITY.ITY_HHPOS70,
+                   ITY.ITY_HHPOS71,
+                   ITY.ITY_HHPOS72,
+                   ITY.ITY_HHPOS73,
+                   ITY.ITY_HHPOS74,
+                   ITY.ITY_HHPOS75,
+                   HHSl.HHINV_RSE_SYS_FLAG
+            FROM   HHINV_HOLD_1 HHA, INV_ITEM_TYPES ITY, HHINV_SECT_LOG HHSl
+            WHERE  REC_TYPE = 'C'
+            AND    SUBSTR(HHA.FULL_VALUE,1,2) = ITY.ITY_INV_CODE
+            AND    HHA.REC_SEQ_NO > HHSl.REC_SEQ_NO
+            AND    HHA.REC_SEQ_NO < HHSl.MAX_SEQ_NO
+            AND    HHSl.LST_RUN_NUM = :run_num
+            AND    HHSl.HHINV_RSE_SYS_FLAG = ITY.ITY_SYS_FLAG;
+    }
+    else
+    {
+    EXEC SQL DECLARE C1 CURSOR FOR
+                   SELECT
+                   HHA.REC_SEQ_NO,
+                   HHSl.REC_SEQ_NO,
+                   HHSl.HE_ID,
+                   HHSl.SCL_CLASS,
+                   HHSl.LINKCODE,
+                   HHSl.SECTION_CODE,
+                   HHSl.PEO_INVENT_BY_ID,
+                   HHSl.SUB_SECTION_LENGTH,
+                   decode(HHSl.FULL_PARTIAL_IND,'F','F','P'),
+                   HHSl.SURVEY_LENGTH,
+                   HHSL.DIRECT_RUN,
+                   TO_CHAR(HHSl.INVENT_DATE,'YYMMDD'),
+                   HHA.FULL_VALUE,
+                   NVL(ITY.ITY_ROAD_CHARACTERISTIC,'A'),
+                   ITY.ITY_HHPOS1,
+                   ITY.ITY_HHPOS2,
+                   ITY.ITY_HHPOS3,
+                   ITY.ITY_HHPOS4,
+                   ITY.ITY_HHPOS5,
+                   ITY.ITY_HHPOS6,
+                   ITY.ITY_HHPOS7,
+                   ITY.ITY_HHPOS8,
+                   ITY.ITY_HHPOS9,
+                   ITY.ITY_HHPOS10,
+                   ITY.ITY_HHPOS11,
+                   ITY.ITY_HHPOS12,
+                   ITY.ITY_HHPOS13,
+                   ITY.ITY_HHPOS14,
+                   ITY.ITY_HHPOS15,
+                   ITY.ITY_HHPOS16,
+                   ITY.ITY_HHPOS17,
+                   ITY.ITY_HHPOS18,
+                   ITY.ITY_HHPOS19,
+                   ITY.ITY_HHPOS20,
+                   ITY.ITY_HHPOS21,
+                   ITY.ITY_HHPOS22,
+                   ITY.ITY_HHPOS23,
+                   ITY.ITY_HHPOS24,
+                   ITY.ITY_HHPOS25,
+                   ITY.ITY_HHPOS26,
+                   ITY.ITY_HHPOS27,
+                   ITY.ITY_HHPOS28,
+                   ITY.ITY_HHPOS29,
+                   ITY.ITY_HHPOS30,
+                   ITY.ITY_HHPOS31,
+                   ITY.ITY_HHPOS32,
+                   ITY.ITY_HHPOS33,
+                   ITY.ITY_HHPOS34,
+                   ITY.ITY_HHPOS35,
+                   ITY.ITY_HHPOS36,
+                   ITY.ITY_HHPOS37,
+                   ITY.ITY_HHPOS38,
+                   ITY.ITY_HHPOS39,
+                   ITY.ITY_HHPOS40,
+                   ITY.ITY_HHPOS41,
+                   ITY.ITY_HHPOS42,
+                   ITY.ITY_HHPOS43,
+                   ITY.ITY_HHPOS44,
+                   ITY.ITY_HHPOS45,
+                   ITY.ITY_HHPOS46,
+                   ITY.ITY_HHPOS47,
+                   ITY.ITY_HHPOS48,
+                   ITY.ITY_HHPOS49,
+                   ITY.ITY_HHPOS50,
+                   ITY.ITY_HHPOS51,
+                   ITY.ITY_HHPOS52,
+                   ITY.ITY_HHPOS53,
+                   ITY.ITY_HHPOS54,
+                   ITY.ITY_HHPOS55,
+                   ITY.ITY_HHPOS56,
+                   ITY.ITY_HHPOS57,
+                   ITY.ITY_HHPOS58,
+                   ITY.ITY_HHPOS59,
+                   ITY.ITY_HHPOS60,
+                   ITY.ITY_HHPOS61,
+                   ITY.ITY_HHPOS62,
+                   ITY.ITY_HHPOS63,
+                   ITY.ITY_HHPOS64,
+                   ITY.ITY_HHPOS65,
+                   ITY.ITY_HHPOS66,
+                   ITY.ITY_HHPOS67,
+                   ITY.ITY_HHPOS68,
+                   ITY.ITY_HHPOS69,
+                   ITY.ITY_HHPOS70,
+                   ITY.ITY_HHPOS71,
+                   ITY.ITY_HHPOS72,
+                   ITY.ITY_HHPOS73,
+                   ITY.ITY_HHPOS74,
+                   ITY.ITY_HHPOS75
+            FROM   HHINV_HOLD_1 HHA, INV_ITEM_TYPES ITY, HHINV_SECT_LOG HHSl
+            WHERE  REC_TYPE = 'C'
+            AND    SUBSTR(HHA.FULL_VALUE,1,2) = ITY.ITY_INV_CODE
+            AND    HHA.REC_SEQ_NO > HHSl.REC_SEQ_NO
+            AND    HHA.REC_SEQ_NO < HHSl.MAX_SEQ_NO
+            AND    HHSl.LST_RUN_NUM = :run_num;
+  }
+        if (sqlca.sqlcode < 0)
+                sql_err("copy_data_1(1)");
+
+
+  if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
+      EXEC SQL OPEN CX1;
+  else
+      EXEC SQL OPEN C1;
+        if (sqlca.sqlcode < 0)
+                sql_err("copy_data_1(2)");
+
+
+  do
+  {
+
+  if (rmms_flag ==3 || rmms_flag == 1 || rmms_flag == 4)
+  {
+     EXEC SQL FETCH CX1 INTO :c_seq1,
+                            :c_seq2,
+                            :c_heid,
+                            :c_scl_class,
+                            :c_linkcode,
+                            :c_section_code,
+                            :c_peo_id,
+                            :c_sub_section_length:ic_sub_section_length,
+                            :c_full_partial_ind:ic_full_partial_ind,
+                            :c_survey_length:ic_survey_length,
+                            :c_survey_direction:ic_survey_direction,
+                            :c_date,
+                            :c_text,
+                            :c_characteristic,
+                            :c_pos1:ic_pos1,
+                            :c_pos2:ic_pos2,
+                            :c_pos3:ic_pos3,
+                            :c_pos4:ic_pos4,
+                            :c_pos5:ic_pos5,
+                            :c_pos6:ic_pos6,
+                            :c_pos7:ic_pos7,
+                            :c_pos8:ic_pos8,
+                            :c_pos9:ic_pos9,
+                            :c_pos10:ic_pos10,
+                            :c_pos11:ic_pos11,
+                            :c_pos12:ic_pos12,
+                            :c_pos13:ic_pos13,
+                            :c_pos14:ic_pos14,
+                            :c_pos15:ic_pos15,
+                            :c_pos16:ic_pos16,
+                            :c_pos17:ic_pos17,
+                            :c_pos18:ic_pos18,
+                            :c_pos19:ic_pos19,
+                            :c_pos20:ic_pos20,
+                            :c_pos21:ic_pos21,
+                            :c_pos22:ic_pos22,
+                            :c_pos23:ic_pos23,
+                            :c_pos24:ic_pos24,
+                            :c_pos25:ic_pos25,
+                            :c_pos26:ic_pos26,
+                            :c_pos27:ic_pos27,
+                            :c_pos28:ic_pos28,
+                            :c_pos29:ic_pos29,
+                            :c_pos30:ic_pos30,
+                            :c_pos31:ic_pos31,
+                            :c_pos32:ic_pos32,
+                            :c_pos33:ic_pos33,
+                            :c_pos34:ic_pos34,
+                            :c_pos35:ic_pos35,
+                            :c_pos36:ic_pos36,
+                            :c_pos37:ic_pos37,
+                            :c_pos38:ic_pos38,
+                            :c_pos39:ic_pos39,
+                            :c_pos40:ic_pos40,
+                            :c_pos41:ic_pos41,
+                            :c_pos42:ic_pos42,
+                            :c_pos43:ic_pos43,
+                            :c_pos44:ic_pos44,
+                            :c_pos45:ic_pos45,
+                            :c_pos46:ic_pos46,
+                            :c_pos47:ic_pos47,
+                            :c_pos48:ic_pos48,
+                            :c_pos49:ic_pos49,
+                            :c_pos50:ic_pos50,
+                            :c_pos51:ic_pos51,
+                            :c_pos52:ic_pos52,
+                            :c_pos53:ic_pos53,
+                            :c_pos54:ic_pos54,
+                            :c_pos55:ic_pos55,
+                            :c_pos56:ic_pos56,
+                            :c_pos57:ic_pos57,
+                            :c_pos58:ic_pos58,
+                            :c_pos59:ic_pos59,
+                            :c_pos60:ic_pos60,
+                            :c_pos61:ic_pos61,
+                            :c_pos62:ic_pos62,
+                            :c_pos63:ic_pos63,
+                            :c_pos64:ic_pos64,
+                            :c_pos65:ic_pos65,
+                            :c_pos66:ic_pos66,
+                            :c_pos67:ic_pos67,
+                            :c_pos68:ic_pos68,
+                            :c_pos69:ic_pos69,
+                            :c_pos70:ic_pos70,
+                            :c_pos71:ic_pos71,
+                            :c_pos72:ic_pos72,
+                            :c_pos73:ic_pos73,
+                            :c_pos74:ic_pos74,
+                            :c_pos75:ic_pos75,
+                            :c_sys_flag;
+  }
+  else
+  {
+     EXEC SQL FETCH C1 INTO :c_seq1,
+                            :c_seq2,
+                            :c_heid,
+                            :c_scl_class,
+                            :c_linkcode,
+                            :c_section_code,
+                            :c_peo_id,
+                            :c_sub_section_length:ic_sub_section_length,
+                            :c_full_partial_ind:ic_full_partial_ind,
+                            :c_survey_length:ic_survey_length,
+                            :c_survey_direction:ic_survey_direction,
+                            :c_date,
+                            :c_text,
+                            :c_characteristic,
+                            :c_pos1:ic_pos1,
+                            :c_pos2:ic_pos2,
+                            :c_pos3:ic_pos3,
+                            :c_pos4:ic_pos4,
+                            :c_pos5:ic_pos5,
+                            :c_pos6:ic_pos6,
+                            :c_pos7:ic_pos7,
+                            :c_pos8:ic_pos8,
+                            :c_pos9:ic_pos9,
+                            :c_pos10:ic_pos10,
+                            :c_pos11:ic_pos11,
+                            :c_pos12:ic_pos12,
+                            :c_pos13:ic_pos13,
+                            :c_pos14:ic_pos14,
+                            :c_pos15:ic_pos15,
+                            :c_pos16:ic_pos16,
+                            :c_pos17:ic_pos17,
+                            :c_pos18:ic_pos18,
+                            :c_pos19:ic_pos19,
+                            :c_pos20:ic_pos20,
+                            :c_pos21:ic_pos21,
+                            :c_pos22:ic_pos22,
+                            :c_pos23:ic_pos23,
+                            :c_pos24:ic_pos24,
+                            :c_pos25:ic_pos25,
+                            :c_pos26:ic_pos26,
+                            :c_pos27:ic_pos27,
+                            :c_pos28:ic_pos28,
+                            :c_pos29:ic_pos29,
+                            :c_pos30:ic_pos30,
+                            :c_pos31:ic_pos31,
+                            :c_pos32:ic_pos32,
+                            :c_pos33:ic_pos33,
+                            :c_pos34:ic_pos34,
+                            :c_pos35:ic_pos35,
+                            :c_pos36:ic_pos36,
+                            :c_pos37:ic_pos37,
+                            :c_pos38:ic_pos38,
+                            :c_pos39:ic_pos39,
+                            :c_pos40:ic_pos40,
+                            :c_pos41:ic_pos41,
+                            :c_pos42:ic_pos42,
+                            :c_pos43:ic_pos43,
+                            :c_pos44:ic_pos44,
+                            :c_pos45:ic_pos45,
+                            :c_pos46:ic_pos46,
+                            :c_pos47:ic_pos47,
+                            :c_pos48:ic_pos48,
+                            :c_pos49:ic_pos49,
+                            :c_pos50:ic_pos50,
+                            :c_pos51:ic_pos51,
+                            :c_pos52:ic_pos52,
+                            :c_pos53:ic_pos53,
+                            :c_pos54:ic_pos54,
+                            :c_pos55:ic_pos55,
+                            :c_pos56:ic_pos56,
+                            :c_pos57:ic_pos57,
+                            :c_pos58:ic_pos58,
+                            :c_pos59:ic_pos59,
+                            :c_pos60:ic_pos60,
+                            :c_pos61:ic_pos61,
+                            :c_pos62:ic_pos62,
+                            :c_pos63:ic_pos63,
+                            :c_pos64:ic_pos64,
+                            :c_pos65:ic_pos65,
+                            :c_pos66:ic_pos66,
+                            :c_pos67:ic_pos67,
+                            :c_pos68:ic_pos68,
+                            :c_pos69:ic_pos69,
+                            :c_pos70:ic_pos70,
+                            :c_pos71:ic_pos71,
+                            :c_pos72:ic_pos72,
+                            :c_pos73:ic_pos73,
+                            :c_pos74:ic_pos74,
+                            :c_pos75:ic_pos75;
+  }
+        if (sqlca.sqlcode < 0)
+                sql_err("copy_data_1(3)");
+
+     fin_yn = (sqlca.sqlcode == 1403) ? 1 : 0 ;
+     c_count = sqlca.sqlerrd[2] -norecs;
+     norecs = sqlca.sqlerrd[2];
+
+     for (i = 0; i < c_count; ++i)
+     {
+
+        ic_att75[i] = -1;
+        ic_att74[i] = -1;
+        ic_att73[i] = -1;
+        ic_att72[i] = -1;
+        ic_att71[i] = -1;
+        ic_att70[i] = -1;
+        ic_att69[i] = -1;
+        ic_att68[i] = -1;
+        ic_att67[i] = -1;
+        ic_att66[i] = -1;
+        ic_att65[i] = -1;
+        ic_att64[i] = -1;
+        ic_att63[i] = -1;
+        ic_att62[i] = -1;
+        ic_att61[i] = -1;
+        ic_att60[i] = -1;
+        ic_att59[i] = -1;
+        ic_att58[i] = -1;
+        ic_att57[i] = -1;
+        ic_att56[i] = -1;
+        ic_att55[i] = -1;
+        ic_att54[i] = -1;
+        ic_att53[i] = -1;
+        ic_att52[i] = -1;
+        ic_att51[i] = -1;
+        ic_att50[i] = -1;
+        ic_att49[i] = -1;
+        ic_att48[i] = -1;
+        ic_att47[i] = -1;
+        ic_att46[i] = -1;
+        ic_att45[i] = -1;
+        ic_att44[i] = -1;
+        ic_att43[i] = -1;
+        ic_att42[i] = -1;
+        ic_att41[i] = -1;
+        ic_att40[i] = -1;
+        ic_att39[i] = -1;
+        ic_att38[i] = -1;
+        ic_att37[i] = -1;
+        ic_att36[i] = -1;
+        ic_att35[i] = -1;
+        ic_att34[i] = -1;
+        ic_att33[i] = -1;
+        ic_att32[i] = -1;
+        ic_att31[i] = -1;
+        ic_att30[i] = -1;
+        ic_att29[i] = -1;
+        ic_att28[i] = -1;
+        ic_att27[i] = -1;
+        ic_att26[i] = -1;
+        ic_att25[i] = -1;
+        ic_att24[i] = -1;
+        ic_att23[i] = -1;
+        ic_att22[i] = -1;
+        ic_att21[i] = -1;
+        ic_att20[i] = -1;
+        ic_att19[i] = -1;
+        ic_att18[i] = -1;
+        ic_att17[i] = -1;
+        ic_att16[i] = -1;
+        ic_att15[i] = -1;
+        ic_att14[i]  = -1;
+        ic_att13[i]  = -1;
+        ic_att12[i]  = -1;
+        ic_att11[i]  = -1;
+        ic_att10[i] = -1;
+        ic_att9[i]  = -1;
+        ic_att8[i]  = -1;
+        ic_att7[i]  = -1;
+        ic_att6[i]  = -1;
+        ic_att5[i]  = -1;
+        ic_att4[i]  = -1;
+        ic_att3[i]  = -1;
+        ic_att2[i]  = -1;
+        ic_att1[i]  = -1;
+        ic_endch[i] = -1;
+        ic_stch[i]  = -1;
+        ic_xsect[i] = -1;
+        ic_inv_item[i] = -1;
+        c_text[i].arr[c_text[i].len] = '\0';
+        c_sys_flag[i].arr[c_sys_flag[i].len]='\0';
+        noargs = getstrs(c_text[i].arr,strs);
+
+        if(EXDebug)
+          printf("noargs is %d\n",noargs);
+
+        switch (noargs) {
+
+               default :  /* If more than 100 attributes ignore additional
+                             attributes */ ;
+
+               case 79 : strcpy((char *)c_att75[i].arr,strs[78]);
+                         c_att75[i].len = strlen((char *)c_att75[i].arr);
+                         ic_att75[i] = 0;
+
+               case 78 : strcpy((char *)c_att74[i].arr,strs[77]);
+                         c_att74[i].len = strlen((char *)c_att74[i].arr);
+                         ic_att74[i] = 0;
+
+               case 77 : strcpy((char *)c_att73[i].arr,strs[76]);
+                         c_att73[i].len = strlen((char *)c_att73[i].arr);
+                         ic_att73[i] = 0;
+
+               case 76 : strcpy((char *)c_att72[i].arr,strs[75]);
+                         c_att72[i].len = strlen((char *)c_att72[i].arr);
+                         ic_att72[i] = 0;
+
+               case 75 : strcpy((char *)c_att71[i].arr,strs[74]);
+                         c_att71[i].len = strlen((char *)c_att71[i].arr);
+                         ic_att71[i] = 0;
+
+               case 74 : strcpy((char *)c_att70[i].arr,strs[73]);
+                         c_att70[i].len = strlen((char *)c_att70[i].arr);
+                         ic_att70[i] = 0;
+
+               case 73 : strcpy((char *)c_att69[i].arr,strs[72]);
+                         c_att69[i].len = strlen((char *)c_att69[i].arr);
+                         ic_att69[i] = 0;
+
+               case 72 : strcpy((char *)c_att68[i].arr,strs[71]);
+                         c_att68[i].len = strlen((char *)c_att68[i].arr);
+                         ic_att68[i] = 0;
+
+               case 71 : strcpy((char *)c_att67[i].arr,strs[70]);
+                         c_att67[i].len = strlen((char *)c_att67[i].arr);
+                         ic_att67[i] = 0;
+
+               case 70 : strcpy((char *)c_att66[i].arr,strs[69]);
+                         c_att66[i].len = strlen((char *)c_att66[i].arr);
+                         ic_att66[i] = 0;
+
+               case 69 : strcpy((char *)c_att65[i].arr,strs[68]);
+                         c_att65[i].len = strlen((char *)c_att65[i].arr);
+                         ic_att65[i] = 0;
+
+               case 68 : strcpy((char *)c_att64[i].arr,strs[67]);
+                         c_att64[i].len = strlen((char *)c_att64[i].arr);
+                         ic_att64[i] = 0;
+
+               case 67 : strcpy((char *)c_att63[i].arr,strs[66]);
+                         c_att63[i].len = strlen((char *)c_att63[i].arr);
+                         ic_att63[i] = 0;
+
+               case 66 : strcpy((char *)c_att62[i].arr,strs[65]);
+                         c_att62[i].len = strlen((char *)c_att62[i].arr);
+                         ic_att62[i] = 0;
+
+               case 65 : strcpy((char *)c_att61[i].arr,strs[64]);
+                         c_att61[i].len = strlen((char *)c_att61[i].arr);
+                         ic_att61[i] = 0;
+
+               case 64 : strcpy((char *)c_att60[i].arr,strs[63]);
+                         c_att60[i].len = strlen((char *)c_att60[i].arr);
+                         ic_att60[i] = 0;
+
+               case 63 : strcpy((char *)c_att59[i].arr,strs[62]);
+                         c_att59[i].len = strlen((char *)c_att59[i].arr);
+                         ic_att59[i] = 0;
+
+               case 62 : strcpy((char *)c_att58[i].arr,strs[61]);
+                         c_att58[i].len = strlen((char *)c_att58[i].arr);
+                         ic_att58[i] = 0;
+
+               case 61 : strcpy((char *)c_att57[i].arr,strs[60]);
+                         c_att57[i].len = strlen((char *)c_att57[i].arr);
+                         ic_att57[i] = 0;
+
+               case 60 : strcpy((char *)c_att56[i].arr,strs[59]);
+                         c_att56[i].len = strlen((char *)c_att56[i].arr);
+                         ic_att56[i] = 0;
+
+               case 59 : strcpy((char *)c_att55[i].arr,strs[58]);
+                         c_att55[i].len = strlen((char *)c_att55[i].arr);
+                         ic_att55[i] = 0;
+
+               case 58 : strcpy((char *)c_att54[i].arr,strs[57]);
+                         c_att54[i].len = strlen((char *)c_att54[i].arr);
+                         ic_att54[i] = 0;
+
+               case 57 : strcpy((char *)c_att53[i].arr,strs[56]);
+                         c_att53[i].len = strlen((char *)c_att53[i].arr);
+                         ic_att53[i] = 0;
+
+               case 56 : strcpy((char *)c_att52[i].arr,strs[55]);
+                         c_att52[i].len = strlen((char *)c_att52[i].arr);
+                         ic_att52[i] = 0;
+
+               case 55 : strcpy((char *)c_att51[i].arr,strs[54]);
+                         c_att51[i].len = strlen((char *)c_att51[i].arr);
+                         ic_att51[i] = 0;
+
+               case 54 : strcpy((char *)c_att50[i].arr,strs[53]);
+                         c_att50[i].len = strlen((char *)c_att50[i].arr);
+                         ic_att50[i] = 0;
+
+               case 53 : strcpy((char *)c_att49[i].arr,strs[52]);
+                         c_att49[i].len = strlen((char *)c_att49[i].arr);
+                         ic_att49[i] = 0;
+
+               case 52 : strcpy((char *)c_att48[i].arr,strs[51]);
+                         c_att48[i].len = strlen((char *)c_att48[i].arr);
+                         ic_att48[i] = 0;
+
+               case 51 : strcpy((char *)c_att47[i].arr,strs[50]);
+                         c_att47[i].len = strlen((char *)c_att47[i].arr);
+                         ic_att47[i] = 0;
+
+               case 50 : strcpy((char *)c_att46[i].arr,strs[49]);
+                         c_att46[i].len = strlen((char *)c_att46[i].arr);
+                         ic_att46[i] = 0;
+
+               case 49 : strcpy((char *)c_att45[i].arr,strs[48]);
+                         c_att45[i].len = strlen((char *)c_att45[i].arr);
+                         ic_att45[i] = 0;
+
+               case 48 : strcpy((char *)c_att44[i].arr,strs[47]);
+                         c_att44[i].len = strlen((char *)c_att44[i].arr);
+                         ic_att44[i] = 0;
+
+               case 47 : strcpy((char *)c_att43[i].arr,strs[46]);
+                         c_att43[i].len = strlen((char *)c_att43[i].arr);
+                         ic_att43[i] = 0;
+
+               case 46 : strcpy((char *)c_att42[i].arr,strs[45]);
+                         c_att42[i].len = strlen((char *)c_att42[i].arr);
+                         ic_att42[i] = 0;
+
+               case 45 : strcpy((char *)c_att41[i].arr,strs[44]);
+                         c_att41[i].len = strlen((char *)c_att41[i].arr);
+                         ic_att41[i] = 0;
+
+               case 44 : strcpy((char *)c_att40[i].arr,strs[43]);
+                         c_att40[i].len = strlen((char *)c_att40[i].arr);
+                         ic_att40[i] = 0;
+
+               case 43 : strcpy((char *)c_att39[i].arr,strs[42]);
+                         c_att39[i].len = strlen((char *)c_att39[i].arr);
+                         ic_att39[i] = 0;
+
+               case 42 : strcpy((char *)c_att38[i].arr,strs[41]);
+                         c_att38[i].len = strlen((char *)c_att38[i].arr);
+                         ic_att38[i] = 0;
+
+               case 41 : strcpy((char *)c_att37[i].arr,strs[40]);
+                         c_att37[i].len = strlen((char *)c_att37[i].arr);
+                         ic_att37[i] = 0;
+
+               case 40 : strcpy((char *)c_att36[i].arr,strs[39]);
+                         c_att36[i].len = strlen((char *)c_att36[i].arr);
+                         ic_att36[i] = 0;
+
+               case 39 : strcpy((char *)c_att35[i].arr,strs[38]);
+                         c_att35[i].len = strlen((char *)c_att35[i].arr);
+                         ic_att35[i] = 0;
+
+               case 38 : strcpy((char *)c_att34[i].arr,strs[37]);
+                         c_att34[i].len = strlen((char *)c_att34[i].arr);
+                         ic_att34[i] = 0;
+
+               case 37 : strcpy((char *)c_att33[i].arr,strs[36]);
+                         c_att33[i].len = strlen((char *)c_att33[i].arr);
+                         ic_att33[i] = 0;
+
+               case 36 : strcpy((char *)c_att32[i].arr,strs[35]);
+                         c_att32[i].len = strlen((char *)c_att32[i].arr);
+                         ic_att32[i] = 0;
+
+               case 35 : strcpy((char *)c_att31[i].arr,strs[34]);
+                         c_att31[i].len = strlen((char *)c_att31[i].arr);
+                         ic_att31[i] = 0;
+
+               case 34 : strcpy((char *)c_att30[i].arr,strs[33]);
+                         c_att30[i].len = strlen((char *)c_att30[i].arr);
+                         ic_att30[i] = 0;
+
+               case 33 : strcpy((char *)c_att29[i].arr,strs[32]);
+                         c_att29[i].len = strlen((char *)c_att29[i].arr);
+                         ic_att29[i] = 0;
+
+               case 32 : strcpy((char *)c_att28[i].arr,strs[31]);
+                         c_att28[i].len = strlen((char *)c_att28[i].arr);
+                         ic_att28[i] = 0;
+
+               case 31 : strcpy((char *)c_att27[i].arr,strs[30]);
+                         c_att27[i].len = strlen((char *)c_att27[i].arr);
+                         ic_att27[i] = 0;
+
+               case 30 : strcpy((char *)c_att26[i].arr,strs[29]);
+                         c_att26[i].len = strlen((char *)c_att26[i].arr);
+                         ic_att26[i] = 0;
+
+               case 29 : strcpy((char *)c_att25[i].arr,strs[28]);
+                         c_att25[i].len = strlen((char *)c_att25[i].arr);
+                         ic_att25[i] = 0;
+
+               case 28 : strcpy((char *)c_att24[i].arr,strs[27]);
+                         c_att24[i].len = strlen((char *)c_att24[i].arr);
+                         ic_att24[i] = 0;
+
+               case 27 : strcpy((char *)c_att23[i].arr,strs[26]);
+                         c_att23[i].len = strlen((char *)c_att23[i].arr);
+                         ic_att23[i] = 0;
+
+               case 26 : strcpy((char *)c_att22[i].arr,strs[25]);
+                         c_att22[i].len = strlen((char *)c_att22[i].arr);
+                         ic_att22[i] = 0;
+
+               case 25 : strcpy((char *)c_att21[i].arr,strs[24]);
+                         c_att21[i].len = strlen((char *)c_att21[i].arr);
+                         ic_att21[i] = 0;
+
+               case 24 : strcpy((char *)c_att20[i].arr,strs[23]);
+                         c_att20[i].len = strlen((char *)c_att20[i].arr);
+                         ic_att20[i] = 0;
+
+               case 23 : strcpy((char *)c_att19[i].arr,strs[22]);
+                         c_att19[i].len = strlen((char *)c_att19[i].arr);
+                         ic_att19[i] = 0;
+
+               case 22 : strcpy((char *)c_att18[i].arr,strs[21]);
+                         c_att18[i].len = strlen((char *)c_att18[i].arr);
+                         ic_att18[i] = 0;
+
+               case 21 : strcpy((char *)c_att17[i].arr,strs[20]);
+                         c_att17[i].len = strlen((char *)c_att17[i].arr);
+                         ic_att17[i] = 0;
+
+               case 20 : strcpy((char *)c_att16[i].arr,strs[19]);
+                         c_att16[i].len = strlen((char *)c_att16[i].arr);
+                         ic_att16[i] = 0;
+
+               case 19 : strcpy((char *)c_att15[i].arr,strs[18]);
+                         c_att15[i].len = strlen((char *)c_att15[i].arr);
+                         ic_att15[i] = 0;
+
+               case 18 : strcpy((char *)c_att14[i].arr,strs[17]);
+                         c_att14[i].len = strlen((char *)c_att14[i].arr);
+                         ic_att14[i] = 0;
+
+               case 17 : strcpy((char *)c_att13[i].arr,strs[16]);
+                         c_att13[i].len = strlen((char *)c_att13[i].arr);
+                         ic_att13[i] = 0;
+
+               case 16 : strcpy((char *)c_att12[i].arr,strs[15]);
+                         c_att12[i].len = strlen((char *)c_att12[i].arr);
+                         ic_att12[i] = 0;
+
+               case 15 : strcpy((char *)c_att11[i].arr,strs[14]);
+                         c_att11[i].len = strlen((char *)c_att11[i].arr);
+                         ic_att11[i] = 0;
+
+/*orig*/       case 14 : strcpy((char *)c_att10[i].arr,strs[13]);
+                         c_att10[i].len = strlen((char *)c_att10[i].arr);
+                         ic_att10[i] = 0;
+
+               case 13 : strcpy((char *)c_att9[i].arr,strs[12]);
+                         c_att9[i].len = strlen((char *)c_att9[i].arr);
+                         ic_att9[i] = 0;
+
+               case 12 : strcpy((char *)c_att8[i].arr,strs[11]);
+                         c_att8[i].len = strlen((char *)c_att8[i].arr);
+                         ic_att8[i] = 0;
+
+               case 11 : strcpy((char *)c_att7[i].arr,strs[10]);
+                         c_att7[i].len = strlen((char *)c_att7[i].arr);
+                         ic_att7[i] = 0;
+
+               case 10 : strcpy((char *)c_att6[i].arr,strs[9]);
+                         c_att6[i].len = strlen((char *)c_att6[i].arr);
+                         ic_att6[i] = 0;
+
+               case  9 : strcpy((char *)c_att5[i].arr,strs[8]);
+                         c_att5[i].len = strlen((char *)c_att5[i].arr);
+                         ic_att5[i] = 0;
+
+               case  8 : strcpy((char *)c_att4[i].arr,strs[7]);
+                         c_att4[i].len = strlen((char *)c_att4[i].arr);
+                         ic_att4[i] = 0;
+
+               case  7 : strcpy((char *)c_att3[i].arr,strs[6]);
+                         c_att3[i].len = strlen((char *)c_att3[i].arr);
+                         ic_att3[i] = 0;
+
+               case  6 : strcpy((char *)c_att2[i].arr,strs[5]);
+                         c_att2[i].len = strlen((char *)c_att2[i].arr);
+                         ic_att2[i] = 0;
+
+               case  5 : strcpy((char *)c_att1[i].arr,strs[4]);
+                         c_att1[i].len = strlen((char *)c_att1[i].arr);
+                         ic_att1[i] = 0;
+
+               case  4 : strcpy((char *)c_endch[i].arr,strs[3]);
+                         c_endch[i].len = strlen((char *)c_endch[i].arr);
+                         ic_endch[i] = 0;
+
+               case  3 : strcpy((char *)c_stch[i].arr,strs[2]);
+                         c_stch[i].len = strlen((char *)c_stch[i].arr);
+                         ic_stch[i] = 0;
+
+               case  2 : strcpy((char *)c_xsect[i].arr,strs[1]);
+                         c_xsect[i].len = strlen((char *)c_xsect[i].arr);
+                         ic_xsect[i] = 0;
+
+               case  1 : strcpy((char *)c_inv_item[i].arr,strs[0]);
+                         c_inv_item[i].len = strlen((char *)c_inv_item[i].arr);
+                         ic_inv_item[i] = 0;
+
+               case  0 : /* Do nothing if no attributes */ ;
+
+                       } /* END OF SWITCH */
+
+        } /* END OF FOR */
+
+
+
+if (c_count != 0)
+{
+  if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
+  {
+  EXEC SQL FOR :c_count INSERT INTO HHINV_LOAD_2
+                  (REC_SEQ_NO,
+                   SECT_HDR_SEQ_NO,
+                   HE_ID,
+                   SCL_CLASS,
+                   LINKCODE,
+                   SECTION_CODE,
+                   INV_CODE,
+                   PEO_INVENT_BY_ID,
+                   INVENT_DATE,
+                   X_SECT,
+                   ST_CHAIN,
+                   END_CHAIN,
+                   ROAD_CHARACTERISTIC,
+                   SURVEY_LENGTH,
+                   hhinv_survey_direction,
+                   sub_section_length,
+                   full_partial_ind,
+                   HHFLD1,
+                   HHATTR1,
+                   HHFLD2,
+                   HHATTR2,
+                   HHFLD3,
+                   HHATTR3,
+                   HHFLD4,
+                   HHATTR4,
+                   HHFLD5,
+                   HHATTR5,
+                   HHFLD6,
+                   HHATTR6,
+                   HHFLD7,
+                   HHATTR7,
+                   HHFLD8,
+                   HHATTR8,
+                   HHFLD9,
+                   HHATTR9,
+                   HHFLD10,
+                   HHATTR10,
+                   HHFLD11,
+                   HHATTR11,
+                   HHFLD12,
+                   HHATTR12,
+                   HHFLD13,
+                   HHATTR13,
+                   HHFLD14,
+                   HHATTR14,
+                   HHFLD15,
+                   HHATTR15,
+                   HHFLD16,
+                   HHATTR16,
+                   HHFLD17,
+                   HHATTR17,
+                   HHFLD18,
+                   HHATTR18,
+                   HHFLD19,
+                   HHATTR19,
+                   HHFLD20,
+                   HHATTR20,
+                   HHFLD21,
+                   HHATTR21,
+                   HHFLD22,
+                   HHATTR22,
+                   HHFLD23,
+                   HHATTR23,
+                   HHFLD24,
+                   HHATTR24,
+                   HHFLD25,
+                   HHATTR25,
+                   HHFLD26,
+                   HHATTR26,
+                   HHFLD27,
+                   HHATTR27,
+                   HHFLD28,
+                   HHATTR28,
+                   HHFLD29,
+                   HHATTR29,
+                   HHFLD30,
+                   HHATTR30,
+                   HHFLD31,
+                   HHATTR31,
+                   HHFLD32,
+                   HHATTR32,
+                   HHFLD33,
+                   HHATTR33,
+                   HHFLD34,
+                   HHATTR34,
+                   HHFLD35,
+                   HHATTR35,
+                   HHFLD36,
+                   HHATTR36,
+                   HHFLD37,
+                   HHATTR37,
+                   HHFLD38,
+                   HHATTR38,
+                   HHFLD39,
+                   HHATTR39,
+                   HHFLD40,
+                   HHATTR40,
+                   HHFLD41,
+                   HHATTR41,
+                   HHFLD42,
+                   HHATTR42,
+                   HHFLD43,
+                   HHATTR43,
+                   HHFLD44,
+                   HHATTR44,
+                   HHFLD45,
+                   HHATTR45,
+                   HHFLD46,
+                   HHATTR46,
+                   HHFLD47,
+                   HHATTR47,
+                   HHFLD48,
+                   HHATTR48,
+                   HHFLD49,
+                   HHATTR49,
+                   HHFLD50,
+                   HHATTR50,
+                   HHFLD51,
+                   HHATTR51,
+                   HHFLD52,
+                   HHATTR52,
+                   HHFLD53,
+                   HHATTR53,
+                   HHFLD54,
+                   HHATTR54,
+                   HHFLD55,
+                   HHATTR55,
+                   HHFLD56,
+                   HHATTR56,
+                   HHFLD57,
+                   HHATTR57,
+                   HHFLD58,
+                   HHATTR58,
+                   HHFLD59,
+                   HHATTR59,
+                   HHFLD60,
+                   HHATTR60,
+                   HHFLD61,
+                   HHATTR61,
+                   HHFLD62,
+                   HHATTR62,
+                   HHFLD63,
+                   HHATTR63,
+                   HHFLD64,
+                   HHATTR64,
+                   HHFLD65,
+                   HHATTR65,
+                   HHFLD66,
+                   HHATTR66,
+                   HHFLD67,
+                   HHATTR67,
+                   HHFLD68,
+                   HHATTR68,
+                   HHFLD69,
+                   HHATTR69,
+                   HHFLD70,
+                   HHATTR70,
+                   HHFLD71,
+                   HHATTR71,
+                   HHFLD72,
+                   HHATTR72,
+                   HHFLD73,
+                   HHATTR73,
+                   HHFLD74,
+                   HHATTR74,
+                   HHFLD75,
+                   HHATTR75,
+                   HHINV_ITY_SYS_FLAG)
+                   VALUES
+                   (:c_seq1,
+                    :c_seq2,
+                    :c_heid,
+                    :c_scl_class,
+                    :c_linkcode,
+                    :c_section_code,
+                    :c_inv_item:ic_inv_item,
+                    :c_peo_id,
+                    TO_DATE(:c_date,'RRMMDD'),
+                    :c_xsect:ic_xsect,
+                    TO_NUMBER(:c_stch:ic_stch),
+                    TO_NUMBER(:c_endch:ic_endch),
+                    :c_characteristic,
+                    :c_survey_length:ic_survey_length,
+                    :c_survey_direction:ic_survey_direction,
+                    :c_sub_section_length:ic_sub_section_length,
+                    :c_full_partial_ind:ic_full_partial_ind,
+                    :c_att1:ic_att1,
+                    :c_pos1:ic_pos1,
+                    :c_att2:ic_att2,
+                    :c_pos2:ic_pos2,
+                    :c_att3:ic_att3,
+                    :c_pos3:ic_pos3,
+                    :c_att4:ic_att4,
+                    :c_pos4:ic_pos4,
+                    :c_att5:ic_att5,
+                    :c_pos5:ic_pos5,
+                    :c_att6:ic_att6,
+                    :c_pos6:ic_pos6,
+                    :c_att7:ic_att7,
+                    :c_pos7:ic_pos7,
+                    :c_att8:ic_att8,
+                    :c_pos8:ic_pos8,
+                    :c_att9:ic_att9,
+                    :c_pos9:ic_pos9,
+                    :c_att10:ic_att10,
+                    :c_pos10:ic_pos10,
+                    :c_att11:ic_att11,
+                    :c_pos11:ic_pos11,
+                    :c_att12:ic_att12,
+                    :c_pos12:ic_pos12,
+                    :c_att13:ic_att13,
+                    :c_pos13:ic_pos13,
+                    :c_att14:ic_att14,
+                    :c_pos14:ic_pos14,
+                    :c_att15:ic_att15,
+                    :c_pos15:ic_pos15,
+                    :c_att16:ic_att16,
+                    :c_pos16:ic_pos16,
+                    :c_att17:ic_att17,
+                    :c_pos17:ic_pos17,
+                    :c_att18:ic_att18,
+                    :c_pos18:ic_pos18,
+                    :c_att19:ic_att19,
+                    :c_pos19:ic_pos19,
+                    :c_att20:ic_att20,
+                    :c_pos20:ic_pos20,
+                    :c_att21:ic_att21,
+                    :c_pos21:ic_pos21,
+                    :c_att22:ic_att22,
+                    :c_pos22:ic_pos22,
+                    :c_att23:ic_att23,
+                    :c_pos23:ic_pos23,
+                    :c_att24:ic_att24,
+                    :c_pos24:ic_pos24,
+                    :c_att25:ic_att25,
+                    :c_pos25:ic_pos25,
+                    :c_att26:ic_att26,
+                    :c_pos26:ic_pos26,
+                    :c_att27:ic_att27,
+                    :c_pos27:ic_pos27,
+                    :c_att28:ic_att28,
+                    :c_pos28:ic_pos28,
+                    :c_att29:ic_att29,
+                    :c_pos29:ic_pos29,
+                    :c_att30:ic_att30,
+                    :c_pos30:ic_pos30,
+                    :c_att31:ic_att31,
+                    :c_pos31:ic_pos31,
+                    :c_att32:ic_att32,
+                    :c_pos32:ic_pos32,
+                    :c_att33:ic_att33,
+                    :c_pos33:ic_pos33,
+                    :c_att34:ic_att34,
+                    :c_pos34:ic_pos34,
+                    :c_att35:ic_att35,
+                    :c_pos35:ic_pos35,
+                    :c_att36:ic_att36,
+                    :c_pos36:ic_pos36,
+                    :c_att37:ic_att37,
+                    :c_pos37:ic_pos37,
+                    :c_att38:ic_att38,
+                    :c_pos38:ic_pos38,
+                    :c_att39:ic_att39,
+                    :c_pos39:ic_pos39,
+                    :c_att40:ic_att40,
+                    :c_pos40:ic_pos40,
+                    :c_att41:ic_att41,
+                    :c_pos41:ic_pos41,
+                    :c_att42:ic_att42,
+                    :c_pos42:ic_pos42,
+                    :c_att43:ic_att43,
+                    :c_pos43:ic_pos43,
+                    :c_att44:ic_att44,
+                    :c_pos44:ic_pos44,
+                    :c_att45:ic_att45,
+                    :c_pos45:ic_pos45,
+                    :c_att46:ic_att46,
+                    :c_pos46:ic_pos46,
+                    :c_att47:ic_att47,
+                    :c_pos47:ic_pos47,
+                    :c_att48:ic_att48,
+                    :c_pos48:ic_pos48,
+                    :c_att49:ic_att49,
+                    :c_pos49:ic_pos49,
+                    :c_att50:ic_att50,
+                    :c_pos50:ic_pos50,
+                    :c_att51:ic_att51,
+                    :c_pos51:ic_pos51,
+                    :c_att52:ic_att52,
+                    :c_pos52:ic_pos52,
+                    :c_att53:ic_att53,
+                    :c_pos53:ic_pos53,
+                    :c_att54:ic_att54,
+                    :c_pos54:ic_pos54,
+                    :c_att55:ic_att55,
+                    :c_pos55:ic_pos55,
+                    :c_att56:ic_att56,
+                    :c_pos56:ic_pos56,
+                    :c_att57:ic_att57,
+                    :c_pos57:ic_pos57,
+                    :c_att58:ic_att58,
+                    :c_pos58:ic_pos58,
+                    :c_att59:ic_att59,
+                    :c_pos59:ic_pos59,
+                    :c_att60:ic_att60,
+                    :c_pos60:ic_pos60,
+                    :c_att61:ic_att61,
+                    :c_pos61:ic_pos61,
+                    :c_att62:ic_att62,
+                    :c_pos62:ic_pos62,
+                    :c_att63:ic_att63,
+                    :c_pos63:ic_pos63,
+                    :c_att64:ic_att64,
+                    :c_pos64:ic_pos64,
+                    :c_att65:ic_att65,
+                    :c_pos65:ic_pos65,
+                    :c_att66:ic_att66,
+                    :c_pos66:ic_pos66,
+                    :c_att67:ic_att67,
+                    :c_pos67:ic_pos67,
+                    :c_att68:ic_att68,
+                    :c_pos68:ic_pos68,
+                    :c_att69:ic_att69,
+                    :c_pos69:ic_pos69,
+                    :c_att70:ic_att70,
+                    :c_pos70:ic_pos70,
+                    :c_att71:ic_att71,
+                    :c_pos71:ic_pos71,
+                    :c_att72:ic_att72,
+                    :c_pos72:ic_pos72,
+                    :c_att73:ic_att73,
+                    :c_pos73:ic_pos73,
+                    :c_att74:ic_att74,
+                    :c_pos74:ic_pos74,
+                    :c_att75:ic_att75,
+                    :c_pos75:ic_pos75,
+                    :c_sys_flag);
+    }
+    else
+    {
+    EXEC SQL FOR :c_count INSERT INTO HHINV_LOAD_2
+                  (REC_SEQ_NO,
+                   SECT_HDR_SEQ_NO,
+                   HE_ID,
+                   SCL_CLASS,
+                   LINKCODE,
+                   SECTION_CODE,
+                   INV_CODE,
+                   PEO_INVENT_BY_ID,
+                   INVENT_DATE,
+                   X_SECT,
+                   ST_CHAIN,
+                   END_CHAIN,
+                   ROAD_CHARACTERISTIC,
+                   SURVEY_LENGTH,
+                   hhinv_survey_direction,
+                   sub_section_length,
+                   full_partial_ind,
+                   HHFLD1,
+                   HHATTR1,
+                   HHFLD2,
+                   HHATTR2,
+                   HHFLD3,
+                   HHATTR3,
+                   HHFLD4,
+                   HHATTR4,
+                   HHFLD5,
+                   HHATTR5,
+                   HHFLD6,
+                   HHATTR6,
+                   HHFLD7,
+                   HHATTR7,
+                   HHFLD8,
+                   HHATTR8,
+                   HHFLD9,
+                   HHATTR9,
+                   HHFLD10,
+                   HHATTR10,
+                   HHFLD11,
+                   HHATTR11,
+                   HHFLD12,
+                   HHATTR12,
+                   HHFLD13,
+                   HHATTR13,
+                   HHFLD14,
+                   HHATTR14,
+                   HHFLD15,
+                   HHATTR15,
+                   HHFLD16,
+                   HHATTR16,
+                   HHFLD17,
+                   HHATTR17,
+                   HHFLD18,
+                   HHATTR18,
+                   HHFLD19,
+                   HHATTR19,
+                   HHFLD20,
+                   HHATTR20,
+                   HHFLD21,
+                   HHATTR21,
+                   HHFLD22,
+                   HHATTR22,
+                   HHFLD23,
+                   HHATTR23,
+                   HHFLD24,
+                   HHATTR24,
+                   HHFLD25,
+                   HHATTR25,
+                   HHFLD26,
+                   HHATTR26,
+                   HHFLD27,
+                   HHATTR27,
+                   HHFLD28,
+                   HHATTR28,
+                   HHFLD29,
+                   HHATTR29,
+                   HHFLD30,
+                   HHATTR30,
+                   HHFLD31,
+                   HHATTR31,
+                   HHFLD32,
+                   HHATTR32,
+                   HHFLD33,
+                   HHATTR33,
+                   HHFLD34,
+                   HHATTR34,
+                   HHFLD35,
+                   HHATTR35,
+                   HHFLD36,
+                   HHATTR36,
+                   HHFLD37,
+                   HHATTR37,
+                   HHFLD38,
+                   HHATTR38,
+                   HHFLD39,
+                   HHATTR39,
+                   HHFLD40,
+                   HHATTR40,
+                   HHFLD41,
+                   HHATTR41,
+                   HHFLD42,
+                   HHATTR42,
+                   HHFLD43,
+                   HHATTR43,
+                   HHFLD44,
+                   HHATTR44,
+                   HHFLD45,
+                   HHATTR45,
+                   HHFLD46,
+                   HHATTR46,
+                   HHFLD47,
+                   HHATTR47,
+                   HHFLD48,
+                   HHATTR48,
+                   HHFLD49,
+                   HHATTR49,
+                   HHFLD50,
+                   HHATTR50,
+                   HHFLD51,
+                   HHATTR51,
+                   HHFLD52,
+                   HHATTR52,
+                   HHFLD53,
+                   HHATTR53,
+                   HHFLD54,
+                   HHATTR54,
+                   HHFLD55,
+                   HHATTR55,
+                   HHFLD56,
+                   HHATTR56,
+                   HHFLD57,
+                   HHATTR57,
+                   HHFLD58,
+                   HHATTR58,
+                   HHFLD59,
+                   HHATTR59,
+                   HHFLD60,
+                   HHATTR60,
+                   HHFLD61,
+                   HHATTR61,
+                   HHFLD62,
+                   HHATTR62,
+                   HHFLD63,
+                   HHATTR63,
+                   HHFLD64,
+                   HHATTR64,
+                   HHFLD65,
+                   HHATTR65,
+                   HHFLD66,
+                   HHATTR66,
+                   HHFLD67,
+                   HHATTR67,
+                   HHFLD68,
+                   HHATTR68,
+                   HHFLD69,
+                   HHATTR69,
+                   HHFLD70,
+                   HHATTR70,
+                   HHFLD71,
+                   HHATTR71,
+                   HHFLD72,
+                   HHATTR72,
+                   HHFLD73,
+                   HHATTR73,
+                   HHFLD74,
+                   HHATTR74,
+                   HHFLD75,
+                   HHATTR75)
+                   VALUES
+                   (:c_seq1,
+                    :c_seq2,
+                    :c_heid,
+                    :c_scl_class,
+                    :c_linkcode,
+                    :c_section_code,
+                    :c_inv_item:ic_inv_item,
+                    :c_peo_id,
+                    TO_DATE(:c_date,'RRMMDD'),
+                    :c_xsect:ic_xsect,
+                    TO_NUMBER(:c_stch:ic_stch),
+                    TO_NUMBER(:c_endch:ic_endch),
+                    :c_characteristic,
+                    :c_survey_length:ic_survey_length,
+                    :c_survey_direction:ic_survey_direction,
+                    :c_sub_section_length:ic_sub_section_length,
+                    :c_full_partial_ind:ic_full_partial_ind,
+                    :c_att1:ic_att1,
+                    :c_pos1:ic_pos1,
+                    :c_att2:ic_att2,
+                    :c_pos2:ic_pos2,
+                    :c_att3:ic_att3,
+                    :c_pos3:ic_pos3,
+                    :c_att4:ic_att4,
+                    :c_pos4:ic_pos4,
+                    :c_att5:ic_att5,
+                    :c_pos5:ic_pos5,
+                    :c_att6:ic_att6,
+                    :c_pos6:ic_pos6,
+                    :c_att7:ic_att7,
+                    :c_pos7:ic_pos7,
+                    :c_att8:ic_att8,
+                    :c_pos8:ic_pos8,
+                    :c_att9:ic_att9,
+                    :c_pos9:ic_pos9,
+                    :c_att10:ic_att10,
+                    :c_pos10:ic_pos10,
+                    :c_att11:ic_att11,
+                    :c_pos11:ic_pos11,
+                    :c_att12:ic_att12,
+                    :c_pos12:ic_pos12,
+                    :c_att13:ic_att13,
+                    :c_pos13:ic_pos13,
+                    :c_att14:ic_att14,
+                    :c_pos14:ic_pos14,
+                    :c_att15:ic_att15,
+                    :c_pos15:ic_pos15,
+                    :c_att16:ic_att16,
+                    :c_pos16:ic_pos16,
+                    :c_att17:ic_att17,
+                    :c_pos17:ic_pos17,
+                    :c_att18:ic_att18,
+                    :c_pos18:ic_pos18,
+                    :c_att19:ic_att19,
+                    :c_pos19:ic_pos19,
+                    :c_att20:ic_att20,
+                    :c_pos20:ic_pos20,
+                    :c_att21:ic_att21,
+                    :c_pos21:ic_pos21,
+                    :c_att22:ic_att22,
+                    :c_pos22:ic_pos22,
+                    :c_att23:ic_att23,
+                    :c_pos23:ic_pos23,
+                    :c_att24:ic_att24,
+                    :c_pos24:ic_pos24,
+                    :c_att25:ic_att25,
+                    :c_pos25:ic_pos25,
+                    :c_att26:ic_att26,
+                    :c_pos26:ic_pos26,
+                    :c_att27:ic_att27,
+                    :c_pos27:ic_pos27,
+                    :c_att28:ic_att28,
+                    :c_pos28:ic_pos28,
+                    :c_att29:ic_att29,
+                    :c_pos29:ic_pos29,
+                    :c_att30:ic_att30,
+                    :c_pos30:ic_pos30,
+                    :c_att31:ic_att31,
+                    :c_pos31:ic_pos31,
+                    :c_att32:ic_att32,
+                    :c_pos32:ic_pos32,
+                    :c_att33:ic_att33,
+                    :c_pos33:ic_pos33,
+                    :c_att34:ic_att34,
+                    :c_pos34:ic_pos34,
+                    :c_att35:ic_att35,
+                    :c_pos35:ic_pos35,
+                    :c_att36:ic_att36,
+                    :c_pos36:ic_pos36,
+                    :c_att37:ic_att37,
+                    :c_pos37:ic_pos37,
+                    :c_att38:ic_att38,
+                    :c_pos38:ic_pos38,
+                    :c_att39:ic_att39,
+                    :c_pos39:ic_pos39,
+                    :c_att40:ic_att40,
+                    :c_pos40:ic_pos40,
+                    :c_att41:ic_att41,
+                    :c_pos41:ic_pos41,
+                    :c_att42:ic_att42,
+                    :c_pos42:ic_pos42,
+                    :c_att43:ic_att43,
+                    :c_pos43:ic_pos43,
+                    :c_att44:ic_att44,
+                    :c_pos44:ic_pos44,
+                    :c_att45:ic_att45,
+                    :c_pos45:ic_pos45,
+                    :c_att46:ic_att46,
+                    :c_pos46:ic_pos46,
+                    :c_att47:ic_att47,
+                    :c_pos47:ic_pos47,
+                    :c_att48:ic_att48,
+                    :c_pos48:ic_pos48,
+                    :c_att49:ic_att49,
+                    :c_pos49:ic_pos49,
+                    :c_att50:ic_att50,
+                    :c_pos50:ic_pos50,
+                    :c_att51:ic_att51,
+                    :c_pos51:ic_pos51,
+                    :c_att52:ic_att52,
+                    :c_pos52:ic_pos52,
+                    :c_att53:ic_att53,
+                    :c_pos53:ic_pos53,
+                    :c_att54:ic_att54,
+                    :c_pos54:ic_pos54,
+                    :c_att55:ic_att55,
+                    :c_pos55:ic_pos55,
+                    :c_att56:ic_att56,
+                    :c_pos56:ic_pos56,
+                    :c_att57:ic_att57,
+                    :c_pos57:ic_pos57,
+                    :c_att58:ic_att58,
+                    :c_pos58:ic_pos58,
+                    :c_att59:ic_att59,
+                    :c_pos59:ic_pos59,
+                    :c_att60:ic_att60,
+                    :c_pos60:ic_pos60,
+                    :c_att61:ic_att61,
+                    :c_pos61:ic_pos61,
+                    :c_att62:ic_att62,
+                    :c_pos62:ic_pos62,
+                    :c_att63:ic_att63,
+                    :c_pos63:ic_pos63,
+                    :c_att64:ic_att64,
+                    :c_pos64:ic_pos64,
+                    :c_att65:ic_att65,
+                    :c_pos65:ic_pos65,
+                    :c_att66:ic_att66,
+                    :c_pos66:ic_pos66,
+                    :c_att67:ic_att67,
+                    :c_pos67:ic_pos67,
+                    :c_att68:ic_att68,
+                    :c_pos68:ic_pos68,
+                    :c_att69:ic_att69,
+                    :c_pos69:ic_pos69,
+                    :c_att70:ic_att70,
+                    :c_pos70:ic_pos70,
+                    :c_att71:ic_att71,
+                    :c_pos71:ic_pos71,
+                    :c_att72:ic_att72,
+                    :c_pos72:ic_pos72,
+                    :c_att73:ic_att73,
+                    :c_pos73:ic_pos73,
+                    :c_att74:ic_att74,
+                    :c_pos74:ic_pos74,
+                    :c_att75:ic_att75,
+                    :c_pos75:ic_pos75);
+    }
+        if (sqlca.sqlcode < 0)
+                sql_err("copy_data_1(4)");
+
+    }
+
+    } while (!fin_yn);
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+
+int c_ph2_get_total()
+/* *************************************************************************
+   Calculate and number of inv items which were expanded into LOAD_2
+   ************************************************************************* */
+ {
+
+  EXEC SQL SELECT COUNT('A')
+           INTO   :tot_ph2
+           FROM   HHINV_LOAD_2;
+        if (sqlca.sqlcode < 0)
+                sql_err("c_ph2_get_total");
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+int pull_unknown()
+/* ************************************************************************
+   Where failed to copy records into load_2 then assume that this is because
+   they are of an unknown inv_item_type. If this is the case, then will be
+   pulled into error_log here. If not the case totals in each table will not
+   tie up and the whole process will be aborted.
+   ************************************************************************ */
+ {
+  EXEC SQL INSERT INTO  HHINV_ITEM_ERR_1
+              (RUN_NUM,FULL_VALUE,REC_SEQ_NO,
+               INVENT_BY,ERROR_MSG,SECT_HDR_SEQ_NO,hway_seq_no)
+
+           SELECT :run_num,HHL1.FULL_VALUE,HHL1.REC_SEQ_NO,HHL1.INVENT_BY,
+                  'UNKNOWN INVENTORY ITEM',HHSL.REC_SEQ_NO,hhsl.rec_seq_no
+           FROM    HHINV_HOLD_1 HHL1, HHINV_SECT_LOG HHSL
+           WHERE   HHL1.REC_TYPE = 'C'
+           AND     HHL1.REC_SEQ_NO > HHSl.REC_SEQ_NO
+           AND     HHL1.REC_SEQ_NO < HHSl.MAX_SEQ_NO
+           AND     HHSl.LST_RUN_NUM = :run_num
+           AND     SUBSTR(FULL_VALUE,1,2)
+           NOT IN
+         ( SELECT  ITY_INV_CODE
+           FROM    INV_ITEM_TYPES
+           WHERE   ITY_SYS_FLAG = HHSL.HHINV_RSE_SYS_FLAG);
+        if (sqlca.sqlcode < 0)
+                sql_err("pull_unknown");
+
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+
+int upd_x_1()
+/* *************************************************************************
+   Update sect log to say that section contains some unidentified invent
+   types. Do this so that whole section is stopped later on before section
+   level processing/checks are carried out.
+   ************************************************************************* */
+ {
+  EXEC SQL UPDATE HHINV_SECT_LOG HHSl
+           SET    SUCCESS_STAT = 1,
+                  ERROR_LEVEL  = 'SECT',
+                  ERROR_MSG = 'Contains unknown Invent_items'
+           WHERE  EXISTS
+
+         ( SELECT 'A'
+           FROM   HHINV_ITEM_ERR_1 HH1
+           WHERE  HH1.SECT_HDR_SEQ_NO = HHSl.rec_seq_no)
+
+           AND    LST_RUN_NUM = :run_num
+           AND    ERROR_MSG IS NULL;
+        if (sqlca.sqlcode < 0)
+                sql_err("upd_x_1");
+
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+
+int section_check()
+/* *************************************************************************
+   Flags Section Log if not a known Section recorded on a network.
+   This will result in all invent items in the section being stopped.
+   ************************************************************************* */
+ {
+  EXEC SQL UPDATE HHINV_SECT_LOG HHSl
+           SET    SUCCESS_STAT = 2,
+                  ERROR_LEVEL  = 'SECT',
+                  ERROR_MSG    = DECODE(HE_ID,-9999999,'Not a known Section',
+                                        'Invalid Initials for Inspector')
+           WHERE  LST_RUN_NUM = :run_num
+           AND    (    HE_ID       = -9999999
+                    OR PEO_INVENT_BY_ID is null);
+        if (sqlca.sqlcode < 0)
+                sql_err("section_check");
+
+  return((sqlca.sqlcode>=0)?SUCCESS:FATAL);
+ }
+
+void usersigfunc(sig)
+int sig;
+{
+	printf("Signal %d received. Aborting ...",sig);
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}
