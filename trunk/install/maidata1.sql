@@ -1,38 +1,37 @@
-/***************************************************************************
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.8   Sep 10 2009 15:48:06   malexander  $
+--       Module Name      : $Workfile:   maidata1.sql  $
+--       Date into PVCS   : $Date:   Sep 10 2009 15:48:06  $
+--       Date fetched Out : $Modtime:   Sep 10 2009 15:40:26  $
+--       Version          : $Revision:   2.8  $
+--       Table Owner      : MAI_METADATA
+--       Generation Date  : 10-SEP-2009 15:40
+--
+--   Product metadata script
+--   As at Release 4.1.0.0
+--
+--   Copyright (c) exor corporation ltd, 2009
+--
+--   TABLES PROCESSED
+--   ================
+--   HIG_PRODUCTS
+--   NM_ERRORS
+--   HIG_DOMAINS
+--   HIG_CODES
+--   HIG_MODULES
+--   HIG_OPTION_LIST
+--   HIG_OPTION_VALUES
+--   HIG_STATUS_DOMAINS
+--   HIG_STATUS_CODES
+--   HIG_USER_OPTION_LIST
+--   HIG_CHECK_CONSTRAINT_ASSOCS
+--
+-----------------------------------------------------------------------------
 
-INFO
-====
-As at Release 4.0.5.1
 
-GENERATION DATE
-===============
-22-SEP-2008 11:42
-
-TABLES PROCESSED
-================
-HIG_PRODUCTS
-NM_ERRORS
-HIG_DOMAINS
-HIG_CODES
-HIG_MODULES
-HIG_OPTION_LIST
-HIG_OPTION_VALUES
-HIG_STATUS_DOMAINS
-HIG_STATUS_CODES
-HIG_USER_OPTION_LIST
-HIG_CHECK_CONSTRAINT_ASSOCS
-
-TABLE OWNER
-===========
-MAI_METADATA
-
-MODE (A-Append R-Refresh)
-========================
-A
-
-***************************************************************************/
-
-define sccsid = '%W% %G%'
 set define off;
 set feedback off;
 
@@ -40,24 +39,19 @@ set feedback off;
 -- START OF GENERATED METADATA --
 ---------------------------------
 
+
+----------------------------------------------------------------------------------------
+-- HIG_PRODUCTS
 --
---********** HIG_PRODUCTS **********--
+-- select * from mai_metadata.hig_products
+-- order by hpr_product
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_products
 SET TERM OFF
---
--- Columns
--- HPR_PRODUCT                    NOT NULL VARCHAR2(6)
---   HIG_PK (Pos 1)
--- HPR_PRODUCT_NAME               NOT NULL VARCHAR2(40)
---   HPR_UK1 (Pos 1)
--- HPR_VERSION                    NOT NULL VARCHAR2(10)
---   HPR_UK1 (Pos 2)
--- HPR_PATH_NAME                           VARCHAR2(100)
--- HPR_KEY                                 NUMBER(22)
--- HPR_SEQUENCE                            NUMBER(3)
---
---
+
 INSERT INTO HIG_PRODUCTS
        (HPR_PRODUCT
        ,HPR_PRODUCT_NAME
@@ -113,21 +107,23 @@ SELECT
                    WHERE HPR_PRODUCT = 'STP');
 --
 --
---********** NM_ERRORS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_ERRORS
+--
+-- select * from mai_metadata.nm_errors
+-- order by ner_appl
+--         ,ner_id
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT nm_errors
 SET TERM OFF
---
--- Columns
--- NER_APPL                       NOT NULL VARCHAR2(6)
---   NER_PK (Pos 1)
--- NER_ID                         NOT NULL NUMBER(4)
---   NER_PK (Pos 2)
--- NER_HER_NO                              NUMBER(4)
--- NER_DESCR                      NOT NULL VARCHAR2(200)
--- NER_CAUSE                               VARCHAR2(1000)
---
---
+
 INSERT INTO NM_ERRORS
        (NER_APPL
        ,NER_ID
@@ -553,21 +549,40 @@ SELECT
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 925);
 --
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,926
+       ,null
+       ,'No Work Order Lines - cannot locate the Work Order on the GIS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 926);
 --
---********** HIG_DOMAINS **********--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_DOMAINS
+--
+-- select * from mai_metadata.hig_domains
+-- order by hdo_domain
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_domains
 SET TERM OFF
---
--- Columns
--- HDO_DOMAIN                     NOT NULL VARCHAR2(20)
---   HDO_PK (Pos 1)
--- HDO_PRODUCT                    NOT NULL VARCHAR2(6)
---   HDO_FK_HPR (Pos 1)
--- HDO_TITLE                      NOT NULL VARCHAR2(40)
--- HDO_CODE_LENGTH                NOT NULL NUMBER(3)
---
---
+
 INSERT INTO HIG_DOMAINS
        (HDO_DOMAIN
        ,HDO_PRODUCT
@@ -665,6 +680,34 @@ SELECT
        ,10 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
                    WHERE HDO_DOMAIN = 'CHECK_RESULT');
+--
+INSERT INTO HIG_DOMAINS
+       (HDO_DOMAIN
+       ,HDO_PRODUCT
+       ,HDO_TITLE
+       ,HDO_CODE_LENGTH
+       )
+SELECT 
+        'CONTRACTOR_USER_SEC'
+       ,'MAI'
+       ,'Contractor User Security Status'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
+                   WHERE HDO_DOMAIN = 'CONTRACTOR_USER_SEC');
+--
+INSERT INTO HIG_DOMAINS
+       (HDO_DOMAIN
+       ,HDO_PRODUCT
+       ,HDO_TITLE
+       ,HDO_CODE_LENGTH
+       )
+SELECT 
+        'CONTRACT_SECURITY'
+       ,'MAI'
+       ,'Values for PO CONSECMODE'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
+                   WHERE HDO_DOMAIN = 'CONTRACT_SECURITY');
 --
 INSERT INTO HIG_DOMAINS
        (HDO_DOMAIN
@@ -1087,24 +1130,23 @@ SELECT
                    WHERE HDO_DOMAIN = 'XSP_TYPE');
 --
 --
---********** HIG_CODES **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_CODES
+--
+-- select * from mai_metadata.hig_codes
+-- order by hco_domain
+--         ,hco_code
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_codes
 SET TERM OFF
---
--- Columns
--- HCO_DOMAIN                     NOT NULL VARCHAR2(20)
---   HCO_PK (Pos 1)
---   HCO_FK_HDO (Pos 1)
--- HCO_CODE                       NOT NULL VARCHAR2(20)
---   HCO_PK (Pos 2)
--- HCO_MEANING                    NOT NULL VARCHAR2(52)
--- HCO_SYSTEM                     NOT NULL VARCHAR2(1)
--- HCO_SEQ                                 NUMBER(4)
--- HCO_START_DATE                          DATE
--- HCO_END_DATE                            DATE
---
---
+
 INSERT INTO HIG_CODES
        (HCO_DOMAIN
        ,HCO_CODE
@@ -1944,6 +1986,111 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
                    WHERE HCO_DOMAIN = 'CHECK_RESULT'
                     AND  HCO_CODE = 'P');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'CONTRACTOR_USER_SEC'
+       ,'N'
+       ,'Not enabled, see Product Option CONSECMODE'
+       ,'Y'
+       ,2
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'CONTRACTOR_USER_SEC'
+                    AND  HCO_CODE = 'N');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'CONTRACTOR_USER_SEC'
+       ,'Y'
+       ,'Enabled'
+       ,'Y'
+       ,1
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'CONTRACTOR_USER_SEC'
+                    AND  HCO_CODE = 'Y');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'CONTRACT_SECURITY'
+       ,'A'
+       ,'Contract Admin Unit Security Enabled'
+       ,'Y'
+       ,2
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'CONTRACT_SECURITY'
+                    AND  HCO_CODE = 'A');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'CONTRACT_SECURITY'
+       ,'N'
+       ,'Not Enabled'
+       ,'Y'
+       ,1
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'CONTRACT_SECURITY'
+                    AND  HCO_CODE = 'N');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'CONTRACT_SECURITY'
+       ,'U'
+       ,'Contractor User Security Enabled'
+       ,'Y'
+       ,3
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'CONTRACT_SECURITY'
+                    AND  HCO_CODE = 'U');
 --
 INSERT INTO HIG_CODES
        (HCO_DOMAIN
@@ -5117,24 +5264,22 @@ SELECT
                     AND  HCO_CODE = 'F');
 --
 --
---********** HIG_MODULES **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_MODULES
+--
+-- select * from mai_metadata.hig_modules
+-- order by hmo_module
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_modules
 SET TERM OFF
---
--- Columns
--- HMO_MODULE                     NOT NULL VARCHAR2(30)
---   HMO_PK (Pos 1)
--- HMO_TITLE                      NOT NULL VARCHAR2(70)
--- HMO_FILENAME                   NOT NULL VARCHAR2(30)
--- HMO_MODULE_TYPE                NOT NULL VARCHAR2(3)
--- HMO_FASTPATH_OPTS                       VARCHAR2(2000)
--- HMO_FASTPATH_INVALID           NOT NULL VARCHAR2(1)
--- HMO_USE_GRI                    NOT NULL VARCHAR2(1)
--- HMO_APPLICATION                         VARCHAR2(6)
--- HMO_MENU                                VARCHAR2(30)
---
---
+
 INSERT INTO HIG_MODULES
        (HMO_MODULE
        ,HMO_TITLE
@@ -10704,24 +10849,22 @@ SELECT
                    WHERE HMO_MODULE = 'MAIWEB2540');
 --
 --
---********** HIG_OPTION_LIST **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_OPTION_LIST
+--
+-- select * from mai_metadata.hig_option_list
+-- order by hol_id
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_option_list
 SET TERM OFF
---
--- Columns
--- HOL_ID                         NOT NULL VARCHAR2(10)
---   HOL_PK (Pos 1)
--- HOL_PRODUCT                    NOT NULL VARCHAR2(6)
--- HOL_NAME                       NOT NULL VARCHAR2(30)
--- HOL_REMARKS                    NOT NULL VARCHAR2(2000)
--- HOL_DOMAIN                              VARCHAR2(20)
--- HOL_DATATYPE                   NOT NULL VARCHAR2(8)
--- HOL_MIXED_CASE                 NOT NULL VARCHAR2(1)
--- HOL_USER_OPTION                NOT NULL VARCHAR2(1)
---   HOL_USER_OPTION_CHK
---
---
+
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
        ,HOL_PRODUCT
@@ -11073,6 +11216,28 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'CONINTRM');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'CONSECMODE'
+       ,'MAI'
+       ,'Contractor Security Mode'
+       ,'Set to "U"ser or "A"dmin Unit, to enable Contract Security.'
+       ,'CONTRACT_SECURITY'
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'CONSECMODE');
 --
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
@@ -12229,6 +12394,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'SDOWOLNTH'
+       ,'WMP'
+       ,'SDO Work Order Lines Theme ID'
+       ,'Theme ID of the Work Order Lines SDO layer'
+       ,''
+       ,'NUMBER'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'SDOWOLNTH');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'SH_DTE_REP'
        ,'MAI'
        ,'Show Date Repaired'
@@ -12835,17 +13022,22 @@ SELECT
                    WHERE HOL_ID = 'ZEROPAD');
 --
 --
---********** HIG_OPTION_VALUES **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_OPTION_VALUES
+--
+-- select * from mai_metadata.hig_option_values
+-- order by hov_id
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_option_values
 SET TERM OFF
---
--- Columns
--- HOV_ID                         NOT NULL VARCHAR2(10)
---   HOV_PK (Pos 1)
--- HOV_VALUE                      NOT NULL VARCHAR2(100)
---
---
+
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
@@ -13005,6 +13197,16 @@ SELECT
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'CONINTRM');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'CONSECMODE'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'CONSECMODE');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
@@ -13797,28 +13999,22 @@ SELECT
                    WHERE HOV_ID = 'ZEROPAD');
 --
 --
---********** HIG_STATUS_DOMAINS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_STATUS_DOMAINS
+--
+-- select * from mai_metadata.hig_status_domains
+-- order by hsd_domain_code
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_status_domains
 SET TERM OFF
---
--- Columns
--- HSD_DOMAIN_CODE                NOT NULL VARCHAR2(30)
---   HSD_PK (Pos 1)
--- HSD_PRODUCT                    NOT NULL VARCHAR2(6)
---   HSD_FK_HPR (Pos 1)
--- HSD_DESCRIPTION                NOT NULL VARCHAR2(254)
--- HSD_FEATURE1                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE2                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE3                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE4                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE5                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE6                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE7                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE8                   NOT NULL VARCHAR2(254)
--- HSD_FEATURE9                   NOT NULL VARCHAR2(254)
---
---
+
 INSERT INTO HIG_STATUS_DOMAINS
        (HSD_DOMAIN_CODE
        ,HSD_PRODUCT
@@ -13970,34 +14166,23 @@ SELECT
                    WHERE HSD_DOMAIN_CODE = 'WORK_ORDER_LINES');
 --
 --
---********** HIG_STATUS_CODES **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_STATUS_CODES
+--
+-- select * from mai_metadata.hig_status_codes
+-- order by hsc_domain_code
+--         ,hsc_status_code
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_status_codes
 SET TERM OFF
---
--- Columns
--- HSC_DOMAIN_CODE                NOT NULL VARCHAR2(30)
---   HSC_PK (Pos 1)
---   HSC_UK1 (Pos 1)
---   HSC_FK_HSD (Pos 1)
--- HSC_STATUS_CODE                NOT NULL VARCHAR2(10)
---   HSC_PK (Pos 2)
--- HSC_STATUS_NAME                NOT NULL VARCHAR2(30)
---   HSC_UK1 (Pos 2)
--- HSC_SEQ_NO                     NOT NULL NUMBER(3)
--- HSC_ALLOW_FEATURE1             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE2             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE3             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE4             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE5             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE6             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE7             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE8             NOT NULL VARCHAR2(1)
--- HSC_ALLOW_FEATURE9             NOT NULL VARCHAR2(1)
--- HSC_START_DATE                          DATE
--- HSC_END_DATE                            DATE
---
---
+
 INSERT INTO HIG_STATUS_CODES
        (HSC_DOMAIN_CODE
        ,HSC_STATUS_CODE
@@ -14850,37 +15035,39 @@ SELECT
                     AND  HSC_STATUS_CODE = 'VALUATION');
 --
 --
---********** HIG_USER_OPTION_LIST **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_USER_OPTION_LIST
+--
+-- select * from mai_metadata.hig_user_option_list
+-- order by huol_id
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_user_option_list
 SET TERM OFF
---
--- Columns
--- HUOL_ID                        NOT NULL VARCHAR2(10)
---   HUOL_PK (Pos 1)
--- HUOL_PRODUCT                   NOT NULL VARCHAR2(6)
---   HUOL_HPR_FK (Pos 1)
--- HUOL_NAME                      NOT NULL VARCHAR2(30)
--- HUOL_REMARKS                   NOT NULL VARCHAR2(2000)
--- HUOL_DOMAIN                             VARCHAR2(20)
--- HUOL_DATATYPE                  NOT NULL VARCHAR2(8)
--- HUOL_MIXED_CASE                NOT NULL VARCHAR2(1)
+
 --
 --
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_CHECK_CONSTRAINT_ASSOCS
 --
---********** HIG_CHECK_CONSTRAINT_ASSOCS **********--
+-- select * from mai_metadata.hig_check_constraint_assocs
+-- order by hcca_constraint_name
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT hig_check_constraint_assocs
 SET TERM OFF
---
--- Columns
--- HCCA_CONSTRAINT_NAME           NOT NULL VARCHAR2(30)
---   HCCA_PK (Pos 1)
--- HCCA_TABLE_NAME                NOT NULL VARCHAR2(30)
--- HCCA_NER_APPL                  NOT NULL VARCHAR2(6)
--- HCCA_NER_ID                    NOT NULL NUMBER(4)
---
---
+
 INSERT INTO HIG_CHECK_CONSTRAINT_ASSOCS
        (HCCA_CONSTRAINT_NAME
        ,HCCA_TABLE_NAME
@@ -14895,6 +15082,10 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_CHECK_CONSTRAINT_ASSOCS
                    WHERE HCCA_CONSTRAINT_NAME = 'WOR_PK');
 --
+--
+--
+----------------------------------------------------------------------------------------
+
 --
 COMMIT;
 --
