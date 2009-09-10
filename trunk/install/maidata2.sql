@@ -1,33 +1,32 @@
-/***************************************************************************
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.5   Sep 10 2009 15:48:08   malexander  $
+--       Module Name      : $Workfile:   maidata2.sql  $
+--       Date into PVCS   : $Date:   Sep 10 2009 15:48:08  $
+--       Date fetched Out : $Modtime:   Sep 10 2009 15:40:30  $
+--       Version          : $Revision:   2.5  $
+--       Table Owner      : MAI_METADATA
+--       Generation Date  : 10-SEP-2009 15:40
+--
+--   Product metadata script
+--   As at Release 4.1.0.0
+--
+--   Copyright (c) exor corporation ltd, 2009
+--
+--   TABLES PROCESSED
+--   ================
+--   GRI_MODULES
+--   GRI_PARAMS
+--   GRI_MODULE_PARAMS
+--   GRI_PARAM_DEPENDENCIES
+--   GRI_PARAM_LOOKUP
+--   LOAD_ERRORS
+--
+-----------------------------------------------------------------------------
 
-INFO
-====
-As at Release 4.0.5.0
 
-GENERATION DATE
-===============
-06-AUG-2008 15:28
-
-TABLES PROCESSED
-================
-GRI_MODULES
-GRI_PARAMS
-GRI_MODULE_PARAMS
-GRI_PARAM_DEPENDENCIES
-GRI_PARAM_LOOKUP
-LOAD_ERRORS
-
-TABLE OWNER
-===========
-MAI_METADATA
-
-MODE (A-Append R-Refresh)
-========================
-A
-
-***************************************************************************/
-
-define sccsid = '%W% %G%'
 set define off;
 set feedback off;
 
@@ -35,28 +34,19 @@ set feedback off;
 -- START OF GENERATED METADATA --
 ---------------------------------
 
+
+----------------------------------------------------------------------------------------
+-- GRI_MODULES
 --
---********** GRI_MODULES **********--
+-- select * from mai_metadata.gri_modules
+-- order by grm_module
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT gri_modules
 SET TERM OFF
---
--- Columns
--- GRM_MODULE                     NOT NULL VARCHAR2(30)
---   GRM_PK (Pos 1)
---   GRM_FK_HMO (Pos 1)
--- GRM_MODULE_TYPE                NOT NULL VARCHAR2(3)
--- GRM_MODULE_PATH                NOT NULL VARCHAR2(240)
--- GRM_FILE_TYPE                  NOT NULL VARCHAR2(3)
--- GRM_TAG_FLAG                   NOT NULL VARCHAR2(1)
--- GRM_TAG_TABLE                           VARCHAR2(30)
--- GRM_TAG_COLUMN                          VARCHAR2(30)
--- GRM_TAG_WHERE                           VARCHAR2(2000)
--- GRM_LINESIZE                   NOT NULL NUMBER(4)
--- GRM_PAGESIZE                   NOT NULL NUMBER(4)
--- GRM_PRE_PROCESS                         VARCHAR2(4000)
---
---
+
 INSERT INTO GRI_MODULES
        (GRM_MODULE
        ,GRM_MODULE_TYPE
@@ -3838,26 +3828,22 @@ SELECT
                    WHERE GRM_MODULE = 'MAICRVW');
 --
 --
---********** GRI_PARAMS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- GRI_PARAMS
+--
+-- select * from mai_metadata.gri_params
+-- order by gp_param
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT gri_params
 SET TERM OFF
---
--- Columns
--- GP_PARAM                       NOT NULL VARCHAR2(30)
---   GP_PK (Pos 1)
--- GP_PARAM_TYPE                  NOT NULL VARCHAR2(6)
--- GP_TABLE                                VARCHAR2(80)
--- GP_COLUMN                               VARCHAR2(80)
--- GP_DESCR_COLUMN                         VARCHAR2(80)
--- GP_SHOWN_COLUMN                         VARCHAR2(80)
--- GP_SHOWN_TYPE                           VARCHAR2(6)
--- GP_DESCR_TYPE                           VARCHAR2(6)
--- GP_ORDER                                VARCHAR2(80)
--- GP_CASE                                 VARCHAR2(6)
--- GP_GAZ_RESTRICTION                      VARCHAR2(6)
---
---
+
 INSERT INTO GRI_PARAMS
        (GP_PARAM
        ,GP_PARAM_TYPE
@@ -5931,39 +5917,23 @@ SELECT
                    WHERE GP_PARAM = 'WORK_STATUS');
 --
 --
---********** GRI_MODULE_PARAMS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- GRI_MODULE_PARAMS
+--
+-- select * from mai_metadata.gri_module_params
+-- order by gmp_module
+--         ,gmp_param
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT gri_module_params
 SET TERM OFF
---
--- Columns
--- GMP_MODULE                     NOT NULL VARCHAR2(30)
---   GMP_PK (Pos 1)
---   GMP_FK_GRM (Pos 1)
--- GMP_PARAM                      NOT NULL VARCHAR2(30)
---   GMP_PK (Pos 2)
--- GMP_SEQ                        NOT NULL NUMBER(4)
--- GMP_PARAM_DESCR                NOT NULL VARCHAR2(100)
--- GMP_MANDATORY                  NOT NULL VARCHAR2(1)
--- GMP_NO_ALLOWED                 NOT NULL NUMBER(4)
--- GMP_WHERE                               VARCHAR2(2000)
--- GMP_TAG_RESTRICTION            NOT NULL VARCHAR2(1)
--- GMP_TAG_WHERE                           VARCHAR2(2000)
--- GMP_DEFAULT_TABLE                       VARCHAR2(30)
--- GMP_DEFAULT_COLUMN                      VARCHAR2(80)
--- GMP_DEFAULT_WHERE                       VARCHAR2(2000)
--- GMP_VISIBLE                    NOT NULL VARCHAR2(1)
--- GMP_GAZETTEER                  NOT NULL VARCHAR2(1)
--- GMP_LOV                        NOT NULL VARCHAR2(1)
--- GMP_VAL_GLOBAL                          VARCHAR2(30)
--- GMP_WILDCARD                   NOT NULL VARCHAR2(1)
--- GMP_HINT_TEXT                           VARCHAR2(80)
--- GMP_OPERATOR                            VARCHAR2(5)
--- GMP_BASE_TABLE                          VARCHAR2(30)
--- GMP_BASE_TABLE_COLUMN                   VARCHAR2(30)
--- GMP_ALLOW_PARTIAL                       VARCHAR2(1)
---
---
+
 INSERT INTO GRI_MODULE_PARAMS
        (GMP_MODULE
        ,GMP_PARAM
@@ -6811,7 +6781,7 @@ SELECT
        ,'Inspection Batch Id'
        ,'Y'
        ,1
-       ,'ARE_REPORT_ID IN (SELECT MAX( ARE1.ARE_REPORT_ID ) FROM ACTIVITIES_REPORT ARE1 WHERE ARE1.ARE_BATCH_ID = NVL( :BATCH_ID, ARE1.ARE_BATCH_ID ) GROUP BY ARE1.ARE_BATCH_ID ) ORDER BY TO_NUMBER(ARE_BATCH_ID)'
+       ,'are_report_id IN (SELECT max_are_report_id FROM v_are_batch_grouping are1 WHERE are1.are_batch_id = NVL (:batch_id, are1.are_batch_id)) ORDER BY TO_NUMBER (are_batch_id)'
        ,'N'
        ,''
        ,''
@@ -19204,7 +19174,7 @@ SELECT
        ,'Include Defects due for completion within the next (n) days?'
        ,'N'
        ,1
-       ,''
+       ,'GPL_PARAM = ''NO_ALLOWED'''
        ,'N'
        ,''
        ,''
@@ -19212,7 +19182,7 @@ SELECT
        ,''
        ,'Y'
        ,'N'
-       ,'N'
+       ,'Y'
        ,''
        ,'N'
        ,''
@@ -21193,15 +21163,15 @@ SELECT
        ,'Sample Percentage'
        ,'N'
        ,1
-       ,''
+       ,'GPL_PARAM = ''NO_ALLOWED'''
        ,'N'
        ,''
        ,'GRI_PARAM_LOOKUP'
        ,'GPL_VALUE'
-       ,'GPL_PARAM=''NO_ALLOWED'''
+       ,'GPL_VALUE=''5'' AND GPL_PARAM=''NO_ALLOWED'''
        ,'Y'
        ,'N'
-       ,'N'
+       ,'Y'
        ,''
        ,'N'
        ,''
@@ -32536,20 +32506,24 @@ SELECT
                     AND  GMP_PARAM = 'SYSTEM_PWD');
 --
 --
---********** GRI_PARAM_DEPENDENCIES **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- GRI_PARAM_DEPENDENCIES
+--
+-- select * from mai_metadata.gri_param_dependencies
+-- order by gpd_module
+--         ,gpd_dep_param
+--         ,gpd_indep_param
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT gri_param_dependencies
 SET TERM OFF
---
--- Columns
--- GPD_MODULE                     NOT NULL VARCHAR2(30)
---   GPD_PK (Pos 1)
--- GPD_DEP_PARAM                  NOT NULL VARCHAR2(30)
---   GPD_PK (Pos 2)
--- GPD_INDEP_PARAM                NOT NULL VARCHAR2(30)
---   GPD_PK (Pos 3)
---
---
+
 INSERT INTO GRI_PARAM_DEPENDENCIES
        (GPD_MODULE
        ,GPD_DEP_PARAM
@@ -36023,20 +35997,23 @@ SELECT
                     AND  GPD_INDEP_PARAM = 'TO_DATE');
 --
 --
---********** GRI_PARAM_LOOKUP **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- GRI_PARAM_LOOKUP
+--
+-- select * from mai_metadata.gri_param_lookup
+-- order by gpl_param
+--         ,gpl_value
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT gri_param_lookup
 SET TERM OFF
---
--- Columns
--- GPL_PARAM                      NOT NULL VARCHAR2(30)
---   GPL_PK (Pos 1)
---   GPL_FK_GP (Pos 1)
--- GPL_VALUE                      NOT NULL VARCHAR2(100)
---   GPL_PK (Pos 2)
--- GPL_DESCR                               VARCHAR2(100)
---
---
+
 INSERT INTO GRI_PARAM_LOOKUP
        (GPL_PARAM
        ,GPL_VALUE
@@ -36584,21 +36561,22 @@ SELECT
                     AND  GPL_VALUE = 'U');
 --
 --
---********** LOAD_ERRORS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- LOAD_ERRORS
+--
+-- select * from mai_metadata.load_errors
+-- order by ler_error_no
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT load_errors
 SET TERM OFF
---
--- Columns
--- LER_DESCR                      NOT NULL VARCHAR2(80)
--- LER_ERROR_NO                   NOT NULL NUMBER(4)
---   LER_PK (Pos 1)
--- LER_ACTION_1                            VARCHAR2(80)
--- LER_ACTION_2                            VARCHAR2(80)
--- LER_ACTION_3                            VARCHAR2(80)
--- LER_ACTION_4                            VARCHAR2(80)
---
---
+
 INSERT INTO LOAD_ERRORS
        (LER_DESCR
        ,LER_ERROR_NO
@@ -37913,6 +37891,10 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM LOAD_ERRORS
                    WHERE LER_ERROR_NO = 9706);
 --
+--
+--
+----------------------------------------------------------------------------------------
+
 --
 COMMIT;
 --

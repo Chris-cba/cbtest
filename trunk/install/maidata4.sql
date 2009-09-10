@@ -1,49 +1,31 @@
---
 -----------------------------------------------------------------------------
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.1   Oct 19 2007 13:39:20   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.2   Sep 10 2009 15:48:08   malexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Oct 19 2007 13:39:20  $
---       Date fetched Out : $Modtime:   Oct 19 2007 13:37:50  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Sep 10 2009 15:48:08  $
+--       Date fetched Out : $Modtime:   Sep 10 2009 15:40:34  $
+--       Version          : $Revision:   2.2  $
+--       Table Owner      : MAI_METADATA
+--       Generation Date  : 10-SEP-2009 15:40
 --
 --   Product metadata script
+--   As at Release 4.1.0.0
+--
+--   Copyright (c) exor corporation ltd, 2009
+--
+--   TABLES PROCESSED
+--   ================
+--   COLOUR_LAYER_MAP
+--   NM_INV_DOMAINS_ALL
+--   NM_INV_TYPES_ALL
+--   NM_INV_ATTRI_LOOKUP_ALL
+--   NM_INV_TYPE_ATTRIBS_ALL
+--   INV_TYPE_TRANSLATIONS
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2007
------------------------------------------------------------------------------
---
---
-/***************************************************************************
 
-INFO
-====
-As at Release 4.0.2.0
-
-GENERATION DATE
-===============
-19-OCT-2007 13:37
-
-TABLES PROCESSED
-================
-COLOUR_LAYER_MAP
-NM_INV_DOMAINS_ALL
-NM_INV_TYPES_ALL
-NM_INV_ATTRI_LOOKUP_ALL
-NM_INV_TYPE_ATTRIBS_ALL
-INV_TYPE_TRANSLATIONS
-
-TABLE OWNER
-===========
-MAI_METADATA
-
-MODE (A-Append R-Refresh)
-========================
-A
-
-***************************************************************************/
 
 set define off;
 set feedback off;
@@ -58,21 +40,20 @@ set define on
 -- START OF GENERATED METADATA --
 ---------------------------------
 
+
+----------------------------------------------------------------------------------------
+-- COLOUR_LAYER_MAP
 --
---********** COLOUR_LAYER_MAP **********--
+-- select * from mai_metadata.colour_layer_map
+-- order by com_colour
+--         ,com_layer
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT colour_layer_map
 SET TERM OFF
---
--- Columns
--- COM_COLOUR                     NOT NULL VARCHAR2(30)
---   COM_PK (Pos 1)
--- COM_LAYER                      NOT NULL NUMBER(22)
---   COM_PK (Pos 2)
---   COM_UK (Pos 1)
---   COM_LAYER_MAX
---
---
+
 INSERT INTO COLOUR_LAYER_MAP
        (COM_COLOUR
        ,COM_LAYER
@@ -184,69 +165,39 @@ SELECT
                     AND  COM_LAYER = 10);
 --
 --
---********** NM_INV_DOMAINS_ALL **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_DOMAINS_ALL
+--
+-- select * from mai_metadata.nm_inv_domains_all
+-- order by id_domain
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT nm_inv_domains_all
 SET TERM OFF
---
--- Columns
--- ID_DOMAIN                      NOT NULL VARCHAR2(30)
---   ID_PK (Pos 1)
--- ID_TITLE                       NOT NULL VARCHAR2(80)
--- ID_START_DATE                  NOT NULL DATE
---   ID_START_DATE_TCHK
--- ID_END_DATE                             DATE
---   ID_END_DATE_TCHK
--- ID_DATATYPE                    NOT NULL VARCHAR2(8)
---   ID_DATATYPE_CHK
--- ID_DATE_CREATED                NOT NULL DATE
--- ID_DATE_MODIFIED               NOT NULL DATE
--- ID_MODIFIED_BY                 NOT NULL VARCHAR2(30)
--- ID_CREATED_BY                  NOT NULL VARCHAR2(30)
+
 --
 --
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPES_ALL
 --
---********** NM_INV_TYPES_ALL **********--
+-- select * from mai_metadata.nm_inv_types_all
+-- order by nit_inv_type
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT nm_inv_types_all
 SET TERM OFF
---
--- Columns
--- NIT_INV_TYPE                   NOT NULL VARCHAR2(4)
---   ITY_PK1 (Pos 1)
--- NIT_PNT_OR_CONT                NOT NULL VARCHAR2(1)
--- NIT_X_SECT_ALLOW_FLAG          NOT NULL VARCHAR2(1)
--- NIT_ELEC_DRAIN_CARR            NOT NULL VARCHAR2(1)
--- NIT_CONTIGUOUS                 NOT NULL VARCHAR2(1)
--- NIT_REPLACEABLE                NOT NULL VARCHAR2(1)
--- NIT_EXCLUSIVE                  NOT NULL VARCHAR2(1)
--- NIT_CATEGORY                   NOT NULL VARCHAR2(1)
--- NIT_DESCR                      NOT NULL VARCHAR2(80)
--- NIT_LINEAR                     NOT NULL VARCHAR2(1)
--- NIT_USE_XY                     NOT NULL VARCHAR2(1)
--- NIT_MULTIPLE_ALLOWED           NOT NULL VARCHAR2(1)
--- NIT_END_LOC_ONLY               NOT NULL VARCHAR2(1)
--- NIT_SCREEN_SEQ                          NUMBER(3)
--- NIT_VIEW_NAME                           VARCHAR2(32)
--- NIT_START_DATE                 NOT NULL DATE
--- NIT_END_DATE                            DATE
--- NIT_SHORT_DESCR                         VARCHAR2(30)
--- NIT_FLEX_ITEM_FLAG             NOT NULL VARCHAR2(1)
--- NIT_TABLE_NAME                          VARCHAR2(30)
--- NIT_LR_NE_COLUMN_NAME                   VARCHAR2(30)
--- NIT_LR_ST_CHAIN                         VARCHAR2(30)
--- NIT_LR_END_CHAIN                        VARCHAR2(30)
--- NIT_ADMIN_TYPE                          VARCHAR2(4)
--- NIT_ICON_NAME                           VARCHAR2(30)
--- NIT_TOP                        NOT NULL VARCHAR2(1)
--- NIT_FOREIGN_PK_COLUMN                   VARCHAR2(30)
--- NIT_UPDATE_ALLOWED             NOT NULL VARCHAR2(1)
--- NIT_DATE_CREATED               NOT NULL DATE
--- NIT_DATE_MODIFIED              NOT NULL DATE
--- NIT_MODIFIED_BY                NOT NULL VARCHAR2(30)
--- NIT_CREATED_BY                 NOT NULL VARCHAR2(30)
---
---
+
 INSERT INTO NM_INV_TYPES_ALL
        (NIT_INV_TYPE
        ,NIT_PNT_OR_CONT
@@ -878,95 +829,42 @@ SELECT
                    WHERE NIT_INV_TYPE = 'D_SR');
 --
 --
---********** NM_INV_ATTRI_LOOKUP_ALL **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_ATTRI_LOOKUP_ALL
+--
+-- select * from mai_metadata.nm_inv_attri_lookup_all
+-- order by ial_domain
+--         ,ial_value
+--         ,ial_start_date
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT nm_inv_attri_lookup_all
 SET TERM OFF
---
--- Columns
--- IAL_DOMAIN                     NOT NULL VARCHAR2(30)
---   IAL_PK (Pos 1)
--- IAL_VALUE                      NOT NULL VARCHAR2(30)
---   IAL_STOP_QUOTE_CHK
---   IAL_PK (Pos 2)
--- IAL_DTP_CODE                            VARCHAR2(4)
--- IAL_MEANING                    NOT NULL VARCHAR2(80)
--- IAL_START_DATE                 NOT NULL DATE
---   IAL_START_DATE_TCHK
---   IAL_PK (Pos 3)
--- IAL_END_DATE                            DATE
---   IAL_END_DATE_TCHK
--- IAL_SEQ                        NOT NULL NUMBER(4)
--- IAL_NVA_ID                              VARCHAR2(30)
--- IAL_DATE_CREATED               NOT NULL DATE
--- IAL_DATE_MODIFIED              NOT NULL DATE
--- IAL_MODIFIED_BY                NOT NULL VARCHAR2(30)
--- IAL_CREATED_BY                 NOT NULL VARCHAR2(30)
+
 --
 --
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPE_ATTRIBS_ALL
 --
---********** NM_INV_TYPE_ATTRIBS_ALL **********--
+-- select * from mai_metadata.nm_inv_type_attribs_all
+-- order by ita_inv_type
+--         ,ita_attrib_name
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT nm_inv_type_attribs_all
 SET TERM OFF
---
--- Columns
--- ITA_INV_TYPE                   NOT NULL VARCHAR2(4)
---   ITA_UK_VIEW_ATTRI (Pos 1)
---   ITA_UK_VIEW_COL (Pos 1)
---   ITA_PK1 (Pos 1)
--- ITA_ATTRIB_NAME                NOT NULL VARCHAR2(30)
---   ITA_COL_IIT_PK_MAND_CHK
---   ITA_COL_UPPER_CHK
---   ITA_PK1 (Pos 2)
--- ITA_DYNAMIC_ATTRIB             NOT NULL VARCHAR2(1)
--- ITA_DISP_SEQ_NO                NOT NULL NUMBER(4)
--- ITA_MANDATORY_YN               NOT NULL VARCHAR2(1)
---   ITA_COL_IIT_PK_MAND_CHK
---   ITA_EXCL_MAND_CHECK
--- ITA_FORMAT                     NOT NULL VARCHAR2(10)
---   ITA_EXCL_TYPE_CHK
---   ITA_FORMAT_CHK
--- ITA_FLD_LENGTH                 NOT NULL NUMBER(4)
--- ITA_DEC_PLACES                          NUMBER(1)
--- ITA_SCRN_TEXT                  NOT NULL VARCHAR2(30)
--- ITA_ID_DOMAIN                           VARCHAR2(30)
---   ITA_EXCL_TYPE_CHK
---   ITA_ID_FK (Pos 1)
--- ITA_VALIDATE_YN                NOT NULL VARCHAR2(1)
--- ITA_DTP_CODE                            VARCHAR2(4)
--- ITA_MAX                                 NUMBER(11,3)
--- ITA_MIN                                 NUMBER(11,3)
--- ITA_VIEW_ATTRI                 NOT NULL VARCHAR2(30)
---   ITA_UK_VIEW_ATTRI (Pos 2)
--- ITA_VIEW_COL_NAME              NOT NULL VARCHAR2(30)
---   ITA_UK_VIEW_COL (Pos 2)
--- ITA_START_DATE                 NOT NULL DATE
---   ITA_START_DATE_TCHK
--- ITA_END_DATE                            DATE
---   ITA_END_DATE_TCHK
--- ITA_QUERYABLE                  NOT NULL VARCHAR2(1)
---   AVCON_11542_ITA_Q_000
--- ITA_UKPMS_PARAM_NO                      NUMBER(2)
--- ITA_UNITS                               NUMBER(4)
--- ITA_FORMAT_MASK                         VARCHAR2(80)
--- ITA_EXCLUSIVE                  NOT NULL VARCHAR2(1)
---   AVCON_11542_ITA_E_000
---   ITA_EXCL_MAND_CHECK
---   ITA_EXCL_TYPE_CHK
---   ITA_EXCL_YN_CHK
--- ITA_KEEP_HISTORY_YN            NOT NULL VARCHAR2(1)
---   ITA_HIST_YN_CHK
--- ITA_DATE_CREATED               NOT NULL DATE
--- ITA_DATE_MODIFIED              NOT NULL DATE
--- ITA_MODIFIED_BY                NOT NULL VARCHAR2(30)
--- ITA_CREATED_BY                 NOT NULL VARCHAR2(30)
--- ITA_QUERY                               VARCHAR2(240)
--- ITA_DISPLAYED                  NOT NULL VARCHAR2(1)
---   ITA_DISPLAYED_CHK
--- ITA_DISP_WIDTH                          NUMBER(3)
---
---
+
 INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
        (ITA_INV_TYPE
        ,ITA_ATTRIB_NAME
@@ -4004,139 +3902,23 @@ SELECT
                     AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
 --
 --
---********** INV_TYPE_TRANSLATIONS **********--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- INV_TYPE_TRANSLATIONS
+--
+-- select * from mai_metadata.inv_type_translations
+-- order by ity_inv_code
+--         ,ity_sys_flag
+--
+----------------------------------------------------------------------------------------
+
 SET TERM ON
 PROMPT inv_type_translations
 SET TERM OFF
---
--- Columns
--- ITY_DTP_FLAG                   NOT NULL VARCHAR2(1)
--- ITY_ELEC_DRAIN_CARR            NOT NULL VARCHAR2(1)
--- ITY_INV_CODE                   NOT NULL VARCHAR2(2)
---   ITY_PK (Pos 1)
--- ITY_PNT_OR_CONT                NOT NULL VARCHAR2(1)
--- ITY_SYS_FLAG                   NOT NULL VARCHAR2(1)
---   ITY_PK (Pos 2)
--- ITY_X_SECT_ALLOW_FLAG          NOT NULL VARCHAR2(1)
--- ITY_CONTIGUOUS                          VARCHAR2(1)
--- ITY_DESCR                               VARCHAR2(40)
--- ITY_DUPLICATE                           VARCHAR2(1)
--- ITY_FEA_CODE                            NUMBER(5)
--- ITY_PARENT_ITY                          VARCHAR2(2)
--- ITY_HHPOS1                              VARCHAR2(32)
--- ITY_HHPOS10                             VARCHAR2(32)
--- ITY_HHPOS11                             VARCHAR2(32)
--- ITY_HHPOS12                             VARCHAR2(32)
--- ITY_HHPOS13                             VARCHAR2(32)
--- ITY_HHPOS14                             VARCHAR2(32)
--- ITY_HHPOS15                             VARCHAR2(32)
--- ITY_HHPOS2                              VARCHAR2(32)
--- ITY_HHPOS3                              VARCHAR2(32)
--- ITY_HHPOS4                              VARCHAR2(32)
--- ITY_HHPOS5                              VARCHAR2(32)
--- ITY_HHPOS6                              VARCHAR2(32)
--- ITY_HHPOS7                              VARCHAR2(32)
--- ITY_HHPOS8                              VARCHAR2(32)
--- ITY_HHPOS9                              VARCHAR2(32)
--- ITY_HHSTRLNGTH                          NUMBER(3)
--- ITY_HHSUBLNG1                           NUMBER(3)
--- ITY_HHSUBLNG10                          NUMBER(3)
--- ITY_HHSUBLNG2                           NUMBER(3)
--- ITY_HHSUBLNG3                           NUMBER(3)
--- ITY_HHSUBLNG4                           NUMBER(3)
--- ITY_HHSUBLNG5                           NUMBER(3)
--- ITY_HHSUBLNG6                           NUMBER(3)
--- ITY_HHSUBLNG7                           NUMBER(3)
--- ITY_HHSUBLNG8                           NUMBER(3)
--- ITY_HHSUBLNG9                           NUMBER(3)
--- ITY_HHSUBSTATS                          DATE
--- ITY_HHSUBSTRT1                          NUMBER(3)
--- ITY_HHSUBSTRT10                         NUMBER(3)
--- ITY_HHSUBSTRT2                          NUMBER(3)
--- ITY_HHSUBSTRT3                          NUMBER(3)
--- ITY_HHSUBSTRT4                          NUMBER(3)
--- ITY_HHSUBSTRT5                          NUMBER(3)
--- ITY_HHSUBSTRT6                          NUMBER(3)
--- ITY_HHSUBSTRT7                          NUMBER(3)
--- ITY_HHSUBSTRT8                          NUMBER(3)
--- ITY_HHSUBSTRT9                          NUMBER(3)
--- ITY_MAX_ATTR_REQ                        NUMBER(2)
--- ITY_MIN_ATTR_REQ                        NUMBER(2)
--- ITY_ROAD_CHARACTERISTIC                 VARCHAR2(1)
--- ITY_SCREEN_SEQ                          NUMBER(3)
--- ITY_TOLERANCE                           NUMBER(3)
--- ITY_VIEW_NAME                           VARCHAR2(32)
--- ITY_START_DATE                          DATE
--- ITY_END_DATE                            DATE
--- ITY_CONTIG_JOINS_GAP                    NUMBER(1)
--- ITY_HHPOS16                             VARCHAR2(32)
--- ITY_HHPOS17                             VARCHAR2(32)
--- ITY_HHPOS18                             VARCHAR2(32)
--- ITY_HHPOS19                             VARCHAR2(32)
--- ITY_HHPOS20                             VARCHAR2(32)
--- ITY_HHPOS21                             VARCHAR2(32)
--- ITY_HHPOS22                             VARCHAR2(32)
--- ITY_HHPOS23                             VARCHAR2(32)
--- ITY_HHPOS24                             VARCHAR2(32)
--- ITY_HHPOS25                             VARCHAR2(32)
--- ITY_HHPOS26                             VARCHAR2(32)
--- ITY_HHPOS27                             VARCHAR2(32)
--- ITY_HHPOS28                             VARCHAR2(32)
--- ITY_HHPOS29                             VARCHAR2(32)
--- ITY_HHPOS30                             VARCHAR2(32)
--- ITY_HHPOS31                             VARCHAR2(32)
--- ITY_HHPOS32                             VARCHAR2(32)
--- ITY_HHPOS33                             VARCHAR2(32)
--- ITY_HHPOS34                             VARCHAR2(32)
--- ITY_HHPOS35                             VARCHAR2(32)
--- ITY_HHPOS36                             VARCHAR2(32)
--- ITY_HHPOS37                             VARCHAR2(32)
--- ITY_HHPOS38                             VARCHAR2(32)
--- ITY_HHPOS39                             VARCHAR2(32)
--- ITY_HHPOS40                             VARCHAR2(32)
--- ITY_HHPOS41                             VARCHAR2(32)
--- ITY_HHPOS42                             VARCHAR2(32)
--- ITY_HHPOS43                             VARCHAR2(32)
--- ITY_HHPOS44                             VARCHAR2(32)
--- ITY_HHPOS45                             VARCHAR2(32)
--- ITY_HHPOS46                             VARCHAR2(32)
--- ITY_HHPOS47                             VARCHAR2(32)
--- ITY_HHPOS48                             VARCHAR2(32)
--- ITY_HHPOS49                             VARCHAR2(32)
--- ITY_HHPOS50                             VARCHAR2(32)
--- ITY_HHPOS51                             VARCHAR2(32)
--- ITY_HHPOS52                             VARCHAR2(32)
--- ITY_HHPOS53                             VARCHAR2(32)
--- ITY_HHPOS54                             VARCHAR2(32)
--- ITY_HHPOS55                             VARCHAR2(32)
--- ITY_HHPOS56                             VARCHAR2(32)
--- ITY_HHPOS57                             VARCHAR2(32)
--- ITY_HHPOS58                             VARCHAR2(32)
--- ITY_HHPOS59                             VARCHAR2(32)
--- ITY_HHPOS60                             VARCHAR2(32)
--- ITY_HHPOS61                             VARCHAR2(32)
--- ITY_HHPOS62                             VARCHAR2(32)
--- ITY_HHPOS63                             VARCHAR2(32)
--- ITY_HHPOS64                             VARCHAR2(32)
--- ITY_HHPOS65                             VARCHAR2(32)
--- ITY_HHPOS66                             VARCHAR2(32)
--- ITY_HHPOS67                             VARCHAR2(32)
--- ITY_HHPOS68                             VARCHAR2(32)
--- ITY_HHPOS69                             VARCHAR2(32)
--- ITY_HHPOS70                             VARCHAR2(32)
--- ITY_HHPOS71                             VARCHAR2(32)
--- ITY_HHPOS72                             VARCHAR2(32)
--- ITY_HHPOS73                             VARCHAR2(32)
--- ITY_HHPOS74                             VARCHAR2(32)
--- ITY_HHPOS75                             VARCHAR2(32)
--- ITY_AREA_OR_LENGTH                      VARCHAR2(1)
--- ITY_SURVEY                              VARCHAR2(1)
--- ITY_MULTI_ALLOWED                       VARCHAR2(1)
--- ITY_SHORT_DESCR                         VARCHAR2(20)
--- ITY_INCL_ROAD_SEGS             NOT NULL VARCHAR2(1)
--- NIT_INV_TYPE                            VARCHAR2(4)
---
---
+
 INSERT INTO INV_TYPE_TRANSLATIONS
        (ITY_DTP_FLAG
        ,ITY_ELEC_DRAIN_CARR
@@ -6414,6 +6196,10 @@ SELECT
                    WHERE ITY_INV_CODE = 'SR'
                     AND  ITY_SYS_FLAG = 'D');
 --
+--
+--
+----------------------------------------------------------------------------------------
+
 --
 COMMIT;
 --
