@@ -65,7 +65,11 @@ begin
     higgrirp.write_gri_spool(&1,l_error);
     dbms_output.put_line('Error: '||l_error);
   end if;
-
+Exception
+   When Others 
+   THEN
+       higgrirp.write_gri_spool(&1,'Error '||Sqlerrm);
+       dbms_output.put_line('Error: '||l_error); 
 end;
 /
 set define on
