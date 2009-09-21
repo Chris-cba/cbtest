@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.1   Sep 10 2009 15:48:08   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.2   Sep 21 2009 16:49:04   gjohnson  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   Sep 10 2009 15:48:08  $
---       Date fetched Out : $Modtime:   Sep 10 2009 15:40:30  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Sep 21 2009 16:49:04  $
+--       Date fetched Out : $Modtime:   Sep 21 2009 16:38:22  $
+--       Version          : $Revision:   2.2  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 10-SEP-2009 15:40
+--       Generation Date  : 21-SEP-2009 16:38
 --
 --   Product metadata script
 --   As at Release 4.1.0.0
@@ -5248,17 +5248,6 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM DOC_GATE_SYNS
                    WHERE DGS_DGT_TABLE_NAME = 'DEFECTS'
                     AND  DGS_TABLE_SYN = 'V_MAI3806_DEF');
---
-INSERT INTO DOC_GATE_SYNS
-       (DGS_DGT_TABLE_NAME
-       ,DGS_TABLE_SYN
-       )
-SELECT 
-        'DEF_REP_TREAT'
-       ,'DEFECTS' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM DOC_GATE_SYNS
-                   WHERE DGS_DGT_TABLE_NAME = 'DEF_REP_TREAT'
-                    AND  DGS_TABLE_SYN = 'DEFECTS');
 --
 INSERT INTO DOC_GATE_SYNS
        (DGS_DGT_TABLE_NAME

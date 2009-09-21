@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.0   Jul 17 2009 18:16:00   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.1   Sep 21 2009 16:49:04   gjohnson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jul 17 2009 18:16:00  $
---       Date fetched Out : $Modtime:   Jul 17 2009 18:12:24  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 21 2009 16:49:04  $
+--       Date fetched Out : $Modtime:   Sep 21 2009 16:45:08  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -298,6 +298,174 @@ SELECT 'CONTRACTOR_USER_SEC'
                      AND hco_code = 'N')
 /
 
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Incorrect module data for certain reports
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED PROBLEM MANAGER LOG#
+-- 718987  Exor Corporation Ltd
+-- 
+-- ASSOCIATED DEVELOPMENT TASK
+-- 107382
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (ROB MAY)
+-- If fresh install of mai 4.0.4.0 then hig modules data incorrect for certain reports.   The 'use GRI' flag is set to N for the following reports, which causes an error when they are run.  Have checked maidata1 and it is an issue with the script itself.
+-- 
+------------------------------------------------------------------
+
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI3946'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5065'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5200'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5205'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5210'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5215'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5220'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5225'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5235'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI5240'
+/
+UPDATE hig_modules
+SET hmo_use_gri = 'Y'
+WHERE hmo_module = 'MAI9020'
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Extra financial years data
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED PROBLEM MANAGER LOG#
+-- 715810  Exor Corporation Ltd
+-- 
+-- ASSOCIATED DEVELOPMENT TASK
+-- 107330
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (ROB MAY)
+-- Populate additional FINANCIAL_YEARS data, up to the year 2015, so that exor consultants no longer have to do this manually.
+-- 
+------------------------------------------------------------------
+
+DECLARE
+  
+  l_fyr_id           financial_years.fyr_id%TYPE;
+  l_start_date       financial_years.fyr_start_date%TYPE;
+  l_end_date         financial_years.fyr_end_date%TYPE;
+  l_terminating_date financial_years.fyr_id%TYPE := '2015';
+  
+BEGIN
+  
+  SELECT fyr_id
+        ,fyr_start_date
+        ,fyr_end_date
+  INTO   l_fyr_id
+        ,l_start_date
+        ,l_end_date
+  FROM   financial_years
+  WHERE  fyr_id = (SELECT MAX(fyr_id)
+                   FROM financial_years);
+  
+  /* Check if financial year is in the format "2XXX" and existing maximum financial year pre-dates 2015 */   
+    
+  IF SUBSTR(l_fyr_id,1,1) = 2 
+  AND length(l_fyr_id) = 4
+  AND  l_fyr_id < l_terminating_date THEN
+     LOOP     
+  
+       l_start_date := add_months(l_start_date,12);
+       l_end_date   := add_months(l_end_date,12);
+       l_fyr_id     := l_fyr_id + 1;
+    
+       INSERT INTO financial_years 
+                   (fyr_id
+                   ,fyr_start_date
+                   ,fyr_end_date)
+       VALUES (l_fyr_id
+             ,l_start_date
+             ,l_end_date);
+    
+       EXIT WHEN l_fyr_id = l_terminating_date; -- '2015'; 
+     END LOOP;
+  END IF;
+  
+END;
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Remove DOC_GATE_SYNS record
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 102117
+-- 
+-- TASK DETAILS
+-- When adding an associated document to a defect using the defect screen in MAI3808, the resulting doc_assocs record is:
+-- 
+-- Das_table_name           das_rec_id        das_doc_id
+-- DEF_REP_TREAT         361522              255801
+-- 
+-- This is incorrect, the DAS_TABLE_NAME should be DEFECTS
+-- 
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (GRAEME JOHNSON)
+-- When creating a doc_assoc from MAI3808 the incorrect table name is being identified for the association.
+-- This is due to an entry in DOC_GATE_SYNS which is now removed.
+-- 
+------------------------------------------------------------------
+delete from doc_gate_syns
+where dgs_dgt_table_name = 'DEF_REP_TREAT'
+and dgs_table_syn = 'DEFECTS'
+/
 ------------------------------------------------------------------
 
 
