@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.6   Sep 03 2009 11:34:00   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.7   Sep 23 2009 14:42:46   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Sep 03 2009 11:34:00  $
---       Date fetched Out : $Modtime:   Sep 03 2009 11:29:44  $
---       Version          : $Revision:   1.6  $
+--       Date into PVCS   : $Date:   Sep 23 2009 14:42:46  $
+--       Date fetched Out : $Modtime:   Sep 23 2009 14:39:56  $
+--       Version          : $Revision:   1.7  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -233,6 +233,92 @@ MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
 
 ALTER TABLE IFF_SECT_STACK
 MODIFY(ISS_RSE_DESCR VARCHAR2(240));
+
+DECLARE
+  --
+  lt_users nm3type.tab_varchar30;
+  --
+  PROCEDURE get_users
+    IS
+  BEGIN
+    SELECT hus_username
+      BULK COLLECT
+      INTO lt_users
+      FROM hig_users
+          ,dba_users
+     WHERE account_status = 'OPEN'
+       AND username = hus_username
+       AND hus_is_hig_owner_flag != 'Y'
+         ;
+  END get_users;
+  --
+  PROCEDURE alter_user_tables(pi_username IN VARCHAR2)
+    IS
+    --
+    lt_tables nm3type.tab_varchar32767;
+    --
+  BEGIN
+    /*
+    ||Get The Alter Table Statements That Need To Be Run For The Given User.
+    */
+    SELECT CASE WHEN table_name = 'HHINV_LOAD_1'
+                THEN
+                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_1 MODIFY(REC_SEQ_NO NUMBER(38,0))'
+                   --
+                WHEN table_name = 'HHINV_HOLD_1'
+                THEN
+                   'ALTER TABLE '||pi_username||'.HHINV_HOLD_1 MODIFY(REC_SEQ_NO NUMBER(38,0))'
+                   --
+                WHEN table_name = 'HHINV_LOAD_2'
+                THEN
+                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_2 MODIFY(HE_ID NUMBER(38,0),REC_SEQ_NO NUMBER(38,0),SECT_HDR_SEQ_NO NUMBER(38,0))'
+                   --
+                WHEN table_name = 'HHINV_LOAD_3'
+                THEN
+                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_3 MODIFY(HE_ID NUMBER(38,0),REC_SEQ_NO NUMBER(38,0))'
+                   --
+                WHEN table_name = 'TEMP_LOAD_2'
+                THEN
+                   'ALTER TABLE '||pi_username||'.TEMP_LOAD_2 MODIFY(HE_ID NUMBER(38,0))'
+                   --
+                ELSE NULL
+           END alter_table
+      BULK COLLECT
+      INTO lt_tables
+      FROM dba_tables
+     WHERE owner = pi_username
+         ;
+    /*
+    ||Run The Statements.
+    */
+    FOR i IN 1..lt_tables.count LOOP
+      IF lt_tables(i) IS NOT NULL
+       THEN
+          EXECUTE IMMEDIATE lt_tables(i);
+      END IF;
+    END LOOP;
+    --
+  END alter_user_tables;
+  --
+BEGIN
+  /*
+  ||Get The Users That May Need Updated Versions Of The Load Tables.
+  */
+  get_users;
+  /*
+  ||Loop Through The Identified Users.
+  */
+  FOR i IN 1..lt_users.count LOOP
+    /*
+    ||Update The Users Tables.
+    */
+    alter_user_tables(pi_username => lt_users(i));
+    --
+  END LOOP;
+  --
+END;
+/
+
 ------------------------------------------------------------------
 
 
@@ -327,11 +413,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.6   Sep 03 2009 11:34:00   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.7   Sep 23 2009 14:42:46   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Sep 03 2009 11:34:00  $
---       Date fetched Out : $Modtime:   Sep 03 2009 11:29:44  $
---       SCCS Version     : $Revision:   1.6  $
+--       Date into SCCS   : $Date:   Sep 23 2009 14:42:46  $
+--       Date fetched Out : $Modtime:   Sep 23 2009 14:39:56  $
+--       SCCS Version     : $Revision:   1.7  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
