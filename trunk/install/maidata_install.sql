@@ -1,5 +1,5 @@
 REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.0   Jun 13 2007 16:32:38   smarshall  $
+REM @(#)$Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.1   Sep 25 2009 10:48:14   malexander  $
 
 set echo off
 set linesize 120
@@ -29,6 +29,29 @@ END;
 BEGIN
   nm_debug.debug_off;
 END;
+/
+--
+--
+---------------------------------------------------------------
+--Strip out application metadata
+-- Some application metadata was previously installed with Core
+-- Metadata will be installed correctly with data files
+---------------------------------------------------------------
+--
+SET TERM ON
+Prompt removing application metadata ...
+SET TERM OFF
+SET DEFINE ON
+select 'delete  from hig_standard_favourites where (substr(hstf_parent,1,3) '||
+        'like ''MAI%'' OR hstf_child = ''MAI'')' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+--
+Commit;
 /
 --
 --
