@@ -1,6 +1,20 @@
-REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.1   Sep 25 2009 10:48:14   malexander  $
-
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.2   Sep 25 2009 11:21:44   malexander  $
+--       Module Name      : $Workfile:   maidata_install.sql  $
+--       Date into PVCS   : $Date:   Sep 25 2009 11:21:44  $
+--       Date fetched Out : $Modtime:   Sep 25 2009 11:21:32  $
+--       Version          : $Revision:   2.2  $
+--
+--   Product upgrade script
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--
 set echo off
 set linesize 120
 set heading off
