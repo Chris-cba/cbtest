@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.2   Sep 25 2009 11:21:44   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.3   Sep 25 2009 14:00:58   malexander  $
 --       Module Name      : $Workfile:   maidata_install.sql  $
---       Date into PVCS   : $Date:   Sep 25 2009 11:21:44  $
---       Date fetched Out : $Modtime:   Sep 25 2009 11:21:32  $
---       Version          : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Sep 25 2009 14:00:58  $
+--       Date fetched Out : $Modtime:   Sep 25 2009 14:00:32  $
+--       Version          : $Revision:   2.3  $
 --
 --   Product upgrade script
 --
@@ -56,15 +56,7 @@ SET TERM ON
 Prompt removing application metadata ...
 SET TERM OFF
 SET DEFINE ON
-select 'delete  from hig_standard_favourites where (substr(hstf_parent,1,3) '||
-        'like ''MAI%'' OR hstf_child = ''MAI'')' run_file
-from dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
---
+delete  from hig_standard_favourites where (substr(hstf_parent,1,3) like 'MAI%' OR hstf_child = 'MAI');
 Commit;
 /
 --
