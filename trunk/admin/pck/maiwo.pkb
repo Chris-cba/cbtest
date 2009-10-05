@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.2   May 28 2009 17:51:34   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.3   Oct 05 2009 13:50:24   lsorathia  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   May 28 2009 17:51:34  $
---       Date fetched Out : $Modtime:   May 28 2009 16:14:38  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Oct 05 2009 13:50:24  $
+--       Date fetched Out : $Modtime:   Oct 05 2009 13:38:50  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -15,6 +15,12 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2002
 -----------------------------------------------------------------------------
+
+--g_body_sccsid is the SCCS ID for the package body
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.3  $';
+
+  g_package_name CONSTANT varchar2(30) := 'nm3glob_au_inv_array';
+
   cursor get_top_id(p_boq_item in boq_items.boq_id%type) is
   select boq_id
   from   boq_items boq
@@ -27,6 +33,11 @@ CREATE OR REPLACE package body maiwo is
   begin
      return g_sccsid;
   end;
+
+  FUNCTION get_body_version RETURN varchar2 IS
+  BEGIN
+    RETURN g_body_sccsid;
+  END get_body_version;
 
 
   -- get the computation method for a boq item
@@ -123,7 +134,22 @@ CREATE OR REPLACE package body maiwo is
       from   contractor_disc_bands
       where  p_cost between cnb_min_value and cnb_max_value
       and    cnb_cng_disc_group = p_cng_disc_group;
-
+     
+     --
+     -- TASK 0108061 LS 01/10/09
+     -- Apply accumulative discount if the Discount band is Accumulative
+     --
+     CURSOR c_acc_disc
+     IS
+     SELECT 'x'
+     FROM   contractor_disc_groups
+     WHERE  cng_disc_group = p_cng_disc_group
+     AND    Nvl(cng_accumulative_disc,'N') = 'Y';
+     l_acc_flag  Varchar2(1);
+     l_cost      Number := p_cost ;
+     l_acc_disc  Number := 0 ; 
+     l_cnt       Number := 0 ;
+     --     
   begin
 
     if nvl(p_cost,0) = 0 then
@@ -133,17 +159,47 @@ CREATE OR REPLACE package body maiwo is
       return 0;
 
     else
+        --
+        -- TASK 0108061
+        OPEN  c_acc_disc;
+        FETCH c_acc_disc INTO l_acc_flag  ;
+        IF c_acc_disc%FOUND
+        THEN
+            CLOSE c_acc_disc;            
+            FOR i IN (SELECT   * 
+                      FROM     contractor_disc_bands 
+                      WHERE    cnb_cng_disc_group = p_cng_disc_group
+                      ORDER BY cnb_min_value)
+            LOOP
+                l_cnt := l_cnt + 1 ; 
+                l_cost := l_cost - (i.cnb_max_value -i.cnb_min_value) ;
+                IF l_cost <= 0
+                THEN
+                    IF l_cnt = 1
+                    THEN
+                        l_acc_disc := l_acc_disc +  round(p_cost * -1 * ( nvl(i.cnb_discount,0)/100 ), 2);
+                    ELSE
+                        l_cost := l_cost + (i.cnb_max_value -i.cnb_min_value); 
+                        l_acc_disc := l_acc_disc +  round(l_cost * -1 * ( nvl(i.cnb_discount,0)/100 ), 2);
+                    END IF ;                            
+                    Exit;
+                ELSE
+                    l_acc_disc := l_acc_disc +  round((i.cnb_max_value -i.cnb_min_value) * -1 * ( nvl(i.cnb_discount,0)/100 ), 2);
+                END IF ;
+            END LOOP;
+            Return l_acc_disc ;           
+        ELSE
+        --
+            CLOSE c_acc_disc;
+            -- need to select discount according to org_id and value
+            open c1;
+            fetch c1 into l_discount;
+            close c1;
 
-      -- need to select discount according to org_id and value
-      open c1;
-      fetch c1 into l_discount;
-      close c1;
-
-      -- apply discount to get a negative balance
-      return round(p_cost * -1 * ( nvl(l_discount,0)/100 ), 2);
-
+            -- apply discount to get a negative balance
+            return round(p_cost * -1 * ( nvl(l_discount,0)/100 ), 2);
+        END IF ;
     end if;
-
   end;
 
 
@@ -1894,6 +1950,27 @@ BEGIN
 END get_wol;
 --
 ---------------------------------------------------------------------------------------------------
+--
+FUNCTION get_acc_discount(pi_disc_group contractor_disc_groups.cng_disc_group%TYPE) 
+Return Varchar2
+IS
+--
+   CURSOR c_get_disc_type
+   IS
+   SELECT Nvl(cng_accumulative_disc,'N')
+   FROM   contractor_disc_groups
+   WHERE  cng_disc_group = pi_disc_group;
+   l_disc_type contractor_disc_groups.cng_accumulative_disc%TYPE;
+--
+BEGIN
+--
+   OPEN  c_get_disc_type;
+   FETCH c_get_disc_type INTO l_disc_type ;
+   CLOSE c_get_disc_type;
+   
+   RETURN l_disc_type;
+--
+END get_acc_discount;
 --
 end maiwo;
 /
