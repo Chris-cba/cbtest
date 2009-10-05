@@ -4,11 +4,11 @@ CREATE OR REPLACE package maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.1   Oct 05 2009 13:50:26   lsorathia  $
 --       Module Name      : $Workfile:   maiwo.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Oct 05 2009 13:50:26  $
+--       Date fetched Out : $Modtime:   Oct 05 2009 13:38:56  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.5
 --
 -----------------------------------------------------------------------------
@@ -18,7 +18,8 @@ CREATE OR REPLACE package maiwo is
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
+    --g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
+    g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   2.1  $';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -27,6 +28,13 @@ CREATE OR REPLACE package maiwo is
 --
    function get_version return varchar2;
 --</PROC>
+------------------------------------------------------------------------------
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+
 -------------------------------------------------------------------------------
 --<PROC NAME="get_perc_item_comp">
 --
@@ -255,6 +263,12 @@ FUNCTION get_wo(pi_wor_works_order_no  IN work_orders.wor_works_order_no%TYPE
 FUNCTION get_wol(pi_wol_id            IN work_order_lines.wol_id%TYPE
                 ,pi_raise_not_found   IN BOOLEAN     DEFAULT TRUE
                 ,pi_not_found_sqlcode IN PLS_INTEGER DEFAULT -20000) RETURN work_order_lines%ROWTYPE;
+--</PROC>
+--
+--<PROC NAME="get_discount_type">
+--
+FUNCTION get_acc_discount(pi_disc_group contractor_disc_groups.cng_disc_group%TYPE) 
+Return Varchar2;
 --</PROC>
 --
 end maiwo;
