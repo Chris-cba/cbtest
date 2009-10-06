@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.3   Oct 05 2009 13:50:24   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.4   Oct 06 2009 09:21:38   lsorathia  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Oct 05 2009 13:50:24  $
---       Date fetched Out : $Modtime:   Oct 05 2009 13:38:50  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Oct 06 2009 09:21:38  $
+--       Date fetched Out : $Modtime:   Oct 06 2009 09:20:38  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,9 +17,9 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.3  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.4  $';
 
-  g_package_name CONSTANT varchar2(30) := 'nm3glob_au_inv_array';
+  g_package_name CONSTANT varchar2(30) := 'maiwo';
 
   cursor get_top_id(p_boq_item in boq_items.boq_id%type) is
   select boq_id
