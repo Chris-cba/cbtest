@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.7   Jul 30 2009 18:59:22   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.8   Oct 07 2009 18:04:26   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jul 30 2009 18:59:22  $
---       Date fetched Out : $Modtime:   Jul 30 2009 18:56:22  $
---       SCCS Version     : $Revision:   2.7  $
+--       Date into SCCS   : $Date:   Oct 07 2009 18:04:26  $
+--       Date fetched Out : $Modtime:   Oct 07 2009 11:14:56  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.7  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.8  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -2003,31 +2003,35 @@ FUNCTION create_defect(pi_insp_rec           IN activities_report%ROWTYPE
                       ,pi_repair_tab         IN rep_tab
                       ,pi_boq_tab            IN boq_tab) RETURN NUMBER IS
   --
-  lv_repsetperd   hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
-  lv_usedefchnd   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHND');
-  lv_usetremodd   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
-  lv_repsetperl   hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERL');
-  lv_usedefchnl   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHNL');
-  lv_usetremodl   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
-  lv_tremodlev    hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
-  lv_insp_init    hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_INIT'),'DUM');
-  lv_insp_sdf     hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_SDF'),'D');
-  lv_siss         hig_options.hop_value%TYPE := NVL(hig.get_sysopt('DEF_SISS'),'ALL');
-  lv_locdefboqs   hig_options.hop_value%TYPE := hig.get_user_or_sys_opt('LOCDEFBOQS');
-  lv_insp_id      activities_report.are_report_id%TYPE;
-  lv_defect_id    defects.def_defect_id%TYPE;
-  lv_action_cat   repairs.rep_action_cat%TYPE;
-  lv_entity_type  VARCHAR2(10);
-  lv_date_due     repairs.rep_date_due%TYPE;
-  lv_sys_flag     road_segs.rse_sys_flag%TYPE;
-  lv_admin_unit   hig_admin_units.hau_admin_unit%TYPE;
-  lv_def_status   hig_status_codes.hsc_status_code%type;
-  lv_boqs_created NUMBER;
-  lv_dummy        NUMBER;
-  lr_defect_rec   defects%ROWTYPE;
-  lr_repair_rec   repairs%ROWTYPE;
-  lt_boq_tab      boq_tab;
-  i               NUMBER;
+  lv_repsetperd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
+  lv_usedefchnd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHND');
+  lv_usetremodd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
+  lv_repsetperl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERL');
+  lv_usedefchnl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHNL');
+  lv_usetremodl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
+  lv_tremodlev      hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
+  lv_insp_init      hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_INIT'),'DUM');
+  lv_insp_sdf       hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_SDF'),'D');
+  lv_siss           hig_options.hop_value%TYPE := NVL(hig.get_sysopt('DEF_SISS'),'ALL');
+  lv_locdefboqs     hig_options.hop_value%TYPE := hig.get_user_or_sys_opt('LOCDEFBOQS');
+  lv_insp_id        activities_report.are_report_id%TYPE;
+  lv_defect_id      defects.def_defect_id%TYPE;
+  lv_action_cat     repairs.rep_action_cat%TYPE;
+  lv_entity_type    VARCHAR2(10);
+  lv_date_due       repairs.rep_date_due%TYPE;
+  lv_sys_flag       road_segs.rse_sys_flag%TYPE;
+  lv_admin_unit     hig_admin_units.hau_admin_unit%TYPE;
+  lv_def_status     hig_status_codes.hsc_status_code%type;
+  lv_boqs_created   NUMBER;
+  lv_dummy          NUMBER;
+  --
+  lr_defect_rec     defects%ROWTYPE;
+  lr_repair_rec     repairs%ROWTYPE;
+  --
+  lt_boq_tab        boq_tab;
+  lt_empty_boq_tab  boq_tab;
+  --
+  insert_error  EXCEPTION;
   --
   CURSOR get_sys_flag(cp_he_id road_segs.rse_he_id%TYPE)
       IS
@@ -2125,17 +2129,17 @@ BEGIN
   --
   -- Create Repair.
   --
-  lv_entity_type := 'Repair';
-  --
   FOR i IN 1..pi_repair_tab.COUNT LOOP
+    --
+    lv_entity_type := 'Repair';
     --
     lr_repair_rec := pi_repair_tab(i);
     --
-    IF ((lv_sys_flag = 'D' and lv_repsetperd = 'Y') OR
-        (lv_sys_flag = 'L' and lv_repsetperl = 'Y')) AND
-       lr_repair_rec.rep_action_cat = 'P' AND
-       lr_defect_rec.def_orig_priority = '1' AND
-     pi_repair_tab.COUNT = 1  -- ie. No Other Repairs To Be Created.
+    IF ((lv_sys_flag = 'D' and lv_repsetperd = 'Y')
+        OR (lv_sys_flag = 'L' and lv_repsetperl = 'Y'))
+     AND lr_repair_rec.rep_action_cat = 'P'
+     AND lr_defect_rec.def_orig_priority = '1'
+     AND pi_repair_tab.COUNT = 1  -- ie. No Other Repairs To Be Created.
      THEN
        lv_action_cat := 'T';
     ELSE
@@ -2161,40 +2165,114 @@ BEGIN
             hig.raise_ner(nm3type.c_mai,906); --Cannot Find Due Date From Interval
         END IF;
     END IF;
-    --
-    lv_dummy := mai.create_repair(lv_defect_id
-                                 ,lr_repair_rec.rep_action_cat
-                                 ,pi_insp_rec.are_rse_he_id
-                                 ,lr_repair_rec.rep_tre_treat_code
-                                 ,lr_defect_rec.def_atv_acty_area_code
-                                 ,lv_date_due
-                                 ,lr_repair_rec.rep_descr
-                                 ,lv_date_due
-                                 ,'');
+    /*
+    ||Local Copy Of mai.create_repair That Populates
+    ||The Completed Date and Time For Immediate Repairs.
+    */
+    BEGIN
+      --
+      INSERT
+        INTO repairs
+            (rep_def_defect_id
+            ,rep_action_cat
+            ,rep_rse_he_id
+            ,rep_tre_treat_code
+            ,rep_atv_acty_area_code
+            ,rep_created_date
+            ,rep_date_due
+            ,rep_last_updated_date
+            ,rep_superseded_flag
+            ,rep_completed_hrs
+            ,rep_completed_mins
+            ,rep_date_completed
+            ,rep_descr
+            ,rep_local_date_due
+            ,rep_old_due_date)
+      VALUES(lv_defect_id
+            ,lr_repair_rec.rep_action_cat
+            ,pi_insp_rec.are_rse_he_id
+            ,lr_repair_rec.rep_tre_treat_code
+            ,lr_defect_rec.def_atv_acty_area_code
+            ,SYSDATE
+            ,lv_date_due
+            ,SYSDATE
+            ,'N'
+            ,lr_repair_rec.rep_completed_hrs
+            ,lr_repair_rec.rep_completed_mins
+            ,lr_repair_rec.rep_date_completed
+            ,lr_repair_rec.rep_descr
+            ,lv_date_due
+            ,NULL)
+            ;
+      --
+      IF SQL%rowcount != 1
+       THEN
+          RAISE insert_error;
+      END IF;
+      --
+    EXCEPTION
+      WHEN insert_error
+       THEN
+          RAISE_APPLICATION_ERROR(-20001, 'Error occured while creating Repair');
+      WHEN others
+       THEN
+          RAISE;
+    END;
     --
     -- Create BOQs.
     --
     IF pi_boq_tab.count > 0
      THEN
         --
-        lt_boq_tab := pi_boq_tab;
+        lv_entity_type := 'BOQ';
+        /*
+        ||Clear the BOQ PLSQL Table used for the insert.
+        */
+        lt_boq_tab := lt_empty_boq_tab;
         --
-        FOR i IN 1..lt_boq_tab.COUNT LOOP
-          --
-          lt_boq_tab(i).boq_work_flag      := 'D';
-          lt_boq_tab(i).boq_defect_id      := lv_defect_id;
-          lt_boq_tab(i).boq_rep_action_cat := lr_repair_rec.rep_action_cat;
-          lt_boq_tab(i).boq_wol_id         := 0;
-          lt_boq_tab(i).boq_date_created   := sysdate;
-          --
-          SELECT boq_id_seq.nextval
-            INTO lt_boq_tab(i).boq_id
-            FROM dual
-               ;
-          --
+        FOR i IN 1..pi_boq_tab.COUNT LOOP
+          /*
+          ||Process BOQs That Are Explicitly Linked To
+          ||The Repair Being Processed.
+          ||
+          ||If A BOQ Has Been Passed In With No Repair Action
+          ||Category Assigned (boq_rep_action_cat) Assume It
+          ||Is To Be Added To Each Repair Created.
+          */
+          IF NVL(pi_boq_tab(i).boq_rep_action_cat,lr_repair_rec.rep_action_cat) = lr_repair_rec.rep_action_cat
+           THEN
+              /*
+              ||If BOQ Is relevent to the current Repair
+              ||Add it to the list for insertion.
+              */
+              lt_boq_tab(lt_boq_tab.count+1) := pi_boq_tab(i);
+              /*
+              ||Add some default values.
+              */
+              lt_boq_tab(lt_boq_tab.count).boq_work_flag      := 'D';
+              lt_boq_tab(lt_boq_tab.count).boq_defect_id      := lv_defect_id;
+              lt_boq_tab(lt_boq_tab.count).boq_wol_id         := 0;
+              lt_boq_tab(lt_boq_tab.count).boq_date_created   := sysdate;
+              /*
+              ||If this BOQ is being added because it is
+              ||generic associate it with the current Repair.
+              */
+              IF lt_boq_tab(lt_boq_tab.count).boq_rep_action_cat IS NULL
+               THEN
+                  lt_boq_tab(lt_boq_tab.count).boq_rep_action_cat := lr_repair_rec.rep_action_cat;
+              END IF;
+              --
+              SELECT boq_id_seq.nextval
+                INTO lt_boq_tab(lt_boq_tab.count).boq_id
+                FROM dual
+                   ;
+              --
+          END IF;
         END LOOP;
-        --
-        FORALL i IN 1 .. lt_boq_tab.COUNT
+        /*
+        ||Insert The BOQs for the current Repair.
+        */
+        FORALL i IN 1..lt_boq_tab.COUNT
           INSERT
             INTO boq_items
           VALUES lt_boq_tab(i)
@@ -2395,16 +2473,15 @@ BEGIN
   SELECT def_defect_id
         ,def_iit_item_id
         ,def_ity_inv_code
-        ,rep_date_due
+        ,(SELECT MIN(rep_date_due)
+            FROM repairs
+           WHERE rep_def_defect_id = def_defect_id) rep_date_due
     BULK COLLECT
     INTO lt_def_inv_tab
-    FROM repairs
-        ,defects
+    FROM defects
         ,activities_report
    WHERE are_batch_id = pi_batch_id
      AND are_report_id = def_are_report_id
-     AND def_defect_id = rep_def_defect_id
-     AND rep_action_cat = 'P'
        ;
   --
   FOR i IN 1 .. lt_def_inv_tab.count LOOP
@@ -2457,16 +2534,15 @@ BEGIN
         ,def_rse_he_id
         ,def_easting
         ,def_northing
-        ,rep_date_due
+        ,(SELECT MIN(rep_date_due)
+            FROM repairs
+           WHERE rep_def_defect_id = def_defect_id) rep_date_due
     BULK COLLECT
     INTO lt_def_tab
-    FROM repairs
-        ,defects
+    FROM defects
         ,activities_report
    WHERE are_batch_id   = pi_batch_id
      AND are_report_id  = def_are_report_id
-     AND def_defect_id  = rep_def_defect_id
-     AND rep_action_cat = 'P'
        ;
   --
   FOR i IN 1 .. lt_def_tab.count LOOP
