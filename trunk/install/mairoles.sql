@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------
 --
---   SCCS Identifiers :-
+--   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mairoles.sql-arc   2.0   Jun 13 2007 16:32:40   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mairoles.sql-arc   2.1   Oct 08 2009 17:35:50   malexander  $
 --       Module Name      : $Workfile:   mairoles.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:40  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Oct 08 2009 17:35:50  $
+--       Date fetched Out : $Modtime:   Oct 08 2009 17:34:48  $
+--       PVCS Version     : $Revision:   2.1  $
 --       based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,20 @@ rem	Create a role for granting to the maintenance manager administrator.
 set feedback off
 
 PROMPT CREATE ROLE MAI_ADMIN;
-CREATE ROLE MAI_ADMIN;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE MAI_ADMIN';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
+
 BEGIN
    EXECUTE IMMEDIATE 'grant mai_admin to '||USER;
    EXECUTE IMMEDIATE 'grant mai_admin to '||USER||' with admin option';
@@ -57,7 +70,20 @@ rem --------------------------------------------------------------------------
 rem	Create a role for granting to users who need update privileges.
 
 PROMPT CREATE ROLE MAI_USER;
-CREATE ROLE MAI_USER;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE MAI_USER';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
+
 BEGIN
    EXECUTE IMMEDIATE 'grant mai_user to '||USER;
    EXECUTE IMMEDIATE 'grant mai_user to '||USER||' with admin option';
@@ -80,7 +106,20 @@ rem --------------------------------------------------------------------------
 rem	Create a role for granting to readonly users.
 
 PROMPT CREATE ROLE MAI_READONLY;
-CREATE ROLE MAI_READONLY;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE MAI_READONLY';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
+
 BEGIN
    EXECUTE IMMEDIATE 'grant mai_readonly to '||USER;
    EXECUTE IMMEDIATE 'grant mai_readonly to '||USER||' with admin option';
@@ -129,13 +168,37 @@ rem --------------------------------------------------------------------------
 rem     Create a role for granting to a MAI user allowed to go over budget.
 
 PROMPT CREATE ROLE OVER_BUDGET
-CREATE ROLE OVER_BUDGET;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE OVER_BUDGET';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
 
 rem --------------------------------------------------------------------------
 rem	Create a role for granting to the structural projects administrator.
 
-prompt create role pms_admin;
-create role pms_admin;
+PROMPT CREATE ROLE PMS_ADMIN;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE pms_ADMIN';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
 
 grant select any table to pms_admin;
 grant insert any table to pms_admin;
@@ -152,8 +215,20 @@ grant create session to pms_admin;
 rem --------------------------------------------------------------------------
 rem	Create a role for granting to users who need update privileges.
 
-prompt create role pms_user;
-create role pms_user;
+PROMPT CREATE ROLE PMS_USER;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE PMS_USER';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
 
 grant select any table to pms_user;
 grant insert any table to pms_user;
@@ -170,8 +245,20 @@ grant create session to pms_user;
 rem --------------------------------------------------------------------------
 rem	Create a role for granting to readonly users.
 
-prompt create role pms_readonly;
-create role pms_readonly;
+PROMPT CREATE ROLE PMS_READONLY;
+
+DECLARE
+  role_exists Exception;
+  Pragma Exception_Init(role_exists, -1921); 
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE ROLE PMS_READONLY';
+  NULL;
+EXCEPTION
+WHEN role_exists
+THEN 
+  Null;
+END;
+/
 
 grant select any table to pms_readonly;
 grant lock any table to pms_readonly;
