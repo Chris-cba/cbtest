@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.1   Sep 21 2009 16:49:04   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.2   Oct 08 2009 14:14:56   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Sep 21 2009 16:49:04  $
---       Date fetched Out : $Modtime:   Sep 21 2009 16:45:08  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Oct 08 2009 14:14:56  $
+--       Date fetched Out : $Modtime:   Oct 08 2009 14:13:36  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -448,12 +448,7 @@ SET TERM OFF
 -- 102117
 -- 
 -- TASK DETAILS
--- When adding an associated document to a defect using the defect screen in MAI3808, the resulting doc_assocs record is:
--- 
--- Das_table_name           das_rec_id        das_doc_id
--- DEF_REP_TREAT         361522              255801
--- 
--- This is incorrect, the DAS_TABLE_NAME should be DEFECTS
+-- Unable to associate documents with a defect thru the Defects form (MAI3808).
 -- 
 -- 
 -- 
@@ -465,6 +460,26 @@ SET TERM OFF
 delete from doc_gate_syns
 where dgs_dgt_table_name = 'DEF_REP_TREAT'
 and dgs_table_syn = 'DEFECTS'
+/
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT AUTH_OWN now a  option
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (GRAEME JOHNSON)
+-- Product option can now be catered for as a user option
+-- 
+------------------------------------------------------------------
+update hig_option_list
+set hol_user_option = 'Y'
+where hol_id = 'AUTH_OWN'
+/
+commit
 /
 ------------------------------------------------------------------
 

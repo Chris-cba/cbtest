@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.7   Sep 23 2009 14:42:46   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.8   Oct 08 2009 14:14:56   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Sep 23 2009 14:42:46  $
---       Date fetched Out : $Modtime:   Sep 23 2009 14:39:56  $
---       Version          : $Revision:   1.7  $
+--       Date into PVCS   : $Date:   Oct 08 2009 14:14:56  $
+--       Date fetched Out : $Modtime:   Oct 08 2009 14:13:36  $
+--       Version          : $Revision:   1.8  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -333,8 +333,23 @@ SET TERM OFF
 -- Add Location Column to work_order_lines.
 -- 
 ------------------------------------------------------------------
-ALTER TABLE work_order_lines
-  ADD (wol_locn_descr  VARCHAR2(120))
+DECLARE
+--   
+   already_exists Exception;
+   Pragma Exception_INIT( already_exists,-01430); 
+-- 
+BEGIN
+--
+   EXECUTE IMMEDIATE 'ALTER TABLE work_order_lines  ADD (wol_locn_descr  VARCHAR2(120)) ';
+--   
+EXCEPTION
+   WHEN already_exists 
+   THEN
+       Null;
+   WHEN OTHERS
+   THEN
+       RAISE;
+END ;
 /
 
 ------------------------------------------------------------------
@@ -413,11 +428,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.7   Sep 23 2009 14:42:46   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.8   Oct 08 2009 14:14:56   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Sep 23 2009 14:42:46  $
---       Date fetched Out : $Modtime:   Sep 23 2009 14:39:56  $
---       SCCS Version     : $Revision:   1.7  $
+--       Date into SCCS   : $Date:   Oct 08 2009 14:14:56  $
+--       Date fetched Out : $Modtime:   Oct 08 2009 14:13:36  $
+--       SCCS Version     : $Revision:   1.8  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -513,6 +528,44 @@ SELECT IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
   FROM inv_items_all
 /
 
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Accumulative Discount Banding
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 108061
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Accumulative Discount Banding Changes
+-- 
+------------------------------------------------------------------
+DECLARE
+--   
+   already_exists Exception;
+   Pragma Exception_INIT( already_exists,-01430); 
+-- 
+BEGIN
+--
+   EXECUTE IMMEDIATE 'ALTER TABLE contractor_disc_groups ADD (cng_accumulative_disc VARCHAR2(1)) ';
+--   
+EXCEPTION
+   WHEN already_exists 
+   THEN
+       Null;
+   WHEN OTHERS
+   THEN
+       RAISE;
+END ;
+/
 ------------------------------------------------------------------
 
 
