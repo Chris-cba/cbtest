@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_upg.sql-arc   3.0   Jul 17 2009 18:11:20   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_upg.sql-arc   3.1   Oct 13 2009 15:43:20   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_upg.sql  $
---       Date into PVCS   : $Date:   Jul 17 2009 18:11:20  $
---       Date fetched Out : $Modtime:   Jul 17 2009 17:43:18  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Oct 13 2009 15:43:20  $
+--       Date fetched Out : $Modtime:   Oct 13 2009 15:42:58  $
+--       Version          : $Revision:   3.1  $
 --
 --   Product upgrade script
 --
@@ -44,6 +44,10 @@ begin
                           ,p_new_version           => '4.1.0.0'
                           ,p_allowed_old_version_1 => '4.0.5.2'
                           );
+
+ hig2.product_exists_at_version (p_product        => 'HIG'
+                                ,p_VERSION        => '4.1.0.0'
+                                );
 END;
 /
 WHENEVER SQLERROR CONTINUE
