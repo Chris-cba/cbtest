@@ -4,17 +4,17 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.5   Aug 12 2009 11:26:44   cstrettle  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.6   Oct 16 2009 10:31:38   aedwards  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Aug 12 2009 11:26:44  $
- --       Date fetched Out : $Modtime:   Jul 03 2009 13:55:28  $
- --       SCCS Version     : $Revision:   2.5  $
+ --       Date into SCCS   : $Date:   Oct 16 2009 10:31:38  $
+ --       Date fetched Out : $Modtime:   Oct 16 2009 10:28:52  $
+ --       SCCS Version     : $Revision:   2.6  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
- --   Originally taken from '@(#)mai3863.pck    @(#)mai3863.pck	1.31 08/05/02';
+ --   Originally taken from '@(#)mai3863.pck    @(#)mai3863.pck 1.31 08/05/02';
  -----------------------------------------------------------------------------
- --	Copyright (c) exor corporation ltd, 2002
+ -- Copyright (c) exor corporation ltd, 2002
  -----------------------------------------------------------------------------
   
   -- sscanlon fix 709407 12SEP2007 
@@ -514,8 +514,15 @@ IS
            ita_max      ||','||
            ita_validate_yn      ||','||
            ita_manditory_yn rec
-    FROM   inv_type_attribs
-    WHERE  ita_inspectable !='N'-- ita_disp_seq_no !=99 CWS 02/07/09
+    FROM   inv_type_attribs i
+    WHERE EXISTS
+            (SELECT 1 
+               FROM nm_inv_type_attribs n
+                  , inv_type_translations t 
+              WHERE NVL(n.ita_inspectable,'Y') = 'Y'-- ita_disp_seq_no !=99 CWS 02/07/09
+                AND n.ita_inv_type        = t.nit_inv_type
+                AND i.ita_iit_inv_code    = t.ity_inv_code
+                AND i.ita_attrib_name     = i.ita_attrib_name)
     AND    INSTR(sysflags,ita_ity_sys_flag)>0
     AND    ita_end_date IS NULL
     AND    ( FAsset IS NULL
@@ -591,7 +598,7 @@ CURSOR c15 IS
 -- If ANSWER2 = 'Y' then an additional restriction needed to be added to this 
 -- cursor.  For ease, the cursors were copied and recreated as cursors c21a and c22a, and 
 -- the restriction added.
-    -- Organisation Details - admin unit restricted       	
+    -- Organisation Details - admin unit restricted        
        CURSOR C21a IS
           SELECT '21,*,'||oun_unit_code||','||replace(oun_name,',',':') rec
           FROM  org_units
@@ -609,7 +616,7 @@ CURSOR c15 IS
                                     SELECT HUS_ADMIN_UNIT
                                     FROM HIG_USERS
                                     WHERE HUS_USERNAME=USER)
-          ORDER BY 1;      	
+          ORDER BY 1;       
    CURSOR c22 IS
       SELECT '22,*,'||oun_unit_code||','||replace(oun_name,',',':') rec
       FROM org_units
