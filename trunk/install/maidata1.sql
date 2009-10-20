@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.9   Sep 18 2009 14:38:42   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.10   Oct 20 2009 10:55:46   mhuitson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Sep 18 2009 14:38:42  $
---       Date fetched Out : $Modtime:   Sep 18 2009 14:09:00  $
---       Version          : $Revision:   2.9  $
+--       Date into PVCS   : $Date:   Oct 20 2009 10:55:46  $
+--       Date fetched Out : $Modtime:   Oct 20 2009 10:54:58  $
+--       Version          : $Revision:   2.10  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 18-SEP-2009 14:08
+--       Generation Date  : 20-OCT-2009 10:51
 --
 --   Product metadata script
 --   As at Release 4.1.0.0
@@ -566,6 +566,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 926);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,927
+       ,null
+       ,'The Dummy Contract specified in Product Option DUMCONCODE is invaild.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 927);
 --
 --
 --
@@ -9211,7 +9228,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10147,7 +10164,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10363,7 +10380,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10387,7 +10404,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10411,7 +10428,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10435,7 +10452,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10459,7 +10476,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10483,7 +10500,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10507,7 +10524,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10531,7 +10548,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
@@ -10795,7 +10812,7 @@ SELECT
        ,'R25'
        ,''
        ,'N'
-       ,'N'
+       ,'Y'
        ,'MAI'
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
