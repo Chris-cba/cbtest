@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.8   Oct 08 2009 14:14:56   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.9   Oct 20 2009 16:44:04   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 08 2009 14:14:56  $
---       Date fetched Out : $Modtime:   Oct 08 2009 14:13:36  $
---       Version          : $Revision:   1.8  $
+--       Date into PVCS   : $Date:   Oct 20 2009 16:44:04  $
+--       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
+--       Version          : $Revision:   1.9  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -234,6 +234,9 @@ MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
 ALTER TABLE IFF_SECT_STACK
 MODIFY(ISS_RSE_DESCR VARCHAR2(240));
 
+ALTER TABLE TEMP_2140
+MODIFY(RSE_HE_ID NUMBER(38,0));
+
 DECLARE
   --
   lt_users nm3type.tab_varchar30;
@@ -428,11 +431,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.8   Oct 08 2009 14:14:56   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.9   Oct 20 2009 16:44:04   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Oct 08 2009 14:14:56  $
---       Date fetched Out : $Modtime:   Oct 08 2009 14:13:36  $
---       SCCS Version     : $Revision:   1.8  $
+--       Date into SCCS   : $Date:   Oct 20 2009 16:44:04  $
+--       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
+--       SCCS Version     : $Revision:   1.9  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -541,7 +544,7 @@ SET TERM OFF
 -- 108061
 -- 
 -- TASK DETAILS
--- No details supplied
+-- Works ordering should be enhanced to allow Discount Group calculations to be carried out accumulatively by discount band.   See the New Functionality section for further details.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (LINESH SORATHIA)

@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.3   Oct 12 2009 12:20:44   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.4   Oct 20 2009 16:44:04   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 12 2009 12:20:44  $
---       Date fetched Out : $Modtime:   Oct 12 2009 12:20:18  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Oct 20 2009 16:44:04  $
+--       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
+--       Version          : $Revision:   3.4  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -53,7 +53,7 @@ SET TERM OFF
 -- 105221
 -- 
 -- TASK DETAILS
--- No details supplied
+-- n/a - no change applied
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (STUART MARSHALL)
@@ -314,7 +314,7 @@ SET TERM OFF
 -- 107382
 -- 
 -- TASK DETAILS
--- No details supplied
+-- n/a - only affects fresh installs
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (ROB MAY)
@@ -383,7 +383,7 @@ SET TERM OFF
 -- 107330
 -- 
 -- TASK DETAILS
--- No details supplied
+-- Additional reference data will be supplied for Financial Years up to 2015.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (ROB MAY)
@@ -448,7 +448,7 @@ SET TERM OFF
 -- 102117
 -- 
 -- TASK DETAILS
--- Unable to associate documents with a defect thru the Defects form (MAI3808).
+-- Unable to associate documents with a defect using the Defects form (MAI3808).
 -- 
 -- 
 -- 
@@ -481,6 +481,38 @@ where hol_id = 'AUTH_OWN'
 /
 commit
 /
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Error Message for invalid value in DUMCONCODE Product Option
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- New Error Message for invalid value in DUMCONCODE Product Option
+-- 
+------------------------------------------------------------------
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,927
+       ,null
+       ,'The Dummy Contract specified in Product Option DUMCONCODE is invaild.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 927)
+/
+
 ------------------------------------------------------------------
 
 
