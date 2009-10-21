@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.3   Jul 27 2009 10:42:38   aedwards  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.4   Oct 21 2009 18:03:40   lsorathia  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Jul 27 2009 10:42:38  $
---       Date fetched Out : $Modtime:   Jul 27 2009 10:42:22  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Oct 21 2009 18:03:40  $
+--       Date fetched Out : $Modtime:   Oct 21 2009 17:48:10  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.3  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.4  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -648,7 +648,8 @@ BEGIN
     --
     BEGIN
       EXECUTE IMMEDIATE l_mai_sdo_view_sql;
-      nm3ddl.create_synonym_for_object(l_rec_nth_v.nth_feature_table);
+      --nm3ddl.create_synonym_for_object(l_rec_nth_v.nth_feature_table); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
+      nm3ddl.create_views_for_object(l_rec_nth_v.nth_feature_table); 
     EXCEPTION
       WHEN OTHERS
        THEN RAISE;
@@ -1404,7 +1405,8 @@ BEGIN
        '       , def.def_ity_inv_code         defect_asset_type '||nl||
        '       , def.def_iit_item_id          defect_asset_id '||nl||
        '       , are.are_initiation_type      defect_initiation_type '||nl||
-       '       , upper(hus.hus_name)          defect_inspector '||nl||
+       --'       , upper(hus.hus_name)          defect_inspector '||nl||   -- Task 0108097 Passing Hus_initials instead of his_name as this column has domain attached in asset metamodel 
+       '       , upper(hus.hus_initials)          defect_inspector '||nl||
        '       , def.def_x_sect               defect_x_section '||nl||
        '       , org1.oun_name                defect_notify_org '||nl||
        '       , org2.oun_name                defect_recharge_org '||nl||
@@ -1483,7 +1485,8 @@ BEGIN
 --      '   AND   dty_dtp_flag           = rse_sys_flag '||nl||
 --      '   AND   def_rse_he_id          = rse_he_id ';
    --
-   nm3ddl.create_synonym_for_object(g_view_name);
+   --nm3ddl.create_synonym_for_object(g_view_name); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
+   nm3ddl.create_views_for_object(g_view_name);  
    --
 END make_defect_secure_view;
 --
@@ -1538,7 +1541,8 @@ BEGIN
               ||nl||'   AND rep.rep_def_defect_id  = def.def_defect_id(+)'
                   ;
   --
-  nm3ddl.create_synonym_for_object(g_wol_view_name);
+  --nm3ddl.create_synonym_for_object(g_wol_view_name); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
+  nm3ddl.create_views_for_object(g_wol_view_name);
   --
 END make_wol_secure_view;
 --
