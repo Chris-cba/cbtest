@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.18   Sep 03 2009 12:54:38   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.19   Oct 21 2009 16:41:42   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 03 2009 12:54:38  $
---       Date fetched Out : $Modtime:   Sep 02 2009 13:58:00  $
---       SCCS Version     : $Revision:   2.18  $
+--       Date into SCCS   : $Date:   Oct 21 2009 16:41:42  $
+--       Date fetched Out : $Modtime:   Oct 21 2009 16:40:02  $
+--       SCCS Version     : $Revision:   2.19  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.18  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.19  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2071,7 +2071,8 @@ PROCEDURE validate_claim_rate(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
 
   UPDATE interface_claims_boq
-  SET    icboq_error = SUBSTR(icboq_error||'Warning: This Bill Items Rate does not match its rate on the Works Order. ', 1, 254)
+  SET    icboq_error = SUBSTR(icboq_error||'This Bill Items Rate does not match its rate on the Works Order. ', 1, 254)
+        ,icboq_status = 'R'
   WHERE  NOT EXISTS ( SELECT 1
                 FROM   boq_items
                 WHERE  boq_sta_item_code = icboq_sta_item_code
@@ -2101,7 +2102,7 @@ BEGIN
 
   UPDATE interface_claims_boq
   SET    icboq_error = SUBSTR(icboq_error||'This Bill Item has an invalid option for the Rogue field (must be R, N or NULL) ', 1, 254)
-         ,icboq_status = 'R'
+         ,icboq_status = 'R'  -- Task 0108536 rejected the BOQ if the rates does not match 
   WHERE  icboq_rogue_item NOT IN ('R', 'N', 'NULL', '')
   AND    icboq_ih_id = p_ih_id;
 
