@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.11   Oct 19 2009 16:41:44   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.12   Oct 22 2009 14:16:22   lsorathia  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Oct 19 2009 16:41:44  $
---       Date fetched Out : $Modtime:   Oct 19 2009 16:40:56  $
---       PVCS Version     : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Oct 22 2009 14:16:22  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 14:14:40  $
+--       PVCS Version     : $Revision:   2.12  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Mon Oct 19  16:17:18 2009 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu Oct 22  14:10:38 2009 by Server Generator 10.1.2.9.28
  
 
 
@@ -1319,8 +1319,8 @@ CREATE TABLE IFF_SECT_STACK
  ,ISS_RSE_HE_ID NUMBER(9,0) NOT NULL
  ,ISS_RSE_LINKCODE VARCHAR2(10)
  ,ISS_RSE_SECT_NO VARCHAR2(5)
- ,ISS_RSE_PUS_NODE_ID_ST VARCHAR2(6)
- ,ISS_RSE_PUS_NODE_ID_END VARCHAR2(6)
+ ,ISS_RSE_PUS_NODE_ID_ST VARCHAR2(30)
+ ,ISS_RSE_PUS_NODE_ID_END VARCHAR2(30)
  ,ISS_RSE_DESCR VARCHAR2(240)
  )
 /
