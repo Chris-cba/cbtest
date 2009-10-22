@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.9   Oct 20 2009 16:44:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.10   Oct 22 2009 15:36:36   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 20 2009 16:44:04  $
---       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
---       Version          : $Revision:   1.9  $
+--       Date into PVCS   : $Date:   Oct 22 2009 15:36:36  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 15:35:50  $
+--       Version          : $Revision:   1.10  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -431,11 +431,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.9   Oct 20 2009 16:44:04   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.10   Oct 22 2009 15:36:36   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Oct 20 2009 16:44:04  $
---       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
---       SCCS Version     : $Revision:   1.9  $
+--       Date into SCCS   : $Date:   Oct 22 2009 15:36:36  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 15:35:50  $
+--       SCCS Version     : $Revision:   1.10  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -569,6 +569,32 @@ EXCEPTION
        RAISE;
 END ;
 /
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Error while running report mai2500
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 108553
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Increase length of column ISS_RSE_PUS_NODE_ID_ST and ISS_RSE_PUS_NODE_ID_END to 30
+-- 
+------------------------------------------------------------------
+Begin
+   Execute Immediate 'Alter Table IFF_SECT_STACK modify (ISS_RSE_PUS_NODE_ID_ST varchar2(30), ISS_RSE_PUS_NODE_ID_END varchar2(30))' ;
+Exception
+   When Others Then
+   Raise;
+End;
 ------------------------------------------------------------------
 
 

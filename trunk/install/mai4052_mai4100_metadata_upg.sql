@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.4   Oct 20 2009 16:44:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.5   Oct 22 2009 15:36:36   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 20 2009 16:44:04  $
---       Date fetched Out : $Modtime:   Oct 20 2009 16:43:14  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Oct 22 2009 15:36:36  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 15:35:52  $
+--       Version          : $Revision:   3.5  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -479,8 +479,7 @@ update hig_option_list
 set hol_user_option = 'Y'
 where hol_id = 'AUTH_OWN'
 /
-commit
-/
+
 ------------------------------------------------------------------
 
 
@@ -511,6 +510,51 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 927)
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Amendment to module MAI3105
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 93278
+-- 
+-- TASK DETAILS
+-- Report MAI3105 (Print: Cyclic Maintenance Activities) raises REP-1401/ORA-06503 error.
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (GRAEME JOHNSON)
+-- To ensure the report can be called from the GRI form
+-- 
+------------------------------------------------------------------
+update hig_modules
+set hmo_use_gri = 'Y'
+where hmo_module = 'MAI3105'
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Amend the length if the Initialtion Type Domain
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Restrict Initiation Type Domain To 3 Characters In Line With The Tables.
+-- 
+------------------------------------------------------------------
+UPDATE hig_domains
+   SET hdo_code_length = 3
+ WHERE hdo_domain  = 'INITIATION_TYPE'
+   AND hdo_product = 'MAI'
 /
 
 ------------------------------------------------------------------
