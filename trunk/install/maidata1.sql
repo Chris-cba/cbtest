@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.10   Oct 20 2009 10:55:46   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.11   Oct 22 2009 13:33:38   mhuitson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Oct 20 2009 10:55:46  $
---       Date fetched Out : $Modtime:   Oct 20 2009 10:54:58  $
---       Version          : $Revision:   2.10  $
+--       Date into PVCS   : $Date:   Oct 22 2009 13:33:38  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 13:30:38  $
+--       Version          : $Revision:   2.11  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 20-OCT-2009 10:51
+--       Generation Date  : 22-OCT-2009 13:28
 --
 --   Product metadata script
 --   As at Release 4.1.0.0
@@ -849,7 +849,7 @@ SELECT
         'INITIATION_TYPE'
        ,'MAI'
        ,'Activity Reports Initiation Types'
-       ,10 FROM DUAL
+       ,3 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
                    WHERE HDO_DOMAIN = 'INITIATION_TYPE');
 --
