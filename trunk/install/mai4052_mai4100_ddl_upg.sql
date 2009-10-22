@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.10   Oct 22 2009 15:36:36   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.11   Oct 22 2009 17:18:24   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 22 2009 15:36:36  $
---       Date fetched Out : $Modtime:   Oct 22 2009 15:35:50  $
---       Version          : $Revision:   1.10  $
+--       Date into PVCS   : $Date:   Oct 22 2009 17:18:24  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 17:17:22  $
+--       Version          : $Revision:   1.11  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -431,11 +431,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.10   Oct 22 2009 15:36:36   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.11   Oct 22 2009 17:18:24   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Oct 22 2009 15:36:36  $
---       Date fetched Out : $Modtime:   Oct 22 2009 15:35:50  $
---       SCCS Version     : $Revision:   1.10  $
+--       Date into SCCS   : $Date:   Oct 22 2009 17:18:24  $
+--       Date fetched Out : $Modtime:   Oct 22 2009 17:17:22  $
+--       SCCS Version     : $Revision:   1.11  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -582,7 +582,7 @@ SET TERM OFF
 -- 108553
 -- 
 -- TASK DETAILS
--- No details supplied
+-- MAI2500 (Download Data for Inventory Survey on DCD) fails when node names longer than 6 characters exist.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (LINESH SORATHIA)
@@ -595,6 +595,7 @@ Exception
    When Others Then
    Raise;
 End;
+/
 ------------------------------------------------------------------
 
 
