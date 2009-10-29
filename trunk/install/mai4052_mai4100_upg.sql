@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_upg.sql-arc   3.1   Oct 13 2009 15:43:20   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_upg.sql-arc   3.2   Oct 29 2009 17:31:08   mhuitson  $
 --       Module Name      : $Workfile:   mai4052_mai4100_upg.sql  $
---       Date into PVCS   : $Date:   Oct 13 2009 15:43:20  $
---       Date fetched Out : $Modtime:   Oct 13 2009 15:42:58  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Oct 29 2009 17:31:08  $
+--       Date fetched Out : $Modtime:   Oct 29 2009 17:28:38  $
+--       Version          : $Revision:   3.2  $
 --
 --   Product upgrade script
 --
@@ -60,6 +60,23 @@ SET TERM OFF
 SET DEFINE ON
 SELECT '&exor_base'||'mai'||'&terminator'||'install'||
         '&terminator'||'mai4052_mai4100_ddl_upg.sql' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   DDL2   *******************
+--
+-- This has been scripted separately in order to make it rerunable on it's own.
+--
+SET TERM ON
+PROMPT DDL Changes...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai4052_mai4100_ddl2_upg.sql' run_file
 FROM dual
 /
 SET FEEDBACK ON
