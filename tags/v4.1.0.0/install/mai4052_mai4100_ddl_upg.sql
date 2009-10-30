@@ -1,0 +1,517 @@
+------------------------------------------------------------------
+-- mai4052_mai4100_ddl_upg.sql
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
+--       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
+--       Date into PVCS   : $Date:   Oct 30 2009 09:55:32  $
+--       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
+--       Version          : $Revision:   1.12  $
+--
+------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2009
+
+SET ECHO OFF
+SET LINESIZE 120
+SET HEADING OFF
+SET FEEDBACK OFF
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Add 3 extra Cost Code columns to the Budgets table.
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Add extra Cost Code Columns To BUDGETS.
+-- 
+------------------------------------------------------------------
+ALTER TABLE budgets
+  ADD (bud_con_cost_code  VARCHAR2(60)
+      ,bud_fin_cost_code  VARCHAR2(60)
+      ,bud_add_cost_code  VARCHAR2(60))
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT NE_ID and RSE_DESCR changes
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (KIERAN DAWSON)
+-- log 716904 and log 719542 DDL changes to update HE_ID max length from 8 to 9 and RSE_DESCR from 80 to 240
+-- A number of ddl changes related to this for Inventory Loader and Individual User tables are performed in mai4052_mai4100_ddl2_upg.sql
+-- 
+------------------------------------------------------------------
+ALTER TABLE IFF_SECT_STACK
+MODIFY(ISS_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE PBI_RESULTS_INV
+MODIFY(PBI_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_DEFBANDS
+MODIFY(BANDS_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE LOCAL_FREQS
+MODIFY(LFR_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SCHEDULE_ROADS
+MODIFY(SCHR_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_REPORT_SECTIONS
+MODIFY(REP_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE PBI_RESULTS
+MODIFY(PBI_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_COMMENTS
+MODIFY(COMM_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_COMPSCHEMES
+MODIFY(CS_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE DEL_INV_ITEMS
+MODIFY(DEL_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_REPLACE_DEFECTS
+MODIFY(DEF_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_ROADCONS
+MODIFY(CONST_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE WORK_ORDERS
+MODIFY(WOR_RSE_HE_ID_GROUP NUMBER(9));
+
+ALTER TABLE WORK_ORDERS
+MODIFY(WOR_RSE_HE_ID_LINK NUMBER(9));
+
+ALTER TABLE MAI2325_RESULTS
+MODIFY(MAI2325_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SCHEDULES
+MODIFY(SCHD_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE DELETED_DEFECTS
+MODIFY(DLD_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE ACTIVITIES_REPORT
+MODIFY(ARE_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE EXT_ACT_ROAD_USAGE
+MODIFY(EXU_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE WORK_ORDER_LINES
+MODIFY(WOL_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SCHEME_ROADS
+MODIFY(RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_UNDO_DEFECT_EDIT
+MODIFY(DEF_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_STRIP_DATA
+MODIFY(RSE_HE_ID NUMBER(9));
+
+ALTER TABLE BUDGETS
+MODIFY(BUD_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE REPAIRS
+MODIFY(REP_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_STRIP_HEADER
+MODIFY(RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SECT_FREQ1
+MODIFY(TT1_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE IHMS_ALLOCATED_AMTS
+MODIFY(IHA_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE CONTRACT_ITEMS
+MODIFY(CNI_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SECT_FREQ2
+MODIFY(TT2_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_STRIP_LIST
+MODIFY(RSE_HE_ID NUMBER(9));
+
+ALTER TABLE DEFECTS
+MODIFY(DEF_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SECTION_FREQS
+MODIFY(SFR_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE INSURANCE_CLAIM_PARAMETERS
+MODIFY(ICP_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_DETTRTS
+MODIFY(DETTRTS_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE TEMP_PMS4440_DEFECTS
+MODIFY(DEFECT_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE INV_MP_ERRORS
+MODIFY(IME_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE NL_AREA_USAGES
+MODIFY(NLU_RSE_HE_ID_IN NUMBER(9));
+
+ALTER TABLE NL_AREA_USAGES
+MODIFY(NLU_RSE_HE_ID_OF NUMBER(9));
+
+ALTER TABLE PBI_QUERY
+MODIFY(QRY_RSM_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE PBI_QUERY
+MODIFY(QRY_RSE_HE_ID NUMBER(9));
+
+ALTER TABLE SCHEDULE_ROADS
+MODIFY(SCHR_IIT_ITEM_ID NUMBER(9));
+
+ALTER TABLE DEL_INV_ITEMS
+MODIFY(DEL_IIT_ITEM_ID NUMBER(9));
+
+ALTER TABLE TEMP_REPLACE_DEFECTS
+MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
+
+ALTER TABLE WORK_ORDER_LINES
+MODIFY(WOL_IIT_ITEM_ID NUMBER(9));
+
+ALTER TABLE TEMP_UNDO_DEFECT_EDIT
+MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
+
+ALTER TABLE DEFECTS
+MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
+
+
+SET TERM ON
+PROMPT IFF_SECT_STACK.ISS_RSE_DESCR
+SET TERM OFF
+
+DECLARE
+  invalid_column EXCEPTION;
+  PRAGMA EXCEPTION_INIT(invalid_column,-00904);
+BEGIN
+  EXECUTE IMMEDIATE 'ALTER TABLE IFF_SECT_STACK MODIFY(ISS_RSE_DESCR VARCHAR2(240))';
+EXCEPTION
+  WHEN invalid_column
+   THEN
+      EXECUTE IMMEDIATE 'ALTER TABLE IFF_SECT_STACK ADD(ISS_RSE_DESCR VARCHAR2(240))';
+END;
+/
+
+
+SET TERM ON
+PROMPT TEMP_2140.RSE_HE_ID
+SET TERM OFF
+
+DECLARE
+  not_exists EXCEPTION;
+  PRAGMA EXCEPTION_INIT(not_exists,-00942);
+BEGIN
+  EXECUTE IMMEDIATE 'DELETE TEMP_2140';
+  EXECUTE IMMEDIATE 'ALTER TABLE TEMP_2140 MODIFY(RSE_HE_ID NUMBER(38,0))';
+EXCEPTION
+  WHEN not_exists
+   THEN
+      EXECUTE IMMEDIATE 'CREATE TABLE TEMP_2140(RSE_HE_ID NUMBER(38,0))';
+END;
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Add Location Column to work_order_lines
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Add Location Column to work_order_lines.
+-- 
+------------------------------------------------------------------
+DECLARE
+--   
+   already_exists Exception;
+   Pragma Exception_INIT( already_exists,-01430); 
+-- 
+BEGIN
+--
+   EXECUTE IMMEDIATE 'ALTER TABLE work_order_lines  ADD (wol_locn_descr  VARCHAR2(120)) ';
+--   
+EXCEPTION
+   WHEN already_exists 
+   THEN
+       Null;
+   WHEN OTHERS
+   THEN
+       RAISE;
+END ;
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New tables for Contractor User Security
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- New tables for Contractor User Security
+-- 
+------------------------------------------------------------------
+CREATE TABLE contractor_roles
+  (cor_oun_org_id  NUMBER(8)    NOT NULL
+  ,cor_role        VARCHAR2(30) NOT NULL)
+/
+
+ALTER TABLE contractor_roles
+  ADD CONSTRAINT cor_pk
+  PRIMARY KEY(cor_oun_org_id,cor_role)
+/
+
+ALTER TABLE contractor_roles
+  ADD CONSTRAINT cor_hro_fk 
+  FOREIGN KEY(cor_role) 
+  REFERENCES hig_roles(hro_role)
+/
+
+CREATE INDEX cor_hro_fk
+  ON contractor_roles(cor_role)
+/
+
+CREATE TABLE contractor_users
+  (cou_oun_org_id   NUMBER(8) NOT NULL
+  ,cou_hus_user_id  NUMBER(9))
+/
+
+ALTER TABLE contractor_users
+  ADD CONSTRAINT cou_pk
+  PRIMARY KEY(cou_oun_org_id,cou_hus_user_id)
+/
+
+ALTER TABLE contractor_users
+  ADD CONSTRAINT cou_hus_fk 
+  FOREIGN KEY(cou_hus_user_id) 
+  REFERENCES hig_users(hus_user_id)
+/
+
+CREATE INDEX cou_hus_fk
+  ON contractor_users(cou_hus_user_id)
+/
+
+
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New inventory translation view for Cyclic Maintenance
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Standard version of inv_items_all_section, for conflated networks please run the script inv_items_all_section.sql after this upgrade.
+-- 
+-- 
+------------------------------------------------------------------
+CREATE OR REPLACE FORCE VIEW inv_items_all_section
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
+--       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
+--       Date into SCCS   : $Date:   Oct 30 2009 09:55:32  $
+--       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
+--       SCCS Version     : $Revision:   1.12  $
+--       Based on SCCS Version     : 1.14
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+  (IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
+  IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,
+  IIT_RSE_HE_ID, IIT_ST_CHAIN, IIT_ANGLE, IIT_ANGLE_TXT,
+  IIT_CLASS, IIT_CLASS_TXT, IIT_COLOUR, IIT_COLOUR_TXT,
+  IIT_COORD_FLAG, IIT_DESCRIPTION, IIT_DIAGRAM, IIT_DISTANCE,
+  IIT_END_CHAIN, IIT_END_DATE, IIT_GAP, IIT_HEIGHT,
+  IIT_HEIGHT_2, IIT_ID_CODE, IIT_INSTAL_DATE, IIT_INVENT_DATE,
+  IIT_INV_OWNERSHIP, IIT_ITEMCODE, IIT_LCO_LAMP_CONFIG_ID,
+  IIT_LENGTH, IIT_MATERIAL, IIT_MATERIAL_TXT, IIT_METHOD,
+  IIT_METHOD_TXT, IIT_NOTE, IIT_NO_OF_UNITS, IIT_OPTIONS,
+  IIT_OPTIONS_TXT, IIT_OUN_ORG_ID_ELEC_BOARD, IIT_OWNER,
+  IIT_OWNER_TXT, IIT_PEO_INVENT_BY_ID, IIT_PHOTO, IIT_POWER,
+  IIT_PROV_FLAG, IIT_REV_BY, IIT_REV_DATE, IIT_TYPE,
+  IIT_TYPE_TXT, IIT_WIDTH, IIT_XTRA_CHAR_1, IIT_XTRA_DATE_1,
+  IIT_XTRA_DOMAIN_1, IIT_XTRA_DOMAIN_TXT_1, IIT_XTRA_NUMBER_1,
+  IIT_X_SECT, IIT_PRIMARY_KEY, IIT_FOREIGN_KEY, IIT_DET_XSP,
+  IIT_OFFSET, IIT_NUM_ATTRIB16, IIT_NUM_ATTRIB17,
+  IIT_NUM_ATTRIB18, IIT_NUM_ATTRIB19, IIT_NUM_ATTRIB20,
+  IIT_NUM_ATTRIB21, IIT_NUM_ATTRIB22, IIT_NUM_ATTRIB23,
+  IIT_NUM_ATTRIB24, IIT_NUM_ATTRIB25, IIT_CHR_ATTRIB26,
+  IIT_CHR_ATTRIB27, IIT_CHR_ATTRIB28, IIT_CHR_ATTRIB29,
+  IIT_CHR_ATTRIB30, IIT_CHR_ATTRIB31, IIT_CHR_ATTRIB32,
+  IIT_CHR_ATTRIB33, IIT_CHR_ATTRIB34, IIT_CHR_ATTRIB35,
+  IIT_CHR_ATTRIB36, IIT_CHR_ATTRIB37, IIT_CHR_ATTRIB38,
+  IIT_CHR_ATTRIB39, IIT_CHR_ATTRIB40, IIT_CHR_ATTRIB41,
+  IIT_CHR_ATTRIB42, IIT_CHR_ATTRIB43, IIT_CHR_ATTRIB44,
+  IIT_CHR_ATTRIB45, IIT_CHR_ATTRIB46, IIT_CHR_ATTRIB47,
+  IIT_CHR_ATTRIB48, IIT_CHR_ATTRIB49, IIT_CHR_ATTRIB50,
+  IIT_CHR_ATTRIB51, IIT_CHR_ATTRIB52, IIT_CHR_ATTRIB53,
+  IIT_CHR_ATTRIB54, IIT_CHR_ATTRIB55, IIT_CHR_ATTRIB56,
+  IIT_CHR_ATTRIB57, IIT_CHR_ATTRIB58, IIT_CHR_ATTRIB59,
+  IIT_CHR_ATTRIB60, IIT_CHR_ATTRIB61, IIT_CHR_ATTRIB62,
+  IIT_CHR_ATTRIB63, IIT_CHR_ATTRIB64, IIT_CHR_ATTRIB65,
+  IIT_CHR_ATTRIB66, IIT_CHR_ATTRIB67, IIT_CHR_ATTRIB68,
+  IIT_CHR_ATTRIB69, IIT_CHR_ATTRIB70, IIT_CHR_ATTRIB71,
+  IIT_CHR_ATTRIB72, IIT_CHR_ATTRIB73, IIT_CHR_ATTRIB74,
+  IIT_CHR_ATTRIB75, IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77,
+  IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80,
+  IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83,
+  IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
+  IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
+  IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
+  IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95)
+AS
+SELECT IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
+       IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,
+       IIT_RSE_HE_ID, IIT_ST_CHAIN, IIT_ANGLE, IIT_ANGLE_TXT,
+       IIT_CLASS, IIT_CLASS_TXT, IIT_COLOUR, IIT_COLOUR_TXT,
+       IIT_COORD_FLAG, IIT_DESCRIPTION, IIT_DIAGRAM, IIT_DISTANCE,
+       IIT_END_CHAIN, IIT_END_DATE, IIT_GAP, IIT_HEIGHT,
+       IIT_HEIGHT_2, IIT_ID_CODE, IIT_INSTAL_DATE, IIT_INVENT_DATE,
+       IIT_INV_OWNERSHIP, IIT_ITEMCODE, IIT_LCO_LAMP_CONFIG_ID,
+       IIT_LENGTH, IIT_MATERIAL, IIT_MATERIAL_TXT, IIT_METHOD,
+       IIT_METHOD_TXT, IIT_NOTE, IIT_NO_OF_UNITS, IIT_OPTIONS,
+       IIT_OPTIONS_TXT, IIT_OUN_ORG_ID_ELEC_BOARD, IIT_OWNER,
+       IIT_OWNER_TXT, IIT_PEO_INVENT_BY_ID, IIT_PHOTO, IIT_POWER,
+       IIT_PROV_FLAG, IIT_REV_BY, IIT_REV_DATE, IIT_TYPE,
+       IIT_TYPE_TXT, IIT_WIDTH, IIT_XTRA_CHAR_1, IIT_XTRA_DATE_1,
+       IIT_XTRA_DOMAIN_1, IIT_XTRA_DOMAIN_TXT_1, IIT_XTRA_NUMBER_1,
+       IIT_X_SECT, IIT_PRIMARY_KEY, IIT_FOREIGN_KEY, IIT_DET_XSP,
+       IIT_OFFSET, IIT_NUM_ATTRIB16, IIT_NUM_ATTRIB17,
+       IIT_NUM_ATTRIB18, IIT_NUM_ATTRIB19, IIT_NUM_ATTRIB20,
+       IIT_NUM_ATTRIB21, IIT_NUM_ATTRIB22, IIT_NUM_ATTRIB23,
+       IIT_NUM_ATTRIB24, IIT_NUM_ATTRIB25, IIT_CHR_ATTRIB26,
+       IIT_CHR_ATTRIB27, IIT_CHR_ATTRIB28, IIT_CHR_ATTRIB29,
+       IIT_CHR_ATTRIB30, IIT_CHR_ATTRIB31, IIT_CHR_ATTRIB32,
+       IIT_CHR_ATTRIB33, IIT_CHR_ATTRIB34, IIT_CHR_ATTRIB35,
+       IIT_CHR_ATTRIB36, IIT_CHR_ATTRIB37, IIT_CHR_ATTRIB38,
+       IIT_CHR_ATTRIB39, IIT_CHR_ATTRIB40, IIT_CHR_ATTRIB41,
+       IIT_CHR_ATTRIB42, IIT_CHR_ATTRIB43, IIT_CHR_ATTRIB44,
+       IIT_CHR_ATTRIB45, IIT_CHR_ATTRIB46, IIT_CHR_ATTRIB47,
+       IIT_CHR_ATTRIB48, IIT_CHR_ATTRIB49, IIT_CHR_ATTRIB50,
+       IIT_CHR_ATTRIB51, IIT_CHR_ATTRIB52, IIT_CHR_ATTRIB53,
+       IIT_CHR_ATTRIB54, IIT_CHR_ATTRIB55, IIT_CHR_ATTRIB56,
+       IIT_CHR_ATTRIB57, IIT_CHR_ATTRIB58, IIT_CHR_ATTRIB59,
+       IIT_CHR_ATTRIB60, IIT_CHR_ATTRIB61, IIT_CHR_ATTRIB62,
+       IIT_CHR_ATTRIB63, IIT_CHR_ATTRIB64, IIT_CHR_ATTRIB65,
+       IIT_CHR_ATTRIB66, IIT_CHR_ATTRIB67, IIT_CHR_ATTRIB68,
+       IIT_CHR_ATTRIB69, IIT_CHR_ATTRIB70, IIT_CHR_ATTRIB71,
+       IIT_CHR_ATTRIB72, IIT_CHR_ATTRIB73, IIT_CHR_ATTRIB74,
+       IIT_CHR_ATTRIB75, IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77,
+       IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80,
+       IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83,
+       IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
+       IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
+       IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
+       IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95
+  FROM inv_items_all
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Accumulative Discount Banding
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 108061
+-- 
+-- TASK DETAILS
+-- Works ordering should be enhanced to allow Discount Group calculations to be carried out accumulatively by discount band.   See the New Functionality section for further details.
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Accumulative Discount Banding Changes
+-- 
+------------------------------------------------------------------
+DECLARE
+--   
+   already_exists Exception;
+   Pragma Exception_INIT( already_exists,-01430); 
+-- 
+BEGIN
+--
+   EXECUTE IMMEDIATE 'ALTER TABLE contractor_disc_groups ADD (cng_accumulative_disc VARCHAR2(1)) ';
+--   
+EXCEPTION
+   WHEN already_exists 
+   THEN
+       Null;
+   WHEN OTHERS
+   THEN
+       RAISE;
+END ;
+/
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Error while running report mai2500
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 108553
+-- 
+-- TASK DETAILS
+-- MAI2500 (Download Data for Inventory Survey on DCD) fails when node names longer than 6 characters exist.
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Increase length of column ISS_RSE_PUS_NODE_ID_ST and ISS_RSE_PUS_NODE_ID_END to 30
+-- 
+------------------------------------------------------------------
+Begin
+   Execute Immediate 'Alter Table IFF_SECT_STACK modify (ISS_RSE_PUS_NODE_ID_ST varchar2(30), ISS_RSE_PUS_NODE_ID_END varchar2(30))' ;
+Exception
+   When Others Then
+   Raise;
+End;
+/
+------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------
+-- end of script 
+------------------------------------------------------------------
+
