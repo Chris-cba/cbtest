@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.11   Oct 22 2009 17:18:24   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 22 2009 17:18:24  $
---       Date fetched Out : $Modtime:   Oct 22 2009 17:17:22  $
---       Version          : $Revision:   1.11  $
+--       Date into PVCS   : $Date:   Oct 30 2009 09:55:32  $
+--       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
+--       Version          : $Revision:   1.12  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2009
@@ -54,6 +54,7 @@ SET TERM OFF
 -- 
 -- DEVELOPMENT COMMENTS (KIERAN DAWSON)
 -- log 716904 and log 719542 DDL changes to update HE_ID max length from 8 to 9 and RSE_DESCR from 80 to 240
+-- A number of ddl changes related to this for Inventory Loader and Individual User tables are performed in mai4052_mai4100_ddl2_upg.sql
 -- 
 ------------------------------------------------------------------
 ALTER TABLE IFF_SECT_STACK
@@ -179,40 +180,6 @@ MODIFY(QRY_RSM_RSE_HE_ID NUMBER(9));
 ALTER TABLE PBI_QUERY
 MODIFY(QRY_RSE_HE_ID NUMBER(9));
 
-ALTER TABLE HHINV_ITEM_ERR_1
-  MODIFY(REC_SEQ_NO       NUMBER(38,0)
-        ,HWAY_SEQ_NO      NUMBER(38,0)
-        ,SECT_HDR_SEQ_NO  NUMBER(38,0));
-
-ALTER TABLE HHINV_ITEM_ERR_2
-MODIFY(HE_ID           NUMBER(38,0)
-      ,REC_SEQ_NO      NUMBER(38,0)
-      ,SECT_HDR_SEQ_NO NUMBER(38,0));
-
-ALTER TABLE HHINV_ITEM_ERR_3
-MODIFY(HE_ID      NUMBER(38,0)
-      ,REC_SEQ_NO NUMBER(38,0));
-
-ALTER TABLE TEMP_LOAD_2
-MODIFY(HE_ID NUMBER(38,0));
-
-ALTER TABLE HHINV_LOAD_2
-MODIFY(HE_ID           NUMBER(38,0)
-      ,REC_SEQ_NO      NUMBER(38,0)
-      ,SECT_HDR_SEQ_NO NUMBER(38,0));
-
-ALTER TABLE HHINV_LOAD_3
-MODIFY(HE_ID      NUMBER(38,0)
-      ,REC_SEQ_NO NUMBER(38,0));
-
-ALTER TABLE HHINV_ODL_LOG
-  MODIFY(LAST_SEQ_NO   NUMBER(38,0)
-        ,NEW_SEQ_NO    NUMBER(38,0)
-        ,Z_REC_SEQ_NO  NUMBER(38,0));
-
-ALTER TABLE HHINV_RUN_LOG
-  MODIFY(MAX_SEQ_NO  NUMBER(38,0));
-
 ALTER TABLE SCHEDULE_ROADS
 MODIFY(SCHR_IIT_ITEM_ID NUMBER(9));
 
@@ -231,94 +198,38 @@ MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
 ALTER TABLE DEFECTS
 MODIFY(DEF_IIT_ITEM_ID NUMBER(9));
 
-ALTER TABLE IFF_SECT_STACK
-MODIFY(ISS_RSE_DESCR VARCHAR2(240));
 
-ALTER TABLE TEMP_2140
-MODIFY(RSE_HE_ID NUMBER(38,0));
+SET TERM ON
+PROMPT IFF_SECT_STACK.ISS_RSE_DESCR
+SET TERM OFF
 
 DECLARE
-  --
-  lt_users nm3type.tab_varchar30;
-  --
-  PROCEDURE get_users
-    IS
-  BEGIN
-    SELECT hus_username
-      BULK COLLECT
-      INTO lt_users
-      FROM hig_users
-          ,dba_users
-     WHERE account_status = 'OPEN'
-       AND username = hus_username
-       AND hus_is_hig_owner_flag != 'Y'
-         ;
-  END get_users;
-  --
-  PROCEDURE alter_user_tables(pi_username IN VARCHAR2)
-    IS
-    --
-    lt_tables nm3type.tab_varchar32767;
-    --
-  BEGIN
-    /*
-    ||Get The Alter Table Statements That Need To Be Run For The Given User.
-    */
-    SELECT CASE WHEN table_name = 'HHINV_LOAD_1'
-                THEN
-                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_1 MODIFY(REC_SEQ_NO NUMBER(38,0))'
-                   --
-                WHEN table_name = 'HHINV_HOLD_1'
-                THEN
-                   'ALTER TABLE '||pi_username||'.HHINV_HOLD_1 MODIFY(REC_SEQ_NO NUMBER(38,0))'
-                   --
-                WHEN table_name = 'HHINV_LOAD_2'
-                THEN
-                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_2 MODIFY(HE_ID NUMBER(38,0),REC_SEQ_NO NUMBER(38,0),SECT_HDR_SEQ_NO NUMBER(38,0))'
-                   --
-                WHEN table_name = 'HHINV_LOAD_3'
-                THEN
-                   'ALTER TABLE '||pi_username||'.HHINV_LOAD_3 MODIFY(HE_ID NUMBER(38,0),REC_SEQ_NO NUMBER(38,0))'
-                   --
-                WHEN table_name = 'TEMP_LOAD_2'
-                THEN
-                   'ALTER TABLE '||pi_username||'.TEMP_LOAD_2 MODIFY(HE_ID NUMBER(38,0))'
-                   --
-                ELSE NULL
-           END alter_table
-      BULK COLLECT
-      INTO lt_tables
-      FROM dba_tables
-     WHERE owner = pi_username
-         ;
-    /*
-    ||Run The Statements.
-    */
-    FOR i IN 1..lt_tables.count LOOP
-      IF lt_tables(i) IS NOT NULL
-       THEN
-          EXECUTE IMMEDIATE lt_tables(i);
-      END IF;
-    END LOOP;
-    --
-  END alter_user_tables;
-  --
+  invalid_column EXCEPTION;
+  PRAGMA EXCEPTION_INIT(invalid_column,-00904);
 BEGIN
-  /*
-  ||Get The Users That May Need Updated Versions Of The Load Tables.
-  */
-  get_users;
-  /*
-  ||Loop Through The Identified Users.
-  */
-  FOR i IN 1..lt_users.count LOOP
-    /*
-    ||Update The Users Tables.
-    */
-    alter_user_tables(pi_username => lt_users(i));
-    --
-  END LOOP;
-  --
+  EXECUTE IMMEDIATE 'ALTER TABLE IFF_SECT_STACK MODIFY(ISS_RSE_DESCR VARCHAR2(240))';
+EXCEPTION
+  WHEN invalid_column
+   THEN
+      EXECUTE IMMEDIATE 'ALTER TABLE IFF_SECT_STACK ADD(ISS_RSE_DESCR VARCHAR2(240))';
+END;
+/
+
+
+SET TERM ON
+PROMPT TEMP_2140.RSE_HE_ID
+SET TERM OFF
+
+DECLARE
+  not_exists EXCEPTION;
+  PRAGMA EXCEPTION_INIT(not_exists,-00942);
+BEGIN
+  EXECUTE IMMEDIATE 'DELETE TEMP_2140';
+  EXECUTE IMMEDIATE 'ALTER TABLE TEMP_2140 MODIFY(RSE_HE_ID NUMBER(38,0))';
+EXCEPTION
+  WHEN not_exists
+   THEN
+      EXECUTE IMMEDIATE 'CREATE TABLE TEMP_2140(RSE_HE_ID NUMBER(38,0))';
 END;
 /
 
@@ -431,11 +342,11 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.11   Oct 22 2009 17:18:24   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Oct 22 2009 17:18:24  $
---       Date fetched Out : $Modtime:   Oct 22 2009 17:17:22  $
---       SCCS Version     : $Revision:   1.11  $
+--       Date into SCCS   : $Date:   Oct 30 2009 09:55:32  $
+--       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
+--       SCCS Version     : $Revision:   1.12  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
