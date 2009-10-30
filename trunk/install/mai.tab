@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.13   Oct 23 2009 10:26:02   Rob May  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.14   Oct 30 2009 09:30:08   Rob May  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Oct 23 2009 10:26:02  $
---       Date fetched Out : $Modtime:   Oct 23 2009 10:22:12  $
---       PVCS Version     : $Revision:   2.13  $
+--       Date into PVCS   : $Date:   Oct 30 2009 09:30:08  $
+--       Date fetched Out : $Modtime:   Oct 30 2009 09:18:10  $
+--       PVCS Version     : $Revision:   2.14  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Oct 23  10:20:33 2009 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri Oct 30  09:16:39 2009 by Server Generator 10.1.2.9.28
 
 
 
@@ -2506,8 +2506,8 @@ COMMENT ON TABLE TEMP_DEFECTS IS 'temporary table dropped and re-created by bpr1
 
 PROMPT Creating Table 'TEMP_LOAD_2'
 CREATE TABLE TEMP_LOAD_2
- (SECT_HDR_SEQ_NO NUMBER(8) NOT NULL
- ,HE_ID NUMBER(38) NOT NULL
+ (SECT_HDR_SEQ_NO NUMBER(38,0) NOT NULL
+ ,HE_ID NUMBER(38,0) NOT NULL
  ,LINKCODE VARCHAR2(30) NOT NULL
  ,SECTION_CODE VARCHAR2(5) NOT NULL
  ,INV_CODE VARCHAR2(4) NOT NULL
