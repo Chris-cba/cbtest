@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.10   Nov 02 2009 09:39:20   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.11   Nov 02 2009 11:47:06   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Nov 02 2009 09:39:20  $
---       Date fetched Out : $Modtime:   Oct 23 2009 17:01:12  $
---       SCCS Version     : $Revision:   2.10  $
+--       Date into SCCS   : $Date:   Nov 02 2009 11:47:06  $
+--       Date fetched Out : $Modtime:   Nov 02 2009 11:46:32  $
+--       SCCS Version     : $Revision:   2.11  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.10  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.11  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -5763,7 +5763,7 @@ END expected_and_actual_the_same;
 --
 ---------------------------------------------------------------------------------------------------
 --                                    
-FUNCTION defect_is_AVAILABLE(pi_defect_status   IN defects.def_status_code%TYPE
+FUNCTION defect_is_AMENDABLE(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
                          
 
@@ -5783,7 +5783,7 @@ BEGIN
          );                                         
 
  
-END defect_is_AVAILABLE;
+END defect_is_AMENDABLE;
 --
 ---------------------------------------------------------------------------------------------------
 --

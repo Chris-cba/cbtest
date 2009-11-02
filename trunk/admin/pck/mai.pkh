@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.5   Nov 02 2009 09:39:20   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.6   Nov 02 2009 11:47:06   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Nov 02 2009 09:39:20  $
---       Date fetched Out : $Modtime:   Oct 23 2009 11:06:44  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Nov 02 2009 11:47:06  $
+--       Date fetched Out : $Modtime:   Nov 02 2009 11:46:34  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.5  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.6  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -1024,8 +1024,8 @@ FUNCTION get_wo_wol_ids(pi_works_order_no IN work_orders.wor_works_order_no%TYPE
 --
 -- </PROC>
 -----------------------------------------------------------------------------
---<PROC NAME="defect_is_AVAILABLE">
-FUNCTION defect_is_AVAILABLE(pi_defect_status   IN defects.def_status_code%TYPE
+--<PROC NAME="defect_is_AMENDABLE">
+FUNCTION defect_is_AMENDABLE(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
 --
 -- </PROC>
