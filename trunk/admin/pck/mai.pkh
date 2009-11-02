@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.4   Jul 30 2009 18:34:10   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.5   Nov 02 2009 09:39:20   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Jul 30 2009 18:34:10  $
---       Date fetched Out : $Modtime:   Jul 24 2009 17:06:54  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Nov 02 2009 09:39:20  $
+--       Date fetched Out : $Modtime:   Oct 23 2009 11:06:44  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.4  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.5  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -117,6 +117,17 @@ TYPE child_asset_rec IS RECORD(parent_inv_type nm_inv_types_all.nit_inv_type%TYP
 TYPE child_asset_tab IS TABLE OF child_asset_rec INDEX BY BINARY_INTEGER;
 --
 TYPE wol_id_tab IS TABLE OF work_order_lines.wol_id%TYPE INDEX BY BINARY_INTEGER;
+
+
+TYPE feature_flags_rec IS RECORD(hsc_allow_feature1 hig_status_codes.hsc_allow_feature1%TYPE
+                                ,hsc_allow_feature2 hig_status_codes.hsc_allow_feature2%TYPE
+                                ,hsc_allow_feature3 hig_status_codes.hsc_allow_feature3%TYPE
+                                ,hsc_allow_feature4 hig_status_codes.hsc_allow_feature4%TYPE
+                                ,hsc_allow_feature5 hig_status_codes.hsc_allow_feature5%TYPE
+                                ,hsc_allow_feature6 hig_status_codes.hsc_allow_feature6%TYPE
+                                ,hsc_allow_feature7 hig_status_codes.hsc_allow_feature7%TYPE
+                                ,hsc_allow_feature8 hig_status_codes.hsc_allow_feature8%TYPE
+                                ,hsc_allow_feature9 hig_status_codes.hsc_allow_feature9%TYPE);
 --
 --</TYPE>
 --
@@ -1012,6 +1023,55 @@ FUNCTION get_wo_wol_ids(pi_works_order_no IN work_orders.wor_works_order_no%TYPE
   RETURN wol_id_tab;
 --
 -- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="defect_is_AVAILABLE">
+FUNCTION defect_is_AVAILABLE(pi_defect_status   IN defects.def_status_code%TYPE
+                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="defect_is_INSTRUCTED">
+FUNCTION defect_is_INSTRUCTED(pi_defect_status   IN defects.def_status_code%TYPE
+                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="defect_is_COMPLETED">
+FUNCTION defect_is_COMPLETED(pi_defect_status   IN defects.def_status_code%TYPE
+                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="defect_is_REPAIRED">
+FUNCTION defect_is_REPAIRED(pi_defect_status   IN defects.def_status_code%TYPE
+                           ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="defect_is_SUPERSEDED">
+FUNCTION defect_is_SUPERSEDED(pi_defect_status   IN defects.def_status_code%TYPE
+                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -----------------------------------------------------------------------------
 --

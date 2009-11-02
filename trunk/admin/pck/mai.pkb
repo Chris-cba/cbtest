@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.9   Oct 20 2009 10:44:36   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.10   Nov 02 2009 09:39:20   gjohnson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Oct 20 2009 10:44:36  $
---       Date fetched Out : $Modtime:   Oct 20 2009 10:37:44  $
---       SCCS Version     : $Revision:   2.9  $
+--       Date into SCCS   : $Date:   Nov 02 2009 09:39:20  $
+--       Date fetched Out : $Modtime:   Oct 23 2009 17:01:12  $
+--       SCCS Version     : $Revision:   2.10  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.9  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.10  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -5711,6 +5711,182 @@ END get_wo_wol_ids;
 --
 ---------------------------------------------------------------------------------------------------
 --
+FUNCTION get_feature_flags_rec(pi_domain          IN VARCHAR2
+                              ,pi_status_code     IN hig_status_codes.hsc_status_code%TYPE
+                              ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN feature_flags_rec IS
+                         
+ l_refcursor nm3type.ref_cursor;
+ 
+ l_sql VARCHAR2(2000);
+ l_retval feature_flags_rec;
+ 
+BEGIN
+
+
+  l_sql := 'SELECT hsc_allow_feature1,hsc_allow_feature2,hsc_allow_feature3,hsc_allow_feature4,hsc_allow_feature5,hsc_allow_feature6,hsc_allow_feature7,hsc_allow_feature8,hsc_allow_feature9'||chr(10)
+         ||'  FROM hig_status_codes'||chr(10)
+         ||' WHERE hsc_domain_code = :1'||chr(10)
+         ||'   AND hsc_status_code = :2'||chr(10)
+         ||'   AND :3 BETWEEN NVL(hsc_start_date,:4) AND NVL(hsc_end_date,:5)';
+                                                  
+                                                   
+ OPEN l_refcursor FOR l_sql USING pi_domain, pi_status_code, pi_as_at_date,pi_as_at_date,pi_as_at_date;
+ 
+ FETCH l_refcursor INTO l_retval;
+ CLOSE l_refcursor;
+
+ RETURN(l_retval);
+
+END get_feature_flags_rec; 
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION expected_and_actual_the_same(pi_expected_rec IN feature_flags_rec
+                                     ,pi_actual_rec   IN feature_flags_rec) RETURN BOOLEAN IS
+                                      
+BEGIN
+
+
+ RETURN(  pi_actual_rec.hsc_allow_feature1 = NVL(pi_expected_rec.hsc_allow_feature1,pi_actual_rec.hsc_allow_feature1)
+      AND pi_actual_rec.hsc_allow_feature2 = NVL(pi_expected_rec.hsc_allow_feature2,pi_actual_rec.hsc_allow_feature2)
+      AND pi_actual_rec.hsc_allow_feature3 = NVL(pi_expected_rec.hsc_allow_feature3,pi_actual_rec.hsc_allow_feature3)
+      AND pi_actual_rec.hsc_allow_feature4 = NVL(pi_expected_rec.hsc_allow_feature4,pi_actual_rec.hsc_allow_feature4)
+      AND pi_actual_rec.hsc_allow_feature5 = NVL(pi_expected_rec.hsc_allow_feature5,pi_actual_rec.hsc_allow_feature5)
+      AND pi_actual_rec.hsc_allow_feature6 = NVL(pi_expected_rec.hsc_allow_feature6,pi_actual_rec.hsc_allow_feature6)
+      AND pi_actual_rec.hsc_allow_feature7 = NVL(pi_expected_rec.hsc_allow_feature7,pi_actual_rec.hsc_allow_feature7)
+      AND pi_actual_rec.hsc_allow_feature8 = NVL(pi_expected_rec.hsc_allow_feature8,pi_actual_rec.hsc_allow_feature8)
+      AND pi_actual_rec.hsc_allow_feature9 = NVL(pi_expected_rec.hsc_allow_feature9,pi_actual_rec.hsc_allow_feature9)
+      );
+                                                
+
+END expected_and_actual_the_same;
+--
+---------------------------------------------------------------------------------------------------
+--                                    
+FUNCTION defect_is_AVAILABLE(pi_defect_status   IN defects.def_status_code%TYPE
+                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
+                         
+
+ l_expected_rec feature_flags_rec;
+ 
+BEGIN
+
+
+ l_expected_rec.hsc_allow_feature5 := 'Y';
+
+  RETURN(
+         expected_and_actual_the_same(pi_expected_rec => l_expected_rec
+                                     ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
+                                                                              ,pi_status_code     => pi_defect_status
+                                                                              ,pi_as_at_date      => pi_as_at_date)
+                                      )
+         );                                         
+
+ 
+END defect_is_AVAILABLE;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION defect_is_INSTRUCTED(pi_defect_status   IN defects.def_status_code%TYPE
+                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
+                         
+
+ l_expected_rec feature_flags_rec;
+ 
+BEGIN
+
+
+ l_expected_rec.hsc_allow_feature3 := 'Y';
+
+  RETURN(
+         expected_and_actual_the_same(pi_expected_rec => l_expected_rec
+                                     ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
+                                                                              ,pi_status_code     => pi_defect_status
+                                                                              ,pi_as_at_date      => pi_as_at_date)
+                                      )
+         );                                         
+
+
+
+
+ 
+END defect_is_INSTRUCTED;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION defect_is_COMPLETED(pi_defect_status   IN defects.def_status_code%TYPE
+                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
+                         
+
+ l_expected_rec feature_flags_rec;
+ 
+BEGIN
+
+
+   l_expected_rec.hsc_allow_feature4 := 'Y';
+
+  RETURN(
+         expected_and_actual_the_same(pi_expected_rec => l_expected_rec
+                                     ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
+                                                                              ,pi_status_code     => pi_defect_status
+                                                                              ,pi_as_at_date      => pi_as_at_date)
+                                      )
+         );                                         
+
+ 
+END defect_is_COMPLETED;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION defect_is_REPAIRED(pi_defect_status   IN defects.def_status_code%TYPE
+                           ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
+                         
+
+ l_expected_rec feature_flags_rec;
+
+BEGIN
+
+
+ l_expected_rec.hsc_allow_feature6 := 'Y';
+
+  RETURN(
+         expected_and_actual_the_same(pi_expected_rec => l_expected_rec
+                                     ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
+                                                                              ,pi_status_code     => pi_defect_status
+                                                                              ,pi_as_at_date      => pi_as_at_date)
+                                      )
+         );                                         
+
+ 
+END defect_is_REPAIRED;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION defect_is_SUPERSEDED(pi_defect_status   IN defects.def_status_code%TYPE
+                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
+                         
+
+ l_expected_rec feature_flags_rec;
+ 
+BEGIN
+
+
+ l_expected_rec.hsc_allow_feature8 := 'Y';
+
+  RETURN(
+         expected_and_actual_the_same(pi_expected_rec => l_expected_rec
+                                     ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
+                                                                              ,pi_status_code     => pi_defect_status
+                                                                              ,pi_as_at_date      => pi_as_at_date)
+                                      )
+         );                                         
+
+ 
+END defect_is_SUPERSEDED;
+--
+---------------------------------------------------------------------------------------------------
+--
+
 BEGIN  /* mai - automatic variables */
   /*
     return the Oracle user who is owner of the MAI application
