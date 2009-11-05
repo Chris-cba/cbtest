@@ -1,16 +1,14 @@
------------------------------------------------------------------------------
 --
---   SCCS Identifiers :-
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
 --
---       sccsid           : %W% %G%
---       Module Name      : %M%
---       Date into SCCS   : %E% %U%
---       Date fetched Out : %D% %T%
---       SCCS Version     : %I%
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.4   Nov 05 2009 11:37:44   gjohnson  $
+--       Module Name      : $Workfile:   maitrgcre.sql  $
+--       Date into PVCS   : $Date:   Nov 05 2009 11:37:44  $
+--       Date fetched Out : $Modtime:   Nov 05 2009 11:37:24  $
+--       Version          : $Revision:   2.4  $
+-------------------------------------------------------------------------
 --
------------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
 
 --
 SET ECHO OFF
