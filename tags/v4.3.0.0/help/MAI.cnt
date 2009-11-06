@@ -1,0 +1,466 @@
+:Base MAI.hlp>main
+:Title Highways by Exor v3.2.1.0
+1 Copyright=IDH_copyright
+1 Introductory Material
+2 An Introduction to highways by exor=IDH_an_introduction_to_highways_by_exor
+2 Company Overview=IDH_company_overview
+2 What is highways by exor?=IDH_what_is_highways_by_exor
+1 Getting Help
+2 Getting Help=IDH_getting_help
+2 Using Online Help=IDH_using_online_help
+2 Change the font size in a Help Topic=IDH_change_the_font_size_in_a_help_topic>proc1
+2 Print a Help Topic=IDH_print_a_help_topic>proc1
+2 Notational Conventions=IDH_notational_conventions
+2 Field Characteristics=IDH_field_characteristics
+1 Support Services
+2 Support Services=IDH_support_services
+2 Extended Support Programmes=IDH_extended_support_programmes
+2 Training=IDH_training
+1 Using highways by exor
+2 Menus
+3 highways Launchpad=IDH_highways_launchpad
+3 Menus=IDH_menus
+3 Fastpath=IDH_fastpath
+2 User Configurable Menu's
+3 User Configurable Menu's - Overview=IDH_user_configurable_menu_s
+3 Products - HIG1890
+4 Overview=IDH_products___hig1890___overview
+4 Form Definition=IDH_products___form_definition
+3 Roles - HIG1836
+4 Overview=IDH_roles___overview
+4 Form Definition=IDH_roles___form_definition
+3 SQL Script
+4 Overview=IDH_sql_script___create_usr_menu
+4 Running the SQL Script=IDH_to_run_the_sql_script_create_usr_menu>proc1
+4 View the Role USER_ROLE and associated Modules=IDH_to_view_the_role_user_role_and_associated>proc1
+3 Dummy Menus and Items
+4 Dummy menus and Items=IDH_dummy_menus_and_items
+3 Modules - HIG1880
+4 Overview=IDH_modules___overview
+4 Configuring a User Menu=IDH_configuring_a_user_menu
+4 Configuring a User Menu Item=IDH_configuring_a_user_menu_item
+3 Restricting Access to non-configured items
+4 Overview=IDH_restricting_access_to_non__configured
+4 Roles - (Restricting Access)=IDH_roles____restricting_access
+4 Modules available to a Role=IDH_modules_available_to_a_role
+3 Users - HIG1832
+4 Users - (Assigning Roles)=IDH_users____assigning_roles
+4 Roles=IDH_roles
+3 Configuring GRI Data
+4 Configuring GRI Data for Report Modules.=IDH_configuring_gri_data_for_report_modules
+4 GRI Modules - GRI0220=IDH_gri_modules___gri0220>proc1
+4 GRI Module Parameters - GRI0240=IDH_gri_module_parameters___gri0240>proc1
+4 GRI Parameter Dependencies - GRI0250=IDH_gri_parameter_dependencies___gri0250>proc1
+3 User Configurable Launchpad
+4 User Configurable Launchpad=IDH_user_configurable_launchpad
+2 Forms
+3 Using a highways form=IDH_using_a_highways_form
+3 Function Buttons=IDH_function_buttons
+3 Function Keys=IDH_function_keys
+3 Message and Status Lines=IDH_message_and_status_lines
+3 Alert Box=IDH_alert_box
+3 Using Multiple Forms=IDH_multiple_forms
+2 Querying back existing data
+3 Overview=IDH_querying_back_existing_data___overview
+3 Using Query=IDH_using_query
+3 Query methods=IDH_query_methods
+3 Count Query Hits=IDH_count_query_hits
+3 Reviewing Records=IDH_reviewing_records
+3 Wildcards=IDH_wildcards
+3 Query Where=IDH_query_where
+2 List of Values
+3 Overview=IDH_list_of_values___overview
+3 Using List of Values=IDH_using_list_of_values
+3 Restricting the content of a list=IDH_restricting_the_content_of_the_list
+2 Dates
+3 Dates=IDH_dates
+2 Reports
+3 Running Reports=IDH_running_reports
+3 Report Previewer=IDH_report_previewer
+1 Inventory management
+2 Inventory Reference Data
+3 General Information=IDH_general_information
+3 Prerequisites=IDH_prerequisites
+3 Hierarchical Inventory=IDH_hierarchical_inventory
+3 Creating New Inventory Items - Overview=IDH_creating_new_inventory_items___overview
+3 Creating new Asset Types - Examples=IDH_creating_new_asset_types___examples>proc1
+3 XSP Values - NET1910
+4 Overview=IDH_xsp_values___overview
+4 Form Definition=IDH_xsp_values___form_definition
+3 Inventory Security - MAI1410
+4 Overview=IDH_inventory_security___mai1410
+4 Form Definition=IDH_inventory_security__mai1410____form
+3 Inventory Control Data - MAI1400
+4 Overview=IDH_inventory_control_data___overview
+4 Form Definition=IDH_inventory_control_data_form_definition
+4 Attributes=IDH_inventory_control_data___attributes
+4 Attribute Domains=IDH_inventory_control_data___attribute
+4 DCD Attributes=IDH_inventory_control_data___dcd_attributes
+4 Examples=IDH_creating_new_asset_types___examples>proc1
+3 Inventory Security - MAI1410
+4 Overview=IDH_n1_inventory_security___mai1410
+4 Form Definition=IDH_n1_inventory_security__mai1410
+3 Inventory XSP's - MAI1920
+4 Overview=IDH_inventory_xsps___overview
+4 Inventory XSP's - Form definition=IDH_inventory_xsp_s___form_definition
+4 Step By Step Guide=IDH_associate_inventory_xsp_s>proc1
+3 Lamp Configurations - MAI1430
+4 Overview=IDH_lamp_configurations___overview
+4 Form Definition=IDH_lamp_configurations___form_definition
+2 Bulk Loading Inventory Data
+3 Prerequisites=IDH_prerequisites___bulk_loading_inventory
+3 Bulk Inventory Load Process - Overview=IDH_bulk_inventory_load_process___overview
+3 Splitting Oversized Inventory Files=IDH_splitting_oversized_inventory_files
+3 Load Inventory Stage 1 - MAI2300
+4 Overview=IDH_load_inventory___stage_1___overview
+4 Parameters=IDH_load_inventory_stage_1___parameters
+3 Load Inventory Stage 2 - MAI2110
+4 Overview=IDH_load_inventory____stage_2____overview
+4 Parameters=IDH_load_inventory__stage_2____parameters
+3 Correct Inspection Load Errors - MAI2120
+4 Overview=IDH_correct_inventory_load_errors___overview
+4 Form Definition=IDH_correct_inventory_load_errors___form
+4 Inventory Details - Section/Inventory Units=IDH_inventory_details___section_invento
+4 Inventory Item Errors=IDH_inventory_item_errors
+4 Full Inventory Item Details=IDH_full_inventory_item_details
+4 Unknown Inv Item Types=IDH_unknown_inv_item_types
+3 Inventory Load File Specification
+4 Inventory Loader File Specification=IDH_inventory_loader_file_specification
+3 Download Inventory Survey Data to DCD - MAI2500
+4 Download Inventory Survey Data to DCD - MAI2500=IDH_download_inventory_survey_data_to
+2 Inventory Maintenance
+3 Product Options=IDH_product_options
+3 Inventory Items - MAI2310
+4 Overview=IDH_inventory_items__overview
+4 Query Inventory Item Attributes=IDH_query_inventory_item_attributes
+4 Form Definition=IDH_inventory_items___form_definition
+4 Inventory Item Attributes=IDH_inventory_item_attributes
+4 Close Inventory=IDH_close_inventory
+4 Unclose Inventory=IDH_unclose_inventory
+4 Drill Down - Hierarchical Inventory=IDH_drill_down___hierarchical_inventory
+4 Asset Query=IDH_asset_query
+4 Hierarchy Browser=IDH_hierarchy_browser
+4 Browser Function Buttons=IDH_browser_function_buttons
+4 Browser - Viewing Item Details=IDH_browser___viewing_item_details
+4 Query Asset=IDH_query_asset
+4 Parameter Based Inquiry (PBI) - Overview=IDH_parameter_based_inquiry__pbi____overview
+3 Parameter Based Inquiry - MAI7040
+4 Overview=IDH_parameter_based_inquiry__pbi____overview
+4 Query Information=IDH_pbi___query_information
+4 Inventory Criteria=IDH_pbi___inventory_criteria
+4 Attribute Criteria=IDH_pbi___attribute_criteria
+4 Detail Report=IDH_pbi___detail_report
+4 Summary Report=IDH_pbi___summary_report
+3 Reverse Inventory Chainage - MAI1060
+4 Overview=IDH_reverse_inventory_chainage___overview
+4 Form Definition=IDH_reverse_inventory_chainage____form
+4 Cross Sectional Positions=IDH_reverse_inventory_chainage___cross
+3 Delete Global Inventory - MAI2130
+4 Overview=IDH_delete_global_inventory___overview
+4 Form Definition=IDH_delete_global_inventory___form_definition
+4 Inventory Items=IDH_delete_global_inventory___inventory
+3 Electrical Inventory - MAI2150
+4 Overview=IDH_electrical_inventory___overview
+4 Form Definition=IDH_electrical_inventory___form_definition
+3 Query Network/Inventory Data - MAI2140
+4 Overview=IDH_query_network_invento_data___overview
+4 Form Definition (Groups)=IDH_query_network_invento_data___form
+4 Form Definition (Sections)=IDH_n1_query_network_invento_data___form
+4 Inventory Summary (Section)=IDH_query_network_invento_data___inventory
+4 Inventory Summary (Group)=IDH_n2_query_network_invento_data___inventory
+3 Copy / Move Inventory - MAI2312
+4 Copy/Move Inventory=IDH_copy_move_inventory___mai2312
+2 Linear Referencing
+3 Overview=IDH_linear_referencing___overview
+3 Product Options=IDH_product_options___linear_referencing
+3 User Options=IDH_user_options___linear_referencing
+3 Units and Conversions - HIG1820
+4 Overview=IDH_units_and_conversions____overview
+4 Form Definition=IDH_units_and_conversions___form_definition
+3 Inventory Colour Map - MAI1440
+4 Overview=IDH_inventory_colour_map___overview
+4 Form Definition=IDH_inventory_colour_map___form_definition
+4 How to Define an Asset Colour=IDH_how_to_define_an_asset_colour>proc1
+3 Road Data - NET1150
+4 Overview=IDH_road_data___overview
+4 Form Definition=IDH_road_data___form_definition
+4 Road Attributes=IDH_road_attributes
+4 Connected Sections=IDH_connected_sections
+3 Assets on a Route - MAI2350
+4 Overview=IDH_asset_on_a_route___overview
+4 Form Definition=IDH_assets_on_a_route___form_definition
+4 Asset Reference Window=IDH_asset_reference_window
+4 Unit Converter=IDH_unit_converter
+4 Route Offsets (Lin. Ref. button)=IDH_route_offsets__lin__ref__button
+3 Asset Strip Map - MAI2340
+4 Overview=IDH_asset_strip_map___overview
+4 Strip Map=IDH_strip_map
+4 Zooming=IDH_zooming
+4 Colour Palette=IDH_colour_palette
+4 Position=IDH_position
+4 Connections=IDH_connections
+1 Maintenance Manager
+2 General Information - Maintenance Manager=IDH_general_information___maintenance
+2 Prerequisites - Maintenance Manager=IDH_prerequisites___maintenance_manager
+2 Defect Reference Data
+3 Activities - MAI1200
+4 Overview=IDH_activities__mai1200____overview
+3 Default Section Intervals Calculation - MAI1230
+4 Overview / Form Definition=IDH_default_section_intervals_calculation
+3 Default Section Intervals - Override - MAI1240
+4 Overview / Form Definition=IDH_default_section_intervals___override
+3 Local Activity Frequencies - MAI1210
+4 Overview / Form Definition=IDH_local_activity_frequencies__mai1210
+3 Activity Groups - MAI1205
+4 Overview / Form Definition=IDH_activity_groups__mai1205____overview
+3 Defect Control Data - MAI1300
+4 Overview / Form Definition=IDH_defect_control_data__mai1300____overview
+4 How to create a new Defect Type=IDH_how_to_create_a_new_defect_type>proc1
+3 Treatment Data - MAI1315
+4 Overview / Form Definition=IDH_treatment_data__mai1315____overview
+4 How to Create a Treatment=IDH_how_to_create_a_treatment>proc1
+3 Treatment Models - MAI3814
+4 Overview=IDH_treatment_models__mai3814____overview
+4 Form Definition=IDH_treatment_models__mai3814____form
+3 Defect Priorities
+4 Overview / Form Definition=IDH_defect_priorities__mai3812____overview
+3 DefaultTreatments - MAI3150
+4 Overview / Form Definition=IDH_default_treatments__mai3150____overview
+3 Standard Item Sections and Sub-Sections - MAI3886
+4 Overview / Form Definition=IDH_standard_item_sections_and_sub_sections
+3 Standard Items - MAI3888
+4 Overview / Form Definition=IDH_standard_items__mai3888____overview
+4 How to create a Standard Item=IDH_how_to_create_a_standard_item>proc1
+3 Downloading Data to DCD
+4 Downloading data from highways by exor to an external file=IDH_downloading_data_from_highways_by
+4 Download Network Data for DCD Inspections - MAI2224=IDH_download_network_data_for_dcd_inspections
+4 Download Static Reference Data for DCD Inspections - MAI2220=IDH_download_static_reference_data_for
+4 Download Standard Item Data for DCD Inspections - MAI2222=IDH_download_standard_item_data_for_dcd
+4 Download Inspections by Assets - MAI3863=IDH_download_inspections_by_assets___mai3863
+4 Remove Phase 1 Loaded Batches=IDH_remove_phase_1_loaded_batches
+3 Asset Activities - MAI3632
+4 Details=Asset_Activities_MAI3632>main
+3 Budget Allocation - MAI3630
+4 Budget Allocations - MAI3630=Budget_Allocations_MAI3630
+2 Defect and Inspection Management
+3 Product Options - Defect / Inspection Management=IDH_product_options___defect___inspection
+3 Defect Status Codes=IDH_defect_status_codes
+3 Bulk Download of Inspection Data
+4 Overview=IDH_bulk_download_of_inspection_data
+4 Load Bulk Inspection Data - Stage 1- MAI2200C=IDH_load_bulk_inspection_data___stage
+4 Load Bulk Inspection Data - Stage 2 - MAI2200D=IDH_n1_load_bulk_inspection_data___stage
+4 Correct Inspection Load Errors - MAI2250=IDH_correct_inspection_load_errors___mai2250
+4 Defective Roadstud Reporting=IDH_defective_roadstud_reporting
+3 Inspections - MAI3808
+4 Overview=IDH_inspections__mai3808____overview
+4 Form Definition=IDH_inspections__mai3808____form_definition
+4 Inspection Summary=IDH_inspection_summary
+4 Defects on Inspection=IDH_defects_on_inspection
+4 Defect Summary Details=IDH_defect_summary_details
+4 Repairs for a Defect=IDH_repairs_for_a_defect
+4 BOQ Items for a Repair=IDH_boq_items_for_a_repair
+4 Manually Completing a Defect.=IDH_manually_completing_a_defect
+4 How to Create a Manual Inspection=IDH_how_to_create_a_manual_inspection>proc1
+4 How to view existing defects=IDH_how_to_view_existing_defects
+3 Inspections by Group - MAI3899
+4 Overview=IDH_inspections_by_group__mai3899____overview
+4 Form Definition=IDH_inspections_by_group__mai3899____form
+4 Step by Step Guide=IDH_how_to_use_inspections_by_group>proc1
+3 Delete Inspections - MAI2470
+4 Overview / Form Definition=IDH_delete_inspections__mai2470____overview
+3 Defects - MAI3806
+4 Overview=IDH_defects__mai3806____overview
+4 Defect Summary=IDH_defect_summary
+4 How to view existing defects=IDH_how_to_view_existing_defects
+3 View Defects By Section
+4 Over / Form Definition=IDH_view_defects_by_section__mai3810
+4 How to view Defects by Road Section=IDH_how_to_view_defects_by_road_section>proc1
+3 Match Duplicate Defects - MAI2730
+4 Overview / Form Definition=IDH_match_duplicate_defects___mai2730
+3 Unmatch Duplicate Defects - MAI2760
+4 Overview / Form Definition=IDH_unmatch_duplicate_defects__mai2760
+3 Batch Setting of Repair Date - MAI2775
+4 Overview / Form Definition=IDH_batch_setting_of_repair_dates___mai2775
+3 Response to Notices - MAI3816
+4 Overview / Form Definition=IDH_responses_to_notices___mai3816
+4 Step by Step Guide=IDH_n1_responses_to_notices___mai3816>proc1
+3 Defect / Inspection Reports
+4 Inspection Report - MAI3900=IDH_inspection_report___mai3900
+4 Defects by Defect Type - MAI5027=IDH_defects_by_defect_type___mai5027
+4 Defect Details - MAI3902=IDH_defect_details___mai3902
+4 Defect Details (Works Order) - MAI3470=IDH_defect_details__works_order____mai3470
+4 Defect Details (At-a-Glance) - MAI5100=IDH_defect_details__at_a_glance____mai5100
+4 Defect Details (Strip Plan) - MAI5125=IDH_defect_details__strip_plan____mai5125
+4 Inspection Schedules - MAI3100=IDH_inspection_schedules___mai3100
+4 Detailed Inspection Work Done - MAI5025=IDH_detailed_inspection_work_done___mai5025
+4 Defective Advisory Roadstuds - MAI2210=IDH_defective_advisory_roadstuds___mai2210
+4 Roadstud Defects not Set to Mandatory or Advisory - MAI3905=IDH_roadstud_defects_not_set_to_mandatory
+4 Insurance Claims - MAI2790=IDH_insurance_claims___mai2790
+4 Defect Notices - MAI3904=IDH_defect_notices___mai3904
+4 Notifiable Defects - MAI3912=IDH_notifiable_defects___mai3912
+4 Notifiable Defects Summary - MAI3916=IDH_notifiable_defects_summary___mai3916
+2 Budgetting
+3 Flow Diagram of Budget Process=IDH_flow_diagram_of_budget_process
+3 Product Options - Budgets=IDH_product_options___budgets
+3 Financial Years - MAI3664
+4 Overview / Form Definition=IDH_financial_years___mai3664
+3 Item Code Breakdowns - MAI1940
+4 Overview=IDH_item_code_breakdowns__mai1940____overview
+4 Form Definition=IDH_item_code_breakdowns__mai1940____form
+4 Step by Step=IDH_item_code_breakdown___step_by_step>proc1
+3 Budgets - MAI3660
+4 Overview=IDH_budgets__mai3660____overview
+4 Form Definition=IDH_budgets__mai3660____form_definition
+4 Step by Step=IDH_creating_the_budget_details>proc1
+3 Generate Budgets for Next Year - MAI3662
+4 Overview / Form Definition=IDH_generate_budgets_for_next_year___mai3662
+3 Job Size Codes - MAI3666
+4 Overview / Form Definition=IDH_job_size_codes___mai3666
+3 VAT Rates - MAI3846
+4 Overview / Form Definition=IDH_vat_rates___mai3846
+3 Cost Centre Codes - MAI3844
+4 Overview / Form Definition=IDH_cost_centre_codes___mai3844
+3 IHMS Allocated Amounts - MAI1930
+4 Overview / Form Definition=IDH_ihms_allocated_amounts___mai1930
+3 Budget Reports
+4 Print Budget Exceptions Report - MAI3690=IDH_print_budget_exceptions_report___mai3690
+4 Print Cost Code Exceptions Report - MAI3692=IDH_print_cost_code_exceptions_report
+4 Print Item Code Breakdowns - MAI2780=IDH_print_item_code_breakdowns___mai2780
+2 Contracts
+3 Product Options=IDH_n1_product_options
+3 Contractors - MAI3881
+4 Overview / Form Definition=IDH_contractors___mai3881
+4 How to record details of a Contractor=IDH_how_to_record_details_of_a_contractor>proc1
+3 Contracts - MAI3880
+4 Overview / Form Definition=IDH_contracts___mai3880
+4 Contract Items=IDH_contract_items
+4 Priority Surcharges=IDH_priority_surcharges
+4 How to record details of a Contract=IDH_how_to_record_details_of_a_contract>proc1
+3 Copy a Contract - MAI3882
+4 Overview / Form Definition=IDH_copy_a_contract___mai3882
+3 Bulk Update of Contract Items - MAI3884
+4 Overview / Form Definition=IDH_bulk_update_of_contract_items___mai3884
+3 Discount Groups - MAI3624
+4 Overview=IDH_discount_groups___mai3624
+4 Form Definition=IDH_discount_group__mai3624____form_definition
+4 Impact Analysis=IDH_discount_groups__mai3624____impact
+3 Contract Reports
+4 Contract Details Report - MAI3980=IDH_contract_details_report___mai3980
+4 List of Contract Rates - MAI3984=IDH_list_of_contract_rates___mai3984
+4 List of Contract Liabilities - MAI3982=IDH_list_of_contract_liabilities___mai3982
+4 Summary of Expenditure by Contract - MAI3948=IDH_summary_of_expenditure_by_contract
+4 List of Contractors - MAI3981=IDH_list_of_contractors___mai3981
+4 Contractor Performance Report - MAI3954=IDH_contractor_performance_report___mai3954
+2 Works Ordering
+3 Prerequisites=IDH_prerequisites___works_ordering
+3 Works Order Cost Limitations=IDH_works_order_cost_limitations
+3 Types of Works Order=IDH_types_of_works_order
+3 Client / Contractor split=IDH_client___contractor_split
+3 Status Codes=IDH_status_codes___works_order_lines
+3 Cyclic Maintenance=IDH_cyclic_maintenance____general_information
+3 Works Order Auditing Set-Up - MAI3803
+4 Works Order Auditing Set-up=IDH_works_order_auditing_set_up___mai3803
+3 Works Order (Defects) - MAI3800
+4 Overview=IDH_works_orders__defects____mai3800
+4 Form Definition=IDH_works_orders__defects____form_definition
+4 Work Order Lines=IDH_work_order_lines
+4 Selection Criteria=IDH_selection_criteria
+4 BOQ Items=IDH_boq_items
+4 BOQ Details=IDH_boq_details
+4 Adding a Percentage Item to a Works Order Line=IDH_adding_a_percentage_item_to_a_works
+4 Percentage Items - Computation Method=IDH_percentage_items___computation_method
+4 Adding Non-Contract Items to a Works Order=IDH_adding_non_contract_items_to_a_works
+4 Contracts and Rates=IDH_contracts_and_rates
+4 Works Order Audit=IDH_works_order_audit
+4 Making Interim Payments=IDH_making_interim_payments
+4 Completing a Works Order=IDH_completing_a_works_order
+4 Completing a Works Order Line with an Interim Payment=IDH_completing_a_works_order_line_with
+4 Changing a Completed Works Order=IDH_changing_a_completed_works_order
+4 Standard Item Totals=IDH_standard_item_totals
+4 Contractor Totals=IDH_contractor_totals
+4 Programme Details=IDH_programme_details
+4 Invoices=IDH_invoices
+4 How to raise a Defects Works Order=IDH_how_to_raise_a_defects_works_order>proc1
+4 How to add BOQ items to Defects on a Works Order=IDH_how_to_add_boq_items_to_defects_on>proc1
+4 How to Complete defects and works orders=IDH_how_to_complete_defects_and_works>proc1
+3 Works Orders (Other Works) - MAI3800
+4 Non-Defect Works Orders=IDH_works_orders__other_works____mai3800
+4 How to raise a Works Order for Non-Defect Work=IDH_how_to_raise_a_works_order_for_non_defect
+3 Non Highways Related Works Orders
+4 Non-Highways Related Works=IDH_works_orders_for_non_highways_related
+3 Works Orders (Contractor) - MAI3802
+4 Overview / Form Definition=IDH_works_orders__contractor____mai3802
+4 Work Orders Details=IDH_contractor_work_orders_details
+4 Work Order Lines=IDH_contractor_work_order_lines
+4 Works Order - BOQ Items=IDH_contractor_works_order___boq_items
+4 BOQ Details window=IDH_contractor_works_order___boq_details
+4 Standard Item Totals window=IDH_contractor_works_order___standard
+4 Completing a Contractor Works Order=IDH_completing_a_contractor_works_order
+3 Works Order Authorisation - MAI3848
+4 Works Order Authorisation=IDH_works_order_authorisation___mai3848
+3 Cancel Works Orders - MAI3610
+4 Cancel Works Orders=IDH_cancel_works_orders___mai3610
+3 Quality Inspection Results - MAI3820
+4 Quality Inspection Results=IDH_quality_inspection_results___mai3820
+3 Works Order Reports
+4 Work Order (Unpriced) - MAI3485=IDH_work_order__unpriced____mai3485
+4 Work Order (Priced) - MAI3480=IDH_work_order__priced____mai3480
+4 BOQ Work Order (Defects) - MAI3800=IDH_boq_work_order__defects____mai3800
+4 Work Order (Detail) - MAI3500=IDH_work_order__detail____mai3500
+4 Works Order Summary - MAI3505=IDH_works_order_summary___mai3505
+4 Work Order (Strip Plan) - MAI5130=IDH_work_order__strip_plan____mai5130
+4 Review Raised Works Orders - MAI3490=IDH_review_raised_works_orders___mai3490
+4 Defects not yet Instructed - MAI3922=IDH_defects_not_yet_instructed___mai3922
+4 Summary of Defects Not Yet Instructed - MAI3920=IDH_summary_of_defects_not_yet_instructed
+4 Instructed Work by Status - MAI3924=IDH_instructed_work_by_status___mai3924
+4 Instructed Defects Due for Completion - MAI3926=IDH_instructed_defects_due_for_completion
+4 Inventory Updates - MAI3930=IDH_inventory_updates___mai3930
+4 Work for Quality Inspection - MAI3950=IDH_work_for_quality_inspection___mai3950
+4 Quality Inspection Performance - MAI3952=IDH_quality_inspection_performance___mai3952
+4 Admin Unit Performance - MAI3956=IDH_admin_unit_performance___mai3956
+2 Cyclic Maintenance
+3 General Information=IDH_cyclic_maintenance____general_information
+3 Cyclic Maintenenace Inventory Rules - MAI3626
+4 Overview / Form Definition=IDH_cyclic_maintenance_inventory_rules
+3 Cyclic Maintenance Schedules - MAI3860
+4 Overview=IDH_cyclic_maintenance_schedules__mai3860
+4 Form Definition=IDH_cyclic_maintenance_schedules___form
+4 Schedule Items=IDH_schedule_items
+4 Calculating the Work Quantity=IDH_calculating_the_work_quantity
+4 Clearing Defects with Cyclic Maintenance Works Orders=IDH_clearing_defects_with_cyclic_maintenance
+3 Cyclic Maintenance Schedules By Section - MAI3862
+4 Overview / Form Definition=IDH_cyclic_maintenance_schedules_by_section
+3 Works Order (Cyclic) - MAI3801
+4 Overview=IDH_works_order__cyclic____mai3801
+4 Form Definition=IDH_work_order___form_definition
+4 Work Order Lines=IDH_works_orders__cyclic_____work_order
+4 Select Schedules=IDH_select_schedules
+4 BOQ Items=IDH_n1_boq_items
+4 Adding Non-Contract Items to a Works Order=IDH_n1_adding_non_contract_items_to_a
+4 Works Order Audit=IDH_works_order_audit
+4 BOQ Details=IDH_boq_details
+4 Contracts and Rates=IDH_n1_contracts_and_rates
+4 Making Interim Payments=IDH_making_interim_payments
+4 Completing a Works Order (Cyclic)=IDH_completing_a_works_order__cyclic
+4 Changing a Completed Works Order (Cyclic)=IDH_changing_a_completed_works_order__cyclic
+3 View Cyclic Maintenance Work - MAI3804
+4 Overiew / Form Definition=IDH_view_cyclic_maintenance_work___mai3804
+3 Maintenance Report - MAI3250
+4 Overview / Form Definition=IDH_maintenance_reports___mai3250
+3 Valid for Maintenance Rules - MAI3440
+4 Overview / Form Definition=IDH_valid_for_maintenance_rules___mai3440
+3 Related Maintenance Activities - MAI3628
+4 Overview / Form Definition=IDH_related_maintenance_activities___mai3628
+3 Cyclic Maintenance Reports
+4 BOQ Work Order (Cyclic) - MAI3907=IDH_boq_work_order__cyclic____mai3907
+4 Cyclic Maintenance Done - MAI5032=IDH_cyclic_maintenance_done___mai5032
+4 Cyclic Maintenance Schedules - MAI3960=IDH_cyclic_maintenance_schedules___mai3960
+2 Payments
+3 Deselect Items for Payment - MAI3842
+4 Overview / Form Definition=IDH_deselect_items_for_payment___mai3842
+4 How to  Deselecting Items for payment=IDH_how_to__deselecting_items_for_payment>proc1
+3 Payment Run - MAI3840
+4 Overview / Form Definition=IDH_payment_run___mai3840
+4 How to Perform the payment run=IDH_how_to_perform_the_payment_run>proc1
+3 View Payment Run Details
+4 Overview / Form Definition=IDH_query_payment_run_details___mai3940
