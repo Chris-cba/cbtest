@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.4   Oct 06 2009 09:21:38   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.5   Nov 20 2009 11:12:18   mhuitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Oct 06 2009 09:21:38  $
---       Date fetched Out : $Modtime:   Oct 06 2009 09:20:38  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Nov 20 2009 11:12:18  $
+--       Date fetched Out : $Modtime:   Nov 19 2009 14:01:10  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.4  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.5  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -499,80 +499,130 @@ END update_defect_date;
   exception when no_such_sequence then
     return null;
   end;
-
-  function create_interim_payment(p_wol_id work_order_lines.wol_id%type
-                                 ,p_act_cost in work_order_lines.wol_act_cost%type)
-  return boolean is
-
-  cursor get_all_boqs is
-  select boq_id, nvl(boq_act_cost,0) boq_act_cost
-  from   boq_items
-  where  boq_wol_id = p_wol_id;
-
-  cursor get_last_interim(p_boq_id wol_interim_payments.WIP_BOQ_ID%type) is
-  select wip_int_id, wip_status
-  from   wol_interim_payments
-  where  wip_wol_id = p_wol_id
-  and    wip_boq_id = p_boq_id
-  order by wip_int_id desc;
-
-  cursor get_user is
-  select hus_user_id
-  from   hig_users
-  where  hus_username = user;
-
-  user_id get_user%rowtype;
-  last_int get_last_interim%rowtype;
-  l_act_cost work_order_lines.wol_act_cost%type;
-  begin
-
-    -- fail if the new valuation falls below the previous valuation
-    if p_act_cost < claimed_so_far(p_wol_id) then
-       return FALSE;
-    end if;
-
-    open  get_user;
-    fetch get_user into user_id;
-    close get_user;
-
-    for boq_rec in get_all_boqs loop
-
-      open  get_last_interim(boq_rec.boq_id);
-      fetch get_last_interim into last_int;
-
-      if (get_last_interim%notfound) then
-         last_int.wip_int_id := 0;
-         last_int.wip_status := '@';
-      end if;
-
-      -- now chack the status of the last interim
-      -- if it hasn't been paid then update the record
-      if (last_int.wip_status = 'U') then
-         update wol_interim_payments
-         set    wip_amount = boq_rec.boq_act_cost
-               ,wip_user   = user_id.hus_user_id
-               ,wip_date   = sysdate
-         where  wip_int_id = last_int.wip_int_id
-         and    wip_wol_id = p_wol_id
-         and    wip_boq_id = boq_rec.boq_id;
-      else
-         -- insert new payment as last has been paid
-         insert into wol_interim_payments
-         (wip_wol_id, wip_boq_id, wip_int_id,
-          wip_amount, wip_user, wip_date, wip_status)
-          values
-         (p_wol_id, boq_rec.boq_id, last_int.wip_int_id+1,
-          boq_rec.boq_act_cost, user_id.hus_user_id, sysdate, 'U');
-
-      end if;
-      close get_last_interim;
-    end loop;
-
-    return TRUE;
-  end;
-
-  -- function to reverse out any unpaid interim payments
-  -- when work order line is set to INSTRUCTED from an interim status
+--
+------------------------------------------------------------------------------
+--
+FUNCTION create_interim_payment(p_wol_id work_order_lines.wol_id%TYPE
+                               ,p_act_cost IN work_order_lines.wol_act_cost%TYPE)
+RETURN BOOLEAN IS
+  --
+  CURSOR get_all_boqs
+      IS
+  SELECT boq_id
+        ,NVL(boq_act_cost,0) boq_act_cost
+    FROM boq_items
+   WHERE boq_wol_id = p_wol_id
+       ;
+  --
+  CURSOR get_last_interim(p_boq_id wol_interim_payments.WIP_BOQ_ID%TYPE)
+      IS
+  SELECT wip_int_id
+        ,wip_status
+    FROM wol_interim_payments
+   WHERE wip_wol_id = p_wol_id
+     AND wip_boq_id = p_boq_id
+   ORDER
+      BY wip_int_id DESC
+       ;
+  --
+  CURSOR get_user
+      IS
+  SELECT hus_user_id
+    FROM hig_users
+   WHERE hus_username = USER
+       ;
+  --
+  user_id        get_user%ROWTYPE;
+  last_int       get_last_interim%ROWTYPE;
+  l_act_cost     work_order_lines.wol_act_cost%TYPE;
+  lv_retval      BOOLEAN := TRUE;
+  lv_neginterim  hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('NEGINTERIM'),'N');
+  --
+BEGIN
+  /*
+  ||If The Product Option Is Not Set To 'Y'
+  ||Make Sure That The New Valuation Is Not
+  ||Lower Than Has Been Paid So Far.
+  */
+  IF lv_neginterim != 'Y'
+   THEN
+      IF p_act_cost < claimed_so_far(p_wol_id)
+       THEN
+          lv_retval := FALSE;
+      END IF;
+  END IF;
+  --
+  IF lv_retval
+   THEN
+      --
+      OPEN  get_user;
+      FETCH get_user
+       INTO user_id;
+      CLOSE get_user;
+      --
+      FOR boq_rec IN get_all_boqs LOOP
+        --
+        OPEN  get_last_interim(boq_rec.boq_id);
+        FETCH get_last_interim
+         INTO last_int;
+        --
+        IF get_last_interim%NOTFOUND
+         THEN
+           last_int.wip_int_id := 0;
+           last_int.wip_status := '@';
+        END IF;
+        /*
+        ||Now chack the status of the last interim
+        ||if it hasn't been paid then update the record
+        ||otherwise create a new one.
+        */
+        IF last_int.wip_status = 'U'
+         THEN
+            --
+            UPDATE wol_interim_payments
+               SET wip_amount = boq_rec.boq_act_cost
+                  ,wip_user   = user_id.hus_user_id
+                  ,wip_date   = SYSDATE
+             WHERE wip_int_id = last_int.wip_int_id
+               AND wip_wol_id = p_wol_id
+               AND wip_boq_id = boq_rec.boq_id
+                 ;
+            --
+        ELSE
+            --
+            INSERT
+              INTO wol_interim_payments
+                  (wip_wol_id
+                  ,wip_boq_id
+                  ,wip_int_id
+                  ,wip_amount
+                  ,wip_user
+                  ,wip_date
+                  ,wip_status)
+            VALUES(p_wol_id
+                  ,boq_rec.boq_id
+                  ,last_int.wip_int_id+1
+                  ,boq_rec.boq_act_cost
+                  ,user_id.hus_user_id
+                  ,SYSDATE
+                  ,'U')
+                 ;
+            --
+        END IF;
+        --
+        CLOSE get_last_interim;
+        --
+      END LOOP;
+  END IF;
+  --
+  RETURN lv_retval;
+  --
+END create_interim_payment;
+--
+------------------------------------------------------------------------------
+--
+-- function to reverse out any unpaid interim payments
+-- when work order line is set to INSTRUCTED from an interim status
 
   procedure clear_interim_payment(p_wol_id in work_order_lines.wol_id%type)
   is
