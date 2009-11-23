@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.11   Nov 02 2009 11:47:06   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.12   Nov 23 2009 15:47:40   cbaugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Nov 02 2009 11:47:06  $
---       Date fetched Out : $Modtime:   Nov 02 2009 11:46:32  $
---       SCCS Version     : $Revision:   2.11  $
+--       Date into SCCS   : $Date:   Nov 23 2009 15:47:40  $
+--       Date fetched Out : $Modtime:   Nov 23 2009 09:13:06  $
+--       SCCS Version     : $Revision:   2.12  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.11  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.12  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -2325,11 +2325,14 @@ FUNCTION create_repair (
     ,p_action_cat     IN  repairs.rep_action_cat%TYPE
     ,p_rse_he_id      IN  repairs.rep_rse_he_id%TYPE
     ,p_treat_code     IN  repairs.rep_tre_treat_code%TYPE
-    ,p_acty_area_code     IN  repairs.rep_atv_acty_area_code%TYPE
+    ,p_acty_area_code IN  repairs.rep_atv_acty_area_code%TYPE
     ,p_date_due       IN  repairs.rep_date_due%TYPE
-    ,p_descr        IN  repairs.rep_descr%TYPE
-    ,p_local_date_due     IN  repairs.rep_local_date_due%TYPE
-    ,p_old_due_date     IN  repairs.rep_old_due_date%TYPE
+    ,p_descr          IN  repairs.rep_descr%TYPE
+    ,p_local_date_due IN  repairs.rep_local_date_due%TYPE
+    ,p_old_due_date   IN  repairs.rep_old_due_date%TYPE
+    ,p_date_completed IN  repairs.rep_date_completed%TYPE default NULL
+    ,p_completed_hrs  IN  repairs.rep_completed_hrs%TYPE default NULL
+    ,p_completed_mins IN  repairs.rep_completed_mins%TYPE default NULL
 ) RETURN NUMBER IS
 
   l_today   DATE := SYSDATE;
@@ -2364,9 +2367,9 @@ BEGIN
     ,p_date_due
     ,l_today
     ,'N'
-    ,''
-    ,''
-    ,''
+    ,DECODE(p_action_cat, 'I', p_completed_hrs, NULL)
+    ,DECODE(p_action_cat, 'I', p_completed_mins, NULL)
+    ,DECODE(p_action_cat, 'I', p_date_completed, NULL)
     ,p_descr
     ,p_local_date_due
     ,p_old_due_date

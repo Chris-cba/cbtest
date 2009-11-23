@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.6   Nov 02 2009 11:47:06   gjohnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.7   Nov 23 2009 15:47:40   cbaugh  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Nov 02 2009 11:47:06  $
---       Date fetched Out : $Modtime:   Nov 02 2009 11:46:34  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Nov 23 2009 15:47:40  $
+--       Date fetched Out : $Modtime:   Nov 23 2009 09:11:58  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.6  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.7  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -508,10 +508,13 @@ FUNCTION create_defect(pi_insp_rec           IN activities_report%ROWTYPE
 		,p_rse_he_id		IN	repairs.rep_rse_he_id%TYPE
 		,p_treat_code		IN	repairs.rep_tre_treat_code%TYPE
 		,p_acty_area_code	IN	repairs.rep_atv_acty_area_code%TYPE
-		,p_date_due		IN	repairs.rep_date_due%TYPE
-		,p_descr		IN	repairs.rep_descr%TYPE
+		,p_date_due		    IN	repairs.rep_date_due%TYPE
+		,p_descr		    IN	repairs.rep_descr%TYPE
 		,p_local_date_due	IN	repairs.rep_local_date_due%TYPE
-		,p_old_due_date		IN	repairs.rep_old_due_date%TYPE) RETURN NUMBER;
+		,p_old_due_date		IN	repairs.rep_old_due_date%TYPE
+        ,p_date_completed   IN  repairs.rep_date_completed%TYPE default NULL
+        ,p_completed_hrs    IN  repairs.rep_completed_hrs%TYPE default NULL
+        ,p_completed_mins   IN  repairs.rep_completed_mins%TYPE default NULL) RETURN NUMBER;
 --
 -- </PROC>
 -----------------------------------------------------------------------------------
