@@ -29,11 +29,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.3   Apr 03 2009 15:10:14   smarshall  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.4   Nov 24 2009 14:30:38   lsorathia  $
 --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   Apr 03 2009 15:10:14  $
---       Date fetched Out : $Modtime:   Apr 03 2009 15:09:54  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Nov 24 2009 14:30:38  $
+--       Date fetched Out : $Modtime:   Nov 24 2009 14:26:22  $
+--       Version          : $Revision:   3.4  $
 -- Foundation view displaying bill of quantities for a defect
 -------------------------------------------------------------------------
 -- SM 03042009
@@ -62,12 +62,14 @@ SELECT
    SI.STA_UNIT, 
    BI.BOQ_EST_QUANTITY,
    BI.BOQ_EST_RATE,
-   BI.BOQ_EST_DISCOUNT,
+   --BI.BOQ_EST_DISCOUNT,
+   Null,
    BI.BOQ_EST_COST, 
    BI.BOQ_EST_LABOUR, 
    BI.BOQ_ACT_QUANTITY,
    BI.BOQ_ACT_RATE,
-   BI.BOQ_ACT_DISCOUNT,
+   --BI.BOQ_ACT_DISCOUNT,
+   Null,
    BI.BOQ_ACT_COST, 
    BI.BOQ_ACT_LABOUR
 FROM BOQ_ITEMS BI,

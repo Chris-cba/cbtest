@@ -40,11 +40,11 @@ AS
    SELECT -------------------------------------------------------------------------
          --   PVCS Identifiers :-
          --
-         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.4   May 28 2009 10:19:00   smarshall  $
+         --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.5   Nov 24 2009 14:30:38   lsorathia  $
          --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-         --       Date into PVCS   : $Date:   May 28 2009 10:19:00  $
-         --       Date fetched Out : $Modtime:   May 28 2009 10:16:56  $
-         --       Version          : $Revision:   3.4  $
+         --       Date into PVCS   : $Date:   Nov 24 2009 14:30:38  $
+         --       Date fetched Out : $Modtime:   Nov 24 2009 14:24:58  $
+         --       Version          : $Revision:   3.5  $
          -- Foundation view displaying maintenance manager work order lines
          -------------------------------------------------------------------------
          -- SM 03042009
@@ -92,7 +92,8 @@ AS
                                                  , wol_rate
                                                  , wol_est_cost 
                                                  , wol_est_labour 
-                                                 , wol_discount
+                                                 --, wol_discount
+                                                 ,Null
                                                  , wol_act_cost
                                                  , wol_act_labour
                                                  , wol_date_created
