@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.19   Oct 21 2009 16:41:42   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.20   Nov 27 2009 10:48:02   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 21 2009 16:41:42  $
---       Date fetched Out : $Modtime:   Oct 21 2009 16:40:02  $
---       SCCS Version     : $Revision:   2.19  $
+--       Date into SCCS   : $Date:   Nov 27 2009 10:48:02  $
+--       Date fetched Out : $Modtime:   Nov 27 2009 10:33:28  $
+--       SCCS Version     : $Revision:   2.20  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.19  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.20  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -8176,12 +8176,30 @@ END;
 FUNCTION create_header(p_wor_rec interface_wor%ROWTYPE) RETURN integer IS
 
   l_trans_id        interface_wor.iwor_transaction_id%TYPE;
-
+  -- TASK 0108810
+  -- get the earliest financial year against the Work Order
+  CURSOR  c_get_fyr_id (qp_work_order_no work_orders.wor_works_order_no%TYPE)
+  IS
+  SELECT  bud_fyr_id
+  FROM    work_order_lines
+         ,budgets
+  WHERE   wol_works_order_no = qp_work_order_no
+  AND     wol_bud_id = bud_id
+  ORDER BY 1;
+  l_bud_fyr_id budgets.bud_fyr_id%TYPE ;
+  -- TASK 0108810
+--
 BEGIN
 
   SELECT iwor_id_seq.NEXTVAL
-  INTO   l_trans_id
+  INTO   l_trans_id    
   FROM   dual;
+
+  -- TASK 0108810
+  OPEN  c_get_fyr_id(p_wor_rec.iwor_works_order_no);
+  FETCH c_get_fyr_id INTO l_bud_fyr_id;
+  CLOSE c_get_fyr_id ; 
+  -- TASK 0108810
 
   INSERT INTO interface_wor (
           iwor_transaction_id
@@ -8222,7 +8240,7 @@ BEGIN
         ,p_wor_rec.iwor_works_programme_flag
         ,p_wor_rec.iwor_additional_safety_flag
         ,p_wor_rec.iwor_commence_by
-        ,''
+        ,l_bud_fyr_id                        -- TASK 0108810    
         ,p_wor_rec.iwor_descr
         ,''
         ,'');
