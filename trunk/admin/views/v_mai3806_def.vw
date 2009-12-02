@@ -61,17 +61,18 @@ CREATE OR REPLACE FORCE VIEW v_mai3806_def(are_date_work_done
                                           ,rep_date_completed
                                           ,rep_descr
                                           ,rep_tre_treat_code
+                                          ,rep_action_cat
 ) AS
 SELECT  /*+ FIRST_ROWS_N */
 --
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.0   Nov 05 2009 10:35:04   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.1   Dec 02 2009 10:46:54   lsorathia  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:04  $
---       Date fetched Out : $Modtime:   Nov 04 2009 15:36:44  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Dec 02 2009 10:46:54  $
+--       Date fetched Out : $Modtime:   Dec 02 2009 09:01:18  $
+--       Version          : $Revision:   3.1  $
 -------------------------------------------------------------------------
 --
        are_date_work_done
@@ -139,6 +140,7 @@ SELECT  /*+ FIRST_ROWS_N */
       ,rep_date_completed
       ,rep_descr
       ,rep_tre_treat_code
+      ,rep_action_cat
   FROM nm_elements
       ,repairs
       ,defects def
