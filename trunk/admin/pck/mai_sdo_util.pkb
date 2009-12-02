@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.4   Oct 21 2009 18:03:40   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.5   Dec 02 2009 17:14:20   aedwards  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Oct 21 2009 18:03:40  $
---       Date fetched Out : $Modtime:   Oct 21 2009 17:48:10  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Dec 02 2009 17:14:20  $
+--       Date fetched Out : $Modtime:   Dec 02 2009 17:13:20  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.4  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.5  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -619,6 +619,10 @@ BEGIN
     --
     l_rec_nth_v.nth_theme_type       := 'SDO';
     l_rec_nth_v.nth_base_table_theme := l_rec_nth.nth_theme_id;
+    --
+    -- Task 0108740
+    -- Remove the WHERE Clause copied from the Base table theme
+    l_rec_nth_v.nth_where            := NULL;
     --
     l_rec_ntg_v.ntg_theme_id := l_rec_nth_v.nth_theme_id;
     l_rec_ntg_v.ntg_gtype    := '2001';
@@ -1265,6 +1269,11 @@ BEGIN
   --
   l_rec_nth_v.nth_theme_type       := 'SDO';
   l_rec_nth_v.nth_base_table_theme := l_rec_nth.nth_theme_id;
+  --
+  --
+  -- Task 0108740
+  -- Remove the WHERE Clause copied from the Base table theme
+  l_rec_nth_v.nth_where            := NULL;
   --
   l_rec_ntg_v.ntg_theme_id := l_rec_nth_v.nth_theme_id;
   l_rec_ntg_v.ntg_gtype    := '2003';
