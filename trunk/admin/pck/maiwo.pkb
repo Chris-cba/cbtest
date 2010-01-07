@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.5   Nov 20 2009 11:12:18   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.6   Jan 07 2010 18:45:34   mhuitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Nov 20 2009 11:12:18  $
---       Date fetched Out : $Modtime:   Nov 19 2009 14:01:10  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Jan 07 2010 18:45:34  $
+--       Date fetched Out : $Modtime:   Jan 07 2010 18:15:00  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.5  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.6  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -753,192 +753,316 @@ END create_interim_payment;
     end if;
     close get_items;
   end;
-
-  function add_percent_item(p_parent       in boq_items.boq_id%type
-                           ,p_percent_item in standard_items.sta_item_code%type
-                           ,p_bud_id       in budgets.bud_id%type
-                           ) return number is
-
-  cursor get_parent_det is
-  select boq.boq_est_cost
+--
+----------------------------------------------------------------
+--
+FUNCTION add_percent_item(p_parent       in boq_items.boq_id%TYPE
+                         ,p_percent_item in standard_items.sta_item_code%TYPE
+                         ,p_bud_id       in budgets.bud_id%TYPE)
+  RETURN NUMBER IS
+  --
+  CURSOR get_parent_det(cp_parent boq_items.boq_id%TYPE)
+      IS
+  SELECT boq.boq_est_cost
         ,boq.boq_act_cost
         ,boq.boq_sta_item_code
         ,boq.boq_defect_id
         ,boq.boq_work_flag
         ,boq.boq_rep_action_cat
         ,boq.boq_wol_id
+        ,wol.wol_date_complete
+        ,(SELECT hsc_allow_feature8
+            FROM hig_status_codes
+           WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+             AND hsc_status_code = wol.wol_status_code) valuation
         ,wor.wor_con_id
-  from  work_orders wor
-       ,work_order_lines wol
-       ,boq_items boq
-  where wol.wol_works_order_no = wor.wor_works_order_no
-  and   boq.boq_wol_id         = wol.wol_id
-  and   boq.boq_id             = p_parent;
-
-  r_parent_det get_parent_det%rowtype;
-
-  cursor percent_item is
-  select sta_item_name
+    FROM work_orders wor
+        ,work_order_lines wol
+        ,boq_items boq
+   WHERE wol.wol_works_order_no = wor.wor_works_order_no
+     AND boq.boq_wol_id = wol.wol_id
+     AND boq.boq_id = cp_parent
+       ;
+  --
+  r_parent_det get_parent_det%ROWTYPE;
+  --
+  CURSOR percent_item(cp_con_id        contract_items.cni_con_id%TYPE
+                     ,cp_percent_item  standard_items.sta_item_code%TYPE)
+      IS
+  SELECT sta_item_name
         ,cni_rate
         ,cni_rse_he_id
-  from   standard_items
+    FROM standard_items
         ,contract_items
-  where  sta_item_code = cni_sta_item_code
-  and    sta_item_code = p_percent_item
-  and    cni_con_id    = r_parent_det.wor_con_id;
-
-  cursor can_attach_percent is
-  select nvl(sta_allow_percent,'Y') sta_allow_percent
-  from standard_items
-  where sta_item_code = r_parent_det.boq_sta_item_code;
-
-  r_percent    percent_item%rowtype;
-  l_est_cost   number(10,4);
-  l_act_cost   number(10,4);
-  l_boq_id     boq_items.boq_id%type;
-  l_attach     standard_items.sta_allow_percent%type;
-  l_result     BOOLEAN := FALSE;
-
-  begin
-
-    open get_parent_det;
-    fetch get_parent_det into r_parent_det;
-    if get_parent_det%notfound then
-    -- we really should have a valid parent to call this, however just in case
-       close get_parent_det;
-       return 880;
-    else
-       close get_parent_det;
-    end if;
-
-    open percent_item;
-    fetch percent_item into r_percent;
-    if percent_item%notfound then
-       close percent_item;
-       return 880;
-    else
-       close percent_item;
-    end if;
-
-    -- check if we can attach percentage items to this parent item
-
-    open can_attach_percent;
-    fetch can_attach_percent into l_attach;
-    if (can_attach_percent%notfound or l_attach = 'N') then
-       close can_attach_percent;
-       return 880;
-    else
-       close can_attach_percent;
-    end if;
-
-    -- compute the cost
-    return_perc_sum(p_parent, null, l_est_cost, l_act_cost);
-    dbms_output.put_line('estimate '||to_char(l_est_cost));
-    l_est_cost := round((l_est_cost / 100) * r_percent.cni_rate,2);
-    -- no nvl's for the actual cost as we want to insert null if there are no actuals
-    l_act_cost := round((l_act_cost / 100) * r_percent.cni_rate,2);
-
-    -- check that the additional cost is within budget
-
-    l_result := mai_budgets.check_budget(p_bud_id, l_est_cost, l_act_cost, r_parent_det.boq_wol_id);
-
-    if l_result and not mai_budgets.allow_over_budget then
-       return 0;
-    end if;
-
-    -- get next boq_id
-    l_boq_id := get_boq_id_seq;
-    -- insert the boq_item
-
-    insert into boq_items (BOQ_WORK_FLAG, BOQ_DEFECT_ID, BOQ_REP_ACTION_CAT
-                          ,BOQ_WOL_ID, BOQ_STA_ITEM_CODE, BOQ_ITEM_NAME
-                          ,BOQ_DATE_CREATED, BOQ_ICB_WORK_CODE, BOQ_EST_DIM1
-                          ,BOQ_EST_DIM2, BOQ_EST_DIM3, BOQ_EST_QUANTITY
-                          ,BOQ_EST_RATE, BOQ_EST_DISCOUNT, BOQ_EST_COST
-                          ,BOQ_EST_LABOUR, BOQ_ACT_DIM1, BOQ_ACT_DIM2
-                          ,BOQ_ACT_DIM3, BOQ_ACT_QUANTITY, BOQ_ACT_COST
-                          ,BOQ_ACT_LABOUR, BOQ_ACT_RATE, BOQ_ACT_DISCOUNT
-                          ,BOQ_ID, BOQ_PARENT_ID )
-                           SELECT
-                           r_parent_det.boq_work_flag, r_parent_det.boq_defect_id, r_parent_det.boq_rep_action_cat
-                          ,r_parent_det.boq_wol_id, p_percent_item, r_percent.sta_item_name
-                          ,sysdate, null, 1
-                          ,null, null, 1
-                          , r_percent.cni_rate, null, l_est_cost
-                          ,null, 1 /* need a actual dimension as we do not enter actuals */, null
-                          ,null, decode(l_act_cost, null, null, 1), l_act_cost
-                          ,null, decode(l_act_cost, null, null, r_percent.cni_rate), null
-                          ,l_boq_id, p_parent
-                          from dual;
-    return -1;
-  end;
-
-  function recalc_percent_item(p_boq_item in boq_items.boq_id%type
-                              ,p_comp_method in hig_status_codes.hsc_status_code%type default null)
-  return number is
-
-  l_percent_unit hig_options.hop_value%type := hig.get_sysopt('PERC_ITEM');
-
-  cursor get_children is
-  select boq.boq_id
+   WHERE cni_con_id = cp_con_id
+     AND cni_sta_item_code = sta_item_code
+     AND sta_item_code = cp_percent_item
+       ;
+  --
+  r_percent    percent_item%ROWTYPE;
+  --
+  CURSOR can_attach_percent(cp_item_code standard_items.sta_item_code%TYPE)
+      IS
+  SELECT NVL(sta_allow_percent,'Y') sta_allow_percent
+    FROM standard_items
+   WHERE sta_item_code = cp_item_code
+       ;
+  --
+  l_est_cost  NUMBER(10,4);
+  l_act_cost  NUMBER(10,4);
+  l_boq_id    boq_items.boq_id%TYPE;
+  l_attach    standard_items.sta_allow_percent%TYPE;
+  l_result    BOOLEAN := FALSE;
+  lv_retval   NUMBER := -1;
+  --
+  invalid_item  EXCEPTION;
+  --
+BEGIN
+  /*
+  ||Get details of the parent item.
+  */
+  OPEN  get_parent_det(p_parent);
+  FETCH get_parent_det
+   INTO r_parent_det;
+  IF get_parent_det%NOTFOUND
+   THEN
+      CLOSE get_parent_det;
+      RAISE invalid_item;
+  ELSE
+      CLOSE get_parent_det;
+  END IF;
+  --
+  /*
+  ||Check if we can attach percentage
+  ||items to this parent item.
+  */
+  OPEN  can_attach_percent(r_parent_det.boq_sta_item_code);
+  FETCH can_attach_percent
+   INTO l_attach;
+  IF (can_attach_percent%NOTFOUND or l_attach = 'N')
+   THEN
+      CLOSE can_attach_percent;
+      RAISE invalid_item;
+  ELSE
+      CLOSE can_attach_percent;
+  END IF;
+  /*
+  ||Get details of the percentage item to be added.
+  */
+  OPEN  percent_item(r_parent_det.wor_con_id
+                    ,p_percent_item);
+  FETCH percent_item
+   INTO r_percent;
+  IF percent_item%NOTFOUND
+   THEN
+      CLOSE percent_item;
+      RAISE invalid_item;
+  ELSE
+      CLOSE percent_item;
+  END IF;
+  /*
+  ||compute the cost
+  */
+  return_perc_sum(p_parent    => p_parent
+                 ,p_perc_item => NULL
+                 ,p_est_cost  => l_est_cost
+                 ,p_act_cost  => l_act_cost);
+  --
+  IF r_parent_det.wol_date_complete IS NULL
+   AND r_parent_det.valuation != 'Y'
+   THEN
+      l_est_cost := round((l_est_cost / 100) * r_percent.cni_rate,2);
+  ELSE
+      /*
+      ||If the Percentage Item is being added
+      ||as an actual cost the estimate should
+      ||be zero.
+      */
+      l_est_cost := 0;
+  END IF;
+  --
+  l_act_cost := round((l_act_cost / 100) * r_percent.cni_rate,2);
+  /*
+  ||Check that the additional cost is within budget
+  */
+  l_result := mai_budgets.check_budget(p_bud_id, l_est_cost, l_act_cost, r_parent_det.boq_wol_id);
+  --
+  IF l_result AND NOT mai_budgets.allow_over_budget
+   THEN
+      lv_retval := 0;
+  ELSE
+      /*
+      ||Get next boq_id
+      */
+      l_boq_id := get_boq_id_seq;
+      /*
+      ||Insert the boq_item
+      */
+      INSERT
+        INTO boq_items
+            (BOQ_WORK_FLAG
+            ,BOQ_DEFECT_ID
+            ,BOQ_REP_ACTION_CAT
+            ,BOQ_WOL_ID
+            ,BOQ_STA_ITEM_CODE
+            ,BOQ_ITEM_NAME
+            ,BOQ_DATE_CREATED
+            ,BOQ_ICB_WORK_CODE
+            ,BOQ_EST_DIM1
+            ,BOQ_EST_DIM2
+            ,BOQ_EST_DIM3
+            ,BOQ_EST_QUANTITY
+            ,BOQ_EST_RATE
+            ,BOQ_EST_DISCOUNT
+            ,BOQ_EST_COST
+            ,BOQ_EST_LABOUR
+            ,BOQ_ACT_DIM1
+            ,BOQ_ACT_DIM2
+            ,BOQ_ACT_DIM3
+            ,BOQ_ACT_QUANTITY
+            ,BOQ_ACT_COST
+            ,BOQ_ACT_LABOUR
+            ,BOQ_ACT_RATE
+            ,BOQ_ACT_DISCOUNT
+            ,BOQ_ID
+            ,BOQ_PARENT_ID)
+      VALUES(r_parent_det.boq_work_flag
+            ,r_parent_det.boq_defect_id
+            ,r_parent_det.boq_rep_action_cat
+            ,r_parent_det.boq_wol_id
+            ,p_percent_item
+            ,r_percent.sta_item_name
+            ,SYSDATE
+            ,NULL
+            ,1
+            ,NULL
+            ,NULL
+            ,1
+            ,r_percent.cni_rate
+            ,NULL
+            ,l_est_cost
+            ,NULL
+            ,1
+            ,NULL
+            ,NULL
+            ,DECODE(l_act_cost,NULL,NULL, 1)
+            ,l_act_cost
+            ,NULL
+            ,DECODE(l_act_cost,NULL,NULL,r_percent.cni_rate)
+            ,NULL
+            ,l_boq_id
+            ,p_parent)
+           ;
+  END IF;
+  --
+  RETURN lv_retval;
+  --
+EXCEPTION
+  WHEN invalid_item
+   THEN
+      RETURN 880;
+  WHEN others
+   THEN
+      RAISE;
+END add_percent_item;
+--
+----------------------------------------------------------------
+--
+FUNCTION recalc_percent_item(p_boq_item    IN boq_items.boq_id%TYPE
+                            ,p_comp_method IN hig_status_codes.hsc_status_code%TYPE DEFAULT NULL)
+  RETURN NUMBER IS
+  --
+  l_percent_unit hig_options.hop_value%TYPE := hig.get_sysopt('PERC_ITEM');
+  --
+  CURSOR get_children(cp_parent    boq_items.boq_id%TYPE 
+                     ,cp_perc_unit hig_options.hop_value%TYPE)
+      IS
+  SELECT boq.boq_id
         ,(boq.boq_est_rate * boq.boq_est_dim1) boq_est_rate
         ,(boq.boq_act_rate * boq.boq_act_dim1) boq_act_rate
-        ,rowid
-  from   boq_items boq
-  where  level = 2
-  and exists (select 1
-              from standard_items sta
-              where sta.sta_unit          = l_percent_unit
-              and   boq.boq_sta_item_code = sta.sta_item_code)
-  connect by prior boq_id = boq_parent_id
-  start with       boq_id = p_boq_item;
+        ,boq.ROWID
+        ,wol.wol_date_complete
+        ,(SELECT hsc_allow_feature8
+            FROM hig_status_codes
+           WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+             AND hsc_status_code = wol.wol_status_code) valuation
+    FROM boq_items boq
+        ,work_order_lines wol
+   WHERE wol.wol_id = boq.boq_wol_id
+     AND level = 2
+     AND EXISTS(SELECT 1
+                  FROM standard_items sta
+                 WHERE sta.sta_unit = cp_perc_unit
+                   AND sta.sta_item_code = boq.boq_sta_item_code)
+ CONNECT BY PRIOR boq.boq_id = boq.boq_parent_id
+   START WITH boq.boq_id = cp_parent
+       ;
+  --
+  CURSOR check_method(cp_comp_method hig_status_codes.hsc_status_code%TYPE)
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'PERC_ITEM_COMP'
+     AND hsc_status_code = cp_comp_method
+       ;
+  --
+  c_parent   get_top_id%ROWTYPE;
+  l_est_cost NUMBER(10,4);
+  l_act_cost NUMBER(10,4);
+  l_code     hig_status_codes.hsc_status_code%TYPE := NULL;
+  --
+BEGIN
+  --
+  OPEN  get_top_id(p_boq_item);
+  FETCH get_top_id
+   INTO c_parent;
+  CLOSE get_top_id;
+  --
+  OPEN  check_method(p_comp_method);
+  FETCH check_method
+   INTO l_code;
+  IF check_method%NOTFOUND THEN
+    l_code := NULL;
+  END IF;
+  CLOSE check_method;
+  --
+  FOR c_child IN get_children(p_boq_item,l_percent_unit) LOOP
+    -- compute the cost
+    return_perc_sum(c_parent.boq_id, c_child.boq_id, l_est_cost, l_act_cost, l_code);
 
-  cursor check_method is
-  select hsc_status_code
-  from   hig_status_codes
-  where  hsc_domain_code = 'PERC_ITEM_COMP'
-  and    hsc_status_code = p_comp_method;
+    IF c_child.wol_date_complete IS NULL
+     AND c_child.valuation != 'Y'
+     THEN
+        l_est_cost := (l_est_cost / 100) * c_child.boq_est_rate;
+    ELSE
+        /*
+        ||If actual costs are being entered don't
+        ||update the Estimated Cost.
+        */
+        l_est_cost := NULL;
+    END IF;
+    -- no nvl's for the actual cost as we want to insert null if there are no actuals
+    l_act_cost := (l_act_cost / 100) * c_child.boq_act_rate;
 
+    UPDATE boq_items
+       SET boq_est_cost = NVL(ROUND(l_est_cost,2),boq_est_cost)
+          ,boq_act_cost = ROUND(l_act_cost,2)
+     WHERE ROWID = c_child.ROWID;
 
-  c_parent   get_top_id%rowtype;
-  l_est_cost number(10,4);
-  l_act_cost number(10,4);
-  l_code hig_status_codes.hsc_status_code%type := null;
-  begin
-    dbms_output.put_line('Called with BOQ of '||to_char(p_boq_item));
-    open  get_top_id(p_boq_item);
-    fetch get_top_id into c_parent;
-    close get_top_id;
-
-    open check_method;
-    fetch check_method into l_code;
-    if check_method%notfound then
-      l_code := null;
-    end if;
-    close check_method;
-
-    for c_child in get_children loop
-      -- compute the cost
-      return_perc_sum(c_parent.boq_id, c_child.boq_id, l_est_cost, l_act_cost, l_code);
-      l_est_cost := (l_est_cost / 100) * c_child.boq_est_rate;
-      -- no nvl's for the actual cost as we want to insert null if there are no actuals
-      l_act_cost := (l_act_cost / 100) * c_child.boq_act_rate;
-
-      dbms_output.put_line('BOQ '||to_char(c_child.boq_id)||' estimate '||to_char(l_est_cost)||' actual '||to_char(l_act_cost));
-      update boq_items
-      set    boq_est_cost = round(l_est_cost,2)
-            ,boq_act_cost = round(l_act_cost,2)
-      where rowid = c_child.rowid;
-
-      -- now work out any %age items that may have this item as parent
-      if recalc_percent_item(c_child.boq_id) != -1
-         then return 1000; -- error
-      end if;
-
-    end loop;
-    return -1; -- success
-  end;
-
+    -- now work out any %age items that may have this item as parent
+    IF recalc_percent_item(c_child.boq_id) != -1
+     THEN
+        RETURN 1000; -- error
+    END IF;
+    --
+  END LOOP;
+  --
+  RETURN -1; -- success
+  --
+end recalc_percent_item;
+--
+----------------------------------------------------------------
+--
   function  recalc_perc_dim(p_boq_id  in boq_items.boq_id%type
                            ,p_new_dim in boq_items.boq_act_dim1%type)
   return number is
