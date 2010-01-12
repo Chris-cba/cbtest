@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.8  $ $Modtime:   Oct 13 2009 21:08:06  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.9  $ $Modtime:   Jan 11 2010 13:33:56  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -4497,7 +4497,25 @@ int check_domain()
       return(SUCCESS);
  }
 
+int check_ukp_overlap()
+{
+  /*----------------------------------------------------*/
+  /* Run The Procedure check_ukp_overlap In The Package */
+  /* mai2110c To Check For Overlaps Based On Specific   */
+  /* UKPMS Rules.                                       */
+  /*----------------------------------------------------*/
+  EXEC SQL EXECUTE
+    BEGIN
+      mai2110c.check_ukp_overlap;
+    END;
+  END-EXEC;
 
+  if (sqlca.sqlcode < 0)
+    sql_err("check_ukp_overlap");
+
+  return(SUCCESS);
+} /* check_ukp_overlap */
+ 
 int pull_into_err_3()
 /* *************************************************************************
    Pull out of the mainstream file all the attributes flagged as in

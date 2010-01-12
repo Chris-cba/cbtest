@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.5  $ $Modtime:   Sep 03 2009 13:21:32  $";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.6  $ $Modtime:   Jan 11 2010 10:48:00  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -1088,6 +1088,11 @@ int stage_4()
    }
 
   if  ( ( status = check_domain() ) != SUCCESS )
+   {
+    return(status);
+   }
+
+  if  ( ( status = check_ukp_overlap() ) != SUCCESS )
    {
     return(status);
    }
