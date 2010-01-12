@@ -4,11 +4,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.3   Jan 29 2009 17:36:46   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.4   Jan 12 2010 11:52:38   mhuitson  $
 --       Module Name      : $Workfile:   mai2110c.pkh  $
---       Date into PVCS   : $Date:   Jan 29 2009 17:36:46  $
---       Date fetched Out : $Modtime:   Aug 17 2007 18:16:58  $
---       PVCS Version     : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Jan 12 2010 11:52:38  $
+--       Date fetched Out : $Modtime:   Jan 11 2010 15:28:12  $
+--       PVCS Version     : $Revision:   2.4  $
 --       Based on SCCS version :
 --
 --
@@ -26,7 +26,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.3  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.4  $"';
   TYPE hhinv_load_3_rec
     IS RECORD(rec_seq_no                 hhinv_load_3.rec_seq_no               %TYPE
              ,iit_he_id                  hhinv_load_3.he_id                    %TYPE
@@ -232,6 +232,12 @@ FUNCTION get_body_version RETURN varchar2;
 --
 --<PROC NAME="set_attrib_values">
 PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_ukp_overlap">
+PROCEDURE check_ukp_overlap;
 --</PROC>
 --
 -----------------------------------------------------------------------------

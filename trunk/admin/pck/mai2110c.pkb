@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.3   Jul 21 2009 12:58:26   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.4   Jan 12 2010 11:52:38   mhuitson  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Jul 21 2009 12:58:26  $
---       Date fetched Out : $Modtime:   Apr 07 2009 09:42:24  $
---       PVCS Version     : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Jan 12 2010 11:52:38  $
+--       Date fetched Out : $Modtime:   Jan 11 2010 17:15:34  $
+--       PVCS Version     : $Revision:   2.4  $
 --       Based on SCCS version :
 --
 --
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.3  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.4  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -250,6 +250,85 @@ BEGIN
   --nm_debug.debug('Finished Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
   --nm_debug.debug_off;
 END set_attrib_values;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE check_ukp_overlap
+  IS
+BEGIN
+  /*
+  ||Check For Overlaps Based On Specific UKPMS Rules.
+  ||
+  ||NB: The inline views v1 and v2 are the same so any changes
+  ||    required should be made to both!
+  */
+  UPDATE hhinv_load_3
+     SET error_flg = 'Y'
+        ,error_msg = DECODE(error_msg,NULL,'Invalid defect overlap.'
+                                          ,error_msg||' + Invalid defect overlap.')
+   WHERE attribute = 'CHR_ATTRIB26'
+     AND rec_seq_no IN(SELECT CASE
+                              WHEN level_col = 1
+                               THEN v1_rec_seq
+                              WHEN level_col = 2
+                               THEN v2_rec_seq
+                              END v_seq_no
+                         FROM (SELECT v1.rec_seq_no v1_rec_seq
+                                     ,v2.rec_seq_no v2_rec_seq
+                                 FROM (SELECT rec_seq_no
+                                             ,he_id
+                                             ,inv_code
+                                             ,st_chain
+                                             ,end_chain
+                                             ,MAX(CASE WHEN attribute = 'CHR_ATTRIB26'
+                                                       THEN value
+                                                   END) defect_type
+                                             ,MAX(CASE WHEN attribute = 'DET_XSP'
+                                                       THEN NVL(value,x_sect)
+                                                   END) det_xsp
+                                         FROM hhinv_load_3
+                                        WHERE attribute IN('CHR_ATTRIB26','DET_XSP')
+                                          AND inv_code IN('CV','DV')
+                                        GROUP
+                                           BY rec_seq_no
+                                             ,he_id
+                                             ,inv_code
+                                             ,st_chain
+                                             ,end_chain) v1
+                                     ,(SELECT rec_seq_no
+                                             ,he_id
+                                             ,inv_code
+                                             ,st_chain
+                                             ,end_chain
+                                             ,MAX(CASE WHEN attribute = 'CHR_ATTRIB26'
+                                                       THEN value
+                                                   END) defect_type
+                                             ,MAX(CASE WHEN attribute = 'DET_XSP'
+                                                       THEN NVL(value,x_sect)
+                                                   END) det_xsp
+                                         FROM hhinv_load_3
+                                        WHERE attribute IN('CHR_ATTRIB26','DET_XSP')
+                                          AND inv_code IN('CV','DV')
+                                        GROUP
+                                           BY rec_seq_no
+                                             ,he_id
+                                             ,inv_code
+                                             ,st_chain
+                                             ,end_chain) v2
+                                WHERE v1.defect_type IN('BNAS','BUTS')
+                                  AND v1.defect_type != v2.defect_type
+                                  AND v1.he_id = v2.he_id
+                                  AND v1.det_xsp = v2.det_xsp
+                                  AND (v1.st_chain BETWEEN v2.st_chain AND v2.end_chain
+                                       OR (v1.end_chain BETWEEN v2.st_chain AND v2.end_chain)
+                                       OR (v1.st_chain <= v2.st_chain AND v1.end_chain >= v2.end_chain))) inv_view
+                             ,(SELECT level level_col
+                                 FROM dual
+                              CONNECT
+                                   BY level <= 2) count_view)
+        ;
+  --
+END;
 --
 -----------------------------------------------------------------------------
 --
