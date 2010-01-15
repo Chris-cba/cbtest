@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.4   Jan 12 2010 11:52:38   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.5   Jan 15 2010 15:42:34   drawat  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Jan 12 2010 11:52:38  $
---       Date fetched Out : $Modtime:   Jan 11 2010 17:15:34  $
---       PVCS Version     : $Revision:   2.4  $
+--       Date into PVCS   : $Date:   Jan 15 2010 15:42:34  $
+--       Date fetched Out : $Modtime:   Jan 15 2010 15:35:30  $
+--       PVCS Version     : $Revision:   2.5  $
 --       Based on SCCS version :
 --
 --
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.4  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.5  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -319,10 +319,16 @@ BEGIN
                                   AND v1.defect_type != v2.defect_type
                                   AND v1.he_id = v2.he_id
                                   AND v1.det_xsp = v2.det_xsp
-                                  AND (v1.st_chain BETWEEN v2.st_chain AND v2.end_chain
-                                       OR (v1.end_chain BETWEEN v2.st_chain AND v2.end_chain)
-                                       OR (v1.st_chain <= v2.st_chain AND v1.end_chain >= v2.end_chain))) inv_view
-                             ,(SELECT level level_col
+                                  AND ( (
+                                       (v1.st_chain = v2.st_chain and v1.end_chain = v2.end_chain)
+                                       or
+                                       (v1.st_chain > v2.st_chain and v1.st_chain < v2.end_chain)
+                                       or
+                                       (v1.end_chain > v2.st_chain and v1.end_chain < v2.end_chain)
+                                       or
+                                       (v1.st_chain <= v2.st_chain and v1.end_chain >= v2.end_chain)
+                                      ) ) ) inv_view
+  		,(SELECT level level_col
                                  FROM dual
                               CONNECT
                                    BY level <= 2) count_view)
