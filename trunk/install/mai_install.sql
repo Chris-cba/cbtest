@@ -1,5 +1,5 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.10   Aug 27 2009 12:02:52   malexander  $"'
+define sccsid = '"$Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.11   Jan 18 2010 16:45:10   malexander  $"'
 
 REM Copyright (c) Exor Corporation Ltd, 2008
 
@@ -113,11 +113,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.1.0.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.2.0.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.1.0.0'
+                                ,p_VERSION        => '4.2.0.0'
                                 );
 END;
 /
@@ -419,8 +419,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.1.0.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.1.0.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.2.0.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.2.0.0');
 END;
 /
 COMMIT;
