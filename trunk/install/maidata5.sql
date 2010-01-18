@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata5.sql-arc   2.1   Sep 10 2009 15:48:08   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata5.sql-arc   2.2   Jan 18 2010 16:11:42   malexander  $
 --       Module Name      : $Workfile:   maidata5.sql  $
---       Date into PVCS   : $Date:   Sep 10 2009 15:48:08  $
---       Date fetched Out : $Modtime:   Sep 10 2009 15:40:36  $
---       Version          : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Jan 18 2010 16:11:42  $
+--       Date fetched Out : $Modtime:   Jan 18 2010 16:06:30  $
+--       Version          : $Revision:   2.2  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 10-SEP-2009 15:40
+--       Generation Date  : 18-JAN-2010 16:06
 --
 --   Product metadata script
---   As at Release 4.1.0.0
+--   As at Release 4.2.0.0
 --
---   Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) exor corporation ltd, 2010
 --
 --   TABLES PROCESSED
 --   ================
@@ -212,6 +212,150 @@ SELECT
        ,to_date('20040331000000','YYYYMMDDHH24MISS') FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
                    WHERE FYR_ID = '2003');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2004'
+       ,to_date('20040401000000','YYYYMMDDHH24MISS')
+       ,to_date('20050331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2004');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2005'
+       ,to_date('20050401000000','YYYYMMDDHH24MISS')
+       ,to_date('20060331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2005');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2006'
+       ,to_date('20060401000000','YYYYMMDDHH24MISS')
+       ,to_date('20070331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2006');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2007'
+       ,to_date('20070401000000','YYYYMMDDHH24MISS')
+       ,to_date('20080331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2007');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2008'
+       ,to_date('20080401000000','YYYYMMDDHH24MISS')
+       ,to_date('20090331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2008');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2009'
+       ,to_date('20090401000000','YYYYMMDDHH24MISS')
+       ,to_date('20100331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2009');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2010'
+       ,to_date('20100401000000','YYYYMMDDHH24MISS')
+       ,to_date('20110331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2010');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2011'
+       ,to_date('20110401000000','YYYYMMDDHH24MISS')
+       ,to_date('20120331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2011');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2012'
+       ,to_date('20120401000000','YYYYMMDDHH24MISS')
+       ,to_date('20130331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2012');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2013'
+       ,to_date('20130401000000','YYYYMMDDHH24MISS')
+       ,to_date('20140331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2013');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2014'
+       ,to_date('20140401000000','YYYYMMDDHH24MISS')
+       ,to_date('20150331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2014');
+--
+INSERT INTO FINANCIAL_YEARS
+       (FYR_ID
+       ,FYR_START_DATE
+       ,FYR_END_DATE
+       )
+SELECT 
+        '2015'
+       ,to_date('20150401000000','YYYYMMDDHH24MISS')
+       ,to_date('20160331000000','YYYYMMDDHH24MISS') FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM FINANCIAL_YEARS
+                   WHERE FYR_ID = '2015');
 --
 --
 --
