@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.11   Oct 22 2009 13:33:38   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.12   Jan 18 2010 16:11:40   malexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Oct 22 2009 13:33:38  $
---       Date fetched Out : $Modtime:   Oct 22 2009 13:30:38  $
---       Version          : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Jan 18 2010 16:11:40  $
+--       Date fetched Out : $Modtime:   Jan 18 2010 16:06:20  $
+--       Version          : $Revision:   2.12  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 22-OCT-2009 13:28
+--       Generation Date  : 18-JAN-2010 16:06
 --
 --   Product metadata script
---   As at Release 4.1.0.0
+--   As at Release 4.2.0.0
 --
---   Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) exor corporation ltd, 2010
 --
 --   TABLES PROCESSED
 --   ================
@@ -10667,7 +10667,7 @@ SELECT
        ,'mai7080'
        ,'R25'
        ,''
-       ,'N'
+       ,'Y'
        ,'N'
        ,'MAI'
        ,'FORM' FROM DUAL
@@ -10691,7 +10691,7 @@ SELECT
        ,'mai7082'
        ,'R25'
        ,''
-       ,'N'
+       ,'Y'
        ,'N'
        ,'MAI'
        ,'FORM' FROM DUAL
@@ -10715,7 +10715,7 @@ SELECT
        ,'mai7086'
        ,'R25'
        ,''
-       ,'N'
+       ,'Y'
        ,'N'
        ,'MAI'
        ,'FORM' FROM DUAL
@@ -10739,7 +10739,7 @@ SELECT
        ,'mai7088'
        ,'R25'
        ,''
-       ,'N'
+       ,'Y'
        ,'N'
        ,'MAI'
        ,'FORM' FROM DUAL
@@ -10883,6 +10883,28 @@ SET TERM ON
 PROMPT hig_option_list
 SET TERM OFF
 
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'ACTIVECON'
+       ,'MAI'
+       ,'Show Active Contracts Only'
+       ,'Set to Y to display only ACTIVE Contracts'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'ACTIVECON');
+--
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
        ,HOL_PRODUCT
@@ -12214,6 +12236,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'NEGINTERIM'
+       ,'MAI'
+       ,'Allow negative interims (Y/N)'
+       ,'This option should be used to determine whether Interim Claims (entered through the application i.e. not via the CIM Interface) can take the value of a Work Order Line below the value previously paid.'
+       ,'Y_OR_N'
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'NEGINTERIM');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'NOTREFOUND'
        ,'MAI'
        ,'Not Refound'
@@ -12620,6 +12664,28 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'UNKNOWNORG');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'UPDCOSTCTR'
+       ,'MAI'
+       ,'Updateable Cost Centre (Y/N)'
+       ,'This option can be specified at either Product or User level to determine whether all/specific Users can update the Cost Centre on a Works Order after it has been Instructed.'
+       ,'Y_OR_N'
+       ,'VARCHAR2'
+       ,'N'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'UPDCOSTCTR');
 --
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
@@ -13056,6 +13122,16 @@ SET TERM ON
 PROMPT hig_option_values
 SET TERM OFF
 
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'ACTIVECON'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'ACTIVECON');
+--
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
        ,HOV_VALUE
@@ -13661,6 +13737,16 @@ INSERT INTO HIG_OPTION_VALUES
        ,HOV_VALUE
        )
 SELECT 
+        'NEGINTERIM'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'NEGINTERIM');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
         'NOTREFOUND'
        ,'ALL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -13825,6 +13911,16 @@ SELECT
        ,'UNKNOWN' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'UNKNOWNORG');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'UPDCOSTCTR'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'UPDCOSTCTR');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
