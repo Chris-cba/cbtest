@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.1   Jul 31 2009 10:18:18   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.2   Jan 20 2010 14:47:24   mhuitson  $
 --       Module Name      : $Workfile:   inv_items_all_section.sql  $
---       Date into SCCS   : $Date:   Jul 31 2009 10:18:18  $
---       Date fetched Out : $Modtime:   Jul 31 2009 10:17:48  $
---       SCCS Version     : $Revision:   3.1  $
+--       Date into SCCS   : $Date:   Jan 20 2010 14:47:24  $
+--       Date fetched Out : $Modtime:   Jan 20 2010 14:46:18  $
+--       SCCS Version     : $Revision:   3.2  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -47,7 +47,8 @@ BEGIN
   */
   SELECT 1
     INTO lv_dummy
-   WHERE ngt_group_type = :pi_group_type
+    FROM nm_group_types
+   WHERE ngt_group_type = pi_group_type
      AND ngt_sub_group_allowed = 'N'
      AND EXISTS(SELECT 1
                   FROM nm_linear_types
