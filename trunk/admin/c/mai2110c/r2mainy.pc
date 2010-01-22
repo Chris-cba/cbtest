@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.9  $ $Modtime:   Jan 11 2010 13:33:56  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.10  $ $Modtime:   Jan 21 2010 19:17:06  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +14,7 @@ static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.9  $ $Modtime: 
 
 EXEC SQL BEGIN DECLARE SECTION;
 
+int run_ukp_recal=1;
 int tmp_he_id[100];
 int tmp_loop;
 int i_next_seq;
@@ -1198,38 +1199,6 @@ int recalibrate_inv_chain()
       sql_err("recalibrate_inv_chain(2)");
       }
 
-/* Replaced By Code Above, Changed To PLSQL To Allow The Use Of An Inline View.
-    EXEC SQL INSERT
-               INTO hhinv_temp_7883
-             SELECT he_id
-                   ,NVL(MAX(NVL(end_chain, st_chain)),0)
-               FROM road_segments_all
-                   ,hhinv_load_2
-              WHERE NVL(error_flg,'N') != 'Y'
-                AND he_id = rse_he_id
-                AND rse_scl_sect_class <> 'NL'
-              GROUP
-                 BY he_id
-                  ;
-    if(sqlca.sqlcode < 0)
-      {
-      sql_err("recalibrate_inv_chain(2)");
-      }
-
-    EXEC SQL UPDATE hhinv_temp_7883
-                SET max_chain = (SELECT NVL(MAX(iit_end_chain),0)
-                                   FROM inv_items
-                                  WHERE iit_rse_he_id = he_id)
-              WHERE max_chain < (SELECT NVL(MAX(iit_end_chain),0)
-                                   FROM inv_items
-                                  WHERE iit_rse_he_id = he_id)
-                  ;
-
-    if(sqlca.sqlcode < 0)
-      {
-      sql_err("recalibrate_inv_chain(2B)");
-      }
-*/
     EXEC SQL create unique index hhinv_temp_7883_ind on hhinv_temp_7883 (he_id);
     if(sqlca.sqlcode < 0)
       {
@@ -1239,7 +1208,8 @@ int recalibrate_inv_chain()
     /* (NOTE: This SQL uses decodes extensively to allow for zero values) */
     EXEC SQL UPDATE hhinv_load_2 hl2
                 SET (hl2.st_chain, hl2.end_chain)
-                   =(SELECT hl2.st_chain*decode(b.rse_length/decode(a.max_chain,0,decode(b.rse_length,0,1,b.rse_length),a.max_chain)
+                   =(SELECT hl2.st_chain*decode(b.rse_length/decode(a.max_chain,0,decode(b.rse_length,0,1,b.rse_length)
+                                                                                 ,a.max_chain)
                                                ,0,1
                                                ,1,1
                                                ,b.rse_length / a.max_chain)
@@ -1255,18 +1225,17 @@ int recalibrate_inv_chain()
                              from road_segments_all
                             where rse_he_id = hl2.he_id)
                 AND nvl(hl2.error_flg,'N') != 'Y'
---                AND hl2.hhinv_ity_sys_flag  = 'L'  -- commented out for nm3.1.1.0
+                --AND hl2.hhinv_ity_sys_flag  = 'L'  -- commented out for nm3.1.1.0
                 AND hl2.full_partial_ind    = 'F'
-                AND (hl2.inv_code in(select utst_inv_code
-                                       from ukpms_t1_survey_types
-                                           ,ukpms_view_definitions
-                                      where utst_fit_method in ('R','F')
-                                        and utst_sys_flag  = hl2.hhinv_ity_sys_flag
-                                        and uvd_ukpms_code = utst_survey_type
-                                        and uvd_xsp_method_in_use = 'U')
-                    OR
-                    hl2.road_characteristic = 'I')
+                AND hl2.road_characteristic = 'I'
+                AND hl2.inv_code NOT IN(SELECT uvd_inv_code
+                                          FROM ukpms_view_definitions
+                                         WHERE uvd_feature_or_survey IN('F','S'))
                   ;
+
+    /* sprintf(pipe_msg,"Number Of Records Updated By Standard Recal: %d\n",sqlca.sqlerrd[2]); */
+    /* write_pipe(fi,pipe_msg); */
+
     if(sqlca.sqlcode < 0)
       {
       sql_err("recalibrate_inv_chain(4)");
@@ -1277,7 +1246,36 @@ int recalibrate_inv_chain()
       {
       sql_err("recalibrate_inv_chain(5)");
       }
+    
+    
+    if(run_ukp_recal)
+      {
+      /* Execute A Slightly Different Recalibration Method For Certain Types Of UKPMS Survey Data. */
+      EXEC SQL UPDATE hhinv_load_2 hl2
+                  SET (hl2.st_chain, hl2.end_chain)
+                      = (SELECT hl2.st_chain * (rse.rse_length / hl2.survey_length)
+                               ,hl2.end_chain * (rse.rse_length / hl2.survey_length)
+                           FROM road_segments_all rse
+                          WHERE rse.rse_he_id = hl2.he_id)
+                WHERE nvl(hl2.error_flg,'N') != 'Y'
+                  AND hl2.full_partial_ind    = 'F'
+                  AND hl2.inv_code IN(SELECT uvd_inv_code
+                                        FROM ukpms_view_definitions
+                                       WHERE uvd_feature_or_survey IN('F','S'))
+                    ;
 
+      /* sprintf(pipe_msg,"Number Of Records Updated By UKPMS Recal: %d\n",sqlca.sqlerrd[2]); */
+      /* write_pipe(fi,pipe_msg); */
+
+      if(sqlca.sqlcode < 0)
+        {
+        sql_err("recalibrate_inv_chain(6)");
+        }
+
+      /* Only want to run ukp recalibration once so set */
+      /* the variable to 0 to prevent it running again. */
+      run_ukp_recal=0;
+      }
     } /*END IF */
 
 /*
