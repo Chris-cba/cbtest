@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.2   Feb 12 2010 12:45:12   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.3   Feb 12 2010 12:51:30   malexander  $
 --       Module Name      : $Workfile:   mai4100_mai4200_upg.sql  $
---       Date into PVCS   : $Date:   Feb 12 2010 12:45:12  $
---       Date fetched Out : $Modtime:   Feb 12 2010 12:44:44  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Feb 12 2010 12:51:30  $
+--       Date fetched Out : $Modtime:   Feb 12 2010 12:51:14  $
+--       Version          : $Revision:   3.3  $
 --
 --   Product upgrade script
 --
@@ -192,20 +192,6 @@ start '&&run_file'
 SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
---                        ****************   POLICIES  ********************
-SET TERM ON
-prompt MAI Policies...
-SET TERM OFF
-SET DEFINE ON
-select '&exor_base'||'mai'||'&terminator'||'admin'||
-        '&terminator'||'ctx'||'&terminator'||'mai_policy' run_file
-from dual
-/
-SET FEEDBACK ON
-start '&&run_file'
-SET FEEDBACK OFF
---
----------------------------------------------------------------------------------------------------
 --                        ****************   COMPILE SCHEMA   *******************
 SET TERM ON
 Prompt Creating Compiling Schema Script...
@@ -234,6 +220,20 @@ BEGIN
   nm3user.instantiate_user;
 END;
 /
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   POLICIES  ********************
+SET TERM ON
+prompt MAI Policies...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'mai_policy' run_file
+from dual
+/
+SET FEEDBACK ON
+start '&&run_file'
+SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                  ****************   METADATA  *******************
