@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.0   Dec 15 2009 23:02:26   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.1   Feb 12 2010 12:03:52   malexander  $
 --       Module Name      : $Workfile:   mai4100_mai4200_upg.sql  $
---       Date into PVCS   : $Date:   Dec 15 2009 23:02:26  $
---       Date fetched Out : $Modtime:   Dec 09 2009 18:23:04  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Feb 12 2010 12:03:52  $
+--       Date fetched Out : $Modtime:   Feb 12 2010 12:03:00  $
+--       Version          : $Revision:   3.1  $
 --
 --   Product upgrade script
 --
@@ -51,6 +51,24 @@ begin
 END;
 /
 WHENEVER SQLERROR CONTINUE
+--
+---------------------------------------------------------------------------------------------------
+--                        **************** DROP POLICIES *******************
+--
+-- drop any policies that could be effected by table changes
+-- ensure that later on - after a compile schema these policies are re-created
+SET TERM ON
+PROMPT Dropping Policies...
+SET TERM OFF
+SET DEFINE ON
+SET VERIFY OFF
+SELECT '&exor_base'||'nm3'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'drop_policy' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   DDL   *******************
@@ -216,6 +234,22 @@ BEGIN
   nm3user.instantiate_user;
 END;
 /
+---------------------------------------------------------------------------------------------------
+--                        **************** ADD POLICIES *******************
+-- re-create the policies that were dropped at the beginning of the upgrade
+--
+SET TERM ON
+PROMPT Adding Policies...
+SET TERM OFF
+SET DEFINE ON
+SET VERIFY OFF
+SELECT '&exor_base'||'nm3'||'&terminator'||'admin'||
+    '&terminator'||'ctx'||'&terminator'||'add_policy' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 ---------------------------------------------------------------------------------------------------
 --                  ****************   METADATA  *******************
 SET TERM ON
