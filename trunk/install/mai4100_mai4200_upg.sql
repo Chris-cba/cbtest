@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.1   Feb 12 2010 12:03:52   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4100_mai4200_upg.sql-arc   3.2   Feb 12 2010 12:45:12   malexander  $
 --       Module Name      : $Workfile:   mai4100_mai4200_upg.sql  $
---       Date into PVCS   : $Date:   Feb 12 2010 12:03:52  $
---       Date fetched Out : $Modtime:   Feb 12 2010 12:03:00  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Feb 12 2010 12:45:12  $
+--       Date fetched Out : $Modtime:   Feb 12 2010 12:44:44  $
+--       Version          : $Revision:   3.2  $
 --
 --   Product upgrade script
 --
@@ -62,8 +62,8 @@ PROMPT Dropping Policies...
 SET TERM OFF
 SET DEFINE ON
 SET VERIFY OFF
-SELECT '&exor_base'||'nm3'||'&terminator'||'admin'||
-        '&terminator'||'ctx'||'&terminator'||'drop_policy' run_file
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'ctx'||'&terminator'||'drop_mai_policy' run_file
 FROM dual
 /
 SET FEEDBACK ON
@@ -234,22 +234,7 @@ BEGIN
   nm3user.instantiate_user;
 END;
 /
----------------------------------------------------------------------------------------------------
---                        **************** ADD POLICIES *******************
--- re-create the policies that were dropped at the beginning of the upgrade
 --
-SET TERM ON
-PROMPT Adding Policies...
-SET TERM OFF
-SET DEFINE ON
-SET VERIFY OFF
-SELECT '&exor_base'||'nm3'||'&terminator'||'admin'||
-    '&terminator'||'ctx'||'&terminator'||'add_policy' run_file
-FROM dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
 ---------------------------------------------------------------------------------------------------
 --                  ****************   METADATA  *******************
 SET TERM ON
