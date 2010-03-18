@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.20   Nov 27 2009 10:48:02   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.21   Mar 18 2010 11:29:10   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Nov 27 2009 10:48:02  $
---       Date fetched Out : $Modtime:   Nov 27 2009 10:33:28  $
---       SCCS Version     : $Revision:   2.20  $
+--       Date into SCCS   : $Date:   Mar 18 2010 11:29:10  $
+--       Date fetched Out : $Modtime:   Mar 18 2010 11:07:54  $
+--       SCCS Version     : $Revision:   2.21  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.20  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.21  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -3376,8 +3376,10 @@ function complete_repair ( pi_def_defect_id repairs.rep_def_defect_id%TYPE
 
 begin
   update repairs
-  set rep_date_completed = pi_complete_date
-    , rep_last_updated_date = sysdate
+  set rep_date_completed    = pi_complete_date
+     ,rep_last_updated_date = Sysdate
+     ,rep_completed_hrs     = TO_NUMBER(TO_CHAR(pi_complete_date,'HH24'))
+     ,rep_completed_mins    = TO_NUMBER(TO_CHAR(pi_complete_date,'MI'))
   where rep_def_defect_id = pi_def_defect_id
   and rep_action_cat = pi_rep_action_cat;
   return TRUE;
