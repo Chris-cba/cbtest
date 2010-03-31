@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.12   Nov 23 2009 15:47:40   cbaugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.13   Mar 31 2010 18:15:16   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Nov 23 2009 15:47:40  $
---       Date fetched Out : $Modtime:   Nov 23 2009 09:13:06  $
---       SCCS Version     : $Revision:   2.12  $
+--       Date into SCCS   : $Date:   Mar 31 2010 18:15:16  $
+--       Date fetched Out : $Modtime:   Mar 31 2010 18:12:18  $
+--       SCCS Version     : $Revision:   2.13  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.12  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.13  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4134,11 +4134,11 @@ END get_gis_sys_flag;
 --
 ---------------------------------------------------------------------------------------------------
 --
-  FUNCTION generate_works_order_no( p_con_id         IN contracts.con_id%type
-                                  , p_admin_unit     IN hig_admin_units.hau_admin_unit%type
-                                  , p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
-								  , p_raise_not_found IN BOOLEAN DEFAULT FALSE
-                                   ) RETURN VARCHAR2 IS
+FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
+                                ,p_admin_unit     IN hig_admin_units.hau_admin_unit%type
+                                ,p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
+								                ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
+  RETURN VARCHAR2 IS
   cursor c1 is
     select con_code
           ,nvl(con_last_wor_no,0) + 1
@@ -4290,288 +4290,307 @@ END;
 --
 ---------------------------------------------------------------------------------------------------
 --
-  FUNCTION create_wo_header
-        ( P_WOR_WORKS_ORDER_NO             IN WORK_ORDERS.WOR_WORKS_ORDER_NO%TYPE
-        , P_WOR_SYS_FLAG                   IN WORK_ORDERS.WOR_SYS_FLAG%TYPE
-        , P_WOR_RSE_HE_ID_GROUP            IN WORK_ORDERS.WOR_RSE_HE_ID_GROUP%TYPE
-        , P_WOR_FLAG                       IN WORK_ORDERS.WOR_FLAG%TYPE
-        , P_WOR_CON_ID                     IN WORK_ORDERS.WOR_CON_ID%TYPE
-        , P_WOR_ACT_COST_CODE              IN WORK_ORDERS.WOR_ACT_COST_CODE%TYPE
-        , P_WOR_ACT_BALANCING_SUM          IN WORK_ORDERS.WOR_ACT_BALANCING_SUM%TYPE
-        , P_WOR_ACT_COST                   IN WORK_ORDERS.WOR_ACT_COST%TYPE
-        , P_WOR_ACT_LABOUR                 IN WORK_ORDERS.WOR_ACT_LABOUR%TYPE
-        , P_WOR_AGENCY                     IN WORK_ORDERS.WOR_AGENCY%TYPE
-        , P_WOR_ARE_SCHED_ACT_FLAG         IN WORK_ORDERS.WOR_ARE_SCHED_ACT_FLAG%TYPE
-        , P_WOR_CHEAPEST_FLAG              IN WORK_ORDERS.WOR_CHEAPEST_FLAG%TYPE
-        , P_WOR_CLOSED_BY_ID               IN WORK_ORDERS.WOR_CLOSED_BY_ID%TYPE
-        , P_WOR_COC_COST_CENTRE            IN WORK_ORDERS.WOR_COC_COST_CENTRE%TYPE
-        , P_WOR_COST_RECHARG               IN WORK_ORDERS.WOR_COST_RECHARG%TYPE
-        , P_WOR_DATE_CLOSED                IN WORK_ORDERS.WOR_DATE_CLOSED%TYPE
-        , P_WOR_DATE_CONFIRMED             IN WORK_ORDERS.WOR_DATE_CONFIRMED%TYPE
-        , P_WOR_DATE_MOD                   IN WORK_ORDERS.WOR_DATE_MOD%TYPE
-        , P_WOR_DATE_RAISED                IN WORK_ORDERS.WOR_DATE_RAISED%TYPE
-        , P_WOR_DESCR                      IN WORK_ORDERS.WOR_DESCR%TYPE
-        , P_WOR_DIV_CODE                   IN WORK_ORDERS.WOR_DIV_CODE%TYPE
-        , P_WOR_DTP_EXPEND_CODE            IN WORK_ORDERS.WOR_DTP_EXPEND_CODE%TYPE
-        , P_WOR_EST_BALANCING_SUM          IN WORK_ORDERS.WOR_EST_BALANCING_SUM%TYPE
-        , P_WOR_EST_COMPLETE               IN WORK_ORDERS.WOR_EST_COMPLETE%TYPE
-        , P_WOR_EST_COST                   IN WORK_ORDERS.WOR_EST_COST%TYPE
-        , P_WOR_EST_LABOUR                 IN WORK_ORDERS.WOR_EST_LABOUR%TYPE
-        , P_WOR_ICB_ITEM_CODE              IN WORK_ORDERS.WOR_ICB_ITEM_CODE%TYPE
-        , P_WOR_ICB_SUB_ITEM_CODE          IN WORK_ORDERS.WOR_ICB_SUB_ITEM_CODE%TYPE
-        , P_WOR_ICB_SUB_SUB_ITEM_CODE      IN WORK_ORDERS.WOR_ICB_SUB_SUB_ITEM_CODE%TYPE
-        , P_WOR_JOB_NUMBER                 IN WORK_ORDERS.WOR_JOB_NUMBER%TYPE
-        , P_WOR_LAST_PRINT_DATE            IN WORK_ORDERS.WOR_LAST_PRINT_DATE%TYPE
-        , P_WOR_LA_EXPEND_CODE             IN WORK_ORDERS.WOR_LA_EXPEND_CODE%TYPE
-        , P_WOR_MOD_BY_ID                  IN WORK_ORDERS.WOR_MOD_BY_ID%TYPE
-        , P_WOR_OUN_ORG_ID                 IN WORK_ORDERS.WOR_OUN_ORG_ID%TYPE
-        , P_WOR_PEO_PERSON_ID              IN WORK_ORDERS.WOR_PEO_PERSON_ID%TYPE
-        , P_WOR_PRICE_TYPE                 IN WORK_ORDERS.WOR_PRICE_TYPE%TYPE
-        , P_WOR_REMARKS                    IN WORK_ORDERS.WOR_REMARKS%TYPE
-        , P_WOR_ROAD_TYPE                  IN WORK_ORDERS.WOR_ROAD_TYPE%TYPE
-        , P_WOR_RSE_HE_ID_LINK             IN WORK_ORDERS.WOR_RSE_HE_ID_LINK%TYPE
-        , P_WOR_SCHEME_REF                 IN WORK_ORDERS.WOR_SCHEME_REF%TYPE
-        , P_WOR_SCHEME_TYPE                IN WORK_ORDERS.WOR_SCHEME_TYPE%TYPE
-        , P_WOR_SCORE                      IN WORK_ORDERS.WOR_SCORE%TYPE
-        , P_WOR_YEAR_CODE                  IN WORK_ORDERS.WOR_YEAR_CODE%TYPE
-        , P_WOR_INTERIM_PAYMENT_FLAG       IN WORK_ORDERS.WOR_INTERIM_PAYMENT_FLAG%TYPE
-        , P_WOR_RISK_ASSESSMENT_FLAG       IN WORK_ORDERS.WOR_RISK_ASSESSMENT_FLAG%TYPE
-        , P_WOR_METHOD_STATEMENT_FLAG      IN WORK_ORDERS.WOR_METHOD_STATEMENT_FLAG%TYPE
-        , P_WOR_WORKS_PROGRAMME_FLAG       IN WORK_ORDERS.WOR_WORKS_PROGRAMME_FLAG%TYPE
-        , P_WOR_ADDITIONAL_SAFETY_FLAG     IN WORK_ORDERS.WOR_ADDITIONAL_SAFETY_FLAG%TYPE
-        , P_WOR_DEF_CORRECTION             IN WORK_ORDERS.WOR_DEF_CORRECTION%TYPE
-        , P_WOR_DEF_CORRECTION_ACCEPT      IN WORK_ORDERS.WOR_DEF_CORRECTION_ACCEPTABLE%TYPE
-        , P_WOR_CORR_EXTENSION_TIME        IN WORK_ORDERS.WOR_CORR_EXTENSION_TIME%TYPE
-        , P_WOR_REVISED_COMP_DATE          IN WORK_ORDERS.WOR_REVISED_COMP_DATE%TYPE
-        , P_WOR_PRICE_VARIATION            IN WORK_ORDERS.WOR_PRICE_VARIATION%TYPE
-        , P_WOR_COMMENCE_BY                IN WORK_ORDERS.WOR_COMMENCE_BY%TYPE
-        , P_WOR_ACT_COMMENCE_BY            IN WORK_ORDERS.WOR_ACT_COMMENCE_BY%TYPE
-        , P_WOR_DEF_CORRECTION_PERIOD      IN WORK_ORDERS.WOR_DEF_CORRECTION_PERIOD%TYPE
-        , P_WOR_REASON_NOT_CHEAPEST        IN WORK_ORDERS.WOR_REASON_NOT_CHEAPEST%TYPE
-        , P_WOR_PRIORITY                   IN WORK_ORDERS.WOR_PRIORITY%TYPE
-        , P_WOR_PERC_ITEM_COMP             IN WORK_ORDERS.WOR_PERC_ITEM_COMP%TYPE
-        , P_WOR_CONTACT                    IN WORK_ORDERS.WOR_CONTACT%TYPE
-        , P_WOR_DATE_RECEIVED              IN WORK_ORDERS.WOR_DATE_RECEIVED%TYPE
-        , P_WOR_RECEIVED_BY                IN WORK_ORDERS.WOR_RECEIVED_BY%TYPE
-        , P_WOR_RECHARGEABLE               IN WORK_ORDERS.WOR_RECHARGEABLE%TYPE
-        , P_WOR_SUPP_DOCUMENTS             IN WORK_ORDERS.WOR_SUPP_DOCUMENTS%TYPE
-        , P_WOR_EARLIEST_START_DATE        IN WORK_ORDERS.WOR_EARLIEST_START_DATE%TYPE
-        , P_WOR_PLANNED_COMP_DATE          IN WORK_ORDERS.WOR_PLANNED_COMP_DATE%TYPE
-        , P_WOR_LATEST_COMP_DATE           IN WORK_ORDERS.WOR_LATEST_COMP_DATE%TYPE
-        , P_WOR_SITE_COMPLETE_DATE         IN WORK_ORDERS.WOR_SITE_COMPLETE_DATE%TYPE
-        , P_WOR_EST_DURATION               IN WORK_ORDERS.WOR_EST_DURATION%TYPE
-        , P_WOR_ACT_DURATION               IN WORK_ORDERS.WOR_ACT_DURATION%TYPE
-        , P_WOR_CERT_COMPLETE              IN WORK_ORDERS.WOR_CERT_COMPLETE%TYPE
-        , P_WOR_CON_CERT_COMPLETE          IN WORK_ORDERS.WOR_CON_CERT_COMPLETE%TYPE
-        , P_WOR_AGREED_BY                  IN WORK_ORDERS.WOR_AGREED_BY%TYPE
-        , P_WOR_AGREED_BY_DATE             IN WORK_ORDERS.WOR_AGREED_BY_DATE%TYPE
-        , P_WOR_CON_AGREED_BY              IN WORK_ORDERS.WOR_CON_AGREED_BY%TYPE
-        , P_WOR_CON_AGREED_BY_DATE         IN WORK_ORDERS.WOR_CON_AGREED_BY_DATE%TYPE
-        , P_WOR_LATE_COSTS                 IN WORK_ORDERS.WOR_LATE_COSTS%TYPE
-        , P_WOR_LATE_COST_CERTIFIED_BY     IN WORK_ORDERS.WOR_LATE_COST_CERTIFIED_BY%TYPE
-        , P_WOR_LATE_COST_CERTIFIED_DATE   IN WORK_ORDERS.WOR_LATE_COST_CERTIFIED_DATE%TYPE
-        , P_WOR_LOCATION_PLAN              IN WORK_ORDERS.WOR_LOCATION_PLAN%TYPE
-        , P_WOR_UTILITY_PLANS              IN WORK_ORDERS.WOR_UTILITY_PLANS%TYPE
---        , P_WOR_STREETWORK_NOTICE          IN WORK_ORDERS.WOR_STREETWORK_NOTICE%TYPE
-        , P_WOR_WORK_RESTRICTIONS          IN WORK_ORDERS.WOR_WORK_RESTRICTIONS%TYPE
-		, P_WOR_REGISTER_FLAG              IN work_orders.wor_register_flag%TYPE
-		, P_WOR_REGISTER_STATUS            IN work_orders.wor_register_status%TYPE
-        )  RETURN NUMBER IS
-
-    l_works_order_no    work_orders.wor_works_order_no%TYPE;
-
-  BEGIN
-
-  	g_works_order_no := generate_works_order_no(p_con_id          => P_WOR_CON_ID
-                                              , p_admin_unit      => nm3get.get_hus(pi_hus_username => USER, pi_raise_not_found => FALSE).hus_admin_unit
-                                              , p_raise_not_found => TRUE);
-
-  	insert into work_orders
-  	          ( WOR_WORKS_ORDER_NO
-                  , WOR_SYS_FLAG
-                  , WOR_RSE_HE_ID_GROUP
-                  , WOR_FLAG
-                  , WOR_CON_ID
-                  , WOR_ACT_COST_CODE
-                  , WOR_ACT_BALANCING_SUM
-                  , WOR_ACT_COST
-                  , WOR_ACT_LABOUR
-                  , WOR_AGENCY
-                  , WOR_ARE_SCHED_ACT_FLAG
-                  , WOR_CHEAPEST_FLAG
-                  , WOR_CLOSED_BY_ID
-                  , WOR_COC_COST_CENTRE
-                  , WOR_COST_RECHARG
-                  , WOR_DATE_CLOSED
-                  , WOR_DATE_CONFIRMED
-                  , WOR_DATE_MOD
-                  , WOR_DATE_RAISED
-                  , WOR_DESCR
-                  , WOR_DIV_CODE
-                  , WOR_DTP_EXPEND_CODE
-                  , WOR_EST_BALANCING_SUM
-                  , WOR_EST_COMPLETE
-                  , WOR_EST_COST
-                  , WOR_EST_LABOUR
-                  , WOR_ICB_ITEM_CODE
-                  , WOR_ICB_SUB_ITEM_CODE
-                  , WOR_ICB_SUB_SUB_ITEM_CODE
-                  , WOR_JOB_NUMBER
-                  , WOR_LAST_PRINT_DATE
-                  , WOR_LA_EXPEND_CODE
-                  , WOR_MOD_BY_ID
-                  , WOR_OUN_ORG_ID
-                  , WOR_PEO_PERSON_ID
-                  , WOR_PRICE_TYPE
-                  , WOR_REMARKS
-                  , WOR_ROAD_TYPE
-                  , WOR_RSE_HE_ID_LINK
-                  , WOR_SCHEME_REF
-                  , WOR_SCHEME_TYPE
-                  , WOR_SCORE
-                  , WOR_YEAR_CODE
-                  , WOR_INTERIM_PAYMENT_FLAG
-                  , WOR_RISK_ASSESSMENT_FLAG
-                  , WOR_METHOD_STATEMENT_FLAG
-                  , WOR_WORKS_PROGRAMME_FLAG
-                  , WOR_ADDITIONAL_SAFETY_FLAG
-                  , WOR_DEF_CORRECTION
-                  , WOR_DEF_CORRECTION_ACCEPTABLE
-                  , WOR_CORR_EXTENSION_TIME
-                  , WOR_REVISED_COMP_DATE
-                  , WOR_PRICE_VARIATION
-                  , WOR_COMMENCE_BY
-                  , WOR_ACT_COMMENCE_BY
-                  , WOR_DEF_CORRECTION_PERIOD
-                  , WOR_REASON_NOT_CHEAPEST
-                  , WOR_PRIORITY
-                  , WOR_PERC_ITEM_COMP
-                  , WOR_CONTACT
-                  , WOR_DATE_RECEIVED
-                  , WOR_RECEIVED_BY
-                  , WOR_RECHARGEABLE
-                  , WOR_SUPP_DOCUMENTS
-                  , WOR_EARLIEST_START_DATE
-                  , WOR_PLANNED_COMP_DATE
-                  , WOR_LATEST_COMP_DATE
-                  , WOR_SITE_COMPLETE_DATE
-                  , WOR_EST_DURATION
-                  , WOR_ACT_DURATION
-                  , WOR_CERT_COMPLETE
-                  , WOR_CON_CERT_COMPLETE
-                  , WOR_AGREED_BY
-                  , WOR_AGREED_BY_DATE
-                  , WOR_CON_AGREED_BY
-                  , WOR_CON_AGREED_BY_DATE
-                  , WOR_LATE_COSTS
-                  , WOR_LATE_COST_CERTIFIED_BY
-                  , WOR_LATE_COST_CERTIFIED_DATE
-                  , WOR_LOCATION_PLAN
-                  , WOR_UTILITY_PLANS
---                  , WOR_STREETWORK_NOTICE
-                  , WOR_WORK_RESTRICTIONS
-		          , WOR_REGISTER_FLAG
-       		      , WOR_REGISTER_STATUS
-                  ) VALUES
-                  ( g_works_order_no
-                  , P_WOR_SYS_FLAG
-                  , P_WOR_RSE_HE_ID_GROUP
-                  , P_WOR_FLAG
-                  , P_WOR_CON_ID
-                  , P_WOR_ACT_COST_CODE
-                  , P_WOR_ACT_BALANCING_SUM
-                  , P_WOR_ACT_COST
-                  , P_WOR_ACT_LABOUR
-                  , P_WOR_AGENCY
-                  , P_WOR_ARE_SCHED_ACT_FLAG
-                  , P_WOR_CHEAPEST_FLAG
-                  , P_WOR_CLOSED_BY_ID
-                  , P_WOR_COC_COST_CENTRE
-                  , P_WOR_COST_RECHARG
-                  , P_WOR_DATE_CLOSED
-                  , P_WOR_DATE_CONFIRMED
-                  , P_WOR_DATE_MOD
-                  , P_WOR_DATE_RAISED
---                  , P_WOR_DESCR||'/'||P_WOR_WORKS_ORDER_NO||'/'||g_works_order_no
-                  , P_WOR_DESCR
-                  , P_WOR_DIV_CODE
-                  , P_WOR_DTP_EXPEND_CODE
-                  , P_WOR_EST_BALANCING_SUM
-                  , P_WOR_EST_COMPLETE
-                  , P_WOR_EST_COST
-                  , P_WOR_EST_LABOUR
-                  , P_WOR_ICB_ITEM_CODE
-                  , P_WOR_ICB_SUB_ITEM_CODE
-                  , P_WOR_ICB_SUB_SUB_ITEM_CODE
-                  , P_WOR_JOB_NUMBER
-                  , P_WOR_LAST_PRINT_DATE
-                  , P_WOR_LA_EXPEND_CODE
-                  , P_WOR_MOD_BY_ID
-                  , P_WOR_OUN_ORG_ID
-                  , P_WOR_PEO_PERSON_ID
-                  , P_WOR_PRICE_TYPE
-                  , P_WOR_REMARKS
-                  , P_WOR_ROAD_TYPE
-                  , P_WOR_RSE_HE_ID_LINK
-                  , P_WOR_SCHEME_REF
-                  , P_WOR_SCHEME_TYPE
-                  , P_WOR_SCORE
-                  , P_WOR_YEAR_CODE
-                  , P_WOR_INTERIM_PAYMENT_FLAG
-                  , P_WOR_RISK_ASSESSMENT_FLAG
-                  , P_WOR_METHOD_STATEMENT_FLAG
-                  , P_WOR_WORKS_PROGRAMME_FLAG
-                  , P_WOR_ADDITIONAL_SAFETY_FLAG
-                  , P_WOR_DEF_CORRECTION
-                  , P_WOR_DEF_CORRECTION_ACCEPT
-                  , P_WOR_CORR_EXTENSION_TIME
-                  , P_WOR_REVISED_COMP_DATE
-                  , P_WOR_PRICE_VARIATION
-                  , P_WOR_COMMENCE_BY
-                  , P_WOR_ACT_COMMENCE_BY
-                  , P_WOR_DEF_CORRECTION_PERIOD
-                  , P_WOR_REASON_NOT_CHEAPEST
-                  , P_WOR_PRIORITY
-                  , P_WOR_PERC_ITEM_COMP
-                  , P_WOR_CONTACT
-                  , P_WOR_DATE_RECEIVED
-                  , P_WOR_RECEIVED_BY
-                  , P_WOR_RECHARGEABLE
-                  , P_WOR_SUPP_DOCUMENTS
-                  , P_WOR_EARLIEST_START_DATE
-                  , P_WOR_PLANNED_COMP_DATE
-                  , P_WOR_LATEST_COMP_DATE
-                  , P_WOR_SITE_COMPLETE_DATE
-                  , P_WOR_EST_DURATION
-                  , P_WOR_ACT_DURATION
-                  , P_WOR_CERT_COMPLETE
-                  , P_WOR_CON_CERT_COMPLETE
-                  , P_WOR_AGREED_BY
-                  , P_WOR_AGREED_BY_DATE
-                  , P_WOR_CON_AGREED_BY
-                  , P_WOR_CON_AGREED_BY_DATE
-                  , P_WOR_LATE_COSTS
-                  , P_WOR_LATE_COST_CERTIFIED_BY
-                  , P_WOR_LATE_COST_CERTIFIED_DATE
-                  , P_WOR_LOCATION_PLAN
-                  , P_WOR_UTILITY_PLANS
---                  , P_WOR_STREETWORK_NOTICE
-                  , P_WOR_WORK_RESTRICTIONS
-                  , P_WOR_REGISTER_FLAG
-       		      , P_WOR_REGISTER_STATUS
-                  );
-
-RETURN( SQL%rowcount );
-
+FUNCTION create_wo_header(p_wor_works_order_no             in work_orders.wor_works_order_no%TYPE
+                         ,p_wor_sys_flag                   in work_orders.wor_sys_flag%TYPE
+                         ,p_wor_rse_he_id_group            in work_orders.wor_rse_he_id_group%TYPE
+                         ,p_wor_flag                       in work_orders.wor_flag%TYPE
+                         ,p_wor_con_id                     in work_orders.wor_con_id%TYPE
+                         ,p_wor_act_cost_code              in work_orders.wor_act_cost_code%TYPE
+                         ,p_wor_act_balancing_sum          in work_orders.wor_act_balancing_sum%TYPE
+                         ,p_wor_act_cost                   in work_orders.wor_act_cost%TYPE
+                         ,p_wor_act_labour                 in work_orders.wor_act_labour%TYPE
+                         ,p_wor_agency                     in work_orders.wor_agency%TYPE
+                         ,p_wor_are_sched_act_flag         in work_orders.wor_are_sched_act_flag%TYPE
+                         ,p_wor_cheapest_flag              in work_orders.wor_cheapest_flag%TYPE
+                         ,p_wor_closed_by_id               in work_orders.wor_closed_by_id%TYPE
+                         ,p_wor_coc_cost_centre            in work_orders.wor_coc_cost_centre%TYPE
+                         ,p_wor_cost_recharg               in work_orders.wor_cost_recharg%TYPE
+                         ,p_wor_date_closed                in work_orders.wor_date_closed%TYPE
+                         ,p_wor_date_confirmed             in work_orders.wor_date_confirmed%TYPE
+                         ,p_wor_date_mod                   in work_orders.wor_date_mod%TYPE
+                         ,p_wor_date_raised                in work_orders.wor_date_raised%TYPE
+                         ,p_wor_descr                      in work_orders.wor_descr%TYPE
+                         ,p_wor_div_code                   in work_orders.wor_div_code%TYPE
+                         ,p_wor_dtp_expend_code            in work_orders.wor_dtp_expend_code%TYPE
+                         ,p_wor_est_balancing_sum          in work_orders.wor_est_balancing_sum%TYPE
+                         ,p_wor_est_complete               in work_orders.wor_est_complete%TYPE
+                         ,p_wor_est_cost                   in work_orders.wor_est_cost%TYPE
+                         ,p_wor_est_labour                 in work_orders.wor_est_labour%TYPE
+                         ,p_wor_icb_item_code              in work_orders.wor_icb_item_code%TYPE
+                         ,p_wor_icb_sub_item_code          in work_orders.wor_icb_sub_item_code%TYPE
+                         ,p_wor_icb_sub_sub_item_code      in work_orders.wor_icb_sub_sub_item_code%TYPE
+                         ,p_wor_job_number                 in work_orders.wor_job_number%TYPE
+                         ,p_wor_last_print_date            in work_orders.wor_last_print_date%TYPE
+                         ,p_wor_la_expend_code             in work_orders.wor_la_expend_code%TYPE
+                         ,p_wor_mod_by_id                  in work_orders.wor_mod_by_id%TYPE
+                         ,p_wor_oun_org_id                 in work_orders.wor_oun_org_id%TYPE
+                         ,p_wor_peo_person_id              in work_orders.wor_peo_person_id%TYPE
+                         ,p_wor_price_TYPE                 in work_orders.wor_price_TYPE%TYPE
+                         ,p_wor_remarks                    in work_orders.wor_remarks%TYPE
+                         ,p_wor_road_TYPE                  in work_orders.wor_road_TYPE%TYPE
+                         ,p_wor_rse_he_id_link             in work_orders.wor_rse_he_id_link%TYPE
+                         ,p_wor_scheme_ref                 in work_orders.wor_scheme_ref%TYPE
+                         ,p_wor_scheme_TYPE                in work_orders.wor_scheme_TYPE%TYPE
+                         ,p_wor_score                      in work_orders.wor_score%TYPE
+                         ,p_wor_year_code                  in work_orders.wor_year_code%TYPE
+                         ,p_wor_interim_payment_flag       in work_orders.wor_interim_payment_flag%TYPE
+                         ,p_wor_risk_assessment_flag       in work_orders.wor_risk_assessment_flag%TYPE
+                         ,p_wor_method_statement_flag      in work_orders.wor_method_statement_flag%TYPE
+                         ,p_wor_works_programme_flag       in work_orders.wor_works_programme_flag%TYPE
+                         ,p_wor_additional_safety_flag     in work_orders.wor_additional_safety_flag%TYPE
+                         ,p_wor_def_correction             in work_orders.wor_def_correction%TYPE
+                         ,p_wor_def_correction_accept      in work_orders.wor_def_correction_acceptable%TYPE
+                         ,p_wor_corr_extension_time        in work_orders.wor_corr_extension_time%TYPE
+                         ,p_wor_revised_comp_date          in work_orders.wor_revised_comp_date%TYPE
+                         ,p_wor_price_variation            in work_orders.wor_price_variation%TYPE
+                         ,p_wor_commence_by                in work_orders.wor_commence_by%TYPE
+                         ,p_wor_act_commence_by            in work_orders.wor_act_commence_by%TYPE
+                         ,p_wor_def_correction_period      in work_orders.wor_def_correction_period%TYPE
+                         ,p_wor_reason_not_cheapest        in work_orders.wor_reason_not_cheapest%TYPE
+                         ,p_wor_priority                   in work_orders.wor_priority%TYPE
+                         ,p_wor_perc_item_comp             in work_orders.wor_perc_item_comp%TYPE
+                         ,p_wor_contact                    in work_orders.wor_contact%TYPE
+                         ,p_wor_date_received              in work_orders.wor_date_received%TYPE
+                         ,p_wor_received_by                in work_orders.wor_received_by%TYPE
+                         ,p_wor_rechargeable               in work_orders.wor_rechargeable%TYPE
+                         ,p_wor_supp_documents             in work_orders.wor_supp_documents%TYPE
+                         ,p_wor_earliest_start_date        in work_orders.wor_earliest_start_date%TYPE
+                         ,p_wor_planned_comp_date          in work_orders.wor_planned_comp_date%TYPE
+                         ,p_wor_latest_comp_date           in work_orders.wor_latest_comp_date%TYPE
+                         ,p_wor_site_complete_date         in work_orders.wor_site_complete_date%TYPE
+                         ,p_wor_est_duration               in work_orders.wor_est_duration%TYPE
+                         ,p_wor_act_duration               in work_orders.wor_act_duration%TYPE
+                         ,p_wor_cert_complete              in work_orders.wor_cert_complete%TYPE
+                         ,p_wor_con_cert_complete          in work_orders.wor_con_cert_complete%TYPE
+                         ,p_wor_agreed_by                  in work_orders.wor_agreed_by%TYPE
+                         ,p_wor_agreed_by_date             in work_orders.wor_agreed_by_date%TYPE
+                         ,p_wor_con_agreed_by              in work_orders.wor_con_agreed_by%TYPE
+                         ,p_wor_con_agreed_by_date         in work_orders.wor_con_agreed_by_date%TYPE
+                         ,p_wor_late_costs                 in work_orders.wor_late_costs%TYPE
+                         ,p_wor_late_cost_certified_by     in work_orders.wor_late_cost_certified_by%TYPE
+                         ,p_wor_late_cost_certified_date   in work_orders.wor_late_cost_certified_date%TYPE
+                         ,p_wor_location_plan              in work_orders.wor_location_plan%TYPE
+                         ,p_wor_utility_plans              in work_orders.wor_utility_plans%TYPE
+                         ,p_wor_work_restrictions          in work_orders.wor_work_restrictions%TYPE
+		                     ,p_wor_register_flag              in work_orders.wor_register_flag%TYPE
+		                     ,p_wor_register_status            in work_orders.wor_register_status%TYPE)
+  RETURN NUMBER IS
+  --
+  l_works_order_no    work_orders.wor_works_order_no%TYPE;
+  --
+  lv_worrefuser  hig_option_values.hov_value%TYPE := hig.get_user_or_sys_opt('WORREFUSER');
+  lv_dumconcode  hig_option_values.hov_value%TYPE := hig.get_user_or_sys_opt('DUMCONCODE');
+  lv_con_code    contracts.con_code%TYPE;
+  lv_admin_unit  nm_admin_units.nau_admin_unit%TYPE;
+  --
+  CURSOR get_con_code(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT con_code
+        ,con_admin_org_id
+    FROM contracts
+   WHERE con_id = cp_con_id
+       ;
+  --
+BEGIN
+  --
+  OPEN  get_con_code(p_wor_con_id);
+  FETCH get_con_code
+   INTO lv_con_code
+       ,lv_admin_unit;
+  CLOSE get_con_code;
+  --
+  IF (lv_dumconcode IS NOT NULL AND lv_dumconcode = lv_con_code)
+   OR NVL(lv_worrefuser,'N') = 'Y'
+   THEN
+      lv_admin_unit := nm3get.get_hus(pi_hus_username => USER
+                                     ,pi_raise_not_found => FALSE).hus_admin_unit;
+  END IF;
+  --
+  g_works_order_no := generate_works_order_no(p_con_id          => p_wor_con_id
+                                             ,p_admin_unit      => lv_admin_unit
+                                             ,p_raise_not_found => TRUE);
+  --
+  INSERT
+    INTO work_orders
+  	    (wor_works_order_no
+        ,wor_sys_flag
+        ,wor_rse_he_id_group
+        ,wor_flag
+        ,wor_con_id
+        ,wor_act_cost_code
+        ,wor_act_balancing_sum
+        ,wor_act_cost
+        ,wor_act_labour
+        ,wor_agency
+        ,wor_are_sched_act_flag
+        ,wor_cheapest_flag
+        ,wor_closed_by_id
+        ,wor_coc_cost_centre
+        ,wor_cost_recharg
+        ,wor_date_closed
+        ,wor_date_confirmed
+        ,wor_date_mod
+        ,wor_date_raised
+        ,wor_descr
+        ,wor_div_code
+        ,wor_dtp_expend_code
+        ,wor_est_balancing_sum
+        ,wor_est_complete
+        ,wor_est_cost
+        ,wor_est_labour
+        ,wor_icb_item_code
+        ,wor_icb_sub_item_code
+        ,wor_icb_sub_sub_item_code
+        ,wor_job_number
+        ,wor_last_print_date
+        ,wor_la_expend_code
+        ,wor_mod_by_id
+        ,wor_oun_org_id
+        ,wor_peo_person_id
+        ,wor_price_type
+        ,wor_remarks
+        ,wor_road_type
+        ,wor_rse_he_id_link
+        ,wor_scheme_ref
+        ,wor_scheme_type
+        ,wor_score
+        ,wor_year_code
+        ,wor_interim_payment_flag
+        ,wor_risk_assessment_flag
+        ,wor_method_statement_flag
+        ,wor_works_programme_flag
+        ,wor_additional_safety_flag
+        ,wor_def_correction
+        ,wor_def_correction_acceptable
+        ,wor_corr_extension_time
+        ,wor_revised_comp_date
+        ,wor_price_variation
+        ,wor_commence_by
+        ,wor_act_commence_by
+        ,wor_def_correction_period
+        ,wor_reason_not_cheapest
+        ,wor_priority
+        ,wor_perc_item_comp
+        ,wor_contact
+        ,wor_date_received
+        ,wor_received_by
+        ,wor_rechargeable
+        ,wor_supp_documents
+        ,wor_earliest_start_date
+        ,wor_planned_comp_date
+        ,wor_latest_comp_date
+        ,wor_site_complete_date
+        ,wor_est_duration
+        ,wor_act_duration
+        ,wor_cert_complete
+        ,wor_con_cert_complete
+        ,wor_agreed_by
+        ,wor_agreed_by_date
+        ,wor_con_agreed_by
+        ,wor_con_agreed_by_date
+        ,wor_late_costs
+        ,wor_late_cost_certified_by
+        ,wor_late_cost_certified_date
+        ,wor_location_plan
+        ,wor_utility_plans
+        ,wor_work_restrictions
+		    ,wor_register_flag
+        ,wor_register_status)
+  VALUES(g_works_order_no
+        ,p_wor_sys_flag
+        ,p_wor_rse_he_id_group
+        ,p_wor_flag
+        ,p_wor_con_id
+        ,p_wor_act_cost_code
+        ,p_wor_act_balancing_sum
+        ,p_wor_act_cost
+        ,p_wor_act_labour
+        ,p_wor_agency
+        ,p_wor_are_sched_act_flag
+        ,p_wor_cheapest_flag
+        ,p_wor_closed_by_id
+        ,p_wor_coc_cost_centre
+        ,p_wor_cost_recharg
+        ,p_wor_date_closed
+        ,p_wor_date_confirmed
+        ,p_wor_date_mod
+        ,p_wor_date_raised
+        ,p_wor_descr
+        ,p_wor_div_code
+        ,p_wor_dtp_expend_code
+        ,p_wor_est_balancing_sum
+        ,p_wor_est_complete
+        ,p_wor_est_cost
+        ,p_wor_est_labour
+        ,p_wor_icb_item_code
+        ,p_wor_icb_sub_item_code
+        ,p_wor_icb_sub_sub_item_code
+        ,p_wor_job_number
+        ,p_wor_last_print_date
+        ,p_wor_la_expend_code
+        ,p_wor_mod_by_id
+        ,p_wor_oun_org_id
+        ,p_wor_peo_person_id
+        ,p_wor_price_type
+        ,p_wor_remarks
+        ,p_wor_road_type
+        ,p_wor_rse_he_id_link
+        ,p_wor_scheme_ref
+        ,p_wor_scheme_type
+        ,p_wor_score
+        ,p_wor_year_code
+        ,p_wor_interim_payment_flag
+        ,p_wor_risk_assessment_flag
+        ,p_wor_method_statement_flag
+        ,p_wor_works_programme_flag
+        ,p_wor_additional_safety_flag
+        ,p_wor_def_correction
+        ,p_wor_def_correction_accept
+        ,p_wor_corr_extension_time
+        ,p_wor_revised_comp_date
+        ,p_wor_price_variation
+        ,p_wor_commence_by
+        ,p_wor_act_commence_by
+        ,p_wor_def_correction_period
+        ,p_wor_reason_not_cheapest
+        ,p_wor_priority
+        ,p_wor_perc_item_comp
+        ,p_wor_contact
+        ,p_wor_date_received
+        ,p_wor_received_by
+        ,p_wor_rechargeable
+        ,p_wor_supp_documents
+        ,p_wor_earliest_start_date
+        ,p_wor_planned_comp_date
+        ,p_wor_latest_comp_date
+        ,p_wor_site_complete_date
+        ,p_wor_est_duration
+        ,p_wor_act_duration
+        ,p_wor_cert_complete
+        ,p_wor_con_cert_complete
+        ,p_wor_agreed_by
+        ,p_wor_agreed_by_date
+        ,p_wor_con_agreed_by
+        ,p_wor_con_agreed_by_date
+        ,p_wor_late_costs
+        ,p_wor_late_cost_certified_by
+        ,p_wor_late_cost_certified_date
+        ,p_wor_location_plan
+        ,p_wor_utility_plans
+        ,p_wor_work_restrictions
+        ,p_wor_register_flag
+	      ,p_wor_register_status)
+	     ;
+  --
+  RETURN( SQL%rowcount );
+  --
 EXCEPTION
-   WHEN NO_DATA_FOUND THEN
+  WHEN NO_DATA_FOUND
+   THEN
       RETURN (0);
 --   WHEN OTHERS THEN
 --      RETURN (-1);
-  END create_wo_header;
---
----------------------------------------------------------------------------------------------------
---
+END create_wo_header;
 --
 ---------------------------------------------------------------------------------------------------
 --
