@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.0   Apr 12 2010 15:58:44   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.1   Apr 14 2010 11:10:08   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Apr 12 2010 15:58:44  $
---       Date fetched Out : $Modtime:   Mar 29 2010 19:08:26  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 14 2010 11:10:08  $
+--       Date fetched Out : $Modtime:   Apr 14 2010 11:08:18  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 gt_tokens  nm3type.tab_varchar32767;
@@ -375,8 +375,8 @@ END extract_records_from_file;
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE process_rmms_or_eid_file(pi_batch_id   IN     activities_report.are_batch_id%TYPE
-                                  ,pi_api_params IN OUT mai_inspection_api.insp_tab)
+PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_batch_id%TYPE
+                                  ,pio_api_params IN OUT mai_inspection_api.insp_tab)
   IS
   --
   lv_enhanced    BOOLEAN := FALSE;
@@ -464,7 +464,8 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id   IN     activities_report.are_ba
   TYPE error_tab IS TABLE OF error_rec INDEX BY BINARY_INTEGER;
   lt_errors  error_tab;
   --
-  lt_tokens nm3type.tab_varchar4000;
+  lt_tokens      nm3type.tab_varchar4000;
+  lt_seq_no_tab  seq_no_store_tab;
   --
   TYPE rec_index_tab IS TABLE OF PLS_INTEGER INDEX BY BINARY_INTEGER;
   lt_g_rec_index rec_index_tab;
@@ -2539,13 +2540,14 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
     */
     IF lt_records(1).milr_rec_type = '1'
      THEN
-        --Log "INFO: Processing RMMS format data file."
+        --Log "INFO: Processing RMMS format data file." (Should really be an NM_ERROR)
+        hig_process_api.log_it('Processing RMMS format data file.');
         lv_enhanced := TRUE;
         set_enhanced_rec_pos;
     ELSIF lt_records(1).milr_rec_type = 'G'
      THEN
-        --Log "INFO: Processing ENHANCED format data file."
-        NULL;
+        --Log "INFO: Processing ENHANCED format data file." (Should really be an NM_ERROR)
+        hig_process_api.log_it('Processing ENHANCED format data file.');
     ELSE
         add_error_to_stack(pi_seq_no => lt_records(1).milr_seq_no
                           ,pi_ner_id => 9009);
@@ -2746,6 +2748,8 @@ nm_debug.debug('Calling process_defect_recs');
         mai_inspection_api.add_are_to_insp_tab(pi_are_rec   => lr_are
                                               ,pio_insp_tab => lt_api_params);
         lr_are := NULL;
+        lt_seq_no_tab(lt_api_params.count).g_seq_no := lt_records(lt_g_rec_index(i)).milr_seq_no;
+        lt_seq_no_tab(lt_api_params.count).p_seq_no := lt_records(lv_p_rec_index).milr_seq_no;
         --
         mai_inspection_api.add_activities_tab_to_insp_tab(pi_activities_tab => lt_activities
                                                          ,pio_insp_tab      => lt_api_params);
@@ -2780,7 +2784,8 @@ BEGIN
   /*
   ||Pass The Data Back To The Calling Procedure.
   */
-  pi_api_params := lt_api_params;
+  --pio_seq_no_tab := lt_seq_no_tab;
+  pio_api_params := lt_api_params;
   --
 EXCEPTION
   WHEN invalid_file
@@ -3100,6 +3105,7 @@ PROCEDURE load_rmms_or_eid_file
   lv_no_created     PLS_INTEGER := 0;
   --
   lt_files       hig_process_api.tab_process_files;
+  lt_seq_no_tab  seq_no_store_tab;
   lt_api_params  mai_inspection_api.insp_tab;
   --
   PROCEDURE get_process_details
@@ -3167,8 +3173,9 @@ BEGIN
       */
       IF lv_file_loaded
        THEN
-          process_rmms_or_eid_file(pi_batch_id   => lv_insp_batch_id
-                                  ,pi_api_params => lt_api_params);
+          process_rmms_or_eid_file(pi_batch_id    => lv_insp_batch_id
+                                  --,pio_seq_no_tab => lt_seq_no_tab
+                                  ,pio_api_params => lt_api_params);
           /*
           ||Number Of Inspections In File Message.
           */
@@ -3238,8 +3245,6 @@ BEGIN
                                ,pi_supplementary_info => lt_api_params(i).insp_record.are_report_id);
           END IF;
           --
-          COMMIT;
-          --
         EXCEPTION
           WHEN others
            THEN
@@ -3249,7 +3254,23 @@ BEGIN
               lv_errors := TRUE;
               --
         END;
+        --
+        COMMIT;
+        --
       END LOOP;
+      --
+      IF lt_api_params.count > 0
+       THEN
+          /*
+          ||The Inspection Data Will Now Either
+          ||Be In The Inspection Tables Or The
+          ||Detailed Error Tables So The File
+          ||Records Are No Longer Needed.
+          */
+          DELETE mai_insp_load_recs
+           WHERE milr_batch_id = lv_insp_batch_id
+               ;
+      END IF;
       /*
       ||Completed Processing File Message.
       */
