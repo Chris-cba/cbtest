@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.0   Apr 12 2010 15:59:08   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.1   Apr 14 2010 11:10:06   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkh  $
---       Date into PVCS   : $Date:   Apr 12 2010 15:59:08  $
---       Date fetched Out : $Modtime:   Mar 05 2010 14:39:54  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 14 2010 11:10:06  $
+--       Date fetched Out : $Modtime:   Apr 14 2010 11:08:02  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,13 +17,16 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --</PACKAGE>
 --<GLOBVAR>
   --
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.0  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
   g_application_owner  VARCHAR2(30);
   --
 --</GLOBVAR>
 --
 --<TYPE>
 --
+TYPE seq_no_store_rec IS RECORD(g_seq_no  mai_insp_load_recs.milr_seq_no%TYPE
+                               ,p_seq_no  mai_insp_load_recs.milr_seq_no%TYPE);
+TYPE seq_no_store_tab IS TABLE OF seq_no_store_rec INDEX BY BINARY_INTEGER;
 --
 --</TYPE>
 --
@@ -46,8 +49,8 @@ FUNCTION tokenise_string(pi_string         IN VARCHAR2
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE process_rmms_or_eid_file(pi_batch_id   IN     activities_report.are_batch_id%TYPE
-                                  ,pi_api_params IN OUT mai_inspection_api.insp_tab);
+PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_batch_id%TYPE
+                                  ,pio_api_params IN OUT mai_inspection_api.insp_tab);
 --
 -----------------------------------------------------------------------------
 --
