@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.0   Apr 12 2010 15:56:56   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.1   Apr 15 2010 19:06:30   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 12 2010 15:56:56  $
---       Date fetched Out : $Modtime:   Mar 29 2010 18:23:48  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 15 2010 19:06:30  $
+--       Date fetched Out : $Modtime:   Apr 15 2010 19:01:30  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -881,7 +881,7 @@ BEGIN
   --
   hig.valid_fk_hco(pi_hco_domain     => 'WEATHER_CONDITION'
                   ,pi_hco_code       => pi_weather_condition
-            ,pi_effective_date => pi_effective_date);
+                  ,pi_effective_date => pi_effective_date);
   --
   RETURN TRUE;
   --
@@ -900,7 +900,7 @@ BEGIN
   --
   hig.valid_fk_hco(pi_hco_domain     => 'SURFACE_CONDITION'
                   ,pi_hco_code       => pi_surface_condition
-            ,pi_effective_date => pi_effective_date);
+                  ,pi_effective_date => pi_effective_date);
   --
   RETURN TRUE;
   --
@@ -909,6 +909,25 @@ EXCEPTION
    THEN
       RETURN FALSE;
 END validate_surface_condition;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_asset_modification(pi_asset_modification IN defects.def_update_inv%TYPE
+                                    ,pi_effective_date     IN DATE)
+  RETURN BOOLEAN IS
+BEGIN
+  --
+  hig.valid_fk_hco(pi_hco_domain     => 'ASSET_MODIFICATION'
+                  ,pi_hco_code       => pi_asset_modification
+                  ,pi_effective_date => pi_effective_date);
+  --
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RETURN FALSE;
+END validate_asset_modification;
 --
 -----------------------------------------------------------------------------
 --
@@ -1509,6 +1528,17 @@ BEGIN
       --
   END IF;
   lr_defect_rec.def_orig_priority := lr_defect_rec.def_priority;
+  /*
+  ||Validate The Asset Modification Flag.
+  */
+  IF lr_defect_rec.def_update_inv IS NOT NULL
+   THEN
+      IF NOT validate_asset_modification(pi_asset_modification => lr_defect_rec.def_update_inv
+                                        ,pi_effective_date     => pi_are_date_work_done)
+       THEN
+          raise_application_error(-20001,'Invalid Asset Modification Flag Specified.');
+      END IF;
+  END IF;
   /*
   ||Set The Created Date Fields
   */
