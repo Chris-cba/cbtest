@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.1   Apr 14 2010 11:10:08   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.2   Apr 15 2010 19:05:44   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Apr 14 2010 11:10:08  $
---       Date fetched Out : $Modtime:   Apr 14 2010 11:08:18  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Apr 15 2010 19:05:44  $
+--       Date fetched Out : $Modtime:   Apr 15 2010 18:52:38  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 gt_tokens  nm3type.tab_varchar32767;
@@ -1447,8 +1447,15 @@ nm_debug.debug('File inspdate = '||lv_token);
         /*
         ||Extract The Inventory Change Indicator.
         */
-        -- The C Loader This Procedure Is Replacing Reads This Field
-        -- But Doesn't Do Anything With It So Ignore It For Now.
+        lv_token := get_token_value(pi_tokens   => lt_tokens
+                                   ,pi_position => lv_i_rec_invind);
+        IF NOT set_varchar2(pi_value   => lv_token
+                           ,pio_target => lr_def.def_update_inv)
+         THEN
+            add_error_to_stack(pi_seq_no => lv_i_seq_no
+                              ,pi_ner_id => 9285);
+            RAISE invalid_record;
+        END IF;
         /*
         ||Extract The SISS.
         */
