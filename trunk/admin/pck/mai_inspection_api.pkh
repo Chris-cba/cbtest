@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.0   Apr 12 2010 15:56:18   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.1   Apr 22 2010 14:06:36   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Apr 12 2010 15:56:18  $
---       Date fetched Out : $Modtime:   Mar 29 2010 12:53:40  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 22 2010 14:06:36  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 11:51:22  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.0  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -207,6 +207,17 @@ PROCEDURE supersede_insp_defects(pi_are_report_id IN activities_report.are_repor
 PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
                            ,pi_commit     IN     VARCHAR2
                            ,po_error_flag    OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE construct_tree_plsql_table
+  (pi_insp_batch_id        IN PLS_INTEGER
+  ,po_tab_initial_state    IN OUT nm3type.tab_number
+  ,po_tab_depth            IN OUT nm3type.tab_number
+  ,po_tab_label            IN OUT nm3type.tab_varchar80
+  ,po_tab_icon             IN OUT nm3type.tab_varchar30
+  ,po_tab_data             IN OUT nm3type.tab_varchar30
+  ,po_tab_parent           IN OUT nm3type.tab_varchar30);
 --
 -----------------------------------------------------------------------------
 --
