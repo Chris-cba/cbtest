@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.14   Apr 22 2010 18:09:24   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.15   Apr 22 2010 18:15:34   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Apr 22 2010 18:09:24  $
---       Date fetched Out : $Modtime:   Apr 22 2010 18:07:50  $
---       SCCS Version     : $Revision:   2.14  $
+--       Date into SCCS   : $Date:   Apr 22 2010 18:15:34  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 17:48:36  $
+--       SCCS Version     : $Revision:   2.15  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.14  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.15  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -80,7 +80,7 @@ END get_wo_no;
   begin
     if p_ne_id is not null then
       if l_user is null then
-        l_user := user;
+        l_user := nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
       end if;
       -- the criteria taken from the road_segments_all view
       select 'x' dummy
@@ -1035,7 +1035,7 @@ PROCEDURE create_view ( view_name      IN inv_item_types.ity_view_name%TYPE
    IS SELECT table_owner
       FROM dba_synonyms
       WHERE synonym_name = 'HIG_OPTIONS'
-      AND owner = USER;
+      AND owner = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
    --
    l_top_user dba_synonyms.table_owner%TYPE;
    invalid_item_type EXCEPTION;
@@ -1195,7 +1195,7 @@ BEGIN
        FETCH top_user INTO l_top_user;
        IF top_user%NOTFOUND THEN
          CLOSE top_user;
-         l_top_user := USER;
+         l_top_user := nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
        ELSE
          CLOSE top_user;
                END IF;
@@ -1648,7 +1648,7 @@ BEGIN
 --SM 29082008 714910
   check_rse_admin_unit(
      p_ne_id  => p_rse_he_id
-    ,p_user   => user
+    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
   );
 
   SELECT def_defect_id_seq.NEXTVAL
@@ -1825,7 +1825,7 @@ BEGIN
 --SM 29082008 714910
   check_rse_admin_unit(
      p_ne_id  => p_rse_he_id
-    ,p_user   => user
+    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
   );
 
   SELECT def_defect_id_seq.NEXTVAL
@@ -2075,7 +2075,7 @@ BEGIN
   --SM 29082008 714910
   check_rse_admin_unit(
      p_ne_id  => pi_insp_rec.are_rse_he_id
-    ,p_user   => user
+    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
   );
   --
   -- Create Inspection.
@@ -2795,11 +2795,20 @@ END;
   ) RETURN VARCHAR2 AS
 
   /* either user owns the object (table,view,cluster) */
+--    CURSOR c_uo IS
+--      SELECT USER
+--      FROM   user_objects
+--      WHERE  object_name = UPPER( a_object_name)
+--        AND  object_type <> 'SYNONYM';
+--Cursor above has been replaced as part of a general
+--task to replace the use of the oracle reserved word "user"
+--with a call to nm3context.
     CURSOR c_uo IS
-      SELECT USER
-      FROM   user_objects
-      WHERE  object_name = UPPER( a_object_name)
-        AND  object_type <> 'SYNONYM';
+      SELECT owner
+        FROM all_objects
+       WHERE owner = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+         AND object_name = UPPER( :a_object_name)
+         AND object_type <> 'SYNONYM';
 
  /* or user has the use of a synonym for an object owned by another user */
     CURSOR c_as IS
@@ -3266,6 +3275,7 @@ END;
    END calc_st_chain;
 --
 -- Start WAG changes.
+------------------------------------------------------------------------------------------
 --
 FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN, lc_agency VARCHAR2) RETURN VARCHAR2 IS
 --
@@ -3331,6 +3341,8 @@ BEGIN
   --
 END;
 --
+------------------------------------------------------------------------------------------
+--
 FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN) RETURN VARCHAR2 IS
   --
   --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
@@ -3356,7 +3368,9 @@ BEGIN
   --
   RETURN MAI.GET_ICB_FGAC_CONTEXT(FALSE, lc_agency);
 END;
-
+--
+------------------------------------------------------------------------------------------
+--
 FUNCTION ICB_FGAC_PREDICATE(schema_in VARCHAR2,
                             name_in   VARCHAR2)
                              RETURN VARCHAR2 IS
@@ -3373,7 +3387,9 @@ BEGIN
       --
       RETURN 'icb_agency_code = NVL(SYS_CONTEXT('''||g_context||''',''AGENCY''),icb_agency_code)';
 END;
-
+--
+------------------------------------------------------------------------------------------
+--
 FUNCTION ICB_BUDGET_FGAC_PREDICATE(schema_in VARCHAR2,
                                    name_in   VARCHAR2)
                                    RETURN VARCHAR2 IS
@@ -3390,7 +3406,9 @@ BEGIN
       --
       RETURN 'bud_agency = NVL(SYS_CONTEXT('''||g_context||''',''AGENCY''),bud_agency)';
 END;
-
+--
+------------------------------------------------------------------------------------------
+--
 FUNCTION ICB_WO_FGAC_PREDICATE(schema_in VARCHAR2,
                                name_in   VARCHAR2)
                                RETURN VARCHAR2 IS
@@ -3412,6 +3430,7 @@ BEGIN
         RETURN 'wor_agency = SYS_CONTEXT('''||g_context||''',''AGENCY'')';
       END IF;
 END;
+------------------------------------------------------------------------------------------
 --
 -- End Wag Changes
 --
@@ -3920,7 +3939,7 @@ END get_gis_sys_flag;
                       '               , HIG_USERS h  '||nl||
                       '               , hig_admin_groups a  '||nl||
                       '               , road_sections rse1  '||nl||
-                      '           WHERE h.hus_username = USER  '||nl||
+                      '           WHERE h.hus_username = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,''USER_ID''))  '||nl||
                       '             AND a.hag_parent_admin_unit = h.hus_admin_unit '||nl||
                       '             AND a.hag_child_admin_unit = o.hau_admin_unit  '||nl||
                       '             AND a.hag_direct_link = '||Nm3flx.string('N')||'  '||nl||
@@ -4413,7 +4432,7 @@ BEGIN
   IF (lv_dumconcode IS NOT NULL AND lv_dumconcode = lv_con_code)
    OR NVL(lv_worrefuser,'N') = 'Y'
    THEN
-      lv_admin_unit := nm3get.get_hus(pi_hus_username => USER
+      lv_admin_unit := nm3get.get_hus(pi_hus_username => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
                                      ,pi_raise_not_found => FALSE).hus_admin_unit;
   END IF;
   --
