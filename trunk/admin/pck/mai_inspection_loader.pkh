@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.1   Apr 14 2010 11:10:06   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.2   Apr 22 2010 14:06:06   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkh  $
---       Date into PVCS   : $Date:   Apr 14 2010 11:10:06  $
---       Date fetched Out : $Modtime:   Apr 14 2010 11:08:02  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Apr 22 2010 14:06:06  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 11:50:42  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --</PACKAGE>
 --<GLOBVAR>
   --
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
   g_application_owner  VARCHAR2(30);
   --
 --</GLOBVAR>
@@ -55,6 +55,14 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
 -----------------------------------------------------------------------------
 --
 PROCEDURE load_rmms_or_eid_file;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE resubmit_batch(pi_insp_batch_id IN PLS_INTEGER);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_report_id%TYPE);
 --
 -----------------------------------------------------------------------------
 --
