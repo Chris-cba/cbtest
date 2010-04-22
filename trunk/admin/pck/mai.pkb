@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.13   Mar 31 2010 18:15:16   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.14   Apr 22 2010 18:09:24   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Mar 31 2010 18:15:16  $
---       Date fetched Out : $Modtime:   Mar 31 2010 18:12:18  $
---       SCCS Version     : $Revision:   2.13  $
+--       Date into SCCS   : $Date:   Apr 22 2010 18:09:24  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 18:07:50  $
+--       SCCS Version     : $Revision:   2.14  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.13  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.14  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -3269,18 +3269,22 @@ END;
 --
 FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN, lc_agency VARCHAR2) RETURN VARCHAR2 IS
 --
-  CURSOR C2 IS
-     select hau_authority_code
-     from hig_admin_groups, hig_admin_units, hig_users
-     where hau_level = 2
-     and  hag_parent_admin_unit = hau_admin_unit
-     and  hag_child_admin_unit = hus_admin_unit
-     and hus_username = user;
+  CURSOR C2
+      IS
+  SELECT hau_authority_code
+    FROM hig_admin_groups, hig_admin_units, hig_users
+   WHERE hau_level = 2
+     AND hag_parent_admin_unit = hau_admin_unit
+     AND hag_child_admin_unit = hus_admin_unit
+     AND hus_username = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+       ;
   --
-  CURSOR C3 IS
-    SELECT hau_authority_code
+  CURSOR C3
+      IS
+  SELECT hau_authority_code
     FROM hig_admin_units
-    WHERE hau_admin_unit = 1;
+   WHERE hau_admin_unit = 1
+       ;
   --
   l_dummy VARCHAR2(1);
   --
@@ -3293,31 +3297,38 @@ BEGIN
   INTO l_default_agency;
   CLOSE C3;
   --
-  IF NOT top then
-    IF hig.get_sysopt('ICBFGAC') = 'Y' AND /*HIG.GET_OWNER('HIG_PRODUCTS')*/ hig.get_application_owner != User THEN
-        IF lc_agency IS NULL THEN
-          --
-    -- Now need to set agency level restriction
-    --
-    OPEN C2;
-    FETCH C2
-    INTO  l_default_agency;
-    CLOSE C2;
-    --
-  ELSE
-    l_default_agency := lc_agency;
-  END IF;
-    ELSE
-      IF hig.get_sysopt('ICBFGAC') = 'Y' AND lc_agency IS NOT NULL THEN
-        --
-  l_default_agency := lc_agency;
+  IF NOT top
+   THEN
+      IF hig.get_sysopt('ICBFGAC') = 'Y'
+       AND hig.get_application_owner != nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+       THEN
+          IF lc_agency IS NULL
+           THEN
+              --
+              -- Now need to set agency level restriction
+              --
+              OPEN  C2;
+              FETCH C2
+               INTO l_default_agency;
+              CLOSE C2;
+              --
+          ELSE
+              l_default_agency := lc_agency;
+          END IF;
       ELSE
-        l_default_agency := NULL;
+          IF hig.get_sysopt('ICBFGAC') = 'Y'
+           AND lc_agency IS NOT NULL
+           THEN
+              --
+              l_default_agency := lc_agency;
+          ELSE
+              l_default_agency := NULL;
+          END IF;
       END IF;
-    END IF;
   END IF;
   --
   RETURN l_default_agency;
+  --
 END;
 --
 FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN) RETURN VARCHAR2 IS
