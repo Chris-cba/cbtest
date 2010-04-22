@@ -2,11 +2,11 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.0   Jul 17 2009 16:22:56   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.1   Apr 22 2010 17:05:00   mhuitson  $
 --       Module Name      : $Workfile:   maisec.pkb  $
---       Date into PVCS   : $Date:   Jul 17 2009 16:22:56  $
---       Date fetched Out : $Modtime:   Jul 17 2009 10:40:58  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 22 2010 17:05:00  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 17:01:50  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --   Author : Mike Huitson
 --
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --	Copyright (c) exor corporation ltd, 2009
 ------------------------------------------------------------------------------------
 --
-  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.0  $';
+  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
   --
   g_package_name  CONSTANT varchar2(30) := 'maisec';
   --
@@ -64,7 +64,7 @@ BEGIN
       lv_retval := '(con_admin_org_id IN(SELECT hag_child_admin_unit'
         ||CHR(10)||'                       FROM hig_admin_groups'
         ||CHR(10)||'                           ,hig_users'
-        ||CHR(10)||'                      WHERE hus_username = USER'
+        ||CHR(10)||'                      WHERE hus_username = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,''USER_ID''))'
         ||CHR(10)||'                        AND hus_admin_unit = hag_parent_admin_unit';
       IF lv_inctopcon = 'Y'
        THEN
