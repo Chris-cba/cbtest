@@ -4,20 +4,22 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.2   Apr 15 2010 19:05:44   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.3   Apr 22 2010 14:06:22   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Apr 15 2010 19:05:44  $
---       Date fetched Out : $Modtime:   Apr 15 2010 18:52:38  $
---       PVCS Version     : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Apr 22 2010 14:06:22  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 11:50:40  $
+--       PVCS Version     : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 gt_tokens  nm3type.tab_varchar32767;
+--
+invalid_file      EXCEPTION; 
 --
 -----------------------------------------------------------------------------
 --
@@ -343,7 +345,7 @@ nm_debug.debug('External Table Created');
   l_sql := 'INSERT'
 ||CHR(10)||'  INTO mai_insp_load_recs'
 ||CHR(10)||'SELECT '||nm3flx.string(pi_batch_id)
-||CHR(10)||'      ,line_no'
+||CHR(10)||'      ,line_no*10'
 ||CHR(10)||'      ,UPPER(rec_type)'
 ||CHR(10)||'      ,rec_text'
 ||CHR(10)||'      ,NULL'
@@ -473,7 +475,6 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
   lv_p_rec_index  PLS_INTEGER;
   lv_h_rec_index  PLS_INTEGER;
   --
-  invalid_file    EXCEPTION;
   invalid_record  EXCEPTION;
   --
   PROCEDURE add_error_to_stack(pi_seq_no             IN mai_insp_load_recs.milr_seq_no%TYPE
@@ -513,6 +514,14 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
   BEGIN
 --    nm_debug.debug('Logging error');
     /*
+    ||Clear down any current errors
+    */
+      UPDATE mai_insp_load_recs
+         SET milr_error_no = NULL
+            ,milr_error_text = NULL
+       WHERE milr_batch_id = pi_batch_id
+         ;
+    /*
     ||Update The Load Records Table
     */
     FOR i IN 1..lt_errors.count LOOP
@@ -526,7 +535,7 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
       --
 --      nm_debug.debug('Logging error with framework '||lt_errors(i).error_text);
       hig_process_api.log_it(pi_message_type => 'E'
-                            ,pi_message      => 'Error On Record ['||lt_errors(i).seq_no||'] '||lt_errors(i).error_text);
+                            ,pi_message      => 'Error :'||lt_errors(i).error_text);
       --
     END LOOP;
     /*
@@ -2579,7 +2588,8 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
              THEN
                 IF lt_records(i).milr_rec_type != 'G'
                  THEN
-                    raise_application_error(-20001,'G record must follow the 1 record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9520);
                     RAISE invalid_file;
                 END IF;
             WHEN 'G'
@@ -2591,100 +2601,115 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 --
                 IF lt_records(i).milr_rec_type != 'H'
                  THEN
-                    raise_application_error(-20001,'H record must follow a G record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9521);
                     RAISE invalid_file;
                 END IF;
             WHEN 'H'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('I','P','R')
                  THEN
-                    raise_application_error(-20001,'I, P or R record must follow a H record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9522);
                     RAISE invalid_file;
                 END IF;
             WHEN 'I'
              THEN
                 IF lt_records(i).milr_rec_type != 'J'
                  THEN
-                    raise_application_error(-20001,'J record must follow an I record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9523);
                     RAISE invalid_file;
                 END IF;
             WHEN 'J'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('D','K','L','M','N')
                  THEN
-                    raise_application_error(-20001,'D, K, L, M or N record must follow a J record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9524);
                     RAISE invalid_file;
                 END IF;
             WHEN 'D'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('D','K','L','M','N')
                  THEN
-                    raise_application_error(-20001,'D, K, L, M or N record must follow a D record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9525);
                     RAISE invalid_file;
                 END IF;
             WHEN 'K'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('L','M','N','P','R')
                  THEN
-                    raise_application_error(-20001,'L, M, N, P or R record must follow a K record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9526);
                     RAISE invalid_file;
                 END IF;
             WHEN 'L'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('M','N','P','Q','R')
                  THEN
-                    raise_application_error(-20001,'M, N, P, Q or R record must follow a L Record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9527);
                     RAISE invalid_file;
                 END IF;
             WHEN 'M'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('I','P','Q','R')
                  THEN
-                    raise_application_error(-20001,'I, P, Q or R record must follow a M record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9528);
                     RAISE invalid_file;
                 END IF;
             WHEN 'N'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('I','P','Q','R')
                  THEN
-                    raise_application_error(-20001,'I, P, Q or R record must follow a N record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9529);
                     RAISE invalid_file;
                 END IF;
             WHEN 'P'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('G','S','X')
                  THEN
-                    raise_application_error(-20001,'G, S or X record must follow a P record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9530);
                     RAISE invalid_file;
                 END IF;
             WHEN 'Q'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('I','M','N','P','Q','R')
                  THEN
-                    raise_application_error(-20001,'I, M, N, P, Q or R record must follow a Q record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9531);
                     RAISE invalid_file;
                 END IF;
             WHEN 'R'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('R','P')
                  THEN
-                    raise_application_error(-20001,'R or P record must follow a R record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9532);
                     RAISE invalid_file;
                 END IF;
             WHEN 'S'
              THEN
                 IF lt_records(i).milr_rec_type NOT IN('S','X')
                  THEN
-                    raise_application_error(-20001,'S or X record must follow a S Record');
+                    add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                      ,pi_ner_id => 9533);
                     RAISE invalid_file;
                 END IF;
             WHEN 'X'
              THEN
-                raise_application_error(-20001,'X record should be the last record in the file');
+                add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                  ,pi_ner_id => 9534);
+                RAISE invalid_file;
             ELSE
               --ERROR: unknown husky hunter record type BPR-8008
-              raise_application_error(-20001,'Invalid Record Type Found ['||lt_records(i).milr_rec_type||']');
-              RAISE invalid_file;
+              add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
+                                ,pi_ner_id => 9534);RAISE invalid_file;
           END CASE;
       END IF;
       /*
@@ -2795,10 +2820,13 @@ BEGIN
   pio_api_params := lt_api_params;
   --
 EXCEPTION
+  WHEN invalid_record then
+      nm_debug.debug('Raised invalid_record'); --clb
   WHEN invalid_file
    THEN
       process_error_stack;
       nm_debug.debug('Invalid File raised');
+      RAISE; --clb
   WHEN others
    THEN
       RAISE;
@@ -3288,10 +3316,13 @@ BEGIN
                        ,pi_supplementary_info => lt_files(i).hpf_filename);
       --
     EXCEPTION
+      WHEN invalid_file THEN
+          lv_errors := TRUE;
       WHEN others
        THEN
           --
-          hig_process_api.log_it(pi_message => SQLERRM);
+          hig_process_api.log_it(pi_message_type => 'E' --clb
+                                ,pi_message => SQLERRM);
           lv_errors := TRUE;
           --
     END;
@@ -3318,22 +3349,724 @@ END load_rmms_or_eid_file;
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE load_inspection(pi_insp_batch_id IN PLS_INTEGER)
+PROCEDURE resubmit_batch(pi_insp_batch_id IN PLS_INTEGER)
   IS
-BEGIN
-  /*
-  ||Validate The Data.
-  */
-  /*
-  ||Move Inspections With Errors To The Error Correction Tables.
-  */
-  /*
-  ||Create The Valid Inspections.
-  */
-  NULL;
+  
+  CURSOR c_process(cp_batch_id   MAI_INSP_LOAD_BATCHES.MILB_BATCH_ID%TYPE) 
+      IS
+  SELECT milb_hp_process_id
+    FROM mai_insp_load_batches
+   WHERE milb_batch_id = cp_batch_id;
   --
-END;
+  --
+  CURSOR c_batches(cp_process_id  hig_processes.hp_process_id%TYPE)
+      IS
+  SELECT 1
+    FROM mai_insp_load_batches,
+         mai_insp_load_recs 
+   WHERE milb_batch_id = milr_batch_id
+     AND milb_hp_process_id = cp_process_id;
+
+  CURSOR c_inspections(cp_process_id  hig_processes.hp_process_id%TYPE)
+      IS
+  SELECT 1
+    FROM mai_insp_load_batches,
+         mai_insp_load_error_are 
+   WHERE are_batch_id = milb_batch_id
+     AND milb_hp_process_id = cp_process_id;
+  --                             
+  --                             
+  lv_process_id     hig_processes.hp_process_id%TYPE;
+  lv_api_error      VARCHAR2(1);
+  lv_errors         BOOLEAN := FALSE;
+  lv_no_rejected    PLS_INTEGER := 0;
+  lv_no_created     PLS_INTEGER := 0;
+  lv_job_sequence   hig_process_job_runs.hpjr_job_run_seq%TYPE;
+  lv_dummy          PLS_INTEGER;
+  lv_row_found      BOOLEAN;
+  --
+  lt_files       hig_process_api.tab_process_files;
+  lt_api_params  mai_inspection_api.insp_tab;
+  --
+BEGIN
+  --
+  nm_debug.debug_on;
+  --
+  /*
+  ||Obtain the relevant process_id related to the batch
+  */
+  OPEN c_process(pi_insp_batch_id);
+  FETCH c_process INTO lv_process_id;
+  CLOSE c_process;
+  
+  nm_debug.debug('Reprocessing process ('||lv_process_id||') batch ('||pi_insp_batch_id||')');
+  
+  hig_process_api.set_current_process_id(pi_process_id => lv_process_id);
+  lv_job_sequence := hig_process_api.last_process_job_run(pi_process_id => lv_process_id);
+  nm_debug.debug('Current Job Run Sequence = '||lv_job_sequence);
+  hig_process_api.set_current_job_run_seq(pi_job_run_seq => lv_job_sequence);
+  hig_process_api.log_it('--------------------------------------');
+  hig_process_api.log_it('Re-Processing batch '||pi_insp_batch_id);
+   
+
+  BEGIN
+      /*
+      || Re-process the batch
+      */
+      process_rmms_or_eid_file(pi_batch_id    => pi_insp_batch_id
+                              ,pio_api_params => lt_api_params);
+      /*
+      ||Number Of Inspections In File Message.
+      */
+      
+      process_log_entry(pi_ner_id   => 9802
+                       ,pi_ner_appl => 'MAI'
+                       ,pi_supplementary_info => lt_api_params.count);
+
+      nm_debug.debug('Inspection to Process = '||lt_api_params.count);
+      /*
+      ||Pass The Data Into The Inspection API.
+      */
+
+      FOR i IN 1..lt_api_params.count LOOP
+        --
+        BEGIN
+          --
+          nm_debug.debug('Processing Inspection '||i);
+          nm_debug.debug('Inspection rse_he_id = '||lt_api_params(i).insp_record.are_rse_he_id);
+          --
+          mai_inspection_api.create_inspection(pio_insp_rec  => lt_api_params(i)
+                                              ,pi_commit     => 'Y'
+                                              ,po_error_flag => lv_api_error);
+          nm_debug.debug('Processed Inspection '||i);
+          --
+          IF NVL(lv_api_error,'N') = 'Y'
+           THEN
+              /*
+              ||Handle the error, insert into error tables etc...
+              */
+              move_insp_to_error_tabs(pi_insp_rec => lt_api_params(i));
+              lv_errors := TRUE;
+              --
+              /*
+              ||Increment The Number Of Inspections Rejected Counter.
+              */
+              lv_no_rejected := lv_no_rejected+1;
+              /*
+              ||Inspection Rejected Message.
+              */
+              hig_process_api.log_it('Inspection rejected: '||lt_api_params(i).insp_record.are_report_id
+                                    ,pi_summary_flag => 'N');
+              
+              nm_debug.debug('Inspection Rejected - '||lt_api_params(i).insp_record.are_report_id);
+          ELSE
+              /*
+              ||Update The Date Last Inspected For The Section.
+              */
+              IF NOT mai_inspection_api.update_sect_last_updated(pi_ne_id              => lt_api_params(i).insp_record.are_rse_he_id
+                                                                ,pi_are_date_work_done => lt_api_params(i).insp_record.are_date_work_done)
+               THEN
+                  hig_process_api.log_it(pi_message_type => 'W'
+                                        ,pi_message      => 'Unable To Update Section Last Inspected Date'
+                                        ,pi_summary_flag => 'N');
+              END IF;
+              /*
+              ||Increment The Number Of Inspections Create Counter.
+              */
+              lv_no_created := lv_no_created+1;
+              /*
+              ||Inspection Created Message.
+              */
+              process_log_entry(pi_ner_id   => 9803
+                               ,pi_ner_appl => 'MAI'
+                               ,pi_summary_flag => 'N'
+                               ,pi_supplementary_info => lt_api_params(i).insp_record.are_report_id);
+                               
+              nm_debug.debug('Inspection Created - '||lt_api_params(i).insp_record.are_report_id);
+           END IF;
+          --
+        EXCEPTION
+          WHEN others
+           THEN
+              --
+              hig_process_api.log_it(pi_message_type => 'E'
+                                    ,pi_message      => SQLERRM);
+              
+              nm_debug.debug('Error - '|| SQLERRM);
+              lv_errors := TRUE;
+              --
+        END;
+        --
+        COMMIT;
+        --
+      END LOOP;
+      
+          --
+      IF lt_api_params.count > 0
+       THEN
+          /*
+          ||The Inspection Data Will Now Either
+          ||Be In The Inspection Tables Or The
+          ||Detailed Error Tables So The File
+          ||Records Are No Longer Needed.
+          */
+          DELETE mai_insp_load_recs
+           WHERE milr_batch_id = pi_insp_batch_id
+               ;
+      END IF;
+      /*
+      ||Completed Processing File Message.
+      */
+      hig_process_api.log_it('Number of Inspections loaded  : '||lv_no_created);
+      hig_process_api.log_it('Number of Inspections rejected: '||lv_no_rejected);
 --
+  EXCEPTION
+      WHEN others
+           THEN
+              --
+              hig_process_api.log_it(pi_message_type => 'E'
+                                    ,pi_message      => SQLERRM);
+              lv_errors := TRUE;    lv_no_rejected := 0;
+  END;
+   
+  lv_no_created  := 0;
+    --
+  --
+  IF lv_errors
+  THEN
+     hig_process_api.log_it('ERRORS FOUND DURING LOAD PROCESS.');
+     hig_process_api.log_it('Use Correct Inspection Load Errors Module to check and correct the errors.');
+     hig_process_api.log_it('Load NOT successful.');
+     hig_process_api.process_execution_end(pi_success_flag => 'N');
+     nm_debug.debug('Errors found');
+  ELSE
+     hig_process_api.log_it('Batch '||pi_insp_batch_id||' processed successfuly.');
+
+     /*
+      ||Check if all batches have been processed for a Process.
+      */
+     OPEN c_batches(lv_process_id);
+     FETCH c_batches INTO lv_dummy;
+     lv_row_found := c_batches%FOUND;
+     CLOSE c_batches;
+     
+     IF NOT lv_row_found THEN
+     
+       /*
+        ||Check if all inspections have been processed for a Process.
+        */
+         OPEN c_inspections(lv_process_id);
+         FETCH c_inspections INTO lv_dummy;
+         lv_row_found := c_inspections%FOUND;
+         CLOSE c_inspections;
+         
+         IF NOT lv_row_found THEN
+           hig_process_api.log_it('All inspections for Process = '||lv_process_id||' have been successfully processed.');
+           hig_process_api.process_execution_end(pi_force  => TRUE);
+         END IF;
+         
+     END IF;
+     nm_debug.debug('Successful');
+  END IF;
+  --
+  nm_debug.debug_off;
+  --
+EXCEPTION
+WHEN OTHERS THEN
+   nm_debug.debug('Error - '||SQLERRM);
+END resubmit_batch;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_report_id%TYPE)
+  IS
+
+  CURSOR c_process(cp_batch_id   mai_insp_load_batches.milb_batch_id%TYPE) 
+      IS
+  SELECT milb_hp_process_id
+    FROM mai_insp_load_batches
+   WHERE milb_batch_id = cp_batch_id;
+  
+  --
+  CURSOR c_batches(cp_process_id  hig_processes.hp_process_id%TYPE)
+      IS
+  SELECT 1
+    FROM mai_insp_load_batches,
+         mai_insp_load_recs 
+   WHERE milb_batch_id = milr_batch_id
+     AND milb_hp_process_id = cp_process_id;
+
+  CURSOR c_inspections(cp_process_id  hig_processes.hp_process_id%TYPE)
+      IS
+  SELECT 1
+    FROM mai_insp_load_batches,
+         mai_insp_load_error_are 
+   WHERE are_batch_id = milb_batch_id
+     AND milb_hp_process_id = cp_process_id;
+  --                             
+  TYPE activities_tab IS TABLE OF mai_insp_load_error_are%ROWTYPE INDEX BY BINARY_INTEGER;
+  TYPE activity_lines_tab IS TABLE OF mai_insp_load_error_arl%ROWTYPE INDEX BY BINARY_INTEGER;
+  TYPE defects_tab IS TABLE OF mai_insp_load_error_def%ROWTYPE INDEX BY BINARY_INTEGER;
+  TYPE defect_atts_tab IS TABLE OF mai_insp_load_error_def_attr%ROWTYPE INDEX BY BINARY_INTEGER;
+  TYPE repairs_tab IS TABLE OF mai_insp_load_error_rep%ROWTYPE INDEX BY BINARY_INTEGER;
+  TYPE boq_tab IS TABLE OF mai_insp_load_error_boq%ROWTYPE INDEX BY BINARY_INTEGER;
+  --
+  lr_mai_are          mai_insp_load_error_are%ROWTYPE;
+  lt_activity_lines   activity_lines_tab; 
+  lt_defects          defects_tab;  
+  lt_defect_atts      defect_atts_tab;
+  lt_repairs          repairs_tab;
+  lt_boqs             boq_tab;
+  lt_insp_rec         mai_inspection_api.insp_rec;
+  --
+  lv_process_id     hig_processes.hp_process_id%TYPE;
+  lv_job_sequence   hig_process_job_runs.hpjr_job_run_seq%TYPE;
+  lv_api_error      VARCHAR2(1);
+  lv_errors         BOOLEAN := FALSE;
+  lv_no_created     PLS_INTEGER := 0;
+  lv_no_rejected    PLS_INTEGER := 0;
+  lv_dummy          PLS_INTEGER;
+  lv_row_found      BOOLEAN;
+
+  PROCEDURE update_error_tabs(pi_insp_rec   mai_inspection_api.insp_rec)
+    IS
+  BEGIN
+
+    /*
+    ||Update Activities Report.
+    */
+    nm_debug.debug('are_error '||pi_insp_rec.insp_error);
+    UPDATE mai_insp_load_error_are
+       SET are_error = pi_insp_rec.insp_error
+     WHERE are_report_id = pi_insp_rec.insp_record.are_report_id;
+     
+    /*
+    ||Update Activities Report Lines.
+    */
+    FOR i IN 1..pi_insp_rec.insp_activities.count LOOP
+    
+      nm_debug.debug('arl_error '||pi_insp_rec.insp_activities(i).atv_error);
+      UPDATE mai_insp_load_error_arl
+         SET arl_error = lt_insp_rec.insp_activities(i).atv_error
+       WHERE arl_are_report_id = pi_insp_rec.insp_record.are_report_id
+         AND arl_atv_acty_area_code = pi_insp_rec.insp_activities(i).atv_acty_area_code;
+      --
+    END LOOP;
+
+    /*
+    ||Update Defects.
+    */
+    FOR i IN 1..pi_insp_rec.insp_defects.count LOOP
+    
+      nm_debug.debug('def_error '||pi_insp_rec.insp_defects(i).def_error);
+      UPDATE mai_insp_load_error_def
+         SET def_error = pi_insp_rec.insp_defects(i).def_error
+       WHERE def_defect_id = pi_insp_rec.insp_defects(i).def_record.def_defect_id;
+           
+      /*
+      ||Update Repairs.
+      */
+      FOR j IN 1..pi_insp_rec.insp_defects(i).def_repairs.count LOOP
+        --
+        nm_debug.debug('rep_error '||pi_insp_rec.insp_defects(i).def_repairs(j).rep_error);
+        UPDATE mai_insp_load_error_rep
+           SET rep_error = pi_insp_rec.insp_defects(i).def_repairs(j).rep_error
+         WHERE rep_def_defect_id = pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_def_defect_id
+           AND rep_action_cat = pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_action_cat;
+           
+             
+        /*
+        ||Update BOQs.
+        */
+        FOR k IN 1..pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs.count LOOP
+          --
+          nm_debug.debug('boq_error '||pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_error);
+          UPDATE mai_insp_load_error_boq
+             SET boq_error = pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_error
+           WHERE boq_id = pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_id;      
+          --
+        END LOOP;
+        --
+      END LOOP;
+      --
+    END LOOP;
+
+  END update_error_tabs;
+  
+  PROCEDURE remove_from_error_tabs(pi_insp_rec   mai_inspection_api.insp_rec)
+    IS
+  BEGIN
+
+    FOR i IN 1..pi_insp_rec.insp_defects.count LOOP
+    
+      FOR j IN 1..pi_insp_rec.insp_defects(i).def_repairs.count LOOP
+        /*
+        ||Remove BOQs.
+        */
+        FOR k IN 1..pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs.count LOOP
+          --
+          nm_debug.debug('deleting BOQ');
+          DELETE FROM mai_insp_load_error_boq
+           WHERE boq_id = pi_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_id;      
+          --
+        END LOOP;
+        --
+        /*
+        ||Remove Repairs.
+        */
+        nm_debug.debug('deleting Repair');
+        DELETE FROM mai_insp_load_error_rep
+         WHERE rep_def_defect_id = pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_def_defect_id
+           AND rep_action_cat = pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_action_cat;
+           
+        --     
+      END LOOP;
+      --
+      /*
+      ||Remove Defect Attributes.
+      */
+      nm_debug.debug('deleting Defect Attribute');
+      DELETE FROM mai_insp_load_error_def_attr
+       WHERE def_defect_id = pi_insp_rec.insp_defects(i).def_record.def_defect_id;
+           
+      --
+      /*
+      ||Remove Defects.
+      */
+      nm_debug.debug('deleting Defect');
+      DELETE FROM  mai_insp_load_error_def
+       WHERE def_defect_id = pi_insp_rec.insp_defects(i).def_record.def_defect_id;
+           
+    END LOOP;
+
+    /*
+    ||Remove Activities Report Lines.
+    */
+    FOR i IN 1..pi_insp_rec.insp_activities.count LOOP
+    
+      nm_debug.debug('deleting Activities Report Line');
+      DELETE mai_insp_load_error_arl
+       WHERE arl_are_report_id = pi_insp_rec.insp_record.are_report_id
+         AND arl_atv_acty_area_code = pi_insp_rec.insp_activities(i).atv_acty_area_code;
+      --
+    END LOOP;
+
+    /*
+    ||Remove Activities Report.
+    */
+    nm_debug.debug('deleting Activities Report');
+    DELETE FROM mai_insp_load_error_are
+     WHERE are_report_id = pi_insp_rec.insp_record.are_report_id;
+     
+
+  END remove_from_error_tabs;
+  
+  
+  BEGIN
+
+  nm_debug.debug_on;
+
+  SELECT *
+  INTO lr_mai_are
+  FROM mai_insp_load_error_are
+  WHERE are_report_id = pi_inspection_id;
+   
+  /*
+  ||Obtain the relevant process_id related to the inspection
+  */
+  OPEN c_process(lr_mai_are.are_batch_id);
+  FETCH c_process INTO lv_process_id;
+  CLOSE c_process;
+  
+  nm_debug.debug('Reprocessing inspection ('||pi_inspection_id||') for process ('||lv_process_id||
+                 ') and batch ('||lr_mai_are.are_batch_id||')');
+  
+  hig_process_api.set_current_process_id(pi_process_id => lv_process_id);
+  lv_job_sequence := hig_process_api.last_process_job_run(pi_process_id => lv_process_id);
+  nm_debug.debug('Current Job Run Sequence = '||lv_job_sequence);
+  hig_process_api.set_current_job_run_seq(pi_job_run_seq => lv_job_sequence);
+  hig_process_api.log_it('--------------------------------------');
+  hig_process_api.log_it('Re-Processing inspection '||pi_inspection_id);
+   
+  nm_debug.debug ('ARE - '||lr_mai_are.are_report_id);
+  lt_insp_rec.insp_record.are_report_id              := lr_mai_are.are_report_id;
+  lt_insp_rec.insp_record.are_rse_he_id              := lr_mai_are.are_rse_he_id;
+  lt_insp_rec.insp_record.are_batch_id               := lr_mai_are.are_batch_id;
+  lt_insp_rec.insp_record.are_created_date           := lr_mai_are.are_created_date;
+  lt_insp_rec.insp_record.are_last_updated_date      := lr_mai_are.are_last_updated_date;
+  lt_insp_rec.insp_record.are_maint_insp_flag        := lr_mai_are.are_maint_insp_flag;
+  lt_insp_rec.insp_record.are_sched_act_flag         := lr_mai_are.are_sched_act_flag;
+  lt_insp_rec.insp_record.are_date_work_done         := lr_mai_are.are_date_work_done;
+  lt_insp_rec.insp_record.are_end_chain              := lr_mai_are.are_end_chain;
+  lt_insp_rec.insp_record.are_initiation_type        := lr_mai_are.are_initiation_type;
+  lt_insp_rec.insp_record.are_insp_load_date         := lr_mai_are.are_insp_load_date;
+  lt_insp_rec.insp_record.are_peo_person_id_actioned := lr_mai_are.are_peo_person_id_actioned;
+  lt_insp_rec.insp_record.are_peo_person_id_insp2    := lr_mai_are.are_peo_person_id_insp2;
+  lt_insp_rec.insp_record.are_st_chain               := lr_mai_are.are_st_chain;
+  lt_insp_rec.insp_record.are_surface_condition      := lr_mai_are.are_surface_condition;
+  lt_insp_rec.insp_record.are_weather_condition      := lr_mai_are.are_weather_condition;
+  lt_insp_rec.insp_record.are_wol_works_order_no     := lr_mai_are.are_wol_works_order_no;
+  lt_insp_rec.insp_error                             := NULL;
+
+  SELECT *
+  BULK COLLECT
+  INTO lt_activity_lines
+  FROM mai_insp_load_error_arl
+  WHERE arl_are_report_id = lr_mai_are.are_report_id;
+    
+  FOR i IN 1 .. lt_activity_lines.count LOOP
+          
+    nm_debug.debug('ARL - '||lt_activity_lines(i).arl_atv_acty_area_code);
+    lt_insp_rec.insp_activities(i).atv_acty_area_code := lt_activity_lines(i).arl_atv_acty_area_code;
+    lt_insp_rec.insp_activities(i).atv_error          := NULL;
+              
+  END LOOP;
+       
+  SELECT *
+  BULK COLLECT
+  INTO lt_defects
+  FROM mai_insp_load_error_def
+  WHERE def_are_report_id = lr_mai_are.are_report_id;
+    
+  FOR i IN 1 .. lt_defects.count LOOP
+
+      nm_debug.debug('DEF - '||lt_defects(i).def_defect_id);
+      lt_insp_rec.insp_defects(i).def_record.def_defect_id          := lt_defects(i).def_defect_id;
+      lt_insp_rec.insp_defects(i).def_record.def_rse_he_id          := lt_defects(i).def_rse_he_id;
+      lt_insp_rec.insp_defects(i).def_record.def_iit_item_id        := lt_defects(i).def_iit_item_id;
+      lt_insp_rec.insp_defects(i).def_record.def_st_chain           := lt_defects(i).def_st_chain;
+      lt_insp_rec.insp_defects(i).def_record.def_are_report_id      := lt_defects(i).def_are_report_id;
+      lt_insp_rec.insp_defects(i).def_record.def_atv_acty_area_code := lt_defects(i).def_atv_acty_area_code;
+      lt_insp_rec.insp_defects(i).def_record.def_siss_id            := lt_defects(i).def_siss_id;
+      lt_insp_rec.insp_defects(i).def_record.def_works_order_no     := lt_defects(i).def_works_order_no;
+      lt_insp_rec.insp_defects(i).def_record.def_created_date       := lt_defects(i).def_created_date;
+      lt_insp_rec.insp_defects(i).def_record.def_defect_code        := lt_defects(i).def_defect_code;
+      lt_insp_rec.insp_defects(i).def_record.def_last_updated_date  := lt_defects(i).def_last_updated_date;
+      lt_insp_rec.insp_defects(i).def_record.def_orig_priority      := lt_defects(i).def_orig_priority;
+      lt_insp_rec.insp_defects(i).def_record.def_priority           := lt_defects(i).def_priority;
+      lt_insp_rec.insp_defects(i).def_record.def_status_code        := lt_defects(i).def_status_code;
+      lt_insp_rec.insp_defects(i).def_record.def_superseded_flag    := lt_defects(i).def_superseded_flag;
+      lt_insp_rec.insp_defects(i).def_record.def_area               := lt_defects(i).def_area;
+      lt_insp_rec.insp_defects(i).def_record.def_are_id_not_found   := lt_defects(i).def_are_id_not_found;
+      lt_insp_rec.insp_defects(i).def_record.def_coord_flag         := lt_defects(i).def_coord_flag;
+      lt_insp_rec.insp_defects(i).def_record.def_date_compl         := lt_defects(i).def_date_compl;
+      lt_insp_rec.insp_defects(i).def_record.def_date_not_found     := lt_defects(i).def_date_not_found;
+      lt_insp_rec.insp_defects(i).def_record.def_defect_class       := lt_defects(i).def_defect_class;
+      lt_insp_rec.insp_defects(i).def_record.def_defect_descr       := lt_defects(i).def_defect_descr;
+      lt_insp_rec.insp_defects(i).def_record.def_defect_type_descr  := lt_defects(i).def_defect_type_descr;
+      lt_insp_rec.insp_defects(i).def_record.def_diagram_no         := lt_defects(i).def_diagram_no;
+      lt_insp_rec.insp_defects(i).def_record.def_height             := lt_defects(i).def_height;
+      lt_insp_rec.insp_defects(i).def_record.def_ident_code         := lt_defects(i).def_ident_code;
+      lt_insp_rec.insp_defects(i).def_record.def_ity_inv_code       := lt_defects(i).def_ity_inv_code;
+      lt_insp_rec.insp_defects(i).def_record.def_ity_sys_flag       := lt_defects(i).def_ity_sys_flag;
+      lt_insp_rec.insp_defects(i).def_record.def_length             := lt_defects(i).def_length;
+      lt_insp_rec.insp_defects(i).def_record.def_locn_descr         := lt_defects(i).def_locn_descr;
+      lt_insp_rec.insp_defects(i).def_record.def_maint_wo           := lt_defects(i).def_maint_wo;
+      lt_insp_rec.insp_defects(i).def_record.def_mand_adv           := lt_defects(i).def_mand_adv;
+      lt_insp_rec.insp_defects(i).def_record.def_notify_org_id      := lt_defects(i).def_notify_org_id;
+      lt_insp_rec.insp_defects(i).def_record.def_number             := lt_defects(i).def_number;
+      lt_insp_rec.insp_defects(i).def_record.def_per_cent           := lt_defects(i).def_per_cent;
+      lt_insp_rec.insp_defects(i).def_record.def_per_cent_orig      := lt_defects(i).def_per_cent_orig;
+      lt_insp_rec.insp_defects(i).def_record.def_per_cent_rem       := lt_defects(i).def_per_cent_rem;
+      lt_insp_rec.insp_defects(i).def_record.def_rechar_org_id      := lt_defects(i).def_rechar_org_id;
+      lt_insp_rec.insp_defects(i).def_record.def_serial_no          := lt_defects(i).def_serial_no;
+      lt_insp_rec.insp_defects(i).def_record.def_skid_coeff         := lt_defects(i).def_skid_coeff;
+      lt_insp_rec.insp_defects(i).def_record.def_special_instr      := lt_defects(i).def_special_instr;
+      lt_insp_rec.insp_defects(i).def_record.def_superseded_id      := lt_defects(i).def_superseded_id;
+      lt_insp_rec.insp_defects(i).def_record.def_time_hrs           := lt_defects(i).def_time_hrs;
+      lt_insp_rec.insp_defects(i).def_record.def_time_mins          := lt_defects(i).def_time_mins;
+      lt_insp_rec.insp_defects(i).def_record.def_update_inv         := lt_defects(i).def_update_inv;
+      lt_insp_rec.insp_defects(i).def_record.def_x_sect             := lt_defects(i).def_x_sect;
+      lt_insp_rec.insp_defects(i).def_record.def_easting            := lt_defects(i).def_easting;
+      lt_insp_rec.insp_defects(i).def_record.def_northing           := lt_defects(i).def_northing;
+      lt_insp_rec.insp_defects(i).def_record.def_response_category  := lt_defects(i).def_response_category;
+      lt_insp_rec.insp_defects(i).def_error                         := NULL;
+                      
+      SELECT *
+      BULK COLLECT
+      INTO lt_defect_atts
+      FROM mai_insp_load_error_def_attr
+      WHERE def_defect_id = lt_defects(i).def_defect_id;
+            
+      FOR j IN 1 .. lt_defect_atts.count LOOP
+                          
+          nm_debug.debug('DEF_ATT - '||lt_defect_atts(j).def_attr_no);
+          lt_insp_rec.insp_defects(i).def_record.def_defect_id := lt_defect_atts(j).def_defect_id;
+          lt_insp_rec.insp_defects(i).def_attribs(j)           := lt_defect_atts(j).def_attr_value;
+
+      END LOOP;
+                          
+      SELECT *
+      BULK COLLECT
+      INTO lt_repairs
+      FROM mai_insp_load_error_rep
+      WHERE rep_def_defect_id = lt_defects(i).def_defect_id;
+            
+      FOR j in 1 .. lt_repairs.count LOOP
+                  
+          nm_debug.debug('REP - '||lt_repairs(j).rep_action_cat);
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_def_defect_id      := lt_repairs(j).rep_def_defect_id;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_action_cat         := lt_repairs(j).rep_action_cat;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_rse_he_id          := lt_repairs(j).rep_rse_he_id;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_tre_treat_code     := lt_repairs(j).rep_tre_treat_code;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_atv_acty_area_code := lt_repairs(j).rep_atv_acty_area_code;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_created_date       := lt_repairs(j).rep_created_date;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_date_due           := lt_repairs(j).rep_date_due;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_last_updated_date  := lt_repairs(j).rep_last_updated_date;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_superseded_flag    := lt_repairs(j).rep_superseded_flag;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_completed_hrs      := lt_repairs(j).rep_completed_hrs;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_completed_mins     := lt_repairs(j).rep_completed_mins;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_date_completed     := lt_repairs(j).rep_date_completed;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_descr              := lt_repairs(j).rep_descr;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_local_date_due     := lt_repairs(j).rep_local_date_due;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_old_due_date       := lt_repairs(j).rep_old_due_date;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_error                         := NULL;
+
+          SELECT *
+          BULK COLLECT
+          INTO lt_boqs
+          FROM mai_insp_load_error_boq
+          WHERE boq_defect_id = lt_defects(i).def_defect_id
+            AND boq_rep_action_cat = lt_repairs(j).rep_action_cat;
+            
+          FOR k IN 1 .. lt_boqs.count LOOP
+                                
+              nm_debug.debug('BOQ - '||lt_boqs(k).boq_id); 
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_work_flag      := lt_boqs(k).boq_work_flag;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_defect_id      := lt_boqs(k).boq_defect_id;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_rep_action_cat := lt_boqs(k).boq_rep_action_cat;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_wol_id         := lt_boqs(k).boq_wol_id;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_sta_item_code  := lt_boqs(k).boq_sta_item_code;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_item_name      := lt_boqs(k).boq_item_name;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_date_created   := lt_boqs(k).boq_date_created;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_icb_work_code  := lt_boqs(k).boq_icb_work_code;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_dim1       := lt_boqs(k).boq_est_dim1;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_dim2       := lt_boqs(k).boq_est_dim2;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_dim3       := lt_boqs(k).boq_est_dim3;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_quantity   := lt_boqs(k).boq_est_quantity;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_rate       := lt_boqs(k).boq_est_rate;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_discount   := lt_boqs(k).boq_est_discount;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_cost       := lt_boqs(k).boq_est_cost;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_est_labour     := lt_boqs(k).boq_est_labour;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_dim1       := lt_boqs(k).boq_act_dim1;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_dim2       := lt_boqs(k).boq_act_dim2;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_dim3       := lt_boqs(k).boq_act_dim3;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_quantity   := lt_boqs(k).boq_act_quantity;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_cost       := lt_boqs(k).boq_act_cost;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_labour     := lt_boqs(k).boq_act_labour;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_rate       := lt_boqs(k).boq_act_rate;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_act_discount   := lt_boqs(k).boq_act_discount;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_id             := lt_boqs(k).boq_id;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_record.boq_parent_id      := lt_boqs(k).boq_parent_id;
+              lt_insp_rec.insp_defects(i).def_repairs(j).rep_boqs(k).boq_error                     := NULL;
+            
+          END LOOP;
+             
+      END LOOP;
+          
+  END LOOP;
+       
+
+  mai_inspection_api.create_inspection(pio_insp_rec  => lt_insp_rec
+                                      ,pi_commit     => 'Y'
+                                      ,po_error_flag => lv_api_error);
+  --
+  nm_debug.debug('Completed create_inspection with '||lv_api_error);
+  IF NVL(lv_api_error,'N') = 'Y'
+   THEN
+      /*
+      ||Update Error tabs.
+      */
+      update_error_tabs(pi_insp_rec => lt_insp_rec);      
+      lv_errors := TRUE;
+      --
+      /*
+      ||Increment The Number Of Inspections Rejected Counter.
+      */
+      lv_no_rejected := lv_no_rejected+1;
+      /*
+      ||Inspection Rejected Message.
+      */
+      nm_debug.debug('Inspection Rejected - '||lt_insp_rec.insp_record.are_report_id);
+      --
+      hig_process_api.log_it('Inspection rejected: '||lt_insp_rec.insp_record.are_report_id
+                            ,pi_summary_flag => 'N');
+      hig_process_api.log_it('Use Correct Inspection Load Errors Module to check and correct the errors.');
+              --
+  ELSE
+      /*
+      ||Update The Date Last Inspected For The Section.
+      */
+      IF NOT mai_inspection_api.update_sect_last_updated(pi_ne_id              => lt_insp_rec.insp_record.are_rse_he_id
+                                                        ,pi_are_date_work_done => lt_insp_rec.insp_record.are_date_work_done)
+       THEN
+          hig_process_api.log_it(pi_message_type => 'W'
+                                ,pi_message      => 'Unable To Update Section Last Inspected Date'
+                                ,pi_summary_flag => 'N');
+      END IF;
+      /*
+      ||Increment The Number Of Inspections Create Counter.
+      */
+      lv_no_created := lv_no_created+1;
+      
+      /*
+      ||Remove error table entries.
+      */
+      nm_debug.debug('Removing inspection '||lt_insp_rec.insp_record.are_report_id||
+                     ' from error table');
+      remove_from_error_tabs(pi_insp_rec => lt_insp_rec);
+      /*
+      ||Inspection Created Message.
+      */
+      process_log_entry(pi_ner_id   => 9803
+                       ,pi_ner_appl => 'MAI'
+                       ,pi_summary_flag => 'N'
+                       ,pi_supplementary_info => lr_mai_are.are_report_id);
+                       
+      nm_debug.debug('Inspection Created - '||lt_insp_rec.insp_record.are_report_id);
+
+     /*
+      ||Check if all batches have been processed for a Process.
+      */
+     OPEN c_batches(lv_process_id);
+     FETCH c_batches INTO lv_dummy;
+     lv_row_found := c_batches%FOUND;
+     CLOSE c_batches;
+     
+     IF NOT lv_row_found THEN
+     
+       /*
+        ||Check if all inspections have been processed for a Process.
+        */
+         OPEN c_inspections(lv_process_id);
+         FETCH c_inspections INTO lv_dummy;
+         lv_row_found := c_inspections%FOUND;
+         CLOSE c_inspections;
+         
+         IF NOT lv_row_found THEN
+           hig_process_api.log_it('All inspections for Process = '||lv_process_id||' have been successfully processed.');
+           hig_process_api.process_execution_end(pi_force  => TRUE);
+         END IF;
+         
+     END IF;
+
+   END IF;
+  --
+  
+  --
+  nm_debug.debug_off;
+  
+EXCEPTION
+  WHEN others
+   THEN
+      --
+      hig_process_api.log_it(pi_message_type => 'E'
+                            ,pi_message      => SQLERRM);
+          
+      
+      nm_debug.debug('Error - '|| SQLERRM);
+      lv_errors := TRUE;
+END resubmit_inspection;
 -----------------------------------------------------------------------------
 --
 END mai_inspection_loader;
