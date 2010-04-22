@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.1   Apr 15 2010 19:06:30   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.2   Apr 22 2010 14:06:52   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 15 2010 19:06:30  $
---       Date fetched Out : $Modtime:   Apr 15 2010 19:01:30  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Apr 22 2010 14:06:52  $
+--       Date fetched Out : $Modtime:   Apr 22 2010 14:04:12  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -550,6 +550,142 @@ EXCEPTION
    THEN
       raise_application_error(-20041, 'Error Occured While Creating Activity Report Line(s) : '||SQLERRM);
 END ins_insp_lines;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION ins_defect(pi_defect_rec defects%ROWTYPE)
+  RETURN defects.def_defect_id%TYPE IS
+  --
+  lv_defect_id   defects.def_defect_id%TYPE;
+  --
+BEGIN
+  /*
+  ||Check The Defect Id (Primary Key).
+  */
+  IF pi_defect_rec.def_defect_id IS NULL
+   THEN
+      lv_defect_id := get_next_id('def_defect_id_seq');
+  ELSE
+      lv_defect_id := pi_defect_rec.def_defect_id;
+  END IF;
+  /*
+  ||Insert The Defect.
+  */
+  INSERT 
+    INTO defects 
+        (def_defect_id
+        ,def_rse_he_id
+        ,def_iit_item_id
+        ,def_st_chain
+        ,def_are_report_id
+        ,def_atv_acty_area_code
+        ,def_siss_id
+        ,def_works_order_no
+        ,def_created_date
+        ,def_defect_code
+        ,def_last_updated_date
+        ,def_orig_priority
+        ,def_priority
+        ,def_status_code
+        ,def_superseded_flag
+        ,def_area
+        ,def_are_id_not_found
+        ,def_coord_flag
+        ,def_date_compl
+        ,def_date_not_found
+        ,def_defect_class
+        ,def_defect_descr
+        ,def_defect_type_descr
+        ,def_diagram_no
+        ,def_height
+        ,def_ident_code
+        ,def_ity_inv_code
+        ,def_ity_sys_flag
+        ,def_length
+        ,def_locn_descr
+        ,def_maint_wo
+        ,def_mand_adv
+        ,def_notify_org_id
+        ,def_number
+        ,def_per_cent
+        ,def_per_cent_orig
+        ,def_per_cent_rem
+        ,def_rechar_org_id
+        ,def_serial_no
+        ,def_skid_coeff
+        ,def_special_instr
+        ,def_superseded_id
+        ,def_time_hrs
+        ,def_time_mins
+        ,def_update_inv
+        ,def_x_sect
+        ,def_easting
+        ,def_northing
+        ,def_response_category) 
+ VALUES (lv_defect_id
+        ,pi_defect_rec.def_rse_he_id
+        ,pi_defect_rec.def_iit_item_id
+        ,pi_defect_rec.def_st_chain
+        ,pi_defect_rec.def_are_report_id
+        ,pi_defect_rec.def_atv_acty_area_code
+        ,pi_defect_rec.def_siss_id
+        ,pi_defect_rec.def_works_order_no
+        ,pi_defect_rec.def_created_date
+        ,pi_defect_rec.def_defect_code
+        ,sysdate
+        ,pi_defect_rec.def_orig_priority
+        ,pi_defect_rec.def_priority
+        ,pi_defect_rec.def_status_code
+        ,'N'
+        ,pi_defect_rec.def_area
+        ,pi_defect_rec.def_are_id_not_found
+        ,pi_defect_rec.def_coord_flag
+        ,NULL
+        ,NULL
+        ,pi_defect_rec.def_defect_class
+        ,pi_defect_rec.def_defect_descr
+        ,pi_defect_rec.def_defect_type_descr
+        ,pi_defect_rec.def_diagram_no
+        ,pi_defect_rec.def_height
+        ,pi_defect_rec.def_ident_code
+        ,pi_defect_rec.def_ity_inv_code
+        ,pi_defect_rec.def_ity_sys_flag
+        ,pi_defect_rec.def_length
+        ,pi_defect_rec.def_locn_descr
+        ,pi_defect_rec.def_maint_wo
+        ,pi_defect_rec.def_mand_adv
+        ,pi_defect_rec.def_notify_org_id
+        ,pi_defect_rec.def_number
+        ,pi_defect_rec.def_per_cent
+        ,pi_defect_rec.def_per_cent_orig
+        ,pi_defect_rec.def_per_cent_rem
+        ,pi_defect_rec.def_rechar_org_id
+        ,pi_defect_rec.def_serial_no
+        ,pi_defect_rec.def_skid_coeff
+        ,pi_defect_rec.def_special_instr
+        ,NULL
+        ,pi_defect_rec.def_time_hrs
+        ,pi_defect_rec.def_time_mins
+        ,pi_defect_rec.def_update_inv
+        ,pi_defect_rec.def_x_sect
+        ,pi_defect_rec.def_easting
+        ,pi_defect_rec.def_northing
+        ,pi_defect_rec.def_response_category);
+  --
+  IF SQL%rowcount != 1 THEN
+    RAISE insert_error;
+  END IF;
+  --
+  RETURN lv_defect_id;
+  --
+EXCEPTION
+  WHEN insert_error
+   THEN
+      raise_application_error(-20040, 'Error occured while creating Activities Report.');
+  WHEN others
+   THEN
+      RAISE;
+END ins_defect;
 --
 -----------------------------------------------------------------------------
 --
@@ -1647,6 +1783,8 @@ PROCEDURE validate_repair_boqs(pi_def_defect_id      IN     defects.def_defect_i
   lv_perc_item    hig_option_values.hov_value%TYPE := hig.get_sysopt('PERC_ITEM');
   --
 BEGIN
+  nm_debug.debug('Validating Repair BOQs for defect('||pi_def_defect_id||')');
+  nm_debug.debug('BOQ count ='||pio_boq_tab.count);
   /*
   ||If BOQs Have Been Provided Then Validate Them
   ||Otherwise If The System Is Configured To Enforce
@@ -1918,7 +2056,7 @@ BEGIN
       ||This Repair For Validation.
       */
       lt_boq_tab := lt_rep_tab(i).rep_boqs;
-      --
+      
       FOR j IN 1..lt_boq_tab.count LOOP
         --
         IF lt_boq_tab(j).boq_record.boq_rep_action_cat IS NULL
@@ -1953,6 +2091,7 @@ BEGIN
     EXCEPTION
       WHEN others
        THEN
+          
           lv_rep_error_flag := 'Y';
           lt_rep_tab(i).rep_error := SQLERRM;
     END;
@@ -2952,8 +3091,9 @@ BEGIN
         || Create The Defect.
         */
         nm_debug.debug('Creating Defect.');
-        lv_defect_id := mai.create_defect(lr_defect_rec);
+        lv_defect_id := ins_defect(lr_defect_rec);
         lr_defect_rec.def_defect_id := lv_defect_id;
+        nm_debug.debug('Defect Id = '||lv_defect_id);
       EXCEPTION
         WHEN others
          THEN  
@@ -2979,6 +3119,7 @@ BEGIN
                       ,po_error_flag  => lv_error_flag
                       ,pio_repair_tab => lt_repairs);
       --
+      
       IF NVL(lv_error_flag,'N') != 'Y'
        THEN
           /*
@@ -3006,6 +3147,8 @@ BEGIN
            THEN
               ins_boqs(pi_boq_tab => lt_ins_boqs);
           END IF;
+      ELSE
+         nm_debug.debug('Repair Validation Failed');
       END IF;
       /*
       ||Clear Down The Ins Tables.
@@ -3085,7 +3228,6 @@ BEGIN
       COMMIT;
   END IF;
   --
-  nm_debug.debug_off;
   --
   po_error_flag := lv_error_flag;
   pio_insp_rec.insp_record := lr_insp_rec;
@@ -3097,6 +3239,132 @@ EXCEPTION
       po_error_flag := 'Y';
       --RAISE;
 END create_inspection;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE construct_tree_plsql_table
+  (pi_insp_batch_id        IN PLS_INTEGER
+  ,po_tab_initial_state    IN OUT nm3type.tab_number
+  ,po_tab_depth            IN OUT nm3type.tab_number
+  ,po_tab_label            IN OUT nm3type.tab_varchar80
+  ,po_tab_icon             IN OUT nm3type.tab_varchar30
+  ,po_tab_data             IN OUT nm3type.tab_varchar30
+  ,po_tab_parent           IN OUT nm3type.tab_varchar30) IS
+
+  TYPE activities_tab IS TABLE OF mai_insp_load_error_are.are_report_id%TYPE INDEX BY BINARY_INTEGER;
+  TYPE activity_lines_tab IS TABLE OF mai_insp_load_error_arl.arl_atv_acty_area_code%TYPE INDEX BY BINARY_INTEGER;
+  TYPE defects_tab IS TABLE OF mai_insp_load_error_def.def_defect_id%TYPE INDEX BY BINARY_INTEGER;
+  TYPE repairs_tab IS TABLE OF mai_insp_load_error_rep.rep_action_cat%TYPE INDEX BY BINARY_INTEGER;
+  TYPE boq_tab IS TABLE OF mai_insp_load_error_boq.boq_id%TYPE INDEX BY BINARY_INTEGER;
+  --
+  lt_activities       activities_tab; 
+  lt_activity_lines   activity_lines_tab; 
+  lt_defects          defects_tab; 
+  lt_repairs          repairs_tab; 
+  lt_boqs             boq_tab; 
+  --
+  lv_index        binary_integer :=0;
+  
+BEGIN
+
+  lv_index := lv_index+1;
+  po_tab_initial_state(lv_index) := 1;
+  po_tab_depth(lv_index)         := 1;
+  po_tab_label(lv_index)         := 'Batch - '||pi_insp_batch_id;
+  po_tab_icon(lv_index)          := 'fdrclose';
+  po_tab_data(lv_index)          := pi_insp_batch_id;
+  po_tab_parent(lv_index)        := NULL;
+  
+  SELECT are_report_id
+  BULK COLLECT
+  INTO  lt_activities
+  FROM mai_insp_load_error_are
+  WHERE are_batch_id = pi_insp_batch_id;
+  
+  FOR x IN 1 .. lt_activities.count LOOP
+
+    lv_index := lv_index+1;
+    po_tab_initial_state(lv_index) := 1;
+    po_tab_depth(lv_index)         := 2;
+    po_tab_label(lv_index)         := 'Inspection - '||lt_activities(x);
+    po_tab_icon(lv_index)          := 'inspection';
+    po_tab_data(lv_index)          := lt_activities(x);
+    po_tab_parent(lv_index)        := NULL;
+    
+    SELECT arl_atv_acty_area_code
+    BULK COLLECT
+    INTO  lt_activity_lines
+    FROM mai_insp_load_error_arl
+    WHERE arl_are_report_id = lt_activities(x);
+    
+    FOR i IN 1 .. lt_activity_lines.count LOOP
+      lv_index := lv_index+1;
+      po_tab_initial_state(lv_index) := 1;
+      po_tab_depth(lv_index)         := 3;
+      po_tab_label(lv_index)         := 'Activity - '||lt_activity_lines(i);
+      po_tab_icon(lv_index)          := 'fdrclose';
+      po_tab_data(lv_index)          := lt_activity_lines(i);
+      po_tab_parent(lv_index)        := NULL;
+
+      SELECT def_defect_id
+      BULK COLLECT
+      INTO  lt_defects
+      FROM mai_insp_load_error_def
+      WHERE def_are_report_id = lt_activities(x)
+        AND def_atv_acty_area_code = lt_activity_lines(i);
+        
+      FOR j IN 1 .. lt_defects.count LOOP
+        lv_index := lv_index+1;
+        po_tab_initial_state(lv_index) := 1;
+        po_tab_depth(lv_index)         := 4;
+        po_tab_label(lv_index)         := 'Defect - '||lt_defects(j);
+        po_tab_icon(lv_index)          := 'defect';
+        po_tab_data(lv_index)          := lt_defects(j);
+        po_tab_parent(lv_index)        := NULL;
+
+
+        SELECT rep_action_cat
+        BULK COLLECT
+        INTO lt_repairs
+        FROM mai_insp_load_error_rep
+        WHERE rep_def_defect_id = lt_defects(j);
+
+        FOR k IN 1 .. lt_repairs.count LOOP
+          lv_index := lv_index+1;
+          po_tab_initial_state(lv_index) := 1;
+          po_tab_depth(lv_index)         := 5;
+          po_tab_label(lv_index)         := 'Repair - '||lt_repairs(k);
+          po_tab_icon(lv_index)          := 'repair';
+          po_tab_data(lv_index)          := lt_repairs(k);
+          po_tab_parent(lv_index)        := NULL;
+
+          SELECT boq_id
+          BULK COLLECT
+          INTO lt_boqs
+          FROM mai_insp_load_error_boq
+          WHERE boq_defect_id = lt_defects(j)
+            AND boq_rep_action_cat = lt_repairs(k);
+
+          FOR l IN 1 ..lt_boqs.count LOOP
+            lv_index := lv_index+1;
+            po_tab_initial_state(lv_index) := 1;
+            po_tab_depth(lv_index)         := 6;
+            po_tab_label(lv_index)         := 'BOQ - '||lt_boqs(l);
+            po_tab_icon(lv_index)          := 'fdrclose';
+            po_tab_data(lv_index)          := lt_boqs(l);
+            po_tab_parent(lv_index)        := NULL;
+          
+          END LOOP;
+          
+        END LOOP;
+        
+      END LOOP;
+
+    END LOOP;
+    
+  END LOOP;
+    
+END construct_tree_plsql_table;
 --
 -----------------------------------------------------------------------------
 --
