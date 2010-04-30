@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.2   Apr 22 2010 14:06:52   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.3   Apr 30 2010 12:21:18   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 22 2010 14:06:52  $
---       Date fetched Out : $Modtime:   Apr 22 2010 14:04:12  $
---       PVCS Version     : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Apr 30 2010 12:21:18  $
+--       Date fetched Out : $Modtime:   Apr 29 2010 14:15:42  $
+--       PVCS Version     : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3243,7 +3243,7 @@ END create_inspection;
 -----------------------------------------------------------------------------
 --
 PROCEDURE construct_tree_plsql_table
-  (pi_insp_batch_id        IN PLS_INTEGER
+  (pi_process_id           IN PLS_INTEGER
   ,po_tab_initial_state    IN OUT nm3type.tab_number
   ,po_tab_depth            IN OUT nm3type.tab_number
   ,po_tab_label            IN OUT nm3type.tab_varchar80
@@ -3251,14 +3251,22 @@ PROCEDURE construct_tree_plsql_table
   ,po_tab_data             IN OUT nm3type.tab_varchar30
   ,po_tab_parent           IN OUT nm3type.tab_varchar30) IS
 
-  TYPE activities_tab IS TABLE OF mai_insp_load_error_are.are_report_id%TYPE INDEX BY BINARY_INTEGER;
-  TYPE activity_lines_tab IS TABLE OF mai_insp_load_error_arl.arl_atv_acty_area_code%TYPE INDEX BY BINARY_INTEGER;
-  TYPE defects_tab IS TABLE OF mai_insp_load_error_def.def_defect_id%TYPE INDEX BY BINARY_INTEGER;
-  TYPE repairs_tab IS TABLE OF mai_insp_load_error_rep.rep_action_cat%TYPE INDEX BY BINARY_INTEGER;
-  TYPE boq_tab IS TABLE OF mai_insp_load_error_boq.boq_id%TYPE INDEX BY BINARY_INTEGER;
+  TYPE batches_tab IS TABLE OF mai_insp_load_batches.milb_batch_id%TYPE INDEX BY BINARY_INTEGER;
+  TYPE activities_rec IS RECORD(are_report_id mai_insp_load_error_are.are_report_id%TYPE,
+                                are_error     mai_insp_load_error_are.are_error%TYPE);
+  TYPE activities_tab IS TABLE OF activities_rec INDEX BY BINARY_INTEGER;
+  TYPE defects_rec IS RECORD(def_defect_id mai_insp_load_error_def.def_defect_id%TYPE,
+                             def_error     mai_insp_load_error_def.def_error%TYPE);
+  TYPE defects_tab IS TABLE OF defects_rec INDEX BY BINARY_INTEGER;
+  TYPE repairs_rec IS RECORD(rep_action_cat mai_insp_load_error_rep.rep_action_cat%TYPE,
+                             rep_error      mai_insp_load_error_rep.rep_error%TYPE);
+  TYPE repairs_tab IS TABLE OF repairs_rec INDEX BY BINARY_INTEGER;
+  TYPE boq_rec IS RECORD(boq_id         mai_insp_load_error_boq.boq_id%TYPE,
+                         boq_error      mai_insp_load_error_boq.boq_error%TYPE);
+  TYPE boq_tab IS TABLE OF boq_rec INDEX BY BINARY_INTEGER;
   --
+  lt_batches          batches_tab; 
   lt_activities       activities_tab; 
-  lt_activity_lines   activity_lines_tab; 
   lt_defects          defects_tab; 
   lt_repairs          repairs_tab; 
   lt_boqs             boq_tab; 
@@ -3267,106 +3275,130 @@ PROCEDURE construct_tree_plsql_table
   
 BEGIN
 
-  lv_index := lv_index+1;
-  po_tab_initial_state(lv_index) := 1;
-  po_tab_depth(lv_index)         := 1;
-  po_tab_label(lv_index)         := 'Batch - '||pi_insp_batch_id;
-  po_tab_icon(lv_index)          := 'fdrclose';
-  po_tab_data(lv_index)          := pi_insp_batch_id;
-  po_tab_parent(lv_index)        := NULL;
-  
-  SELECT are_report_id
+  SELECT distinct milb_batch_id
   BULK COLLECT
-  INTO  lt_activities
-  FROM mai_insp_load_error_are
-  WHERE are_batch_id = pi_insp_batch_id;
-  
-  FOR x IN 1 .. lt_activities.count LOOP
+  INTO  lt_batches
+  FROM mai_insp_load_batches,
+       mai_insp_load_error_are
+  WHERE are_batch_id = milb_batch_id
+    AND milb_hp_process_id = pi_process_id;
+    
+  FOR b IN 1 .. lt_batches.count LOOP
 
     lv_index := lv_index+1;
     po_tab_initial_state(lv_index) := 1;
-    po_tab_depth(lv_index)         := 2;
-    po_tab_label(lv_index)         := 'Inspection - '||lt_activities(x);
-    po_tab_icon(lv_index)          := 'inspection';
-    po_tab_data(lv_index)          := lt_activities(x);
+    po_tab_depth(lv_index)         := 1;
+    po_tab_label(lv_index)         := 'Batch - '||lt_batches(b);
+    po_tab_icon(lv_index)          := 'fdrclose';
+    po_tab_data(lv_index)          := lt_batches(b);
     po_tab_parent(lv_index)        := NULL;
     
-    SELECT arl_atv_acty_area_code
+    SELECT are_report_id,
+           are_error
     BULK COLLECT
-    INTO  lt_activity_lines
-    FROM mai_insp_load_error_arl
-    WHERE arl_are_report_id = lt_activities(x);
+    INTO  lt_activities
+    FROM mai_insp_load_error_are
+    WHERE are_batch_id = lt_batches(b);
     
-    FOR i IN 1 .. lt_activity_lines.count LOOP
+    FOR x IN 1 .. lt_activities.count LOOP
+
       lv_index := lv_index+1;
       po_tab_initial_state(lv_index) := 1;
-      po_tab_depth(lv_index)         := 3;
-      po_tab_label(lv_index)         := 'Activity - '||lt_activity_lines(i);
-      po_tab_icon(lv_index)          := 'fdrclose';
-      po_tab_data(lv_index)          := lt_activity_lines(i);
+      po_tab_depth(lv_index)         := 2;
+      po_tab_label(lv_index)         := 'Inspection - '||lt_activities(x).are_report_id;
+      IF lt_activities(x).are_error IS NULL THEN
+         po_tab_icon(lv_index)       := 'inspection';
+      ELSE
+         po_tab_icon(lv_index)       := 'abort';
+      END IF;
+      po_tab_data(lv_index)          := lt_activities(x).are_report_id;
       po_tab_parent(lv_index)        := NULL;
-
-      SELECT def_defect_id
+      
+      SELECT def_defect_id,
+             def_error
       BULK COLLECT
       INTO  lt_defects
       FROM mai_insp_load_error_def
-      WHERE def_are_report_id = lt_activities(x)
-        AND def_atv_acty_area_code = lt_activity_lines(i);
-        
+      WHERE def_are_report_id = lt_activities(x).are_report_id;
+          
       FOR j IN 1 .. lt_defects.count LOOP
         lv_index := lv_index+1;
         po_tab_initial_state(lv_index) := 1;
-        po_tab_depth(lv_index)         := 4;
-        po_tab_label(lv_index)         := 'Defect - '||lt_defects(j);
-        po_tab_icon(lv_index)          := 'defect';
-        po_tab_data(lv_index)          := lt_defects(j);
-        po_tab_parent(lv_index)        := NULL;
+        po_tab_depth(lv_index)         := 3;
+        po_tab_label(lv_index)         := 'Defect - '||lt_defects(j).def_defect_id;
+        IF lt_defects(j).def_error IS NULL THEN
+           po_tab_icon(lv_index)       := 'defect';
+        ELSE
+           po_tab_icon(lv_index)       := 'abort';
+        END IF;
+        po_tab_data(lv_index)          := lt_defects(j).def_defect_id;
+        po_tab_parent(lv_index)        := lt_activities(x).are_report_id;
 
 
-        SELECT rep_action_cat
+        SELECT rep_action_cat,
+               rep_error
         BULK COLLECT
         INTO lt_repairs
         FROM mai_insp_load_error_rep
-        WHERE rep_def_defect_id = lt_defects(j);
+        WHERE rep_def_defect_id = lt_defects(j).def_defect_id;
 
         FOR k IN 1 .. lt_repairs.count LOOP
           lv_index := lv_index+1;
           po_tab_initial_state(lv_index) := 1;
-          po_tab_depth(lv_index)         := 5;
-          po_tab_label(lv_index)         := 'Repair - '||lt_repairs(k);
-          po_tab_icon(lv_index)          := 'repair';
-          po_tab_data(lv_index)          := lt_repairs(k);
-          po_tab_parent(lv_index)        := NULL;
+          po_tab_depth(lv_index)         := 4;
+          po_tab_label(lv_index)         := 'Repair - '||lt_repairs(k).rep_action_cat;
+          IF lt_repairs(k).rep_error IS NULL THEN
+             po_tab_icon(lv_index)       := 'repair';
+          ELSE
+             po_tab_icon(lv_index)       := 'abort';
+          END IF;
+          po_tab_data(lv_index)          := lt_repairs(k).rep_action_cat;
+          po_tab_parent(lv_index)        := lt_defects(j).def_defect_id;
 
-          SELECT boq_id
+          SELECT boq_id,
+                 boq_error
           BULK COLLECT
           INTO lt_boqs
           FROM mai_insp_load_error_boq
-          WHERE boq_defect_id = lt_defects(j)
-            AND boq_rep_action_cat = lt_repairs(k);
+          WHERE boq_defect_id = lt_defects(j).def_defect_id
+            AND boq_rep_action_cat = lt_repairs(k).rep_action_cat;
 
           FOR l IN 1 ..lt_boqs.count LOOP
             lv_index := lv_index+1;
             po_tab_initial_state(lv_index) := 1;
-            po_tab_depth(lv_index)         := 6;
-            po_tab_label(lv_index)         := 'BOQ - '||lt_boqs(l);
-            po_tab_icon(lv_index)          := 'fdrclose';
-            po_tab_data(lv_index)          := lt_boqs(l);
+            po_tab_depth(lv_index)         := 5;
+            po_tab_label(lv_index)         := 'BOQ - '||lt_boqs(l).boq_id;
+            IF lt_boqs(l).boq_error IS NULL THEN
+               po_tab_icon(lv_index)       := 'fdrclose';
+            ELSE
+               po_tab_icon(lv_index)       := 'abort';
+            END IF;
+            po_tab_data(lv_index)          := lt_boqs(l).boq_id;
             po_tab_parent(lv_index)        := NULL;
-          
+            
           END LOOP;
+            
           
         END LOOP;
-        
+          
       END LOOP;
 
     END LOOP;
-    
+  
   END LOOP;
     
+  IF lt_batches.count = 0 THEN
+
+    lv_index := lv_index+1;
+    po_tab_initial_state(lv_index) := 1;
+    po_tab_depth(lv_index)         := 1;
+    po_tab_label(lv_index)         := 'No Invalid Inspections';
+    po_tab_icon(lv_index)          := NULL;
+    po_tab_data(lv_index)          := NULL;
+    po_tab_parent(lv_index)        := NULL;
+  END IF;
+  
 END construct_tree_plsql_table;
---
------------------------------------------------------------------------------
---
+
 END mai_inspection_api;
 /
