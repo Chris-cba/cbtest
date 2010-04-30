@@ -4,18 +4,24 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.3   Apr 22 2010 14:06:22   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.4   Apr 30 2010 12:21:22   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Apr 22 2010 14:06:22  $
---       Date fetched Out : $Modtime:   Apr 22 2010 11:50:40  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Apr 30 2010 12:21:22  $
+--       Date fetched Out : $Modtime:   Apr 29 2010 09:58:00  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.4  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
+--
+c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
+c_file_type_name    CONSTANT VARCHAR2(30)   := 'INSPECTION FILE';
+  
+g_insp_load_process_type      hig_process_types%ROWTYPE; 
+g_insp_load_file_type         hig_process_type_files%ROWTYPE;
 --
 gt_tokens  nm3type.tab_varchar32767;
 --
@@ -2822,6 +2828,7 @@ BEGIN
 EXCEPTION
   WHEN invalid_record then
       nm_debug.debug('Raised invalid_record'); --clb
+      RAISE;
   WHEN invalid_file
    THEN
       process_error_stack;
@@ -3233,6 +3240,11 @@ BEGIN
           nm_debug.debug('Processing Inspection '||i);
           nm_debug.debug('Inspection rse_he_id = '||lt_api_params(i).insp_record.are_rse_he_id);
           --
+          /*
+          || Set inspection load date
+          */
+          lt_api_params(i).insp_record.are_insp_load_date := sysdate;
+
           mai_inspection_api.create_inspection(pio_insp_rec  => lt_api_params(i)
                                               ,pi_commit     => 'Y'
                                               ,po_error_flag => lv_api_error);
@@ -3350,7 +3362,7 @@ END load_rmms_or_eid_file;
 -----------------------------------------------------------------------------
 --
 PROCEDURE resubmit_batch(pi_insp_batch_id IN PLS_INTEGER)
-  IS
+ IS
   
   CURSOR c_process(cp_batch_id   MAI_INSP_LOAD_BATCHES.MILB_BATCH_ID%TYPE) 
       IS
@@ -3435,6 +3447,11 @@ BEGIN
           nm_debug.debug('Processing Inspection '||i);
           nm_debug.debug('Inspection rse_he_id = '||lt_api_params(i).insp_record.are_rse_he_id);
           --
+          /*
+          || Set inspection load date
+          */
+          lt_api_params(i).insp_record.are_insp_load_date := sysdate;
+
           mai_inspection_api.create_inspection(pio_insp_rec  => lt_api_params(i)
                                               ,pi_commit     => 'Y'
                                               ,po_error_flag => lv_api_error);
@@ -3519,6 +3536,7 @@ BEGIN
       */
       hig_process_api.log_it('Number of Inspections loaded  : '||lv_no_created);
       hig_process_api.log_it('Number of Inspections rejected: '||lv_no_rejected);
+      COMMIT;
 --
   EXCEPTION
       WHEN others
@@ -3526,7 +3544,8 @@ BEGIN
               --
               hig_process_api.log_it(pi_message_type => 'E'
                                     ,pi_message      => SQLERRM);
-              lv_errors := TRUE;    lv_no_rejected := 0;
+              lv_errors := TRUE;    
+              lv_no_rejected := 0;
   END;
    
   lv_no_created  := 0;
@@ -3966,6 +3985,10 @@ PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_re
           
   END LOOP;
        
+  /*
+  || Set inspection load date
+  */
+  lt_insp_rec.insp_record.are_insp_load_date := sysdate;
 
   mai_inspection_api.create_inspection(pio_insp_rec  => lt_insp_rec
                                       ,pi_commit     => 'Y'
@@ -4052,7 +4075,7 @@ PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_re
 
    END IF;
   --
-  
+  COMMIT;
   --
   nm_debug.debug_off;
   
@@ -4066,8 +4089,138 @@ EXCEPTION
       
       nm_debug.debug('Error - '|| SQLERRM);
       lv_errors := TRUE;
+      
 END resubmit_inspection;
+--
 -----------------------------------------------------------------------------
+--
+PROCEDURE initialise IS
+
+
+BEGIN
+
+  g_insp_load_process_type  := hig_process_framework.get_process_type(pi_process_type_name => UPPER(c_process_type_name));
+  
+  IF g_insp_load_process_type.hpt_process_type_id IS NULL THEN
+     hig.raise_ner(pi_appl => 'HIG'
+                 , pi_id    => 534 -- PROCESS TYPE DOES NOT EXIST
+                 , pi_supplementary_info => c_process_type_name); 
+  END IF;
+
+
+  g_insp_load_file_type     := hig_process_framework.get_process_type_file(pi_process_type_id  => g_insp_load_process_type.hpt_process_type_id 
+                                                                          ,pi_file_type_name   => c_file_type_name);    
+
+  IF g_insp_load_file_type.hptf_file_type_id IS NULL THEN
+     hig.raise_ner(pi_appl => 'HIG'
+                 , pi_id    => 535 -- FILE TYPE FOR THIS PROCESS TYPE DOES NOT EXIST
+                 , pi_supplementary_info => chr(10)||'File Type ['||c_file_type_name||']'||chr(10)||'Process Type ['||c_file_type_name||']'); 
+  END IF;
+  
+
+--  hig_process_api.log_it(pi_message => '   Checking that the '''||g_doc_bundle_file_type.hptf_input_destination||''' Oracle directory is valid'
+--                        ,pi_summary_flag => 'N'); 
+
+  
+  nm3file.check_directory_valid(pi_dir_name        => g_insp_load_file_type.hptf_input_destination
+                               ,pi_check_delimiter => FALSE);
+
+  
+END initialise;
+--
+-----------------------------------------------------------------------------
+----
+-----------------------------------------------------------------------------
+--
+PROCEDURE ftp_in_to_database(pi_ftp_type                IN hig_ftp_types.hft_type%TYPE) IS
+
+
+  l_files         nm3type.tab_varchar32767;
+  l_process_id    hig_processes.hp_process_id%TYPE;
+  l_job_name      hig_processes.hp_job_name%TYPE;
+  l_date          date;
+  
+ 
+  PROCEDURE initialise_files_for_process  IS
+
+    l_file_rec      hig_process_api.rec_temp_files;
+
+  BEGIN
+
+
+     hig_process_api.initialise_temp_files;  
+
+     FOR f IN 1..l_files.COUNT LOOP
+         
+         l_file_rec := Null;
+         
+         l_file_rec.filename         := l_files(f);
+         l_file_rec.file_type_id     := g_insp_load_file_type.hptf_file_type_id;
+         l_file_rec.I_or_O           := 'I';
+         l_file_rec.destination      := g_insp_load_file_type.hptf_input_destination;
+         l_file_rec.destination_type := g_insp_load_file_type.hptf_input_destination_type;
+         l_file_rec.content          := Null;
+         
+         
+         hig_process_api.add_temp_file(pi_rec => l_file_rec) ;
+         
+     END LOOP;
+     
+  END initialise_files_for_process;
+  
+BEGIN
+
+  nm_debug.debug_on;
+
+  hig_process_api.log_it(pi_message => 'Looking for inspection loader files in the '||g_insp_load_file_type.hptf_input_destination||' Oracle directory');
+
+  l_files:= nm3ftp.ftp_in_to_database
+              ( pi_ftp_type                => pi_ftp_type
+              , pi_db_location_to_move_to  => g_insp_load_file_type.hptf_input_destination
+              , pi_file_mask               => '%');
+
+  nm_debug.debug('pi_ftp_type ='||pi_ftp_type);
+  nm_debug.debug(l_files.count||' inspection loader files found');
+             
+  IF l_files.count > 0 THEN
+
+
+     
+      hig_process_api.log_it(pi_message => l_files.count||' inspection loader files found');
+
+
+
+      initialise_files_for_process;
+      
+      hig_process_api.create_and_schedule_process
+                          ( pi_process_type_id           => g_insp_load_process_type.hpt_process_type_id
+                          , pi_initiated_by_username     => user
+                          , pi_initiated_date            => SYSDATE
+                          , pi_initiators_ref            => 'via FTP'
+                          , pi_start_date                => SYSDATE
+                          , pi_frequency_id              => -1 -- once
+                          , po_process_id                => l_process_id
+                          , po_job_name                  => l_job_name
+                          , po_scheduled_start_date      => l_date);
+
+      hig_process_api.log_it(pi_message => 'Process '||hig_process_framework_utils.formatted_process_id(l_process_id)||' created');
+
+ ELSE
+ 
+ 
+      hig_process_api.log_it(pi_message => 'No inspection loader files found');
+              
+ END IF;
+
+  nm_debug.debug_off;
+
+END ftp_in_to_database;
+--
+-----------------------------------------------------------------------------
+--
+BEGIN
+--
+  initialise;
 --
 END mai_inspection_loader;
 /
