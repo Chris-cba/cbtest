@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.1   Apr 22 2010 14:06:36   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.2   Apr 30 2010 12:21:20   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Apr 22 2010 14:06:36  $
---       Date fetched Out : $Modtime:   Apr 22 2010 11:51:22  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Apr 30 2010 12:21:20  $
+--       Date fetched Out : $Modtime:   Apr 30 2010 12:18:44  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -211,7 +211,7 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
 -----------------------------------------------------------------------------
 --
 PROCEDURE construct_tree_plsql_table
-  (pi_insp_batch_id        IN PLS_INTEGER
+  (pi_process_id           IN PLS_INTEGER
   ,po_tab_initial_state    IN OUT nm3type.tab_number
   ,po_tab_depth            IN OUT nm3type.tab_number
   ,po_tab_label            IN OUT nm3type.tab_varchar80
