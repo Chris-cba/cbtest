@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.1   May 05 2010 15:41:16   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.2   May 05 2010 16:38:14   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 05 2010 15:41:16  $
---       Date fetched Out : $Modtime:   May 05 2010 15:40:14  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 05 2010 16:38:14  $
+--       Date fetched Out : $Modtime:   May 05 2010 16:37:18  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -111,20 +111,13 @@ SET TERM OFF
 -- 
 -- 
 ------------------------------------------------------------------
-set term off
-undefine NAU
-col      NAU  new_value NAU noprint
-set term on
+Prompt Inserting into  nm_au_types
+INSERT INTO nm_au_types SELECT 'EXT$','Admin Type for Navigator, Audit and Alert Meta Models',Null,Null,Null,Null 
+                          FROM   dual 
+                          WHERE  NOT EXISTS (SELECT 'x'
+                                               FROM    nm_au_types 
+                                               WHERE   nat_admin_type = 'EXT$');
 
-set term off
-SELECT nat_admin_type NAU 
-FROM (
-    SELECT nat_admin_type from nm_au_types
-    Order By decode(nat_admin_type,'NETW',1,2) 
-     )
-WHERE  rownum = 1 ;
-
-set term on
 
 Prompt Inserting into NM_INV_TYPES_ALL
 INSERT INTO NM_INV_TYPES_ALL
@@ -186,7 +179,7 @@ SELECT
        ,''
        ,''
        ,''
-       ,'&NAU'
+       ,'EXT$'
        ,''
        ,'N'
        ,'WOR_WORKS_ORDER_NO'
@@ -259,7 +252,7 @@ SELECT
        ,''
        ,''
        ,''
-       ,'&NAU'
+       ,'EXT$'
        ,''
        ,'N'
        ,'WOL_ID'
@@ -331,7 +324,7 @@ SELECT
        ,''
        ,''
        ,''
-       ,'&NAU'
+       ,'EXT$'
        ,''
        ,'N'
        ,'DEF_DEFECT_ID'
@@ -404,7 +397,7 @@ SELECT
        ,''
        ,''
        ,''
-       ,'&NAU'
+       ,'EXT$'
        ,''
        ,'N'
        ,'BOQ_ID'
