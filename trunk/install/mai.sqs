@@ -3,15 +3,18 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.3   Jun 17 2009 13:37:10   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.4   May 05 2010 14:14:38   mhuitson  $
 --       Module Name      : $Workfile:   mai.sqs  $
---       Date into PVCS   : $Date:   Jun 17 2009 13:37:10  $
---       Date fetched Out : $Modtime:   Jun 17 2009 13:34:32  $
---       PVCS Version     : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   May 05 2010 14:14:38  $
+--       Date fetched Out : $Modtime:   May 05 2010 14:12:26  $
+--       PVCS Version     : $Revision:   2.4  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
+--
+-- Generated for Oracle 10g on Wed May 05  14:04:31 2010 by Server Generator 10.1.2.9.28
+ 
 PROMPT Creating Sequence 'ARE_BATCH_ID_SEQ'
 CREATE SEQUENCE ARE_BATCH_ID_SEQ
  INCREMENT BY 1
@@ -93,6 +96,13 @@ CREATE SEQUENCE DEF_DEFECT_ID_SEQ
  CACHE 2
 /
 
+PROMPT Creating Sequence 'DSR_ID_SEQ'
+CREATE SEQUENCE DSR_ID_SEQ
+ NOMAXVALUE
+ NOMINVALUE
+ NOCYCLE
+/
+
 PROMPT Creating Sequence 'EXT_ID_SEQ'
 CREATE SEQUENCE EXT_ID_SEQ
  INCREMENT BY 1
@@ -155,6 +165,20 @@ CREATE SEQUENCE IWOR_ID_SEQ
  MINVALUE 1
  NOCYCLE
  CACHE 2
+/
+
+PROMPT Creating Sequence 'MAWC_ID_SEQ'
+CREATE SEQUENCE MAWC_ID_SEQ
+ NOMAXVALUE
+ NOMINVALUE
+ NOCYCLE
+/
+
+PROMPT Creating Sequence 'MAWR_ID_SEQ'
+CREATE SEQUENCE MAWR_ID_SEQ
+ NOMAXVALUE
+ NOMINVALUE
+ NOCYCLE
 /
 
 PROMPT Creating Sequence 'NEG_BOQ_ID_SEQ'
