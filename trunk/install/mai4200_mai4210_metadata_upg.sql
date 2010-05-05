@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.2   May 05 2010 16:38:14   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.3   May 05 2010 17:53:32   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 05 2010 16:38:14  $
---       Date fetched Out : $Modtime:   May 05 2010 16:37:18  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   May 05 2010 17:53:32  $
+--       Date fetched Out : $Modtime:   May 05 2010 17:52:30  $
+--       Version          : $Revision:   3.3  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -730,22 +730,22 @@ Insert into HIG_NAVIGATOR_MODULES
    ('MAI3660', 'bud_id', 'Y', 1, NULL, 
     NULL, 'Budget', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 
     'DORSET');
-Insert into HIG_NAVIGATOR_MODULES
-   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
-    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
-    HNM_MODIFIED_BY)
- Values
-   ('NM0510', 'query_inv_item', 'Y', 1, NULL, 
-    NULL, 'Asset', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 
-    'DORSET');
-Insert into HIG_NAVIGATOR_MODULES
-   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
-    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
-    HNM_MODIFIED_BY)
- Values
-   ('NM0590', 'query_inv_item', 'N', 2, NULL, 
-    NULL, 'Asset', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 
-    'DORSET');
+--Insert into HIG_NAVIGATOR_MODULES
+--   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
+--    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
+--    HNM_MODIFIED_BY)
+-- Values
+--   ('NM0510', 'query_inv_item', 'Y', 1, NULL, 
+--    NULL, 'Asset', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 
+--    'DORSET');
+--Insert into HIG_NAVIGATOR_MODULES
+--   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
+--    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
+--    HNM_MODIFIED_BY)
+-- Values
+--   ('NM0590', 'query_inv_item', 'N', 2, NULL, 
+--    NULL, 'Asset', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 
+--    'DORSET');
 Insert into HIG_NAVIGATOR_MODULES
    (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
     HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
@@ -5872,7 +5872,6 @@ Insert into hig_standard_favourites SELECT 'MAI_REF_MAINTENANCE', 'MAI3819','Com
                                                WHERE   hstf_parent = 'MAI_REF_MAINTENANCE'
                                                AND     hstf_child   = 'MAI3819');
 
-
 Delete From HIG_FLEX_ATTRIBUTES;
 
 Prompt Inserting into HIG_FLEX_ATTRIBUTES
@@ -5881,7 +5880,7 @@ Insert into HIG_FLEX_ATTRIBUTES
     HFA_ATTRIBUTE4, HFA_ATTRIBUTE5, HFA_DATE_CREATED, HFA_CREATED_BY, HFA_DATE_MODIFIED, 
     HFA_MODIFIED_BY)
  Values
-   (hfa_id_seq.nextval, 'WORK_ORDERS', 'WOR_SCHEME_TYPE', 'WOR_FLAG', NULL,NULL,NULL, 
+   (-1, 'WORK_ORDERS', 'WOR_SCHEME_TYPE', 'WOR_FLAG', NULL,NULL,NULL, 
     NULL, NULL, Null,Null);
 ------------------------------------------------------------------
 
@@ -5933,13 +5932,13 @@ Insert into nm_errors Select 'MAI',9806,Null,'The associated Criteria will be de
                         FROM  dual 
                         WHERE Not Exists (SELECT 'x'
                                             FROM    nm_errors
-                                            WHERe ner_id = 9806)
+                                            WHERe ner_id = 9806);
                                             
 Insert into nm_errors Select 'MAI',9807,Null,'A Ruleset already exists with these values.',Null
                         FROM  dual 
                         WHERE Not Exists (SELECT 'x'
                                             FROM    nm_errors
-                                            WHERe ner_id = 9807)
+                                            WHERe ner_id = 9807);
 ------------------------------------------------------------------
 
 
