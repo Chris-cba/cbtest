@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.16   May 05 2010 14:14:38   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.17   May 05 2010 15:05:42   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   May 05 2010 14:14:38  $
---       Date fetched Out : $Modtime:   May 05 2010 14:13:26  $
---       PVCS Version     : $Revision:   2.16  $
+--       Date into PVCS   : $Date:   May 05 2010 15:05:42  $
+--       Date fetched Out : $Modtime:   May 05 2010 15:05:16  $
+--       PVCS Version     : $Revision:   2.17  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Wed May 05  14:04:30 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Wed May 05  15:00:45 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -2160,6 +2160,7 @@ CREATE TABLE MAI_INSP_LOAD_ERROR_DAS
  ,DAS_ARE_REPORT_ID NUMBER(8,0) NOT NULL
  ,DAS_DEF_DEFECT_ID NUMBER(8,0) NOT NULL
  ,DAS_TITLE VARCHAR2(60)
+ ,DAS_CATEGORY VARCHAR2(8)
  ,DAS_DTP_CODE VARCHAR2(4)
  ,DAS_DATE_ISSUED DATE
  ,DAS_FILE VARCHAR2(254)
