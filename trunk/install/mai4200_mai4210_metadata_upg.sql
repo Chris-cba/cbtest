@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.0   May 05 2010 14:44:32   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.1   May 05 2010 15:41:16   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 05 2010 14:44:32  $
---       Date fetched Out : $Modtime:   May 05 2010 14:42:58  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   May 05 2010 15:41:16  $
+--       Date fetched Out : $Modtime:   May 05 2010 15:40:14  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
