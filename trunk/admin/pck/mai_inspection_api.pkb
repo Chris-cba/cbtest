@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.3   Apr 30 2010 12:21:18   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.4   May 06 2010 17:00:44   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 30 2010 12:21:18  $
---       Date fetched Out : $Modtime:   Apr 29 2010 14:15:42  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   May 06 2010 17:00:44  $
+--       Date fetched Out : $Modtime:   May 06 2010 16:57:58  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.4  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -74,6 +74,17 @@ END add_def_tab_to_insp_tab;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE add_comm_tab_to_insp_tab(pi_com_tab   IN     mai_inspection_api.com_tab
+                                  ,pio_insp_tab IN OUT mai_inspection_api.insp_tab)
+  IS
+BEGIN
+  --
+  pio_insp_tab(pio_insp_tab.count).insp_comments := pi_com_tab;
+  --
+END add_comm_tab_to_insp_tab;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE add_def_to_def_tab(pi_def_rec  IN     defects%ROWTYPE
                             ,pio_def_tab IN OUT mai_inspection_api.def_tab)
   IS
@@ -110,6 +121,20 @@ BEGIN
   END IF;
   --
 END add_rep_tab_to_def_tab;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_das_tab_to_def_tab(pi_das_tab  IN     mai_inspection_api.das_tab
+                                ,pio_def_tab IN OUT mai_inspection_api.def_tab)
+  IS
+BEGIN
+  --
+  IF pio_def_tab.count > 0
+   THEN
+      pio_def_tab(pio_def_tab.count).def_assocs := pi_das_tab;
+  END IF;
+  --
+END add_das_tab_to_def_tab;
 --
 -----------------------------------------------------------------------------
 --
@@ -747,6 +772,147 @@ END ins_boqs;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE ins_doc_assocs(pi_doc_id     docs.doc_id%TYPE
+                        ,pi_rec_id     doc_assocs.das_rec_id%TYPE
+                        ,pi_table_name doc_assocs.das_table_name%TYPE) IS
+                        
+BEGIN
+
+  INSERT
+    INTO DOC_ASSOCS
+        (das_doc_id
+        ,das_rec_id
+        ,das_table_name)
+  VALUES(pi_doc_id,
+         pi_rec_id,
+         pi_table_name);
+          
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      raise_application_error(-20041, 'Error Occured While Creating DOC_ASSOCS Entry : '||SQLERRM);
+END ins_doc_assocs;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE ins_comment(pi_com_tab        com_tab
+                     ,pi_rse_he_id      activities_report.are_rse_he_id%TYPE
+                     ,pi_are_report_id  activities_report.are_report_id%TYPE) IS
+
+  lv_table   VARCHAR2(10);
+  
+BEGIN
+
+  /*
+  ||Process all Comments
+  */
+  
+  FOR i IN 1 .. pi_com_tab.count LOOP
+    /*
+    ||Insert DOCS entry.
+    */
+    lv_table := 'DOCS';
+    --
+    INSERT
+      INTO DOCS
+          (doc_id
+          ,doc_title
+          ,doc_category
+          ,doc_dtp_code
+          ,doc_date_issued
+          ,doc_descr
+          ,doc_reference_code)
+    VALUES(pi_com_tab(i).com_doc_id
+          ,pi_com_tab(i).com_title
+          ,pi_com_tab(i).com_category
+          ,pi_com_tab(i).com_dtp_code
+          ,pi_com_tab(i).com_date_issued
+          ,pi_com_tab(i).com_descr
+          ,pi_com_tab(i).com_reference_code);
+          
+    /*
+    ||Insert DOC_ASSOCS entry.
+    */
+    lv_table := 'DOC_ASSOCS';
+    --
+    ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
+                  ,pi_rec_id     =>pi_rse_he_id
+                  ,pi_table_name =>'ROAD_SEGMENTS_ALL');
+    --
+    ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
+                  ,pi_rec_id     =>pi_are_report_id
+                  ,pi_table_name =>'ACTIVITIES_REPORT');
+
+  END LOOP;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      raise_application_error(-20041, 'Error Occured While Creating '||lv_table||' Entry : '||SQLERRM);
+END ins_comment;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE ins_defect_doc(pi_das_tab      IN  das_tab) IS
+
+  lv_table   VARCHAR2(10);
+  
+BEGIN
+
+  /*
+  ||Process all Comments
+  */
+  
+  FOR i IN 1 .. pi_das_tab.count LOOP
+  nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
+    /*
+    ||Insert DOCS entry.
+    */
+    lv_table := 'DOCS';
+    --
+    INSERT
+      INTO DOCS
+          (doc_id
+          ,doc_title
+          ,doc_category
+          ,doc_dtp_code
+          ,doc_date_issued
+          ,doc_file
+          ,doc_dlc_dmd_id
+          ,doc_dlc_id
+          ,doc_descr
+          ,doc_reference_code)
+    VALUES(pi_das_tab(i).das_doc_id
+          ,pi_das_tab(i).das_title
+          ,pi_das_tab(i).das_category
+          ,pi_das_tab(i).das_dtp_code
+          ,pi_das_tab(i).das_date_issued
+          ,pi_das_tab(i).das_file
+          ,pi_das_tab(i).das_dlc_dmd_id
+          ,pi_das_tab(i).das_dlc_id
+          ,pi_das_tab(i).das_descr
+          ,pi_das_tab(i).das_reference_code);
+          
+    /*
+    ||Insert DOC_ASSOCS entry.
+    */
+    lv_table := 'DOC_ASSOCS';
+    --
+    ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
+                  ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
+                  ,pi_table_name =>'DEFECTS');
+    --
+  END LOOP;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      raise_application_error(-20041, 'Error Occured While Creating '||lv_table||' Entry : '||SQLERRM);
+END ins_defect_doc;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION validate_asset(pi_item_type defects.def_ity_inv_code%TYPE
                        ,pi_item_id   nm_inv_items_all.iit_ne_id%TYPE)
   RETURN BOOLEAN IS
@@ -1261,6 +1427,84 @@ EXCEPTION
    THEN
       RAISE;
 END validate_treatment;
+--
+-----------------------------------------------------------------------------
+FUNCTION validate_doc_category(pi_hco_code        IN hig_codes.hco_code%TYPE
+                              ,pi_effective_date  IN date)
+  RETURN BOOLEAN IS
+  --
+  lv_dummy PLS_INTEGER;
+  --
+BEGIN
+  --
+  SELECT 1
+    INTO lv_dummy
+    FROM hig_codes
+   WHERE hco_code                   = pi_hco_code
+     AND hco_domain                 = 'DOC_CATEGORIES'
+     AND pi_effective_date BETWEEN NVL(hco_start_date,pi_effective_date)
+                               AND NVL(hco_end_date  ,pi_effective_date)
+       ;
+  --
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RETURN FALSE;
+END validate_doc_category;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_doc_type(pi_dtp_code        IN doc_types.dtp_code%TYPE
+                          ,pi_effective_date  IN date)
+  RETURN BOOLEAN IS
+  --
+  lv_dummy PLS_INTEGER;
+  --
+BEGIN
+  --
+  SELECT 1
+    INTO lv_dummy
+    FROM doc_types
+   WHERE dtp_code = pi_dtp_code
+     AND pi_effective_date BETWEEN NVL(dtp_start_date,pi_effective_date)
+                               AND NVL(dtp_end_date  ,pi_effective_date)
+       ;
+  --
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RETURN FALSE;
+END validate_doc_type;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_file_location(pi_dlc_name  IN     doc_locations.dlc_name%TYPE
+                               ,po_dlc_dmd_id   OUT doc_locations.dlc_dmd_id%TYPE
+                               ,po_dlc_id       OUT doc_locations.dlc_id%TYPE)
+  RETURN BOOLEAN IS
+  --
+  --
+BEGIN
+  --
+  SELECT dlc_dmd_id, 
+         dlc_id 
+    INTO po_dlc_dmd_id,
+         po_dlc_id
+    FROM doc_locations
+  WHERE dlc_name = pi_dlc_name
+      ;
+  --
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RETURN FALSE;
+END validate_file_location;
 --
 -----------------------------------------------------------------------------
 --
@@ -2107,6 +2351,110 @@ END validate_repairs;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE validate_doc_assocs(pi_effective_date IN     date
+                             ,po_error_flag        OUT VARCHAR2
+                             ,pio_das_tab       IN OUT das_tab)
+  IS
+  --
+  lt_das_tab   das_tab;
+  --
+  lv_das_error_flag  VARCHAR2(1) := 'N';
+  --
+BEGIN
+  --
+  lt_das_tab := pio_das_tab;
+  --
+  FOR i IN 1..lt_das_tab.count LOOP
+    /*
+    ||Validate The Doc Assoc.
+    */
+    BEGIN
+      /*
+      ||Assign Default Title, if title not supplied
+      */
+      IF lt_das_tab(i).das_title IS NULL
+       THEN
+         lt_das_tab(i).das_title := Substr('Defect Photograph '||
+                                           doc.get_table_descr('DEFECTS')||' - '
+                                           ||lt_das_tab(i).das_def_defect_id, 1, 60);
+      END IF;   
+      /*
+      || Validate Category
+      */
+      IF lt_das_tab(i).das_category IS NOT NULL
+       THEN
+        IF NOT validate_doc_category(pi_hco_code       => lt_das_tab(i).das_category
+                                    ,pi_effective_date => pi_effective_date)
+         THEN
+           raise_application_error(-20001,'Invalid Doc Category Supplied.'||lt_das_tab(i).das_category);
+
+        END IF;
+      END IF;
+      /*
+      || Validate Doc Type
+      */
+      IF lt_das_tab(i).das_dtp_code IS NOT NULL 
+       THEN
+         IF NOT validate_doc_type(pi_dtp_code       => lt_das_tab(i).das_dtp_code
+                                 ,pi_effective_date => pi_effective_date)
+          THEN
+            raise_application_error(-20001,'Invalid Doc Type Code Supplied.'||lt_das_tab(i).das_dtp_code);
+         END IF;
+         
+      ELSE
+         lt_das_tab(i).das_dtp_code := 'PHOT';
+      END IF;
+      /*
+      ||Default Date Issued.
+      */
+      lt_das_tab(i).das_date_issued := pi_effective_date;
+      /*
+      || Check File Name provided
+      */
+      IF lt_das_tab(i).das_file IS NULL
+       THEN
+          raise_application_error(-20001,'File Name not provided.');
+      ELSE
+         lt_das_tab(i).das_reference_code := lt_das_tab(i).das_file;
+      END IF;
+      /*
+      ||Assign default description, if not supplied
+      */
+      IF lt_das_tab(i).das_descr IS NULL THEN
+         
+         lt_das_tab(i).das_descr := 'Defect Photo automatically associated with Defect';
+      END IF;
+      /*
+      || Validate location
+      */
+      --IF NOT validate_file_location(pi_dlc_name    => NVL(lt_das_tab(i).das_location,'DEFECT PHOTOS') 
+      --                             ,po_dlc_dmd_id  => lt_das_tab(i).das_dlc_dmd_id
+      --                             ,po_dlc_id      => lt_das_tab(i).das_dlc_id)
+      -- THEN
+      --    raise_application_error(-20001,'Invalid Location supplied.'||NVL(lt_das_tab(i).das_location,'DEFECT PHOTOS'));
+      --END IF; 
+      
+    EXCEPTION
+      WHEN others
+       THEN
+          --
+          lv_das_error_flag := 'Y';
+          lt_das_tab(i).das_error := SQLERRM;
+    END;
+    --
+  END LOOP;
+         
+  /*       
+  ||Assign The Validated Table To The Output Table.
+  */
+  nm_debug.debug('validate_doc_assocs = '||lv_das_error_flag);
+  po_error_flag := lv_das_error_flag;
+  pio_das_tab := lt_das_tab;
+  --
+END validate_doc_assocs;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE validate_insp_activities(pi_insp_rec       IN     activities_report%ROWTYPE
                                   ,pi_section_length IN     nm_elements_all.ne_length%TYPE
                                   ,pi_sys_flag       IN     VARCHAR2
@@ -2947,6 +3295,7 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
   lr_rse          road_sections%ROWTYPE;
   lt_boqs         boq_tab;
   lt_ins_boqs     boq_items_tab;
+  lt_das_tab      das_tab;
   --
   invalid_inspection  EXCEPTION;
   --
@@ -3010,6 +3359,7 @@ BEGIN
       lr_defect_rec  := pio_insp_rec.insp_defects(i).def_record;
       lt_def_attribs := pio_insp_rec.insp_defects(i).def_attribs;
       lt_repairs     := pio_insp_rec.insp_defects(i).def_repairs;
+      lt_das_tab     := pio_insp_rec.insp_defects(i).def_assocs;
       /*
       ||Process The Defect.
       */
@@ -3151,6 +3501,21 @@ BEGIN
          nm_debug.debug('Repair Validation Failed');
       END IF;
       /*
+      ||Validate Doc Assocs.
+      */
+      nm_debug.debug('Validating Doc Assocs.');
+      validate_doc_assocs(pi_effective_date => lr_insp_rec.are_date_work_done
+                         ,po_error_flag     => lv_error_flag
+                         ,pio_das_tab       => lt_das_tab);
+
+      IF NVL(lv_error_flag,'N') != 'Y'
+       THEN   
+       --
+         nm_debug.debug('Creating Doc Assocs '||lt_das_tab.count);
+         ins_defect_doc(pi_das_tab => lt_das_tab);
+       --
+      END IF;
+      /*
       ||Clear Down The Ins Tables.
       */
       lt_ins_repairs.delete;
@@ -3161,6 +3526,7 @@ BEGIN
       pio_insp_rec.insp_defects(i).def_record  := lr_defect_rec;
       pio_insp_rec.insp_defects(i).def_attribs := lt_def_attribs;
       pio_insp_rec.insp_defects(i).def_repairs := lt_repairs;
+      pio_insp_rec.insp_defects(i).def_assocs  := lt_das_tab;
       --
     EXCEPTION        
       WHEN invalid_inspection
@@ -3220,6 +3586,43 @@ BEGIN
       RAISE invalid_inspection;
   END IF;
   /*
+  ||Loop Through The Comments.
+  */
+  FOR i IN 1..pio_insp_rec.insp_comments.count LOOP
+    nm_debug.debug('Processing Comment');
+    --
+    BEGIN
+      IF NOT validate_doc_category(pi_hco_code       => pio_insp_rec.insp_comments(i).com_category
+                                  ,pi_effective_date => lr_insp_rec.are_date_work_done)
+       THEN
+         lv_error_flag := 'Y';
+         pio_insp_rec.insp_comments(i).com_error := 9105;
+
+      END IF;
+    EXCEPTION        
+      WHEN others
+       THEN
+          /*
+          ||Handle any Oracle erros and raise invalid_inspection.
+          */
+          pio_insp_rec.insp_comments(i).com_error := SQLERRM;
+          RAISE invalid_inspection;
+    END;
+  
+  END LOOP;
+
+  /*
+  || If comments OK create document details.
+  */
+  IF NVL(lv_error_flag,'N') != 'Y'
+   THEN
+     ins_comment(pi_com_tab         =>pio_insp_rec.insp_comments
+                ,pi_rse_he_id      =>lr_insp_rec.are_rse_he_id
+                ,pi_are_report_id  =>lr_insp_rec.are_report_id);
+  ELSE
+     RAISE invalid_inspection;
+  END IF;                
+  /*
   ||Commit If Required.
   */
   IF NVL(pi_commit,'Y') = 'Y'
@@ -3229,6 +3632,7 @@ BEGIN
   END IF;
   --
   --
+  nm_debug.debug('Create Inspection returns'||lv_error_flag);
   po_error_flag := lv_error_flag;
   pio_insp_rec.insp_record := lr_insp_rec;
   --
@@ -3264,12 +3668,20 @@ PROCEDURE construct_tree_plsql_table
   TYPE boq_rec IS RECORD(boq_id         mai_insp_load_error_boq.boq_id%TYPE,
                          boq_error      mai_insp_load_error_boq.boq_error%TYPE);
   TYPE boq_tab IS TABLE OF boq_rec INDEX BY BINARY_INTEGER;
+  TYPE comments_rec IS RECORD(com_doc_id        mai_insp_load_error_com.com_doc_id%TYPE,
+                              com_error         mai_insp_load_error_com.com_error%TYPE);
+  TYPE comments_tab IS TABLE OF comments_rec INDEX BY BINARY_INTEGER;
+  TYPE def_assocs_rec IS RECORD(das_doc_id        mai_insp_load_error_das.das_doc_id%TYPE,
+                                das_error         mai_insp_load_error_das.das_error%TYPE);
+  TYPE def_assocs_tab IS TABLE OF def_assocs_rec INDEX BY BINARY_INTEGER;
   --
   lt_batches          batches_tab; 
   lt_activities       activities_tab; 
   lt_defects          defects_tab; 
   lt_repairs          repairs_tab; 
   lt_boqs             boq_tab; 
+  lt_comments         comments_tab; 
+  lt_def_assocs       def_assocs_tab; 
   --
   lv_index        binary_integer :=0;
   
@@ -3335,6 +3747,39 @@ BEGIN
         po_tab_parent(lv_index)        := lt_activities(x).are_report_id;
 
 
+        SELECT das_doc_id,
+               das_error
+        BULK COLLECT
+        INTO lt_def_assocs
+        FROM mai_insp_load_error_das
+        WHERE das_def_defect_id = lt_defects(j).def_defect_id;
+
+        IF lt_def_assocs.count >0 Then
+          lv_index := lv_index+1;
+            po_tab_initial_state(lv_index) := 1;
+            po_tab_depth(lv_index)         := 4;
+            po_tab_label(lv_index)         := 'Documents';
+--            po_tab_icon(lv_index)          := NULL;
+            po_tab_data(lv_index)          := NULL;
+            po_tab_parent(lv_index)        := NULL;
+        END IF;
+        
+        FOR k IN 1 .. lt_def_assocs.count LOOP
+
+--          lv_index := lv_index+1;
+--          po_tab_initial_state(lv_index) := 1;
+--          po_tab_depth(lv_index)         := 5;
+--          po_tab_label(lv_index)         := 'Doc - '||lt_def_assocs(k).das_doc_id;
+          IF lt_def_assocs(k).das_error IS NULL THEN
+             po_tab_icon(lv_index)       := 'exor';
+          ELSE
+             po_tab_icon(lv_index)       := 'abort';
+          END IF;
+--          po_tab_data(lv_index)          := lt_def_assocs(k).das_doc_id;
+--          po_tab_parent(lv_index)        := lt_defects(j).def_defect_id;
+
+        END LOOP;
+        
         SELECT rep_action_cat,
                rep_error
         BULK COLLECT
@@ -3383,6 +3828,38 @@ BEGIN
           
       END LOOP;
 
+      SELECT com_doc_id,
+             com_error
+      BULK COLLECT
+      INTO  lt_comments
+      FROM mai_insp_load_error_com
+      WHERE com_are_report_id = lt_activities(x).are_report_id;
+
+      IF lt_comments.count >0 Then
+          lv_index := lv_index+1;
+          po_tab_initial_state(lv_index) := 1;
+          po_tab_depth(lv_index)         := 3;
+          po_tab_label(lv_index)         := 'Comments';
+--          po_tab_icon(lv_index)          := NULL;
+          po_tab_data(lv_index)          := NULL;
+          po_tab_parent(lv_index)        := NULL;
+      END IF;
+        
+      FOR j IN 1 .. lt_comments.count LOOP
+--        lv_index := lv_index+1;
+--        po_tab_initial_state(lv_index) := 1;
+--        po_tab_depth(lv_index)         := 4;
+--        po_tab_label(lv_index)         := 'Comment - '||lt_comments(j).com_doc_id;
+        IF lt_comments(j).com_error IS NULL THEN
+           po_tab_icon(lv_index)       := 'square';
+        ELSE
+           po_tab_icon(lv_index)       := 'abort';
+        END IF;
+--        po_tab_data(lv_index)          := lt_comments(j).com_doc_id;
+--        po_tab_parent(lv_index)        := lt_activities(x).are_report_id;
+        
+      END LOOP;
+      
     END LOOP;
   
   END LOOP;
