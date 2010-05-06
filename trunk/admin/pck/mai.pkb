@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.15   Apr 22 2010 18:15:34   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.16   May 06 2010 10:20:16   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Apr 22 2010 18:15:34  $
---       Date fetched Out : $Modtime:   Apr 22 2010 17:48:36  $
---       SCCS Version     : $Revision:   2.15  $
+--       Date into SCCS   : $Date:   May 06 2010 10:20:16  $
+--       Date fetched Out : $Modtime:   May 06 2010 10:18:04  $
+--       SCCS Version     : $Revision:   2.16  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.15  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.16  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -2807,7 +2807,7 @@ END;
       SELECT owner
         FROM all_objects
        WHERE owner = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
-         AND object_name = UPPER( :a_object_name)
+         AND object_name = UPPER(a_object_name)
          AND object_type <> 'SYNONYM';
 
  /* or user has the use of a synonym for an object owned by another user */
