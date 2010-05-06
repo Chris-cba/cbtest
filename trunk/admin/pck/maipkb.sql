@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.2   May 05 2010 11:45:52   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.3   May 06 2010 14:37:52   cbaugh  $
 --       Module Name      : $Workfile:   maipkb.sql  $
---       Date into SCCS   : $Date:   May 05 2010 11:45:52  $
---       Date fetched Out : $Modtime:   May 05 2010 11:44:00  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   May 06 2010 14:37:52  $
+--       Date fetched Out : $Modtime:   May 06 2010 14:35:24  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -373,4 +373,25 @@ FROM dual
 --
 START '&run_file'
 --
+-----------------------------------------------------------------------------
+-- mai_inspection_loader package
+-----------------------------------------------------------------------------
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+'&terminator'||'pck'||'&terminator'||'mai_inspection_loader.pkw' run_file
+FROM dual
+/
+--
+START '&run_file'
+
+-----------------------------------------------------------------------------
+-- mai_inspection_api package
+-----------------------------------------------------------------------------
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+'&terminator'||'pck'||'&terminator'||'mai_inspection_api.pkw' run_file
+FROM dual
+/
+--
+START '&run_file'
 
