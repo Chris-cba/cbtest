@@ -5,23 +5,54 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.2   Apr 30 2010 12:21:20   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.3   May 06 2010 17:00:24   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Apr 30 2010 12:21:20  $
---       Date fetched Out : $Modtime:   Apr 30 2010 12:18:44  $
---       PVCS Version     : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   May 06 2010 17:00:24  $
+--       Date fetched Out : $Modtime:   May 05 2010 17:34:38  $
+--       PVCS Version     : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
 --
 --<TYPE>
+--
+TYPE com_rec IS RECORD (com_doc_id            NUMBER(9)
+                       ,com_are_report_id     NUMBER(8)
+                       ,com_title             VARCHAR2(60)
+                       ,com_category          VARCHAR2(8)
+                       ,com_dtp_code          VARCHAR2(4)
+                       ,com_date_issued       DATE
+                       ,com_file              VARCHAR2(254)
+                       ,com_dlc_dmd_id        NUMBER(9)
+                       ,com_dlc_id            NUMBER(9)
+                       ,com_reference_code    VARCHAR2(254)
+                       ,com_descr             VARCHAR2(2000)
+                       ,com_error             VARCHAR2(4000)); 
+TYPE com_tab IS TABLE OF com_rec INDEX BY BINARY_INTEGER;
+--
+TYPE das_rec IS RECORD (das_doc_id            NUMBER(9)
+                       ,das_are_report_id     NUMBER(8)
+                       ,das_def_defect_id     NUMBER(8)
+                       ,das_category          NUMBER(8)
+                       ,das_title             VARCHAR2(60)
+                       ,das_dtp_code          VARCHAR2(4)
+                       ,das_date_issued       DATE
+                       ,das_file              VARCHAR2(254)
+                       ,das_dlc_dmd_id        NUMBER(9)
+                       ,das_dlc_id            NUMBER(9)
+                       ,das_reference_code    VARCHAR2(254)
+                       ,das_descr             VARCHAR2(2000)
+                       ,das_location          VARCHAR2(2000)
+                       ,das_error             VARCHAR2(4000)); 
+TYPE das_tab IS TABLE OF das_rec INDEX BY BINARY_INTEGER;
+--
 TYPE def_attr_tab IS TABLE OF VARCHAR2(254) INDEX BY BINARY_INTEGER;
 --
 TYPE boq_rec IS RECORD(boq_record boq_items%ROWTYPE
@@ -36,6 +67,7 @@ TYPE rep_tab IS TABLE OF rep_rec INDEX BY BINARY_INTEGER;
 TYPE def_rec IS RECORD(def_record  defects%ROWTYPE
                       ,def_attribs def_attr_tab
                       ,def_repairs rep_tab
+                      ,def_assocs  das_tab
                       ,def_error   VARCHAR2(4000));
 TYPE def_tab IS TABLE OF def_rec INDEX BY BINARY_INTEGER;
 --
@@ -46,6 +78,7 @@ TYPE activities_tab IS TABLE OF activities_rec INDEX BY BINARY_INTEGER;
 TYPE insp_rec IS RECORD(insp_record      activities_report%ROWTYPE
                        ,insp_activities  activities_tab
                        ,insp_defects     def_tab
+                       ,insp_comments    com_tab
                        ,insp_error       VARCHAR2(4000));
 TYPE insp_tab IS TABLE OF insp_rec INDEX BY BINARY_INTEGER;
 --
@@ -58,6 +91,7 @@ TYPE boq_items_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
 TYPE matched_defect_rec IS RECORD(def_defect_id defects.def_defect_id%TYPE
                                  ,def_priority  defects.def_priority%TYPE);
 TYPE matched_defects_tab IS TABLE OF matched_defect_rec INDEX BY BINARY_INTEGER;
+--
 --</TYPE>
 --
 -----------------------------------------------------------------------------
@@ -97,6 +131,11 @@ PROCEDURE add_def_tab_to_insp_tab(pi_def_tab   IN     mai_inspection_api.def_tab
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE add_comm_tab_to_insp_tab(pi_com_tab   IN     mai_inspection_api.com_tab
+                                  ,pio_insp_tab IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE add_def_to_def_tab(pi_def_rec  IN     defects%ROWTYPE
                             ,pio_def_tab IN OUT mai_inspection_api.def_tab);
 --
@@ -108,6 +147,11 @@ PROCEDURE add_def_attr_tab_to_def_tab(pi_def_attr_tab IN     mai_inspection_api.
 -----------------------------------------------------------------------------
 --
 PROCEDURE add_rep_tab_to_def_tab(pi_rep_tab  IN     mai_inspection_api.rep_tab
+                                ,pio_def_tab IN OUT mai_inspection_api.def_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_das_tab_to_def_tab(pi_das_tab  IN     mai_inspection_api.das_tab
                                 ,pio_def_tab IN OUT mai_inspection_api.def_tab);
 --
 -----------------------------------------------------------------------------
