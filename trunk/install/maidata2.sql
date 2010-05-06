@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.5   Sep 10 2009 15:48:08   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.6   May 06 2010 09:45:48   malexander  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Sep 10 2009 15:48:08  $
---       Date fetched Out : $Modtime:   Sep 10 2009 15:40:30  $
---       Version          : $Revision:   2.5  $
+--       Date into PVCS   : $Date:   May 06 2010 09:45:48  $
+--       Date fetched Out : $Modtime:   May 06 2010 09:44:26  $
+--       Version          : $Revision:   2.6  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 10-SEP-2009 15:40
+--       Generation Date  : 06-MAY-2010 09:44
 --
 --   Product metadata script
---   As at Release 4.1.0.0
+--   As at Release 4.2.1.0
 --
---   Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) exor corporation ltd, 2010
 --
 --   TABLES PROCESSED
 --   ================
@@ -23,6 +23,7 @@
 --   GRI_PARAM_DEPENDENCIES
 --   GRI_PARAM_LOOKUP
 --   LOAD_ERRORS
+--   NM_AU_TYPES
 --
 -----------------------------------------------------------------------------
 
@@ -37890,6 +37891,41 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM LOAD_ERRORS
                    WHERE LER_ERROR_NO = 9706);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_AU_TYPES
+--
+-- select * from mai_metadata.nm_au_types
+-- order by nat_admin_type
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_au_types
+SET TERM OFF
+
+INSERT INTO NM_AU_TYPES
+       (NAT_ADMIN_TYPE
+       ,NAT_DESCR
+       ,NAT_DATE_CREATED
+       ,NAT_DATE_MODIFIED
+       ,NAT_MODIFIED_BY
+       ,NAT_CREATED_BY
+       )
+SELECT 
+        'EXT$'
+       ,'Admin Type for Navigator, Audit and Alert Meta Models'
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_AU_TYPES
+                   WHERE NAT_ADMIN_TYPE = 'EXT$');
 --
 --
 --

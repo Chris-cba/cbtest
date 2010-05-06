@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.2   Sep 21 2009 16:49:04   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.3   May 06 2010 09:45:48   malexander  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   Sep 21 2009 16:49:04  $
---       Date fetched Out : $Modtime:   Sep 21 2009 16:38:22  $
---       Version          : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   May 06 2010 09:45:48  $
+--       Date fetched Out : $Modtime:   May 06 2010 09:44:28  $
+--       Version          : $Revision:   2.3  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 21-SEP-2009 16:38
+--       Generation Date  : 06-MAY-2010 09:44
 --
 --   Product metadata script
---   As at Release 4.1.0.0
+--   As at Release 4.2.1.0
 --
---   Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) exor corporation ltd, 2010
 --
 --   TABLES PROCESSED
 --   ================
@@ -2165,6 +2165,32 @@ INSERT INTO HIG_MODULE_ROLES
        ,HMR_MODE
        )
 SELECT 
+        'MAI3801_NET'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI3801_NET'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI3801_NET'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI3801_NET'
+                    AND  HMR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
         'MAI3802'
        ,'MAI_ADMIN'
        ,'NORMAL' FROM DUAL
@@ -2457,6 +2483,32 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
                    WHERE HMR_MODULE = 'MAI3816'
                     AND  HMR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI3818'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI3818'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI3819'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI3819'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
 --
 INSERT INTO HIG_MODULE_ROLES
        (HMR_MODULE
@@ -4159,6 +4211,58 @@ SELECT
        ,'NORMAL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
                    WHERE HMR_MODULE = 'MAI3994'
+                    AND  HMR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4400'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4400'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4400'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4400'
+                    AND  HMR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4405'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4405'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4405'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4405'
                     AND  HMR_ROLE = 'MAI_USER');
 --
 INSERT INTO HIG_MODULE_ROLES
