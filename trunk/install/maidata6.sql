@@ -23,7 +23,7 @@ R
 
 ***************************************************************************/
 
-define sccsid = '$Revision:   2.0  $'
+define sccsid = '$Revision:   2.1  $'
 set define off;
 set feedback off;
 
