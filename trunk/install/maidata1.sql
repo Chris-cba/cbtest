@@ -2,16 +2,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.12   Jan 18 2010 16:11:40   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.13   May 06 2010 09:45:46   malexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Jan 18 2010 16:11:40  $
---       Date fetched Out : $Modtime:   Jan 18 2010 16:06:20  $
---       Version          : $Revision:   2.12  $
+--       Date into PVCS   : $Date:   May 06 2010 09:45:46  $
+--       Date fetched Out : $Modtime:   May 06 2010 09:44:24  $
+--       Version          : $Revision:   2.13  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 18-JAN-2010 16:06
+--       Generation Date  : 06-MAY-2010 09:44
 --
 --   Product metadata script
---   As at Release 4.2.0.0
+--   As at Release 4.2.1.0
 --
 --   Copyright (c) exor corporation ltd, 2010
 --
@@ -29,6 +29,11 @@
 --   HIG_USER_OPTION_LIST
 --   HIG_CHECK_CONSTRAINT_ASSOCS
 --   HIG_STANDARD_FAVOURITES
+--   HIG_PROCESS_TYPES
+--   HIG_PROCESS_TYPE_ROLES
+--   HIG_PROCESS_TYPE_FREQUENCIES
+--   HIG_PROCESS_TYPE_FILES
+--   HIG_PROCESS_TYPE_FILE_EXT
 --
 -----------------------------------------------------------------------------
 
@@ -583,6 +588,1995 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 927);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9000
+       ,null
+       ,'ERROR: error in outputing previous error condition.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9000);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9001
+       ,null
+       ,'ERROR: error in opening file for error output.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9001);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9002
+       ,null
+       ,'ERROR: error in opening file for load input.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9002);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9003
+       ,null
+       ,'ERROR: X record encountered before end of file.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9003);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9004
+       ,null
+       ,'ERROR: non x record encountered at end of file.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9004);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9005
+       ,null
+       ,'ERROR: load terminated before end of load file.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9005);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9006
+       ,null
+       ,'ERROR: error in closing input load file.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9006);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9007
+       ,null
+       ,'ERROR: error in closing error output file.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9007);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9008
+       ,null
+       ,'ERROR: unknown husky hunter record type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9008);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9009
+       ,null
+       ,'ERROR: file header record is not a known header type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9009);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9010
+       ,null
+       ,'ERROR: unexpected format in terminator record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9010);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9011
+       ,null
+       ,'ERROR: record counts do not match terminator record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9011);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9012
+       ,null
+       ,'ERROR: invalid number of arguments in first G rec.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9012);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9014
+       ,null
+       ,'ERROR: The number of H and P records must match the numebr of G records.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9014);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9104
+       ,null
+       ,'Error : Activity (H) Record expected but not found. : Correct the Activity Record Type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9104);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9105
+       ,null
+       ,'Error : Invalid Comment Type. : Correct the Comment Type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9105);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9106
+       ,null
+       ,'Error : Enclosed field is not terminated. The enclosing character is '
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9106);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9107
+       ,null
+       ,'Error : An error occured while processing record '
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9107);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9200
+       ,null
+       ,'Error : G record expected but not found. : Correct the record type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9200);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9201
+       ,null
+       ,'Error : Number of attributes in G record type is less than 7 : Correct the G record information.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9201);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9202
+       ,null
+       ,'Error : Initiation nmeonic is not recognised. : Correct the initiation nmeonic code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9202);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9203
+       ,null
+       ,'Error : Invalid inspection initiation date. : Correct the Inspection initiation date in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9203);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9204
+       ,null
+       ,'Error : Invalid inspection initiation time. : Correct the Inspection time in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9204);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9205
+       ,null
+       ,'Error : Invalid survey type indicator. : Correct the survey type indicator in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9205);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9206
+       ,null
+       ,'Error : Invalid survey direction indicator. : Correct the survey indicator value in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9206);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9207
+       ,null
+       ,'Error : Invalid Linkcode / Section identifier. : Correct the Linkcode / Section identifier in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9207);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9208
+       ,null
+       ,'Error : The Primary inspector cannot be located. : Correct the Primary inspectors initials in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9208);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9212
+       ,null
+       ,'Error : Invalid Weather condition code. : Correct the weathher condition code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9212);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9213
+       ,null
+       ,'Error : Unable to obtain interval code. : Check the interval codes for valid code values.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9213);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9214
+       ,null
+       ,'Error : Unable to locate specified section. : Check the document management section reference.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9214);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9215
+       ,null
+       ,'Error : Unable to obtain document sequence number. : Check the document sequence for availability.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9215);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9216
+       ,null
+       ,'Error : Unable to obtain inspectors Admin unit. : Check the current inspectors Administration unit.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9216);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9217
+       ,null
+       ,'Error : Unable to insert into the DOCS table. : Check the complaint record for errors.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9217);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9218
+       ,null
+       ,'Error : Unable to insert into the DOC_ASSOCS table. : Check the complaint record and correct.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9218);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9219
+       ,null
+       ,'Error : Unable to obtain the status for a new defect. : Check the STATUS CODES values.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9219);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9220
+       ,null
+       ,'Error : H record expected but not found. : Correct the H record indicator.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9220);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9221
+       ,null
+       ,'Error : Invalid activity area code on H type record for this section. : Correct the defect location time hhmm'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9221);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9240
+       ,null
+       ,'Error : P record expected but not found. : Correct the P record indicator.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9240);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9260
+       ,null
+       ,'Error : Chainage on I record exceeds required chainage for section. : Correct the section chainage.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9260);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9261
+       ,null
+       ,'Error : Invalid defect Location time. : Correct the defect location time hhmm'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9261);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9262
+       ,null
+       ,'Error : Invalid chainage indicator. : Correct the chainage indicator value.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9262);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9263
+       ,null
+       ,'Error : Invalid sub-section item code. : Correct the sub-section item code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9263);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9264
+       ,null
+       ,'Error : Invalid notifiable organisation code. : Correct the notifiable organisation code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9264);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9265
+       ,null
+       ,'Error : Invalid rechargeable organisation code. : Correct the rechargeable organisation code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9265);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9266
+       ,null
+       ,'Error : Invalid Cross Sectional Position (XSP) : Correct the Cross Sectional Position.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9266);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9267
+       ,null
+       ,'Error : Special Instruction exceeds the allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9267);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9268
+       ,null
+       ,'Error : Location Description exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9268);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9269
+       ,null
+       ,'Error : Identity Code exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9269);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9270
+       ,null
+       ,'Error : Diagram Number exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9270);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9271
+       ,null
+       ,'Error : Invalid Asset Type : Correct the Asset Type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9271);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9272
+       ,null
+       ,'Error : Defect Description exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9272);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9273
+       ,null
+       ,'Error : Road Stud Indicator exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9273);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9274
+       ,null
+       ,'Error : Defect Type exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9274);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9275
+       ,null
+       ,'Error : Mandatory field, Defect Type, is Missing.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9275);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9276
+       ,null
+       ,'Error : Mandatory field, Priority, is Missing.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9276);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9277
+       ,null
+       ,'Error : Priority exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9277);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9278
+       ,null
+       ,'Error : Defect Response Category exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9278);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9279
+       ,null
+       ,'Error : Invalid Asset Id.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9279);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9280
+       ,null
+       ,'Error : Invalid Easting.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9280);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9281
+       ,null
+       ,'Error : Invalid Northing.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9281);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9282
+       ,null
+       ,'Error : Attribute Value exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9282);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9283
+       ,null
+       ,'Error : Repair Description exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9283);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9284
+       ,null
+       ,'Error : Invalid BOQ Dimension.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9284);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9285
+       ,null
+       ,'Error : Asset Modification Flag exceeds allowed length.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9285);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9300
+       ,null
+       ,'Error : Invalid Activity code/Defect Type combination. : Correct the Activity code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9300);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9302
+       ,null
+       ,'Error : Invalid Inspection date. : Correct the Inspection date.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9302);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9303
+       ,null
+       ,'Error : Invalid Survey type. : Correct the Survey Type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9303);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9305
+       ,null
+       ,'Error : Invalid Defect/Priority combination. : Correct the Defect/Priority and re-submit.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9305);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9309
+       ,null
+       ,'Error : Invalid reverse survey direction indicator. : Correct the Reverse Survey Direction indicator value (Y/N).'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9309);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9400
+       ,null
+       ,'Error : Invalid Treatment Code. : Correct the treatment code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9400);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9401
+       ,null
+       ,'Error : Start chainage exceeds end chainage. : Correct the chainage values.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9401);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9402
+       ,null
+       ,'Error : Incorrect start chainage value ( chainage is null ) : Correct the start chainage value.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9402);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9500
+       ,null
+       ,'Error : Inspection Date less than previously loaded inspection.   : Correct the inspection date.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9500);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9501
+       ,null
+       ,'Error : Invalid Defect Location (I) Record Type. : Correct the Defect Location Record Type indicator.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9501);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9502
+       ,null
+       ,'Error : Invalid Defect (J) record Type. : Correct the Defect Location Record Type indicator.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9502);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9503
+       ,null
+       ,'Error : Action record (K/L/M/N) expected but not found. : Correct the action type record for this section.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9503);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9516
+       ,null
+       ,'Error : Unable to locate INTERVAL record. : Ensure there is an INTERVAL record present.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9516);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9517
+       ,null
+       ,'Error : An immediate (COMPLETED) repair may NOT have BOQ items. : All BOQ items associated with the immediate repair must be deleted.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9517);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9520
+       ,null
+       ,'G record must follow the 1 record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9520);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9521
+       ,null
+       ,'H record must follow a G record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9521);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9522
+       ,null
+       ,'I, P or R record must follow a H record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9522);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9523
+       ,null
+       ,'J record must follow an I record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9523);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9524
+       ,null
+       ,'D, K, L, M or N record must follow a J record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9524);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9525
+       ,null
+       ,'D, K, L, M or N record must follow a D record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9525);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9526
+       ,null
+       ,'L, M, N, P or R record must follow a K record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9526);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9527
+       ,null
+       ,'M, N, P, Q or R record must follow a L Record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9527);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9528
+       ,null
+       ,'I, P, Q or R record must follow a M record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9528);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9529
+       ,null
+       ,'I, P, Q or R record must follow a N record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9529);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9530
+       ,null
+       ,'G, S or X record must follow a P record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9530);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9531
+       ,null
+       ,'I, M, N, P, Q or R record must follow a Q record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9531);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9532
+       ,null
+       ,'R or P record must follow a R record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9532);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9533
+       ,null
+       ,'S or X record must follow a S Record'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9533);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9534
+       ,null
+       ,'X record should be the last record in the file'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9534);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9540
+       ,null
+       ,'Batch Re-Submit Successful'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9540);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9541
+       ,null
+       ,'Batch Re-Submit Failed'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9541);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9542
+       ,null
+       ,'Batch contains Invalid Inspections'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9542);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9543
+       ,null
+       ,'Inspection Re-Submit Successfully'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9543);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9544
+       ,null
+       ,'Process Completed'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9544);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9545
+       ,null
+       ,'Inspection Re-Submit Successful'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9545);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9546
+       ,null
+       ,'Inspection Re-Submit Failed'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9546);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9600
+       ,null
+       ,'Error : Recalibration for section inspection not started at chainage 0  : Correct the Start Chainge.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9600);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9601
+       ,null
+       ,'Error : Recalibration for section execeeds 50% of section length . : Correct the Section Length or Chainage value.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9601);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9602
+       ,null
+       ,'Error : Error cannot find P record to carry out recalibration. : Correct the P record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9602);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9603
+       ,null
+       ,'Error : Defect XSP required but not supplied. : Correct the defect location record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9603);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9604
+       ,null
+       ,'Error : No Default Treatment for this Defect / Activity area. : Correct the Default Treatment type.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9604);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9605
+       ,null
+       ,'Error : Defect chainage value required but not supplied. : Correct the defect location record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9605);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9704
+       ,null
+       ,'Invalid Combination of Complaint Category / Complaint Type : The Complaint Category used is derived from the User Option ENQCAT. TheComplaint Type is supplied in the DCD load file. Check Document Type'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9704);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9705
+       ,null
+       ,'Invalid defect Response Category. Use the DOMAINS form. : Using the DOMAINS form check that the category displayed within thespecified record exists for the DEFECT_RESPONSE_CAT domain.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9705);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9706
+       ,null
+       ,'Could not derive Default Complaint Status : Check a valid Complaint Status has been set in Status Codes module (HIG9110).The Default Complaint Status should have Feature Code 1 set to Y.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9706);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9800
+       ,null
+       ,'Begining load for file'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9800);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9801
+       ,null
+       ,'The load Batch Id is'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9801);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9802
+       ,null
+       ,'Number Of Inspections found in the file'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9802);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9803
+       ,null
+       ,'Inspection loaded'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9803);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9804
+       ,null
+       ,'Load complete for file'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9804);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9805
+       ,null
+       ,'Running Inspection Loader Version'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9805);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9806
+       ,null
+       ,'The associated Criteria will be deleted if changes are made to this Ruleset, do you want to continue? '
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9806);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9807
+       ,null
+       ,'A Ruleset already exists with these values.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9807);
 --
 --
 --
@@ -7590,6 +9584,30 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
+        'MAI3801_NET'
+       ,'Raise Small Scheme Works Order (GIS)'
+       ,'mai3801'
+       ,'FMX'
+       ,''
+       ,'Y'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3801_NET');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
         'MAI3802'
        ,'Maintain Work Orders - Contractor Interface'
        ,'mai3802'
@@ -7889,6 +9907,54 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI3816');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI3818'
+       ,'Work Order Automation Rules'
+       ,'mai3818.fmx'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3818');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI3819'
+       ,'Composite Flexible Attributes'
+       ,'mai3819.fmx'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3819');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
@@ -9606,6 +11672,54 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
+        'MAI4400'
+       ,'Maintenance Inspection Loader'
+       ,'hig2510'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI4400');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI4405'
+       ,'Maintenance Inspection Error Correction'
+       ,'mai4405'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI4405');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
         'MAI5001'
        ,'Inventory Item Details'
        ,'mai5001'
@@ -11055,7 +13169,7 @@ SELECT
        ,''
        ,'VARCHAR2'
        ,'Y'
-       ,'N' FROM DUAL
+       ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'AUTH_OWN');
 --
@@ -12874,6 +14988,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'WCCOMPLETE'
+       ,'MAI'
+       ,'Full WC Complete'
+       ,'WC file will complete repairs and defects appropriately when this option is set to ''Y''.'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'WCCOMPLETE');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'WOREPORDBY'
        ,'MAI'
        ,'WO (Enhanced) Order By Clause'
@@ -12928,6 +15064,28 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'WORREFGEN');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'WORREFUSER'
+       ,'MAI'
+       ,'Use The Users Admin Unit (Y/N)'
+       ,'When the product option WORREFGEN is set to ''A'' (Admin Unit) this option can be set to ''Y'' to force the generation of Work Order Numbers to always use the Users Admin Unit rather than the Admin Unit of the selected Contract.'
+       ,'Y_OR_N'
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'WORREFUSER');
 --
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
@@ -13078,7 +15236,7 @@ SELECT
        ,'If set to 2-1-3 uses additional fields on the end of the WO and WI files. Otherwise set to NA.'
        ,''
        ,'VARCHAR2'
-       ,'Y'
+       ,'N'
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'XTRIFLDS');
@@ -14007,6 +16165,16 @@ INSERT INTO HIG_OPTION_VALUES
        ,HOV_VALUE
        )
 SELECT 
+        'WCCOMPLETE'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'WCCOMPLETE');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
         'WOREPORDBY'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -14031,6 +16199,16 @@ SELECT
        ,'A' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'WORREFGEN');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'WORREFUSER'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'WORREFUSER');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
@@ -14098,7 +16276,7 @@ INSERT INTO HIG_OPTION_VALUES
        )
 SELECT 
         'XTRIFLDS'
-       ,'NA' FROM DUAL
+       ,'2-1-3' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'XTRIFLDS');
 --
@@ -17059,6 +19237,40 @@ INSERT INTO HIG_STANDARD_FAVOURITES
        )
 SELECT 
         'MAI_LOADERS_INSPECTIONS'
+       ,'MAI4400'
+       ,'Maintenance Inspection Loader'
+       ,'M'
+       ,10 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI4400');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_LOADERS_INSPECTIONS'
+       ,'MAI4405'
+       ,'Maintenance Inspection Error Correction'
+       ,'M'
+       ,11 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI4405');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_LOADERS_INSPECTIONS'
        ,'MAI5091'
        ,'Remove Phase 1 Inspection Batches'
        ,'M'
@@ -17984,6 +20196,40 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_REF_MAINTENANCE'
                     AND  HSTF_CHILD = 'MAI3803');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF_MAINTENANCE'
+       ,'MAI3818'
+       ,'Work Order Automation Rules'
+       ,'M'
+       ,13 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF_MAINTENANCE'
+                    AND  HSTF_CHILD = 'MAI3818');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF_MAINTENANCE'
+       ,'MAI3819'
+       ,'Composite Flexible Attributes'
+       ,'M'
+       ,13.1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF_MAINTENANCE'
+                    AND  HSTF_CHILD = 'MAI3819');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
@@ -18987,6 +21233,194 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_WORKS_REPORTS'
                     AND  HSTF_CHILD = 'MAI5130');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_PROCESS_TYPES
+--
+-- select * from mai_metadata.hig_process_types
+-- order by hpt_process_type_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_types
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_TYPES
+       (HPT_PROCESS_TYPE_ID
+       ,HPT_NAME
+       ,HPT_DESCR
+       ,HPT_WHAT_TO_CALL
+       ,HPT_INITIATION_MODULE
+       ,HPT_INTERNAL_MODULE
+       ,HPT_INTERNAL_MODULE_PARAM
+       ,HPT_PROCESS_LIMIT
+       ,HPT_RESTARTABLE
+       ,HPT_SEE_IN_HIG2510
+       )
+SELECT 
+        -1001
+       ,'Maintenance Inspection Loader'
+       ,'Loads maintenance inspections from RMMS or EID format files'
+       ,'mai_inspection_loader.load_rmms_or_eid_file;'
+       ,'MAI4400'
+       ,'MAI4405'
+       ,'PROCESS_ID'
+       ,null
+       ,'N'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
+                   WHERE HPT_PROCESS_TYPE_ID = -1001);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_PROCESS_TYPE_ROLES
+--
+-- select * from mai_metadata.hig_process_type_roles
+-- order by hptr_process_type_id
+--         ,hptr_role
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_type_roles
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_TYPE_ROLES
+       (HPTR_PROCESS_TYPE_ID
+       ,HPTR_ROLE
+       )
+SELECT 
+        -1001
+       ,'MAI_ADMIN' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_ROLES
+                   WHERE HPTR_PROCESS_TYPE_ID = -1001
+                    AND  HPTR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_PROCESS_TYPE_ROLES
+       (HPTR_PROCESS_TYPE_ID
+       ,HPTR_ROLE
+       )
+SELECT 
+        -1001
+       ,'MAI_USER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_ROLES
+                   WHERE HPTR_PROCESS_TYPE_ID = -1001
+                    AND  HPTR_ROLE = 'MAI_USER');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_PROCESS_TYPE_FREQUENCIES
+--
+-- select * from mai_metadata.hig_process_type_frequencies
+-- order by hpfr_process_type_id
+--         ,hpfr_frequency_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_type_frequencies
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1001
+       ,-1
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1001
+                    AND  HPFR_FREQUENCY_ID = -1);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_PROCESS_TYPE_FILES
+--
+-- select * from mai_metadata.hig_process_type_files
+-- order by hptf_file_type_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_type_files
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_TYPE_FILES
+       (HPTF_FILE_TYPE_ID
+       ,HPTF_NAME
+       ,HPTF_PROCESS_TYPE_ID
+       ,HPTF_INPUT
+       ,HPTF_OUTPUT
+       ,HPTF_INPUT_DESTINATION
+       ,HPTF_INPUT_DESTINATION_TYPE
+       ,HPTF_MIN_INPUT_FILES
+       ,HPTF_MAX_INPUT_FILES
+       ,HPTF_OUTPUT_DESTINATION
+       ,HPTF_OUTPUT_DESTINATION_TYPE
+       )
+SELECT 
+        -1001
+       ,'Inspection File'
+       ,-1001
+       ,'Y'
+       ,'N'
+       ,'MAI_INSP_DIRECTORY'
+       ,'ORACLE_DIRECTORY'
+       ,1
+       ,1
+       ,''
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FILES
+                   WHERE HPTF_FILE_TYPE_ID = -1001);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_PROCESS_TYPE_FILE_EXT
+--
+-- select * from mai_metadata.hig_process_type_file_ext
+-- order by hpte_file_type_id
+--         ,hpte_extension
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_type_file_ext
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_TYPE_FILE_EXT
+       (HPTE_FILE_TYPE_ID
+       ,HPTE_EXTENSION
+       )
+SELECT 
+        -1001
+       ,'dat' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FILE_EXT
+                   WHERE HPTE_FILE_TYPE_ID = -1001
+                    AND  HPTE_EXTENSION = 'dat');
 --
 --
 --
