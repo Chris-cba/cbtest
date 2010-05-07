@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.0   May 05 2010 12:04:24   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.1   May 07 2010 15:51:56   lsorathia  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkb  $
---       Date into PVCS   : $Date:   May 05 2010 12:04:24  $
---       Date fetched Out : $Modtime:   May 05 2010 12:04:02  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   May 07 2010 15:51:56  $
+--       Date fetched Out : $Modtime:   May 07 2010 14:40:38  $
+--       Version          : $Revision:   3.1  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -17,7 +17,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.0  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.1  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_wo_automation' ;
 --
@@ -295,6 +295,27 @@ BEGIN
 --
 END get_mawr;
 --
+FUNCTION get_fyr(pi_fyr_id IN financial_years.fyr_id%TYPE)
+Return   financial_years%ROWTYPE
+IS
+--
+   CURSOR c_fyr
+   IS
+   SELECT *
+   FROM   financial_years
+   WHERE  fyr_id = pi_fyr_id ;
+   l_fyr_rec financial_years%ROWTYPe;
+--
+BEGIN
+--
+   OPEN  c_fyr;
+   FETCH c_fyr INTO l_fyr_rec;
+   CLOSE c_fyr;
+
+   Return l_fyr_rec ;
+--
+END get_fyr;
+
 END mai_wo_automation;
 /
 
