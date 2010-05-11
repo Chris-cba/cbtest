@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.0   May 06 2010 18:41:42   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.1   May 11 2010 17:07:08   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 06 2010 18:41:42  $
---       Date fetched Out : $Modtime:   May 06 2010 11:52:16  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   May 11 2010 17:07:08  $
+--       Date fetched Out : $Modtime:   May 11 2010 14:27:18  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.0  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -535,7 +535,7 @@ END get_insp;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION get_initial_wol_status
+FUNCTION get_instructed_def_status
   RETURN hig_status_codes.hsc_status_code%TYPE IS
   --
   lv_retval  hig_status_codes.hsc_status_code%TYPE;
@@ -559,7 +559,7 @@ EXCEPTION
   WHEN others
    THEN
       RAISE;
-END get_initial_wol_status;
+END get_instructed_def_status;
 
 ---------------------------------------------------------------------------
 
@@ -591,30 +591,31 @@ END get_instructed_wol_status;
 --
 -----------------------------------------------------------------------------
 --
---FUNCTION get_initial_defect_status
---  RETURN hig_status_codes.hsc_status_code%TYPE IS
---  --
---  lv_retval  hig_status_codes.hsc_status_code%TYPE;
---  --
---BEGIN
---  --
---  SELECT hsc_status_code
---    INTO lv_retval
---    FROM hig_status_codes
---   WHERE hsc_domain_code = 'DEFECTS'
---     AND hsc_allow_feature1 = 'Y'
---       ;
---  --
---  RETURN lv_retval;
---  --
---EXCEPTION
---  WHEN no_data_found
---   THEN
---      raise_application_error(-20020,'Cannot Find Initial Defect Status.');
---  WHEN others
---   THEN
---      RAISE;
---END get_initial_defect_status;
+FUNCTION get_initial_defect_status
+  RETURN hig_status_codes.hsc_status_code%TYPE IS
+  --
+  lv_retval  hig_status_codes.hsc_status_code%TYPE;
+  --
+BEGIN
+  --
+  SELECT hsc_status_code
+    INTO lv_retval
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'DEFECTS'
+     AND hsc_allow_feature1 = 'Y'
+     AND hsc_allow_feature10 != 'Y'
+       ;
+  --
+  RETURN lv_retval;
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      raise_application_error(-20020,'Cannot Find Instructed Defect Status.');
+  WHEN others
+   THEN
+      RAISE;
+END get_initial_defect_status;
 ----
 -------------------------------------------------------------------------------
 ----
@@ -2391,6 +2392,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
   IS
   --
   lv_wol_inst_status hig_status_codes.hsc_status_code%TYPE := get_instructed_wol_status;
+  lv_def_inst_status hig_status_codes.hsc_status_code%TYPE := get_instructed_def_status;
   --
   lr_user hig_users%ROWTYPE;
   lr_wo   work_orders%ROWTYPE;
@@ -2720,6 +2722,16 @@ BEGIN
      SET wol_status_code = lv_wol_inst_status
    WHERE wol_works_order_no = pi_works_order_no
        ;
+  /*
+  ||Set the status of any associated Defects to INSTRUCTED
+  */
+	UPDATE defects
+     SET def_status_code = lv_def_inst_status
+        ,def_last_updated_date = SYSDATE
+   WHERE def_defect_id IN(SELECT wol_def_defect_id
+                            FROM work_order_lines
+                           WHERE wol_works_order_no = pi_works_order_no)
+           ;
   /*
   ||Update The Budgets.
   */
