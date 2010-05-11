@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.3   May 05 2010 17:53:32   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.4   May 11 2010 14:08:06   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 05 2010 17:53:32  $
---       Date fetched Out : $Modtime:   May 05 2010 17:52:30  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   May 11 2010 14:08:06  $
+--       Date fetched Out : $Modtime:   May 11 2010 14:05:28  $
+--       Version          : $Revision:   3.4  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -88,6 +88,118 @@ SELECT 'WORREFUSER'
  WHERE NOT EXISTS(SELECT 1
                     FROM hig_option_values
                    WHERE hov_id = 'WORREFUSER')
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Work Order Line and Defect Status Codes.
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109186
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- New Status Codes for Work Order Lines and Defects.
+-- 
+------------------------------------------------------------------
+UPDATE hig_status_domains
+   SET hsd_feature10 = 'Initial Work Order Line Status'
+ WHERE hsd_domain_code = 'WORK_ORDER_LINES'
+     ;
+
+INSERT
+  INTO HIG_STATUS_CODES
+      (HSC_DOMAIN_CODE
+      ,HSC_STATUS_CODE
+      ,HSC_STATUS_NAME
+      ,HSC_SEQ_NO
+      ,HSC_ALLOW_FEATURE1
+      ,HSC_ALLOW_FEATURE2
+      ,HSC_ALLOW_FEATURE3
+      ,HSC_ALLOW_FEATURE4
+      ,HSC_ALLOW_FEATURE5
+      ,HSC_ALLOW_FEATURE6
+      ,HSC_ALLOW_FEATURE7
+      ,HSC_ALLOW_FEATURE8
+      ,HSC_ALLOW_FEATURE9
+      ,HSC_START_DATE
+      ,HSC_END_DATE
+      ,HSC_ALLOW_FEATURE10)
+SELECT 'WORK_ORDER_LINES'
+      ,'DRAFT'
+      ,'Draft - New Work Order Line'
+      ,1
+      ,'Y'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,NULL
+      ,NULL
+      ,'Y'
+  FROM DUAL
+ WHERE NOT EXISTS(SELECT 1
+                    FROM HIG_STATUS_CODES
+                   WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
+                     AND HSC_STATUS_CODE = 'DRAFT')
+/
+
+UPDATE hig_status_domains
+   SET hsd_feature10 = 'At least one repair on the defect has been assigned to a work order that has not yet been instructed.'||CHR(10)||'This status will be set in MAI3800 or MAI3801.'
+ WHERE hsd_domain_code = 'DEFECTS'
+/
+
+INSERT
+  INTO HIG_STATUS_CODES
+      (HSC_DOMAIN_CODE
+      ,HSC_STATUS_CODE
+      ,HSC_STATUS_NAME
+      ,HSC_SEQ_NO
+      ,HSC_ALLOW_FEATURE1
+      ,HSC_ALLOW_FEATURE2
+      ,HSC_ALLOW_FEATURE3
+      ,HSC_ALLOW_FEATURE4
+      ,HSC_ALLOW_FEATURE5
+      ,HSC_ALLOW_FEATURE6
+      ,HSC_ALLOW_FEATURE7
+      ,HSC_ALLOW_FEATURE8
+      ,HSC_ALLOW_FEATURE9
+      ,HSC_START_DATE
+      ,HSC_END_DATE
+      ,HSC_ALLOW_FEATURE10)
+SELECT 'DEFECTS'
+      ,'SELECTED'
+      ,'Selected onto Works Order'
+      ,1
+      ,'N'
+      ,'N'
+      ,'Y'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,'N'
+      ,NULL
+      ,NULL
+      ,'Y'
+  FROM DUAL
+ WHERE NOT EXISTS(SELECT 1
+                    FROM HIG_STATUS_CODES
+                   WHERE HSC_DOMAIN_CODE = 'DEFECTS'
+                     AND HSC_STATUS_CODE = 'SELECTED')
 /
 
 ------------------------------------------------------------------
@@ -730,22 +842,6 @@ Insert into HIG_NAVIGATOR_MODULES
    ('MAI3660', 'bud_id', 'Y', 1, NULL, 
     NULL, 'Budget', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 
     'DORSET');
---Insert into HIG_NAVIGATOR_MODULES
---   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
---    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
---    HNM_MODIFIED_BY)
--- Values
---   ('NM0510', 'query_inv_item', 'Y', 1, NULL, 
---    NULL, 'Asset', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('02/22/2010 16:53:43', 'MM/DD/YYYY HH24:MI:SS'), 
---    'DORSET');
---Insert into HIG_NAVIGATOR_MODULES
---   (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
---    HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
---    HNM_MODIFIED_BY)
--- Values
---   ('NM0590', 'query_inv_item', 'N', 2, NULL, 
---    NULL, 'Asset', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', TO_DATE('03/30/2010 17:43:05', 'MM/DD/YYYY HH24:MI:SS'), 
---    'DORSET');
 Insert into HIG_NAVIGATOR_MODULES
    (HNM_MODULE_NAME, HNM_MODULE_PARAM, HNM_PRIMARY_MODULE, HNM_SEQUENCE, HNM_TABLE_NAME, 
     HNM_FIELD_NAME, HNM_HIERARCHY_LABEL, HNM_DATE_CREATED, HNM_CREATED_BY, HNM_DATE_MODIFIED, 
@@ -4661,6 +4757,74 @@ INSERT INTO NM_ERRORS
        )
 SELECT 
         'MAI'
+       ,9286
+       ,null
+       ,'Invalid Doc Type Code Supplied.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9286);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9287
+       ,null
+       ,'Invalid Doc Category Supplied.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9287);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9288
+       ,null
+       ,'File Name not provided.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9288);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9289
+       ,null
+       ,'Invalid Document Location Supplied..'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9289);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
        ,9300
        ,null
        ,'Error : Invalid Activity code/Defect Type combination. : Correct the Activity code.'
@@ -5872,6 +6036,7 @@ Insert into hig_standard_favourites SELECT 'MAI_REF_MAINTENANCE', 'MAI3819','Com
                                                WHERE   hstf_parent = 'MAI_REF_MAINTENANCE'
                                                AND     hstf_child   = 'MAI3819');
 
+
 Delete From HIG_FLEX_ATTRIBUTES;
 
 Prompt Inserting into HIG_FLEX_ATTRIBUTES
@@ -5939,6 +6104,65 @@ Insert into nm_errors Select 'MAI',9807,Null,'A Ruleset already exists with thes
                         WHERE Not Exists (SELECT 'x'
                                             FROM    nm_errors
                                             WHERe ner_id = 9807);
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Product Options DEFDOCTYPE and DEFDOCLOCN
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (CHRIS BAUGH)
+-- New Product Options DEFDOCTYPE and DEFDOCLOCN to provide default Document Type and Document Location values for Defect document attachments loaded via Maintenance Inspection Loader
+-- 
+------------------------------------------------------------------
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'DEFDOCTYPE'
+      ,'MAI'
+      ,'Default Defect Document Type'      
+      ,'Contains the default Document Type for Defect document attachments loaded via Maintenace Inspection Loader.'
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'DEFDOCTYPE')
+/
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'DEFDOCLOCN'
+      ,'MAI'
+      ,'Default Document Location'      
+      ,'Contains the default Document Location for Defect document attachments loaded via Maintenace Inspection Loader.'
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'DEFDOCLOCN')
+/
+
 ------------------------------------------------------------------
 
 

@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.1   May 05 2010 15:41:20   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.2   May 11 2010 14:08:06   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   May 05 2010 15:41:20  $
---       Date fetched Out : $Modtime:   May 05 2010 15:40:12  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 11 2010 14:08:06  $
+--       Date fetched Out : $Modtime:   May 11 2010 14:05:26  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -1081,6 +1081,7 @@ CREATE TABLE mai_insp_load_error_das
   ,das_dlc_id 					NUMBER(9)
   ,das_reference_code		VARCHAR2(254)
   ,das_descr						VARCHAR2(2000)
+  ,das_location         VARCHAR2(30)
   ,das_error            VARCHAR2(4000)
   )
 /
