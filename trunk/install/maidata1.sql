@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.14   May 11 2010 10:54:22   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.15   May 11 2010 15:11:38   malexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   May 11 2010 10:54:22  $
---       Date fetched Out : $Modtime:   May 11 2010 10:51:00  $
---       Version          : $Revision:   2.14  $
+--       Date into PVCS   : $Date:   May 11 2010 15:11:38  $
+--       Date fetched Out : $Modtime:   May 11 2010 15:10:08  $
+--       Version          : $Revision:   2.15  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 11-MAY-2010 10:50
+--       Generation Date  : 11-MAY-2010 15:10
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -1676,6 +1676,74 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 9285);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9286
+       ,null
+       ,'Invalid Doc Type Code Supplied.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9286);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9287
+       ,null
+       ,'Invalid Doc Category Supplied.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9287);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9288
+       ,null
+       ,'File Name not provided.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9288);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9289
+       ,null
+       ,'Invalid Document Location Supplied..'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9289);
 --
 INSERT INTO NM_ERRORS
        (NER_APPL
@@ -13546,6 +13614,50 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'DEFAUTOPRI');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'DEFDOCLOCN'
+       ,'MAI'
+       ,'Default Document Location'
+       ,'Contains the default Document Location for Defect document attachments loaded via Maintenace Inspection Loader.'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'DEFDOCLOCN');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'DEFDOCTYPE'
+       ,'MAI'
+       ,'Default Defect Document Type'
+       ,'Contains the default Document Type for Defect document attachments loaded via Maintenace Inspection Loader.'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'DEFDOCTYPE');
 --
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
