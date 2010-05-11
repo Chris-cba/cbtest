@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.13   May 06 2010 09:45:46   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.14   May 11 2010 10:54:22   mhuitson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   May 06 2010 09:45:46  $
---       Date fetched Out : $Modtime:   May 06 2010 09:44:24  $
---       Version          : $Revision:   2.13  $
+--       Date into PVCS   : $Date:   May 11 2010 10:54:22  $
+--       Date fetched Out : $Modtime:   May 11 2010 10:51:00  $
+--       Version          : $Revision:   2.14  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 06-MAY-2010 09:44
+--       Generation Date  : 11-MAY-2010 10:50
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -16320,6 +16320,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE7
        ,HSD_FEATURE8
        ,HSD_FEATURE9
+       ,HSD_FEATURE10
        )
 SELECT 
         'CLAIM STATUS'
@@ -16328,6 +16329,7 @@ SELECT
        ,'Can be paid by payment run'
        ,'Held - will not be paid'
        ,'Paid by payment run'
+       ,'Not Used'
        ,'Not Used'
        ,'Not Used'
        ,'Not Used'
@@ -16350,6 +16352,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE7
        ,HSD_FEATURE8
        ,HSD_FEATURE9
+       ,HSD_FEATURE10
        )
 SELECT 
         'CONTRACTS'
@@ -16363,7 +16366,8 @@ SELECT
        ,'Not used'
        ,'Not used'
        ,'Not used'
-       ,'Not used' FROM DUAL
+       ,'Not used'
+       ,'Not Used' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_DOMAINS
                    WHERE HSD_DOMAIN_CODE = 'CONTRACTS');
 --
@@ -16380,6 +16384,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE7
        ,HSD_FEATURE8
        ,HSD_FEATURE9
+       ,HSD_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16393,7 +16398,8 @@ SELECT
        ,'The defect has been repaired via structural maintenance.'
        ,'Superceded defects are reopened with this status.'||CHR(10)||'This happens in MAI3806 when a superceding defect is deleted.'
        ,'The defect has been written off.'||CHR(10)||'If no chainages are recorded, the inspection loader cannot supercede defects, so they have to be written off.'||CHR(10)||'This may be set manually in mai3806 or automatically from mai3800 (by setting the work status to NOT DONE).'
-       ,'The description, type and location are protected.'||CHR(10)||'This feature is only relevant when the defect is updateable'||CHR(10)||'(ie feature5 = Y).  '||CHR(10)||'For DOE these fields are updateable on UNAVAIL defects but are protected on AVAILABLE defects.' FROM DUAL
+       ,'The description, type and location are protected.'||CHR(10)||'This feature is only relevant when the defect is updateable'||CHR(10)||'(ie feature5 = Y).  '||CHR(10)||'For DOE these fields are updateable on UNAVAIL defects but are protected on AVAILABLE defects.'
+       ,'At least one repair on the defect has been assigned to a work order that has not yet been instructed.'||CHR(10)||'This status will be set in MAI3800 or MAI3801.' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_DOMAINS
                    WHERE HSD_DOMAIN_CODE = 'DEFECTS');
 --
@@ -16410,6 +16416,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE7
        ,HSD_FEATURE8
        ,HSD_FEATURE9
+       ,HSD_FEATURE10
        )
 SELECT 
         'PERC_ITEM_COMP'
@@ -16417,6 +16424,7 @@ SELECT
        ,'Percentage item computation'
        ,'Normal independant computation'
        ,'Cumulative computation (cost dependant on other percentage items)'
+       ,'Not Used'
        ,'Not Used'
        ,'Not Used'
        ,'Not Used'
@@ -16440,6 +16448,7 @@ INSERT INTO HIG_STATUS_DOMAINS
        ,HSD_FEATURE7
        ,HSD_FEATURE8
        ,HSD_FEATURE9
+       ,HSD_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -16453,7 +16462,8 @@ SELECT
        ,'An Interim Invoice has been issued against the work'
        ,'The work has been completed on site but an invoice has not been received'
        ,'Enter actual usage of items to be paid.'
-       ,'Some of the work has been completed and can be paid.' FROM DUAL
+       ,'Some of the work has been completed and can be paid.'
+       ,'Initial Work Order Line Status' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_DOMAINS
                    WHERE HSD_DOMAIN_CODE = 'WORK_ORDER_LINES');
 --
@@ -16491,6 +16501,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'CLAIM STATUS'
@@ -16507,7 +16518,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'CLAIM STATUS'
                     AND  HSC_STATUS_CODE = 'A');
@@ -16528,6 +16540,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'CLAIM STATUS'
@@ -16544,7 +16557,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'CLAIM STATUS'
                     AND  HSC_STATUS_CODE = 'H');
@@ -16565,6 +16579,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'CLAIM STATUS'
@@ -16581,7 +16596,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'CLAIM STATUS'
                     AND  HSC_STATUS_CODE = 'P');
@@ -16602,6 +16618,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'CONTRACTS'
@@ -16618,7 +16635,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'CONTRACTS'
                     AND  HSC_STATUS_CODE = 'ACTIVE');
@@ -16639,6 +16657,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'CONTRACTS'
@@ -16655,7 +16674,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'CONTRACTS'
                     AND  HSC_STATUS_CODE = 'INACTIVE');
@@ -16676,6 +16696,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16692,7 +16713,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                     AND  HSC_STATUS_CODE = 'AVAILABLE');
@@ -16713,6 +16735,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16729,7 +16752,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                     AND  HSC_STATUS_CODE = 'COMPLETED');
@@ -16750,6 +16774,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16766,7 +16791,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                     AND  HSC_STATUS_CODE = 'INSTRUCTED');
@@ -16787,6 +16813,46 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
+       )
+SELECT 
+        'DEFECTS'
+       ,'SELECTED'
+       ,'Selected onto Works Order'
+       ,1
+       ,'N'
+       ,'N'
+       ,'Y'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,null
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
+                   WHERE HSC_DOMAIN_CODE = 'DEFECTS'
+                    AND  HSC_STATUS_CODE = 'SELECTED');
+--
+INSERT INTO HIG_STATUS_CODES
+       (HSC_DOMAIN_CODE
+       ,HSC_STATUS_CODE
+       ,HSC_STATUS_NAME
+       ,HSC_SEQ_NO
+       ,HSC_ALLOW_FEATURE1
+       ,HSC_ALLOW_FEATURE2
+       ,HSC_ALLOW_FEATURE3
+       ,HSC_ALLOW_FEATURE4
+       ,HSC_ALLOW_FEATURE5
+       ,HSC_ALLOW_FEATURE6
+       ,HSC_ALLOW_FEATURE7
+       ,HSC_ALLOW_FEATURE8
+       ,HSC_ALLOW_FEATURE9
+       ,HSC_START_DATE
+       ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16803,7 +16869,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                     AND  HSC_STATUS_CODE = 'STR MAINT');
@@ -16824,6 +16891,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'DEFECTS'
@@ -16840,7 +16908,8 @@ SELECT
        ,'Y'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                     AND  HSC_STATUS_CODE = 'SUPERSEDED');
@@ -16861,6 +16930,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'PERC_ITEM_COMP'
@@ -16877,7 +16947,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'PERC_ITEM_COMP'
                     AND  HSC_STATUS_CODE = 'CUMULATIVE');
@@ -16898,6 +16969,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'PERC_ITEM_COMP'
@@ -16914,7 +16986,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'PERC_ITEM_COMP'
                     AND  HSC_STATUS_CODE = 'NORMAL');
@@ -16935,6 +17008,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -16951,7 +17025,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'ACTIONED');
@@ -16972,6 +17047,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -16988,7 +17064,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'COMPLETED');
@@ -17009,6 +17086,46 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
+       )
+SELECT 
+        'WORK_ORDER_LINES'
+       ,'DRAFT'
+       ,'Draft - New Work Order Line'
+       ,1
+       ,'Y'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,null
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
+                   WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
+                    AND  HSC_STATUS_CODE = 'DRAFT');
+--
+INSERT INTO HIG_STATUS_CODES
+       (HSC_DOMAIN_CODE
+       ,HSC_STATUS_CODE
+       ,HSC_STATUS_NAME
+       ,HSC_SEQ_NO
+       ,HSC_ALLOW_FEATURE1
+       ,HSC_ALLOW_FEATURE2
+       ,HSC_ALLOW_FEATURE3
+       ,HSC_ALLOW_FEATURE4
+       ,HSC_ALLOW_FEATURE5
+       ,HSC_ALLOW_FEATURE6
+       ,HSC_ALLOW_FEATURE7
+       ,HSC_ALLOW_FEATURE8
+       ,HSC_ALLOW_FEATURE9
+       ,HSC_START_DATE
+       ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17025,7 +17142,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'HELD');
@@ -17046,6 +17164,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17062,7 +17181,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'INSTRUCTED');
@@ -17083,6 +17203,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17099,7 +17220,8 @@ SELECT
        ,'N'
        ,'Y'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'INTERIM');
@@ -17120,6 +17242,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17136,7 +17259,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'NOT DONE');
@@ -17157,6 +17281,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17173,7 +17298,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'PAID');
@@ -17194,6 +17320,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17210,7 +17337,8 @@ SELECT
        ,'N'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'PART COMP');
@@ -17231,6 +17359,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17247,7 +17376,8 @@ SELECT
        ,'N'
        ,'Y'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'PART PAID');
@@ -17268,6 +17398,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17284,7 +17415,8 @@ SELECT
        ,'Y'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'UNAPPROVED');
@@ -17305,6 +17437,7 @@ INSERT INTO HIG_STATUS_CODES
        ,HSC_ALLOW_FEATURE9
        ,HSC_START_DATE
        ,HSC_END_DATE
+       ,HSC_ALLOW_FEATURE10
        )
 SELECT 
         'WORK_ORDER_LINES'
@@ -17321,7 +17454,8 @@ SELECT
        ,'Y'
        ,'N'
        ,null
-       ,null FROM DUAL
+       ,null
+       ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STATUS_CODES
                    WHERE HSC_DOMAIN_CODE = 'WORK_ORDER_LINES'
                     AND  HSC_STATUS_CODE = 'VALUATION');
