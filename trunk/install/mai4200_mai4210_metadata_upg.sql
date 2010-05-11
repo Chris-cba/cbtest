@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.4   May 11 2010 14:08:06   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.5   May 11 2010 15:08:28   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 11 2010 14:08:06  $
---       Date fetched Out : $Modtime:   May 11 2010 14:05:28  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   May 11 2010 15:08:28  $
+--       Date fetched Out : $Modtime:   May 11 2010 15:06:44  $
+--       Version          : $Revision:   3.5  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -536,6 +536,8 @@ SET TERM OFF
 -- Navigator Hierarchy metadata setup
 -- 
 ------------------------------------------------------------------
+Delete from HIG_ALERT_RECIPIENT_RULES Where HARR_NIT_INV_TYPE = 'WOR$';
+
 Delete from HIG_NAVIGATOR where HNV_HIERARCHY_TYPE IN ('Works Orders','Defects');
 
 delete from hig_navigator_modules where hnm_hierarchy_label != 'Enquiry' ;
