@@ -3,11 +3,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_wo_instruct.vw-arc   3.0   May 06 2010 18:49:46   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_wo_instruct.vw-arc   3.1   May 13 2010 17:33:58   mhuitson  $
        --       Module Name      : $Workfile:   imf_mai_wo_instruct.vw  $
-       --       Date into PVCS   : $Date:   May 06 2010 18:49:46  $
-       --       Date fetched Out : $Modtime:   May 06 2010 18:46:34  $
-       --       Version          : $Revision:   3.0  $
+       --       Date into PVCS   : $Date:   May 13 2010 17:33:58  $
+       --       Date fetched Out : $Modtime:   May 13 2010 16:30:10  $
+       --       Version          : $Revision:   3.1  $
        -- Foundation view displaying maintenance manager work orders
        -------------------------------------------------------------------------
        wor.work_order_number
@@ -28,8 +28,12 @@ SELECT -------------------------------------------------------------------------
       ,wor.contractor_code
       ,wor.contractor_name
       ,wor.contact
+      ,wor.originator_id
       ,wor.originator_initials
       ,wor.originator_name
+      ,wor.authorised_by_id
+      ,wor.authorised_by_initials
+      ,wor.authorised_by_name
       ,wor.order_date_raised
       ,wor.cost_centre
       ,wor.job_number
@@ -98,8 +102,12 @@ COMMENT ON COLUMN imf_mai_wo_instruct.contract_name                 IS 'The Name
 COMMENT ON COLUMN imf_mai_wo_instruct.contractor_code               IS 'The Code of the Contractor associated with the Contract.';
 COMMENT ON COLUMN imf_mai_wo_instruct.contractor_name               IS 'The Name of the Contractor associated with the Contract.';
 COMMENT ON COLUMN imf_mai_wo_instruct.contact                       IS 'The Contact details on the Works Order';
+COMMENT ON COLUMN imf_mai_wo_instruct.originator_id                 IS 'The internal id of the person that raised the works order.';
 COMMENT ON COLUMN imf_mai_wo_instruct.originator_initials           IS 'The initials of the person that raised the Works Order.';
 COMMENT ON COLUMN imf_mai_wo_instruct.originator_name               IS 'The name of the person that raised the Works Order.';
+COMMENT ON COLUMN imf_mai_wo_instruct.authorised_by_id              IS 'The internal id of the person who authorised the works order.';
+COMMENT ON COLUMN imf_mai_wo_instruct.authorised_by_initials        IS 'The initials id of the person who authorised the works order.';
+COMMENT ON COLUMN imf_mai_wo_instruct.authorised_by_name            IS 'The name of the person who authorised the works order.';
 COMMENT ON COLUMN imf_mai_wo_instruct.order_date_raised             IS 'The date the Works Order was raised.';
 COMMENT ON COLUMN imf_mai_wo_instruct.cost_centre                   IS 'The Cost Centre Code on the Works Order.';
 COMMENT ON COLUMN imf_mai_wo_instruct.job_number                    IS 'The Job Number on the Works Order.';
