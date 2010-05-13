@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.5   May 06 2010 17:00:02   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.6   May 13 2010 10:09:50   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   May 06 2010 17:00:02  $
---       Date fetched Out : $Modtime:   May 06 2010 16:57:56  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   May 13 2010 10:09:50  $
+--       Date fetched Out : $Modtime:   May 13 2010 10:08:34  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.5  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.6  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1364,10 +1364,11 @@ nm_debug.debug('File inspdate = '||lv_token);
   PROCEDURE process_i_rec(pi_i_rec_index IN BINARY_INTEGER)
     IS
     --
-    lv_i_seq_no  mai_insp_load_recs.milr_seq_no%TYPE;
-    lv_token     VARCHAR2(4000);
-    lv_chainage  defects.def_st_chain%TYPE;
-    lv_org_id    org_units.oun_org_id%TYPE;
+    lv_i_seq_no         mai_insp_load_recs.milr_seq_no%TYPE;
+    lv_token            VARCHAR2(4000);
+    lv_chainage         defects.def_st_chain%TYPE;
+    lv_org_id           org_units.oun_org_id%TYPE;
+    lv_def_locn_descr   VARCHAR2(240);
     --
   BEGIN
     /*
@@ -1450,17 +1451,22 @@ nm_debug.debug('File inspdate = '||lv_token);
     */
     lr_def.def_st_chain := lv_chainage;
     /*
-    ||Extract The XSP.
+    ||Extract The Defect Location.
     */
     lv_token := get_token_value(pi_tokens   => lt_tokens
                                ,pi_position => lv_i_rec_locn);
     IF NOT set_varchar2(pi_value   => lv_token
-                       ,pio_target => lr_def.def_locn_descr)
+                       ,pio_target => lv_def_locn_descr)
      THEN
         add_error_to_stack(pi_seq_no => lv_i_seq_no
                           ,pi_ner_id => 9268);
         RAISE invalid_record;
     END IF;
+    /*
+    || Truncate the defect location description to 40 characters
+    || to avoid failure
+    */
+    lr_def.def_locn_descr := SUBSTR(lv_def_locn_descr,1,40);
     /*
     ||Get The Defect Time From The File.
     */
