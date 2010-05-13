@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.1   May 11 2010 17:07:08   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.2   May 13 2010 17:43:56   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 11 2010 17:07:08  $
---       Date fetched Out : $Modtime:   May 11 2010 14:27:18  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 13 2010 17:43:56  $
+--       Date fetched Out : $Modtime:   May 13 2010 16:51:30  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -223,6 +223,32 @@ EXCEPTION
    THEN
       RAISE;
 END get_and_lock_wo;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_user(pi_user_id IN hig_users.hus_user_id%TYPE)
+  RETURN hig_users%ROWTYPE IS
+  --
+  lr_retval hig_users%ROWTYPE;
+  --
+BEGIN
+  --
+  SELECT *
+    INTO lr_retval
+    FROM hig_users
+   WHERE hus_user_id = pi_user_id
+       ;
+  --
+  RETURN lr_retval;
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_user_id)||'].');
+  WHEN others
+   THEN
+      RAISE;
+END get_user;
 --
 -----------------------------------------------------------------------------
 --
@@ -2385,6 +2411,99 @@ END add_to_budget;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE authorise_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
+                              ,pi_works_order_no  IN work_orders.wor_works_order_no%TYPE
+                              ,pi_commit          IN VARCHAR2)
+                             
+  IS
+  --
+  lv_auth_own hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
+  --
+  lr_user  hig_users%ROWTYPE;
+  lr_wo    work_orders%ROWTYPE;
+  --
+BEGIN
+  /*
+  ||Get User Details.
+  */
+  lr_user := get_user(pi_user_id => pi_user_id);
+  /*
+  ||Get The Work Order Details.
+  */
+  lr_wo := get_and_lock_wo(pi_works_order_no => pi_works_order_no);
+  /*
+  ||Make Sure User Can Authorise.
+  */
+  IF pi_user_id = lr_wo.wor_peo_person_id
+   AND lv_auth_own != 'Y'
+   THEN
+      raise_application_error(-20075,'Users Are Not Allowed To Authorise Work Orders They Have Raised.');
+  END IF;
+  --
+  IF NOT (lr_wo.wor_date_raised between nvl(lr_user.hus_start_date, lr_wo.wor_date_raised)
+                                    and nvl(lr_user.hus_end_date-1, lr_wo.wor_date_raised))
+   THEN
+      raise_application_error(-20078,'Work Order Date Raised Is Outside Users Start/End Dates.');
+  END IF;
+  --
+  IF lr_wo.wor_est_cost IS NOT NULL
+   AND apply_balancing_sum(pi_con_id => lr_wo.wor_con_id
+                          ,pi_value  => lr_wo.wor_est_cost)
+       BETWEEN nvl(lr_user.hus_wor_aur_min,0)
+           AND nvl(lr_user.hus_wor_aur_max,999999999)
+   THEN
+      /*
+      ||Okay So Far
+      */
+      NULL;
+  ELSE
+      raise_application_error(-20049,'Cannot Authorise Works Order, Cost Is Outside User Limits.');
+  END IF;
+  /*
+  ||All Okay So Authorise.
+  */
+  UPDATE work_orders
+     SET wor_mod_by_id = pi_user_id
+   WHERE wor_works_order_no = pi_works_order_no
+       ;
+  /*
+  ||Commit If Required.
+  */
+  IF NVL(pi_commit,'Y') = 'Y'
+   THEN
+      COMMIT;
+  END IF;
+  --
+EXCEPTION
+  WHEN OTHERS
+   THEN
+      ROLLBACK;
+      RAISE;
+END authorise_work_order;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE authorise_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
+                              ,pi_commit          IN  VARCHAR2 DEFAULT 'Y'
+                              ,po_error_text      OUT VARCHAR2)
+  IS
+  --
+  lv_user_id  hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  --
+BEGIN
+  --
+  authorise_work_order(pi_user_id        => lv_user_id
+                      ,pi_works_order_no => pi_works_order_no
+                      ,pi_commit         => pi_commit);
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      po_error_text := SQLERRM;
+END authorise_work_order;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                              ,pi_works_order_no  IN work_orders.wor_works_order_no%TYPE
                              ,pi_date_instructed IN work_orders.wor_date_confirmed%TYPE
@@ -2401,25 +2520,6 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
   --
   TYPE wol_tab IS TABLE OF work_order_lines%ROWTYPE INDEX BY BINARY_INTEGER;
   lt_wols wol_tab;
-  --
-  PROCEDURE get_user
-    IS
-  BEGIN
-    --
-    SELECT *
-      INTO lr_user
-      FROM hig_users
-     WHERE hus_user_id = pi_user_id
-         ;
-    --
-  EXCEPTION
-    WHEN no_data_found
-     THEN
-        raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_user_id)||'].');
-    WHEN others
-     THEN
-        RAISE;
-  END get_user;
   --
   PROCEDURE get_wols
     IS
@@ -2528,47 +2628,6 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
     --
   END check_contract;
   --
-  PROCEDURE authorise_wo
-    IS
-    --
-    lv_auth_own hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
-    --
-  BEGIN
-    /*
-    ||Make Sure User Can Authorise.
-    */
-    IF NOT (lr_wo.wor_date_raised between nvl(lr_user.hus_start_date, lr_wo.wor_date_raised)
-                                      and nvl(lr_user.hus_end_date-1, lr_wo.wor_date_raised))
-     THEN
-        raise_application_error(-20078,'Work Order Date Raised Is Outside Users Start/End Dates.');
-    END IF;
-    --
-    IF lr_wo.wor_est_cost IS NOT NULL
-     AND apply_balancing_sum(pi_con_id => lr_wo.wor_con_id
-                            ,pi_value  => lr_wo.wor_est_cost)
-         BETWEEN nvl(lr_user.hus_wor_aur_min,0)
-             AND nvl(lr_user.hus_wor_aur_max,999999999)
-     THEN
-        /*
-        ||Okay So Far
-        */
-        NULL;
-    ELSE
-        raise_application_error(-20049,'Cannot Authorise Works Order, Cost Is Outside User Limits.');
-    END IF;
-    --
-    IF pi_user_id = lr_wo.wor_peo_person_id
-     AND lv_auth_own != 'Y'
-     THEN
-        raise_application_error(-20075,'Users Are Not Allowed To Authorise Work Orders They Have Raised.');
-    END IF;
-    /*
-    ||All Okay So Authorise.
-    */
-    lr_wo.wor_mod_by_id := pi_user_id;
-    --
-  END authorise_wo;
-  --
   PROCEDURE update_budgets
     IS
   BEGIN
@@ -2652,7 +2711,7 @@ BEGIN
   /*
   ||Get User Details.
   */
-  get_user;
+  lr_user := get_user(pi_user_id => pi_user_id);
   /*
   ||Get The Work Order Details.
   */
@@ -2705,7 +2764,9 @@ BEGIN
   */
   IF lr_wo.wor_mod_by_id IS NULL
    THEN
-      authorise_wo;
+      authorise_work_order(pi_user_id        => pi_user_id
+                          ,pi_works_order_no => pi_works_order_no
+                          ,pi_commit         => 'N');
   END IF;
   /*
   ||Instruct The Work Order.
@@ -2762,6 +2823,29 @@ END instruct_work_order;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE instruct_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
+                             ,pi_date_instructed IN  work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
+                             ,pi_commit          IN  VARCHAR2                            DEFAULT 'Y'
+                             ,po_error_text      OUT VARCHAR2)
+  IS
+  --
+  lv_user_id  hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  --
+BEGIN
+  --
+  instruct_work_order(pi_user_id         => lv_user_id
+                     ,pi_works_order_no  => pi_works_order_no
+                     ,pi_date_instructed => pi_date_instructed
+                     ,pi_commit          => pi_commit);
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      po_error_text := SQLERRM;
+END instruct_work_order;
+--
+-----------------------------------------------------------------------------
+--                             
 PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
                               ,pi_commit           IN     VARCHAR2                            DEFAULT 'Y'
                               ,po_error_flag          OUT VARCHAR2
