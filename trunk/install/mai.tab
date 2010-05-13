@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.18   May 11 2010 17:29:42   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.19   May 13 2010 17:31:42   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   May 11 2010 17:29:42  $
---       Date fetched Out : $Modtime:   May 11 2010 17:29:00  $
---       PVCS Version     : $Revision:   2.18  $
+--       Date into PVCS   : $Date:   May 13 2010 17:31:42  $
+--       Date fetched Out : $Modtime:   May 13 2010 17:21:10  $
+--       PVCS Version     : $Revision:   2.19  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Tue May 11  17:25:25 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu May 13  17:16:25 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -530,7 +530,7 @@ PROMPT Creating Table 'DEF_SUPERSEDING_RULES'
 CREATE TABLE DEF_SUPERSEDING_RULES
  (DSR_ID NUMBER(9) NOT NULL
  ,DSR_ADMIN_UNIT NUMBER(9) NOT NULL
- ,DSR_INITITATION_TYPE VARCHAR2(3) NOT NULL
+ ,DSR_INITIATION_TYPE VARCHAR2(3) NOT NULL
  ,DSR_TOLERANCE NUMBER NOT NULL
  ,DSR_CREATED_BY VARCHAR2(30) NOT NULL
  ,DSR_DATE_CREATED DATE NOT NULL
@@ -548,7 +548,7 @@ COMMENT ON COLUMN DEF_SUPERSEDING_RULES.DSR_ID IS 'Unique identifier generated f
 COMMENT ON COLUMN DEF_SUPERSEDING_RULES.DSR_ADMIN_UNIT IS 'Identifies the Admin Unit to which Superseding will be applied'
 /
 
-COMMENT ON COLUMN DEF_SUPERSEDING_RULES.DSR_INITITATION_TYPE IS 'Identifies the Initiation Type to which Superseding will be applied'
+COMMENT ON COLUMN DEF_SUPERSEDING_RULES.DSR_INITIATION_TYPE IS 'Identifies the Initiation Type to which Superseding will be applied'
 /
 
 COMMENT ON COLUMN DEF_SUPERSEDING_RULES.DSR_TOLERANCE IS 'Identifies the Tolerance to be used when matching Defects.'
