@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.2   May 13 2010 17:43:56   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.3   May 13 2010 18:36:30   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 13 2010 17:43:56  $
---       Date fetched Out : $Modtime:   May 13 2010 16:51:30  $
---       PVCS Version     : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   May 13 2010 18:36:30  $
+--       Date fetched Out : $Modtime:   May 13 2010 18:33:16  $
+--       PVCS Version     : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2517,6 +2517,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
   lr_wo   work_orders%ROWTYPE;
   lr_con  contracts%ROWTYPE;
   lr_org  org_units%ROWTYPE;
+  lr_rse  road_sections%ROWTYPE;
   --
   TYPE wol_tab IS TABLE OF work_order_lines%ROWTYPE INDEX BY BINARY_INTEGER;
   lt_wols wol_tab;
@@ -2574,10 +2575,35 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
     --
   END all_lines_priced;
   --
+  FUNCTION get_usecycgrp
+    RETURN VARCHAR2 IS
+    --
+    lv_sys_flag  VARCHAR2(1);
+    lv_retval    hig_option_values.hov_value%TYPE;
+    --
+  BEGIN
+    --
+    SELECT rse_sys_flag
+      INTO lv_sys_flag
+      FROM road_segs
+     WHERE rse_he_id = lr_wo.wor_rse_he_id_group
+         ;
+    --
+    IF lv_sys_flag = 'D'
+     THEN
+        lv_retval := hig.get_sysopt('USECYCGRPD');
+    ELSE
+        lv_retval := hig.get_sysopt('USECYCGRPL');
+    END IF;
+    --
+    RETURN NVL(lv_retval,'N');
+    --
+  END get_usecycgrp;
+  --
   PROCEDURE check_contract
     IS
     --
-    lv_dumconcode  hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DUMCONCODE'),'DEFAULT');
+    lv_dumconcode   hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DUMCONCODE'),'DEFAULT');
     --
     PROCEDURE get_contract
       IS
@@ -2622,6 +2648,13 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                       AND NVL(lr_con.con_year_end_date,lr_con.con_end_date)
          THEN
             raise_application_error(-20061,'Contract On Work Order Is Out Of Date.');
+        END IF;
+        --
+        IF lr_org.oun_gty_group_type IS NOT NULL
+         AND lr_wo.wor_flag = 'M'
+         AND get_usecycgrp = 'Y'
+         THEN
+            raise_application_error(-20234,'Contracts Pricing By Area Is Not Allowed On Cyclic Work Orders');
         END IF;
         --
     END IF;
@@ -2720,10 +2753,10 @@ BEGIN
   /*
   ||Make Sure This Isn't A Cyclic Work Order
   */
-  IF lr_wo.wor_flag = 'M'
-   THEN
-      raise_application_error(-20073,'This API Does Not Support Cyclic Work Orders. Please Use The Forms Application To Instruct Cyclic Work Orders.');
-  END IF;
+--  IF lr_wo.wor_flag = 'M'
+--   THEN
+--      raise_application_error(-20073,'This API Does Not Support Cyclic Work Orders. Please Use The Forms Application To Instruct Cyclic Work Orders.');
+--  END IF;
   /*
   ||Make Sure The Work Order Hasn't Already Been Instructed.
   */
