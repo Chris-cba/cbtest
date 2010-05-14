@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.4   May 11 2010 11:52:32   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.5   May 14 2010 16:55:18   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   May 11 2010 11:52:32  $
---       Date fetched Out : $Modtime:   May 10 2010 15:08:14  $
---       PVCS Version     : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   May 14 2010 16:55:18  $
+--       Date fetched Out : $Modtime:   May 14 2010 15:04:08  $
+--       PVCS Version     : $Revision:   3.5  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -221,6 +221,7 @@ FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
                      ,pi_are_initiation_type    IN activities_report.are_initiation_type%TYPE
                      ,pi_are_maint_insp_flag    IN activities_report.are_maint_insp_flag%TYPE
                      ,pi_are_date_work_done     IN activities_report.are_date_work_done%TYPE
+                     ,pi_dsr_tolerance          IN def_superseding_rules.dsr_tolerance%TYPE
                      )
   RETURN matched_defects_tab;
 --
@@ -232,6 +233,7 @@ PROCEDURE supersede_defect(pi_superseded_defect_id      IN defects.def_defect_id
                           ,pi_active_priority           IN defects.def_priority%TYPE
                           ,pi_active_rse_he_id          IN defects.def_rse_he_id%TYPE
                           ,pi_active_coord_flag         IN defects.def_coord_flag%TYPE
+                          ,pi_are_initiation_type       IN activities_report.are_initiation_type%TYPE
                           ,pi_active_are_date_work_done IN activities_report.are_date_work_done%TYPE);
 --
 -----------------------------------------------------------------------------
