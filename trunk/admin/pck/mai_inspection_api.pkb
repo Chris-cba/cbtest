@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.5   May 11 2010 11:52:10   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.6   May 14 2010 16:55:00   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   May 11 2010 11:52:10  $
---       Date fetched Out : $Modtime:   May 11 2010 11:49:58  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   May 14 2010 16:55:00  $
+--       Date fetched Out : $Modtime:   May 14 2010 15:04:06  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.5  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.6  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2715,6 +2715,74 @@ END usedefchn;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_tolerance(pi_admin_unit          IN nm_admin_units.nau_admin_unit%TYPE
+                      ,pi_are_initiation_type IN activities_report.are_initiation_type%TYPE)
+  RETURN def_superseding_rules.dsr_tolerance%TYPE IS
+  --
+  CURSOR C_tolerance (pi_hier_admin_unit nm_admin_units.nau_admin_unit%TYPE)IS
+  SELECT dsr_tolerance
+    FROM def_superseding_rules
+   WHERE dsr_initiation_type = pi_are_initiation_type
+     AND dsr_admin_unit = pi_hier_admin_unit;
+
+  TYPE admin_unit_tab IS TABLE OF nm_admin_units.nau_admin_unit%TYPE INDEX BY BINARY_INTEGER;
+  lt_admin_units admin_unit_tab;
+     
+  lv_tolerance   def_superseding_rules.dsr_tolerance%TYPE;
+  lv_retval      def_superseding_rules.dsr_tolerance%TYPE := NULL;
+  lv_row_found   BOOLEAN;
+  --
+BEGIN
+  /*
+  || Get Admin Unit Hierarchy
+  */
+  SELECT admin_unit
+    BULK COLLECT
+    INTO lt_admin_units
+    FROM (SELECT hag_parent_admin_unit admin_unit, 
+                 hau_level admin_level
+            FROM hig_admin_groups,
+                 hig_admin_units
+           WHERE hag_direct_link='Y'
+             AND hau_admin_unit = hag_parent_admin_unit
+           START WITH hag_child_admin_unit = pi_admin_unit                                                                     
+         CONNECT BY PRIOR hag_parent_admin_unit=hag_child_admin_unit
+             AND hag_direct_link='Y'
+           UNION
+          SELECT hau_admin_unit admin_unit, 
+                 hau_level admin_level
+            FROM hig_admin_units
+           WHERE hau_admin_unit = pi_admin_unit
+           ORDER BY admin_level DESC);
+  --
+  /*
+  || Try and match the Admin Unit and Initiation Type
+  || against the Deffect Tolerance Rules
+  */  
+  nm_debug.debug('Finding tolerance for Admin Unit '||pi_admin_unit||' and '||pi_are_initiation_type);
+
+  FOR i IN 1 .. lt_admin_units.count LOOP
+  --
+   OPEN C_tolerance(pi_hier_admin_unit => lt_admin_units(i));
+   FETCH C_tolerance INTO lv_tolerance;
+   lv_row_found := C_tolerance%FOUND;
+   CLOSE C_tolerance;
+     
+   IF lv_row_found 
+    THEN
+       nm_debug.debug('Tolerance '||lv_tolerance||' found for Admin Unit '||lt_admin_units(i));
+       lv_retval := lv_tolerance;
+       EXIT;
+   END IF;
+     
+  END LOOP;
+  --
+  RETURN lv_retval;
+  --
+END get_tolerance;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION update_sect_last_updated(pi_ne_id              IN nm_elements_all.ne_id%TYPE
                                  ,pi_are_date_work_done IN activities_report.are_date_work_done%TYPE)
   RETURN BOOLEAN IS
@@ -2920,11 +2988,10 @@ FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
                      ,pi_are_initiation_type    IN activities_report.are_initiation_type%TYPE
                      ,pi_are_maint_insp_flag    IN activities_report.are_maint_insp_flag%TYPE
                      ,pi_are_date_work_done     IN activities_report.are_date_work_done%TYPE
-                     )
+                     ,pi_dsr_tolerance          IN def_superseding_rules.dsr_tolerance%TYPE)
   RETURN matched_defects_tab IS
   --
   lv_defsuptype  hig_option_values.hov_value%TYPE := hig.get_sysopt('DEFSUPTYPE');
-  lv_defmatpar   hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DEFMATPAR'),5);
   --
   lt_matched_defects  matched_defects_tab;
   --
@@ -2945,8 +3012,8 @@ FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
        AND def_atv_acty_area_code = pi_def_atv_acty_area_code
        AND def_defect_code = pi_def_defect_code
        AND def_rse_he_id = pi_def_rse_he_id
-       AND def_st_chain BETWEEN (pi_def_st_chain - lv_defmatpar)
-                            AND (pi_def_st_chain + lv_defmatpar)
+       AND def_st_chain BETWEEN (pi_def_st_chain - pi_dsr_tolerance)
+                            AND (pi_def_st_chain + pi_dsr_tolerance)
        AND NVL(def_x_sect,'@*!') = NVL(pi_def_x_sect,'@*!')
        AND NVL(def_mand_adv,'@*!') = NVL(pi_def_mand_adv,'@*!')
      ORDER
@@ -2977,8 +3044,8 @@ FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
        AND def_defect_code = pi_def_defect_code
        AND def_rse_he_id = pi_def_rse_he_id
        AND def_priority = pi_def_priority
-       AND def_st_chain BETWEEN (pi_def_st_chain - NVL(lv_defmatpar,5))
-                            AND (pi_def_st_chain + NVL(lv_defmatpar,5))
+       AND def_st_chain BETWEEN (pi_def_st_chain - NVL(pi_dsr_tolerance,5))
+                            AND (pi_def_st_chain + NVL(pi_dsr_tolerance,5))
        AND NVL(def_x_sect,'@*!') = NVL(pi_def_x_sect,'@*!')
        AND NVL(def_mand_adv,'@*!') = NVL(pi_def_mand_adv,'@*!')
      ORDER
@@ -3009,25 +3076,31 @@ PROCEDURE supersede_defect(pi_superseded_defect_id      IN defects.def_defect_id
                           ,pi_active_priority           IN defects.def_priority%TYPE
                           ,pi_active_rse_he_id          IN defects.def_rse_he_id%TYPE
                           ,pi_active_coord_flag         IN defects.def_coord_flag%TYPE
+                          ,pi_are_initiation_type       IN activities_report.are_initiation_type%TYPE
                           ,pi_active_are_date_work_done IN activities_report.are_date_work_done%TYPE)
   IS
   --
   lv_defsupres   hig_option_values.hov_value%TYPE := hig.get_sysopt('DEFSUPRES');
   lv_rmmsflag    hig_option_values.hov_value%TYPE := hig.get_sysopt('RMMSFLAG');
   --
-  lv_sys_flag           VARCHAR2(1);
+  lv_admin_unit         nm_admin_units.nau_admin_unit%TYPE;
   lv_superseded_status  hig_status_codes.hsc_status_code%TYPE;
   --
   lv_superseded_defect_id  defects.def_defect_id%TYPE;
   lv_active_defect_id      defects.def_defect_id%TYPE;
   --
+  lv_dsr_tolerance         def_superseding_rules.dsr_tolerance%TYPE := NULL;
+  --
 BEGIN
   /*
-  ||Get The Sys Flag Of The Inspected Section.
+  ||Get The Admin Unit Of The Inspected Section.
   */
-  lv_sys_flag := validate_section(pi_rse_he_id => pi_active_rse_he_id).rse_sys_flag;
+  lv_admin_unit := nm3net.get_ne(pi_active_rse_he_id).ne_admin_unit;
   --
-  IF usedefchn(pi_sys_flag => lv_sys_flag)
+  lv_dsr_tolerance := get_tolerance(pi_admin_unit          =>lv_admin_unit
+                                   ,pi_are_initiation_type =>pi_are_initiation_type);
+                                
+  IF lv_dsr_tolerance IS NOT NULL
    THEN
       /*
       ||Check The Defect Being Superseded To See If It's
@@ -3177,7 +3250,9 @@ PROCEDURE supersede_insp_defects(pi_are_report_id       IN activities_report.are
                                 ,pi_are_date_work_done  IN activities_report.are_date_work_done%TYPE)
   IS
   --
-  lv_sys_flag VARCHAR2(1);
+  lv_admin_unit     nm_admin_units.nau_admin_unit%TYPE;
+  lv_dsr_tolerance  def_superseding_rules.dsr_tolerance%TYPE := NULL;
+
   --
   TYPE defects_tab IS TABLE OF defects%ROWTYPE INDEX BY BINARY_INTEGER;
   lt_insp_defects defects_tab;
@@ -3200,13 +3275,16 @@ PROCEDURE supersede_insp_defects(pi_are_report_id       IN activities_report.are
   --
 BEGIN
   /*
-  ||Get The Sys Flag Of The Inspected Section.
+  ||Get The Admin Unit Of The Inspected Section.
   */
-  nm_debug.debug('Looking up sys flag');
-  lv_sys_flag := validate_section(pi_rse_he_id => pi_are_rse_he_id).rse_sys_flag;
-  nm_debug.debug('sys flag is '||lv_sys_flag);
+  nm_debug.debug('Looking up Admin Unit');
+  lv_admin_unit := nm3net.get_ne(pi_are_rse_he_id).ne_admin_unit;
+  nm_debug.debug('Admin Unit is '||lv_admin_unit);
   --
-  IF usedefchn(pi_sys_flag => lv_sys_flag)
+  lv_dsr_tolerance := get_tolerance(pi_admin_unit          =>lv_admin_unit
+                                   ,pi_are_initiation_type =>pi_are_initiation_type);
+                                
+  IF lv_dsr_tolerance IS NOT NULL
    THEN
       /*
       ||Get Details Of The Defects 
@@ -3238,7 +3316,8 @@ BEGIN
                                           ,pi_are_report_id          => pi_are_report_id
                                           ,pi_are_initiation_type    => pi_are_initiation_type
                                           ,pi_are_maint_insp_flag    => pi_are_maint_insp_flag
-                                          ,pi_are_date_work_done     => pi_are_date_work_done);
+                                          ,pi_are_date_work_done     => pi_are_date_work_done
+                                          ,pi_dsr_tolerance          => lv_dsr_tolerance);
         nm_debug.debug(lt_matched_defects.count||' Matching Defects Found');
         /*
         ||Supersede Any Matching Defects.
@@ -3255,6 +3334,7 @@ BEGIN
                               ,pi_active_priority           => lt_insp_defects(i).def_priority
                               ,pi_active_rse_he_id          => lt_insp_defects(i).def_rse_he_id
                               ,pi_active_coord_flag         => lt_insp_defects(i).def_coord_flag
+                              ,pi_are_initiation_type       => pi_are_initiation_type
                               ,pi_active_are_date_work_done => pi_are_date_work_done);
               --
               nm_debug.debug('Defect superseded');
