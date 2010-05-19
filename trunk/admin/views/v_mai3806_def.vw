@@ -15,6 +15,7 @@ CREATE OR REPLACE FORCE VIEW v_mai3806_def(are_date_work_done
                                           ,def_siss_id
                                           ,def_works_order_no
                                           ,def_created_date
+                                          ,def_inspection_date
                                           ,def_defect_code
                                           ,def_last_updated_date
                                           ,def_orig_priority
@@ -68,11 +69,11 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.1   Dec 02 2009 10:46:54   lsorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.2   May 19 2010 17:54:06   mhuitson  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   Dec 02 2009 10:46:54  $
---       Date fetched Out : $Modtime:   Dec 02 2009 09:01:18  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 19 2010 17:54:06  $
+--       Date fetched Out : $Modtime:   May 19 2010 17:52:18  $
+--       Version          : $Revision:   3.2  $
 -------------------------------------------------------------------------
 --
        are_date_work_done
@@ -94,6 +95,7 @@ SELECT  /*+ FIRST_ROWS_N */
       ,def.def_siss_id
       ,def.def_works_order_no
       ,def.def_created_date
+      ,def.def_inspection_date
       ,def.def_defect_code
       ,def.def_last_updated_date
       ,def.def_orig_priority
