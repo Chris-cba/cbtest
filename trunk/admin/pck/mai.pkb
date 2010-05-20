@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.16   May 06 2010 10:20:16   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.17   May 20 2010 16:54:30   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   May 06 2010 10:20:16  $
---       Date fetched Out : $Modtime:   May 06 2010 10:18:04  $
---       SCCS Version     : $Revision:   2.16  $
+--       Date into SCCS   : $Date:   May 20 2010 16:54:30  $
+--       Date fetched Out : $Modtime:   May 20 2010 16:34:30  $
+--       SCCS Version     : $Revision:   2.17  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.16  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.17  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -128,8 +128,8 @@ FUNCTION contract_still_in_date(p_wo_no work_order_lines.wol_works_order_no%TYPE
 cursor get_contract_details is
 select distinct con.con_year_end_date
 from work_orders wo,
-	   contracts con,
-	   work_order_lines wol
+     contracts con,
+     work_order_lines wol
 where con.con_id = wo.wor_con_id
 and wol.wol_id = p_wo_no -- 34177
 and con.con_year_end_date is not null
@@ -1592,355 +1592,392 @@ BEGIN
   WHERE  def_are_report_id = p_report_id;
 
 END;
-
+--
 -------------------------------------------------------------------------------
-
-FUNCTION create_defect(
-    p_rse_he_id       IN  defects.def_rse_he_id%TYPE
-    ,p_iit_item_id      IN  defects.def_iit_item_id%TYPE
-    ,p_st_chain       IN  defects.def_st_chain%TYPE
-    ,p_report_id      IN  defects.def_are_report_id%TYPE
-    ,p_acty_area_code     IN  defects.def_atv_acty_area_code%TYPE
-    ,p_siss_id        IN  defects.def_siss_id%TYPE
-    ,p_works_order_no     IN  defects.def_works_order_no%TYPE
-    ,p_defect_code      IN  defects.def_defect_code%TYPE
-    ,p_orig_priority      IN  defects.def_orig_priority%TYPE
-    ,p_priority       IN  defects.def_priority%TYPE
-    ,p_status_code      IN  defects.def_status_code%TYPE
-    ,p_area       IN  defects.def_area%TYPE
-    ,p_are_id_not_found   IN  defects.def_are_id_not_found%TYPE
-    ,p_coord_flag     IN  defects.def_coord_flag%TYPE
-    ,p_defect_class     IN  defects.def_defect_class%TYPE
-    ,p_defect_descr     IN  defects.def_defect_descr%TYPE
-    ,p_defect_type_descr    IN  defects.def_defect_type_descr%TYPE
-    ,p_diagram_no     IN  defects.def_diagram_no%TYPE
-    ,p_height       IN  defects.def_height%TYPE
-    ,p_ident_code     IN  defects.def_ident_code%TYPE
-    ,p_ity_inv_code     IN  defects.def_ity_inv_code%TYPE
-    ,p_ity_sys_flag     IN  defects.def_ity_sys_flag%TYPE
-    ,p_length       IN  defects.def_length%TYPE
-    ,p_locn_descr     IN  defects.def_locn_descr%TYPE
-    ,p_maint_wo       IN  defects.def_maint_wo%TYPE
-    ,p_mand_adv       IN  defects.def_mand_adv%TYPE
-    ,p_notify_org_id      IN  defects.def_notify_org_id%TYPE
-    ,p_number       IN  defects.def_number%TYPE
-    ,p_per_cent       IN  defects.def_per_cent%TYPE
-    ,p_per_cent_orig      IN  defects.def_per_cent_orig%TYPE
-    ,p_per_cent_rem     IN  defects.def_per_cent_rem%TYPE
-    ,p_rechar_org_id      IN  defects.def_rechar_org_id%TYPE
-    ,p_serial_no      IN  defects.def_serial_no%TYPE
-    ,p_skid_coeff     IN  defects.def_skid_coeff%TYPE
-    ,p_special_instr      IN  defects.def_special_instr%TYPE
-    ,p_time_hrs       IN  defects.def_time_hrs%TYPE
-    ,p_time_mins      IN  defects.def_time_mins%TYPE
-    ,p_update_inv     IN  defects.def_update_inv%TYPE
-    ,p_x_sect       IN  defects.def_x_sect%TYPE
-            ,p_easting        IN  defects.def_easting%TYPE
-    ,p_northing       IN  defects.def_northing%TYPE
-    ,p_response_category    IN  defects.def_response_category%TYPE
-) RETURN NUMBER IS
-
-  l_defect_id defects.def_defect_id%TYPE;
-  l_today   DATE := SYSDATE;
-  insert_error  EXCEPTION;
-
+--
+FUNCTION get_insp_date(pi_report_id IN activities_report.are_report_id%TYPE)
+  RETURN activities_report.are_date_work_done%TYPE IS
+  --
+  lv_retval  activities_report.are_date_work_done%TYPE;
+  --
 BEGIN
---SM 29082008 714910
-  check_rse_admin_unit(
-     p_ne_id  => p_rse_he_id
-    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
-  );
-
-  SELECT def_defect_id_seq.NEXTVAL
-  INTO   l_defect_id
-  FROM   dual;
-
-  INSERT INTO defects (
-    def_defect_id
-    ,def_rse_he_id
-        ,def_iit_item_id             ----- New
-    ,def_st_chain
-    ,def_are_report_id
-    ,def_atv_acty_area_code
-    ,def_siss_id
-    ,def_works_order_no
-    ,def_created_date
-    ,def_defect_code
-    ,def_last_updated_date
-    ,def_orig_priority
-    ,def_priority
-    ,def_status_code
-    ,def_superseded_flag
-    ,def_area
-    ,def_are_id_not_found
-    ,def_coord_flag
-    ,def_date_compl
-    ,def_date_not_found
-    ,def_defect_class
-    ,def_defect_descr
-    ,def_defect_type_descr
-    ,def_diagram_no
-    ,def_height
-    ,def_ident_code
-    ,def_ity_inv_code
-    ,def_ity_sys_flag
-    ,def_length
-    ,def_locn_descr
-    ,def_maint_wo
-    ,def_mand_adv
-    ,def_notify_org_id
-    ,def_number
-    ,def_per_cent
-    ,def_per_cent_orig
-    ,def_per_cent_rem
-    ,def_rechar_org_id
-    ,def_serial_no
-    ,def_skid_coeff
-    ,def_special_instr
-    ,def_superseded_id
-    ,def_time_hrs
-    ,def_time_mins
-    ,def_update_inv
-    ,def_x_sect
-            ,def_easting
-            ,def_northing
-            ,def_response_category
-    )
-  VALUES (
-    l_defect_id
-    ,p_rse_he_id
-    ,p_iit_item_id
-    ,p_st_chain
-    ,p_report_id
-    ,p_acty_area_code
-    ,p_siss_id
-    ,p_works_order_no
-    ,l_today
-    ,p_defect_code
-    ,l_today
-    ,p_orig_priority
-    ,p_priority
-    ,p_status_code
-    ,'N'
-    ,p_area
-    ,p_are_id_not_found
-    ,p_coord_flag
-    ,''
-    ,''
-    ,p_defect_class
-    ,p_defect_descr
-    ,p_defect_type_descr
-    ,p_diagram_no
-    ,p_height
-    ,p_ident_code
-    ,p_ity_inv_code
-    ,p_ity_sys_flag
-    ,p_length
-    ,p_locn_descr
-    ,p_maint_wo
-    ,p_mand_adv
-    ,p_notify_org_id
-    ,p_number
-    ,p_per_cent
-    ,p_per_cent_orig
-    ,p_per_cent_rem
-    ,p_rechar_org_id
-    ,p_serial_no
-    ,p_skid_coeff
-    ,p_special_instr
-    ,''
-    ,p_time_hrs
-    ,p_time_mins
-    ,p_update_inv
-    ,p_x_sect
-            ,p_easting
-            ,p_northing
-            ,p_response_category
-    );
-
-  IF SQL%rowcount != 1 THEN
-    RAISE insert_error;
-  END IF;
-
-  RETURN l_defect_id;
-
+  --
+  SELECT are_date_work_done
+    INTO lv_retval
+    FROM activities_report
+   WHERE are_report_id = pi_report_id
+       ;
+  --
+  RETURN lv_retval;
+  --
 EXCEPTION
-  WHEN insert_error THEN
-    RAISE_APPLICATION_ERROR(-20001, 'Error occured while creating Defect');
-
-END;
-
-FUNCTION create_defect(
-    p_rse_he_id       IN  defects.def_rse_he_id%TYPE
-    ,p_iit_item_id      IN  defects.def_iit_item_id%TYPE
-    ,p_st_chain       IN  defects.def_st_chain%TYPE
-    ,p_report_id      IN  defects.def_are_report_id%TYPE
-    ,p_acty_area_code     IN  defects.def_atv_acty_area_code%TYPE
-    ,p_siss_id        IN  defects.def_siss_id%TYPE
-    ,p_works_order_no     IN  defects.def_works_order_no%TYPE
-    ,p_defect_code      IN  defects.def_defect_code%TYPE
-    ,p_orig_priority      IN  defects.def_orig_priority%TYPE
-    ,p_priority       IN  defects.def_priority%TYPE
-    ,p_status_code      IN  defects.def_status_code%TYPE
-    ,p_area       IN  defects.def_area%TYPE
-    ,p_are_id_not_found   IN  defects.def_are_id_not_found%TYPE
-    ,p_coord_flag     IN  defects.def_coord_flag%TYPE
-    ,p_defect_class     IN  defects.def_defect_class%TYPE
-    ,p_defect_descr     IN  defects.def_defect_descr%TYPE
-    ,p_defect_type_descr    IN  defects.def_defect_type_descr%TYPE
-    ,p_diagram_no     IN  defects.def_diagram_no%TYPE
-    ,p_height       IN  defects.def_height%TYPE
-    ,p_ident_code     IN  defects.def_ident_code%TYPE
-    ,p_ity_inv_code     IN  defects.def_ity_inv_code%TYPE
-    ,p_ity_sys_flag     IN  defects.def_ity_sys_flag%TYPE
-    ,p_length       IN  defects.def_length%TYPE
-    ,p_locn_descr     IN  defects.def_locn_descr%TYPE
-    ,p_maint_wo       IN  defects.def_maint_wo%TYPE
-    ,p_mand_adv       IN  defects.def_mand_adv%TYPE
-    ,p_notify_org_id      IN  defects.def_notify_org_id%TYPE
-    ,p_number       IN  defects.def_number%TYPE
-    ,p_per_cent       IN  defects.def_per_cent%TYPE
-    ,p_per_cent_orig      IN  defects.def_per_cent_orig%TYPE
-    ,p_per_cent_rem     IN  defects.def_per_cent_rem%TYPE
-    ,p_rechar_org_id      IN  defects.def_rechar_org_id%TYPE
-    ,p_serial_no      IN  defects.def_serial_no%TYPE
-    ,p_skid_coeff     IN  defects.def_skid_coeff%TYPE
-    ,p_special_instr      IN  defects.def_special_instr%TYPE
-    ,p_time_hrs       IN  defects.def_time_hrs%TYPE
-    ,p_time_mins      IN  defects.def_time_mins%TYPE
-    ,p_update_inv     IN  defects.def_update_inv%TYPE
-    ,p_x_sect       IN  defects.def_x_sect%TYPE
-            ,p_easting        IN  defects.def_easting%TYPE
-    ,p_northing       IN  defects.def_northing%TYPE
-    ,p_response_category    IN  defects.def_response_category%TYPE
-    ,p_date_created     in  defects.def_created_date%TYPE
-) RETURN NUMBER IS
-
-  l_defect_id defects.def_defect_id%TYPE;
-  l_today   DATE := SYSDATE;
+  WHEN no_data_found
+   THEN
+      raise_application_error(-20001,'Invalid Inspection Id Supplied: '||pi_report_id);
+  WHEN others
+   THEN
+      RAISE;
+END get_insp_date;
+--
+-------------------------------------------------------------------------------
+--
+FUNCTION create_defect(p_rse_he_id         IN defects.def_rse_he_id%TYPE
+                      ,p_iit_item_id       IN defects.def_iit_item_id%TYPE
+                      ,p_st_chain          IN defects.def_st_chain%TYPE
+                      ,p_report_id         IN defects.def_are_report_id%TYPE
+                      ,p_acty_area_code    IN defects.def_atv_acty_area_code%TYPE
+                      ,p_siss_id           IN defects.def_siss_id%TYPE
+                      ,p_works_order_no    IN defects.def_works_order_no%TYPE
+                      ,p_defect_code       IN defects.def_defect_code%TYPE
+                      ,p_orig_priority     IN defects.def_orig_priority%TYPE
+                      ,p_priority          IN defects.def_priority%TYPE
+                      ,p_status_code       IN defects.def_status_code%TYPE
+                      ,p_area              IN defects.def_area%TYPE
+                      ,p_are_id_not_found  IN defects.def_are_id_not_found%TYPE
+                      ,p_coord_flag        IN defects.def_coord_flag%TYPE
+                      ,p_defect_class      IN defects.def_defect_class%TYPE
+                      ,p_defect_descr      IN defects.def_defect_descr%TYPE
+                      ,p_defect_type_descr IN defects.def_defect_type_descr%TYPE
+                      ,p_diagram_no        IN defects.def_diagram_no%TYPE
+                      ,p_height            IN defects.def_height%TYPE
+                      ,p_ident_code        IN defects.def_ident_code%TYPE
+                      ,p_ity_inv_code      IN defects.def_ity_inv_code%TYPE
+                      ,p_ity_sys_flag      IN defects.def_ity_sys_flag%TYPE
+                      ,p_length            IN defects.def_length%TYPE
+                      ,p_locn_descr        IN defects.def_locn_descr%TYPE
+                      ,p_maint_wo          IN defects.def_maint_wo%TYPE
+                      ,p_mand_adv          IN defects.def_mand_adv%TYPE
+                      ,p_notify_org_id     IN defects.def_notify_org_id%TYPE
+                      ,p_number            IN defects.def_number%TYPE
+                      ,p_per_cent          IN defects.def_per_cent%TYPE
+                      ,p_per_cent_orig     IN defects.def_per_cent_orig%TYPE
+                      ,p_per_cent_rem      IN defects.def_per_cent_rem%TYPE
+                      ,p_rechar_org_id     IN defects.def_rechar_org_id%TYPE
+                      ,p_serial_no         IN defects.def_serial_no%TYPE
+                      ,p_skid_coeff        IN defects.def_skid_coeff%TYPE
+                      ,p_special_instr     IN defects.def_special_instr%TYPE
+                      ,p_time_hrs          IN defects.def_time_hrs%TYPE
+                      ,p_time_mins         IN defects.def_time_mins%TYPE
+                      ,p_update_inv        IN defects.def_update_inv%TYPE
+                      ,p_x_sect            IN defects.def_x_sect%TYPE
+                      ,p_easting           IN defects.def_easting%TYPE
+                      ,p_northing          IN defects.def_northing%TYPE
+                      ,p_response_category IN defects.def_response_category%TYPE) 
+  RETURN NUMBER IS
+  --
+  l_defect_id   defects.def_defect_id%TYPE;
+  l_today       DATE := SYSDATE;
+  l_insp_date   activities_report.are_date_work_done%TYPE;
   insert_error  EXCEPTION;
-
+  --
 BEGIN
-
---SM 29082008 714910
-  check_rse_admin_unit(
-     p_ne_id  => p_rse_he_id
-    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
-  );
-
+  --SM 29082008 714910
+  check_rse_admin_unit(p_ne_id  => p_rse_he_id
+                      ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID')));
+  /*
+  ||Get The Inspection Date.
+  */
+  l_insp_date := get_insp_date(pi_report_id => p_report_id);
+  --
   SELECT def_defect_id_seq.NEXTVAL
   INTO   l_defect_id
   FROM   dual;
-
-  INSERT INTO defects (
-    def_defect_id
-    ,def_rse_he_id
+  --
+  INSERT
+    INTO defects
+        (def_defect_id
+        ,def_rse_he_id
         ,def_iit_item_id             ----- New
-    ,def_st_chain
-    ,def_are_report_id
-    ,def_atv_acty_area_code
-    ,def_siss_id
-    ,def_works_order_no
-    ,def_created_date
-    ,def_defect_code
-    ,def_last_updated_date
-    ,def_orig_priority
-    ,def_priority
-    ,def_status_code
-    ,def_superseded_flag
-    ,def_area
-    ,def_are_id_not_found
-    ,def_coord_flag
-    ,def_date_compl
-    ,def_date_not_found
-    ,def_defect_class
-    ,def_defect_descr
-    ,def_defect_type_descr
-    ,def_diagram_no
-    ,def_height
-    ,def_ident_code
-    ,def_ity_inv_code
-    ,def_ity_sys_flag
-    ,def_length
-    ,def_locn_descr
-    ,def_maint_wo
-    ,def_mand_adv
-    ,def_notify_org_id
-    ,def_number
-    ,def_per_cent
-    ,def_per_cent_orig
-    ,def_per_cent_rem
-    ,def_rechar_org_id
-    ,def_serial_no
-    ,def_skid_coeff
-    ,def_special_instr
-    ,def_superseded_id
-    ,def_time_hrs
-    ,def_time_mins
-    ,def_update_inv
-    ,def_x_sect
-            ,def_easting
-            ,def_northing
-            ,def_response_category
-    )
-  VALUES (
-    l_defect_id
-    ,p_rse_he_id
-    ,p_iit_item_id
-    ,p_st_chain
-    ,p_report_id
-    ,p_acty_area_code
-    ,p_siss_id
-    ,p_works_order_no
-    ,p_date_created
-    ,p_defect_code
-    ,l_today
-    ,p_orig_priority
-    ,p_priority
-    ,p_status_code
-    ,'N'
-    ,p_area
-    ,p_are_id_not_found
-    ,p_coord_flag
-    ,''
-    ,''
-    ,p_defect_class
-    ,p_defect_descr
-    ,p_defect_type_descr
-    ,p_diagram_no
-    ,p_height
-    ,p_ident_code
-    ,p_ity_inv_code
-    ,p_ity_sys_flag
-    ,p_length
-    ,p_locn_descr
-    ,p_maint_wo
-    ,p_mand_adv
-    ,p_notify_org_id
-    ,p_number
-    ,p_per_cent
-    ,p_per_cent_orig
-    ,p_per_cent_rem
-    ,p_rechar_org_id
-    ,p_serial_no
-    ,p_skid_coeff
-    ,p_special_instr
-    ,''
-    ,p_time_hrs
-    ,p_time_mins
-    ,p_update_inv
-    ,p_x_sect
-            ,p_easting
-            ,p_northing
-            ,p_response_category
-    );
-
-  IF SQL%rowcount != 1 THEN
-    RAISE insert_error;
+        ,def_st_chain
+        ,def_are_report_id
+        ,def_atv_acty_area_code
+        ,def_siss_id
+        ,def_works_order_no
+        ,def_created_date
+        ,def_defect_code
+        ,def_last_updated_date
+        ,def_orig_priority
+        ,def_priority
+        ,def_status_code
+        ,def_superseded_flag
+        ,def_area
+        ,def_are_id_not_found
+        ,def_coord_flag
+        ,def_date_compl
+        ,def_date_not_found
+        ,def_defect_class
+        ,def_defect_descr
+        ,def_defect_type_descr
+        ,def_diagram_no
+        ,def_height
+        ,def_ident_code
+        ,def_ity_inv_code
+        ,def_ity_sys_flag
+        ,def_length
+        ,def_locn_descr
+        ,def_maint_wo
+        ,def_mand_adv
+        ,def_notify_org_id
+        ,def_number
+        ,def_per_cent
+        ,def_per_cent_orig
+        ,def_per_cent_rem
+        ,def_rechar_org_id
+        ,def_serial_no
+        ,def_skid_coeff
+        ,def_special_instr
+        ,def_superseded_id
+        ,def_time_hrs
+        ,def_time_mins
+        ,def_update_inv
+        ,def_x_sect
+        ,def_easting
+        ,def_northing
+        ,def_response_category
+        ,def_inspection_date)
+  VALUES(l_defect_id
+        ,p_rse_he_id
+        ,p_iit_item_id
+        ,p_st_chain
+        ,p_report_id
+        ,p_acty_area_code
+        ,p_siss_id
+        ,p_works_order_no
+        ,l_today
+        ,p_defect_code
+        ,l_today
+        ,p_orig_priority
+        ,p_priority
+        ,p_status_code
+        ,'N'
+        ,p_area
+        ,p_are_id_not_found
+        ,p_coord_flag
+        ,''
+        ,''
+        ,p_defect_class
+        ,p_defect_descr
+        ,p_defect_type_descr
+        ,p_diagram_no
+        ,p_height
+        ,p_ident_code
+        ,p_ity_inv_code
+        ,p_ity_sys_flag
+        ,p_length
+        ,p_locn_descr
+        ,p_maint_wo
+        ,p_mand_adv
+        ,p_notify_org_id
+        ,p_number
+        ,p_per_cent
+        ,p_per_cent_orig
+        ,p_per_cent_rem
+        ,p_rechar_org_id
+        ,p_serial_no
+        ,p_skid_coeff
+        ,p_special_instr
+        ,''
+        ,p_time_hrs
+        ,p_time_mins
+        ,p_update_inv
+        ,p_x_sect
+        ,p_easting
+        ,p_northing
+        ,p_response_category
+        ,l_insp_date)
+       ;
+  --
+  IF SQL%rowcount != 1
+   THEN
+      RAISE insert_error;
   END IF;
-
+  --
   RETURN l_defect_id;
-
+  --
+EXCEPTION
+  WHEN insert_error
+   THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Error occured while creating Defect');
+END;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION create_defect(p_rse_he_id         IN defects.def_rse_he_id%TYPE
+                      ,p_iit_item_id       IN defects.def_iit_item_id%TYPE
+                      ,p_st_chain          IN defects.def_st_chain%TYPE
+                      ,p_report_id         IN defects.def_are_report_id%TYPE
+                      ,p_acty_area_code    IN defects.def_atv_acty_area_code%TYPE
+                      ,p_siss_id           IN defects.def_siss_id%TYPE
+                      ,p_works_order_no    IN defects.def_works_order_no%TYPE
+                      ,p_defect_code       IN defects.def_defect_code%TYPE
+                      ,p_orig_priority     IN defects.def_orig_priority%TYPE
+                      ,p_priority          IN defects.def_priority%TYPE
+                      ,p_status_code       IN defects.def_status_code%TYPE
+                      ,p_area              IN defects.def_area%TYPE
+                      ,p_are_id_not_found  IN defects.def_are_id_not_found%TYPE
+                      ,p_coord_flag        IN defects.def_coord_flag%TYPE
+                      ,p_defect_class      IN defects.def_defect_class%TYPE
+                      ,p_defect_descr      IN defects.def_defect_descr%TYPE
+                      ,p_defect_type_descr IN defects.def_defect_type_descr%TYPE
+                      ,p_diagram_no        IN defects.def_diagram_no%TYPE
+                      ,p_height            IN defects.def_height%TYPE
+                      ,p_ident_code        IN defects.def_ident_code%TYPE
+                      ,p_ity_inv_code      IN defects.def_ity_inv_code%TYPE
+                      ,p_ity_sys_flag      IN defects.def_ity_sys_flag%TYPE
+                      ,p_length            IN defects.def_length%TYPE
+                      ,p_locn_descr        IN defects.def_locn_descr%TYPE
+                      ,p_maint_wo          IN defects.def_maint_wo%TYPE
+                      ,p_mand_adv          IN defects.def_mand_adv%TYPE
+                      ,p_notify_org_id     IN defects.def_notify_org_id%TYPE
+                      ,p_number            IN defects.def_number%TYPE
+                      ,p_per_cent          IN defects.def_per_cent%TYPE
+                      ,p_per_cent_orig     IN defects.def_per_cent_orig%TYPE
+                      ,p_per_cent_rem      IN defects.def_per_cent_rem%TYPE
+                      ,p_rechar_org_id     IN defects.def_rechar_org_id%TYPE
+                      ,p_serial_no         IN defects.def_serial_no%TYPE
+                      ,p_skid_coeff        IN defects.def_skid_coeff%TYPE
+                      ,p_special_instr     IN defects.def_special_instr%TYPE
+                      ,p_time_hrs          IN defects.def_time_hrs%TYPE
+                      ,p_time_mins         IN defects.def_time_mins%TYPE
+                      ,p_update_inv        IN defects.def_update_inv%TYPE
+                      ,p_x_sect            IN defects.def_x_sect%TYPE
+                      ,p_easting           IN defects.def_easting%TYPE
+                      ,p_northing          IN defects.def_northing%TYPE
+                      ,p_response_category IN defects.def_response_category%TYPE
+                      ,p_date_created      IN defects.def_created_date%TYPE)
+  RETURN NUMBER IS
+  --
+  l_defect_id   defects.def_defect_id%TYPE;
+  l_today       DATE := SYSDATE;
+  l_insp_date   activities_report.are_date_work_done%TYPE;
+  insert_error  EXCEPTION;
+  --
+BEGIN
+  --SM 29082008 714910
+  check_rse_admin_unit(p_ne_id  => p_rse_he_id
+                      ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID')));
+  /*
+  ||Get The Inspection Date.
+  */
+  l_insp_date := get_insp_date(pi_report_id => p_report_id);
+  --
+  SELECT def_defect_id_seq.NEXTVAL
+    INTO l_defect_id
+    FROM dual
+       ;
+  --
+  INSERT
+    INTO defects
+        (def_defect_id
+        ,def_rse_he_id
+        ,def_iit_item_id             ----- New
+        ,def_st_chain
+        ,def_are_report_id
+        ,def_atv_acty_area_code
+        ,def_siss_id
+        ,def_works_order_no
+        ,def_created_date
+        ,def_defect_code
+        ,def_last_updated_date
+        ,def_orig_priority
+        ,def_priority
+        ,def_status_code
+        ,def_superseded_flag
+        ,def_area
+        ,def_are_id_not_found
+        ,def_coord_flag
+        ,def_date_compl
+        ,def_date_not_found
+        ,def_defect_class
+        ,def_defect_descr
+        ,def_defect_type_descr
+        ,def_diagram_no
+        ,def_height
+        ,def_ident_code
+        ,def_ity_inv_code
+        ,def_ity_sys_flag
+        ,def_length
+        ,def_locn_descr
+        ,def_maint_wo
+        ,def_mand_adv
+        ,def_notify_org_id
+        ,def_number
+        ,def_per_cent
+        ,def_per_cent_orig
+        ,def_per_cent_rem
+        ,def_rechar_org_id
+        ,def_serial_no
+        ,def_skid_coeff
+        ,def_special_instr
+        ,def_superseded_id
+        ,def_time_hrs
+        ,def_time_mins
+        ,def_update_inv
+        ,def_x_sect
+        ,def_easting
+        ,def_northing
+        ,def_response_category
+        ,def_inspection_date)
+  VALUES(l_defect_id
+        ,p_rse_he_id
+        ,p_iit_item_id
+        ,p_st_chain
+        ,p_report_id
+        ,p_acty_area_code
+        ,p_siss_id
+        ,p_works_order_no
+        --,p_date_created  --ignore the date passed in, it should always be the date/time the defects record is inserted
+        ,l_today
+        ,p_defect_code
+        ,l_today
+        ,p_orig_priority
+        ,p_priority
+        ,p_status_code
+        ,'N'
+        ,p_area
+        ,p_are_id_not_found
+        ,p_coord_flag
+        ,''
+        ,''
+        ,p_defect_class
+        ,p_defect_descr
+        ,p_defect_type_descr
+        ,p_diagram_no
+        ,p_height
+        ,p_ident_code
+        ,p_ity_inv_code
+        ,p_ity_sys_flag
+        ,p_length
+        ,p_locn_descr
+        ,p_maint_wo
+        ,p_mand_adv
+        ,p_notify_org_id
+        ,p_number
+        ,p_per_cent
+        ,p_per_cent_orig
+        ,p_per_cent_rem
+        ,p_rechar_org_id
+        ,p_serial_no
+        ,p_skid_coeff
+        ,p_special_instr
+        ,''
+        ,p_time_hrs
+        ,p_time_mins
+        ,p_update_inv
+        ,p_x_sect
+        ,p_easting
+        ,p_northing
+        ,p_response_category
+        ,l_insp_date)
+       ;
+  --
+  IF SQL%rowcount != 1
+   THEN
+      RAISE insert_error;
+  END IF;
+  --
+  RETURN l_defect_id;
+  --
 EXCEPTION
   WHEN insert_error THEN
     RAISE_APPLICATION_ERROR(-20001, 'Error occured while creating Defect');
@@ -1998,10 +2035,11 @@ END create_defect;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION create_defect(pi_insp_rec           IN activities_report%ROWTYPE
-                      ,pi_defect_rec         IN defects%ROWTYPE
-                      ,pi_repair_tab         IN rep_tab
-                      ,pi_boq_tab            IN boq_tab) RETURN NUMBER IS
+FUNCTION create_defect(pi_insp_rec   IN activities_report%ROWTYPE
+                      ,pi_defect_rec IN defects%ROWTYPE
+                      ,pi_repair_tab IN rep_tab
+                      ,pi_boq_tab    IN boq_tab)
+  RETURN NUMBER IS
   --
   lv_repsetperd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
   lv_usedefchnd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHND');
@@ -2123,6 +2161,9 @@ BEGIN
    THEN
       lr_defect_rec.def_siss_id := lv_siss;
   END IF;
+  /*
+  ||Create The Defect.
+  */
   lv_defect_id := mai.create_defect(lr_defect_rec);
   --
   lr_defect_rec.def_defect_id := lv_defect_id;
@@ -2146,7 +2187,7 @@ BEGIN
        lv_action_cat := lr_repair_rec.rep_action_cat;
     END IF;
     --
-    mai.rep_date_due(lr_defect_rec.def_created_date
+    mai.rep_date_due(lr_defect_rec.def_inspection_date
                     ,lr_defect_rec.def_atv_acty_area_code
                     ,lr_defect_rec.def_orig_priority
                     ,lv_action_cat
@@ -4167,7 +4208,7 @@ END get_gis_sys_flag;
 FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
                                 ,p_admin_unit     IN hig_admin_units.hau_admin_unit%type
                                 ,p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
-								                ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
+                                ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
   RETURN VARCHAR2 IS
   cursor c1 is
     select con_code
@@ -4235,7 +4276,7 @@ begin
 
   IF l_wor_no IS NULL AND p_raise_not_found THEN
       hig.raise_ner(pi_appl => 'MAI'
-	               ,pi_id   => 917);
+                 ,pi_id   => 917);
   END IF;
 
   return l_wor_no;
@@ -4402,8 +4443,8 @@ FUNCTION create_wo_header(p_wor_works_order_no             in work_orders.wor_wo
                          ,p_wor_location_plan              in work_orders.wor_location_plan%TYPE
                          ,p_wor_utility_plans              in work_orders.wor_utility_plans%TYPE
                          ,p_wor_work_restrictions          in work_orders.wor_work_restrictions%TYPE
-		                     ,p_wor_register_flag              in work_orders.wor_register_flag%TYPE
-		                     ,p_wor_register_status            in work_orders.wor_register_status%TYPE)
+                         ,p_wor_register_flag              in work_orders.wor_register_flag%TYPE
+                         ,p_wor_register_status            in work_orders.wor_register_status%TYPE)
   RETURN NUMBER IS
   --
   l_works_order_no    work_orders.wor_works_order_no%TYPE;
@@ -4442,7 +4483,7 @@ BEGIN
   --
   INSERT
     INTO work_orders
-  	    (wor_works_order_no
+        (wor_works_order_no
         ,wor_sys_flag
         ,wor_rse_he_id_group
         ,wor_flag
@@ -4524,7 +4565,7 @@ BEGIN
         ,wor_location_plan
         ,wor_utility_plans
         ,wor_work_restrictions
-		    ,wor_register_flag
+        ,wor_register_flag
         ,wor_register_status)
   VALUES(g_works_order_no
         ,p_wor_sys_flag
@@ -4609,8 +4650,8 @@ BEGIN
         ,p_wor_utility_plans
         ,p_wor_work_restrictions
         ,p_wor_register_flag
-	      ,p_wor_register_status)
-	     ;
+        ,p_wor_register_status)
+       ;
   --
   RETURN( SQL%rowcount );
   --
@@ -5010,7 +5051,7 @@ EXCEPTION
     l_wor_rec.wor_date_confirmed := null;
     l_wor_rec.wor_mod_by_id := null;
     l_wor_rec.wor_date_mod := SYSDATE;
-    --l_wor_rec.wor_date_raised := SYSDATE;   -- Task 0107304 The mai3800 do not have time element so cannot query work order with the time element 
+    --l_wor_rec.wor_date_raised := SYSDATE;   -- Task 0107304 The mai3800 do not have time element so cannot query work order with the time element
     l_wor_rec.wor_date_raised := Trunc(SYSDATE);
     l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';
     l_wor_rec.wor_est_balancing_sum := null;
@@ -5300,7 +5341,7 @@ BEGIN
       FETCH l_refcur INTO l_retval;
       CLOSE l_refcur;
 
-	  RETURN(l_retval);
+    RETURN(l_retval);
 
 END count_wols_for_register;
 --
@@ -5324,10 +5365,10 @@ BEGIN
      IF g_swr_licenced THEN
        l_sql := 'select  count(*)
                  from   swr_id_mapping
- 				      ,work_order_lines
+              ,work_order_lines
                  where  sim_origin = ''WOL''
                  and    sim_primary_key_value = wol_id
-				 and    wol_works_order_no = :1';
+         and    wol_works_order_no = :1';
 
        OPEN l_refcur FOR l_sql
        USING pi_works_order_no;
@@ -5364,10 +5405,10 @@ BEGIN
          --
          l_sql := 'select count(distinct tidm_resultant_works_id)
                      from tma_id_mapping
- 				                 ,work_order_lines
+                         ,work_order_lines
                     where tidm_origin = ''WOL''
                       and tidm_primary_key_value = wol_id
-				              and wol_works_order_no = :1';
+                      and wol_works_order_no = :1';
          --
          OPEN  l_refcur FOR l_sql
          USING pi_works_order_no;
@@ -5766,12 +5807,12 @@ END get_wo_wol_ids;
 FUNCTION get_feature_flags_rec(pi_domain          IN VARCHAR2
                               ,pi_status_code     IN hig_status_codes.hsc_status_code%TYPE
                               ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN feature_flags_rec IS
-                         
+
  l_refcursor nm3type.ref_cursor;
- 
+
  l_sql VARCHAR2(2000);
  l_retval feature_flags_rec;
- 
+
 BEGIN
 
 
@@ -5780,22 +5821,22 @@ BEGIN
          ||' WHERE hsc_domain_code = :1'||chr(10)
          ||'   AND hsc_status_code = :2'||chr(10)
          ||'   AND :3 BETWEEN NVL(hsc_start_date,:4) AND NVL(hsc_end_date,:5)';
-                                                  
-                                                   
+
+
  OPEN l_refcursor FOR l_sql USING pi_domain, pi_status_code, pi_as_at_date,pi_as_at_date,pi_as_at_date;
- 
+
  FETCH l_refcursor INTO l_retval;
  CLOSE l_refcursor;
 
  RETURN(l_retval);
 
-END get_feature_flags_rec; 
+END get_feature_flags_rec;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION expected_and_actual_the_same(pi_expected_rec IN feature_flags_rec
                                      ,pi_actual_rec   IN feature_flags_rec) RETURN BOOLEAN IS
-                                      
+
 BEGIN
 
 
@@ -5809,18 +5850,18 @@ BEGIN
       AND pi_actual_rec.hsc_allow_feature8 = NVL(pi_expected_rec.hsc_allow_feature8,pi_actual_rec.hsc_allow_feature8)
       AND pi_actual_rec.hsc_allow_feature9 = NVL(pi_expected_rec.hsc_allow_feature9,pi_actual_rec.hsc_allow_feature9)
       );
-                                                
+
 
 END expected_and_actual_the_same;
 --
 ---------------------------------------------------------------------------------------------------
---                                    
+--
 FUNCTION defect_is_AMENDABLE(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-                         
+
 
  l_expected_rec feature_flags_rec;
- 
+
 BEGIN
 
 
@@ -5832,19 +5873,19 @@ BEGIN
                                                                               ,pi_status_code     => pi_defect_status
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
-         );                                         
+         );
 
- 
+
 END defect_is_AMENDABLE;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_INSTRUCTED(pi_defect_status   IN defects.def_status_code%TYPE
                              ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-                         
+
 
  l_expected_rec feature_flags_rec;
- 
+
 BEGIN
 
 
@@ -5856,22 +5897,22 @@ BEGIN
                                                                               ,pi_status_code     => pi_defect_status
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
-         );                                         
+         );
 
 
 
 
- 
+
 END defect_is_INSTRUCTED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_COMPLETED(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-                         
+
 
  l_expected_rec feature_flags_rec;
- 
+
 BEGIN
 
 
@@ -5883,16 +5924,16 @@ BEGIN
                                                                               ,pi_status_code     => pi_defect_status
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
-         );                                         
+         );
 
- 
+
 END defect_is_COMPLETED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_REPAIRED(pi_defect_status   IN defects.def_status_code%TYPE
                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-                         
+
 
  l_expected_rec feature_flags_rec;
 
@@ -5907,19 +5948,19 @@ BEGIN
                                                                               ,pi_status_code     => pi_defect_status
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
-         );                                         
+         );
 
- 
+
 END defect_is_REPAIRED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_SUPERSEDED(pi_defect_status   IN defects.def_status_code%TYPE
                              ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-                         
+
 
  l_expected_rec feature_flags_rec;
- 
+
 BEGIN
 
 
@@ -5931,9 +5972,9 @@ BEGIN
                                                                               ,pi_status_code     => pi_defect_status
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
-         );                                         
+         );
 
- 
+
 END defect_is_SUPERSEDED;
 --
 ---------------------------------------------------------------------------------------------------
