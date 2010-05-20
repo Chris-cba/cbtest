@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.10   May 07 2010 16:43:48   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.11   May 20 2010 13:44:02   mhuitson  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into PVCS   : $Date:   May 07 2010 16:43:48  $
---       Date fetched Out : $Modtime:   May 07 2010 16:42:38  $
---       Version          : $Revision:   2.10  $
+--       Date into PVCS   : $Date:   May 20 2010 13:44:02  $
+--       Date fetched Out : $Modtime:   May 20 2010 13:43:34  $
+--       Version          : $Revision:   2.11  $
 -------------------------------------------------------------------------
 --
 SET echo OFF
@@ -344,6 +344,15 @@ START '&run_file'
 PROMPT v_mai7040_sum
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v_mai7040_sum.vw' run_file
+FROM dual
+/
+START '&run_file'
+--
+-------------------------------------------------------------------------
+--
+PROMPT v_process_contractors
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v_process_contractors.vw' run_file
 FROM dual
 /
 START '&run_file'
