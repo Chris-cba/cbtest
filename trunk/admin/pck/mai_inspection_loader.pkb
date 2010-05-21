@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.6   May 13 2010 10:09:50   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.7   May 21 2010 16:31:12   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   May 13 2010 10:09:50  $
---       Date fetched Out : $Modtime:   May 13 2010 10:08:34  $
---       PVCS Version     : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   May 21 2010 16:31:12  $
+--       Date fetched Out : $Modtime:   May 21 2010 11:44:00  $
+--       PVCS Version     : $Revision:   3.7  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.6  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.7  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1478,7 +1478,7 @@ nm_debug.debug('File inspdate = '||lv_token);
     IF lv_token IS NOT NULL
      AND check_time(pi_time => lv_token)
      THEN
-        lr_def.def_created_date := lr_are.are_date_work_done;
+        lr_def.def_inspection_date := lr_are.are_date_work_done;
         lr_def.def_time_hrs := TO_NUMBER(TO_CHAR(TO_DATE(lv_token,'HH24MI'),'HH24'));
         lr_def.def_time_mins := TO_NUMBER(TO_CHAR(TO_DATE(lv_token,'HH24MI'),'MI'));
     ELSE
@@ -3014,7 +3014,8 @@ BEGIN
           ,def_x_sect            
           ,def_easting           
           ,def_northing          
-          ,def_response_category 
+          ,def_response_category
+          ,def_inspection_date
           ,def_error)
     VALUES(pi_insp_rec.insp_defects(i).def_record.def_defect_id         
           ,pi_insp_rec.insp_defects(i).def_record.def_rse_he_id         
@@ -3065,6 +3066,7 @@ BEGIN
           ,pi_insp_rec.insp_defects(i).def_record.def_easting           
           ,pi_insp_rec.insp_defects(i).def_record.def_northing          
           ,pi_insp_rec.insp_defects(i).def_record.def_response_category 
+          ,pi_insp_rec.insp_defects(i).def_record.def_inspection_date 
           ,pi_insp_rec.insp_defects(i).def_error)
          ;
     /*
@@ -4069,6 +4071,7 @@ PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_re
       lt_insp_rec.insp_defects(i).def_record.def_easting            := lt_defects(i).def_easting;
       lt_insp_rec.insp_defects(i).def_record.def_northing           := lt_defects(i).def_northing;
       lt_insp_rec.insp_defects(i).def_record.def_response_category  := lt_defects(i).def_response_category;
+      lt_insp_rec.insp_defects(i).def_record.def_inspection_date    := lt_defects(i).def_inspection_date;
       lt_insp_rec.insp_defects(i).def_error                         := NULL;
                       
       SELECT *
