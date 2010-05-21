@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_def IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_def.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_def.pkb-arc   2.1   May 21 2010 17:03:26   mhuitson  $
 --       Module Name      : $Workfile:   mai_tab_def.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   May 21 2010 17:03:26  $
+--       Date fetched Out : $Modtime:   May 21 2010 17:02:30  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_def IS
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.0  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_def';
@@ -145,6 +145,8 @@ BEGIN
             ,def_easting
             ,def_northing
             ,def_response_category
+            ,def_status_reason
+            ,def_inspection_date
             )
      VALUES (p_rec_def.def_defect_id
             ,p_rec_def.def_rse_he_id
@@ -195,6 +197,8 @@ BEGIN
             ,p_rec_def.def_easting
             ,p_rec_def.def_northing
             ,p_rec_def.def_response_category
+            ,p_rec_def.def_status_reason
+            ,p_rec_def.def_inspection_date
             )
    RETURNING def_defect_id
             ,def_rse_he_id
@@ -245,6 +249,8 @@ BEGIN
             ,def_easting
             ,def_northing
             ,def_response_category
+            ,def_status_reason
+            ,def_inspection_date
       INTO   p_rec_def.def_defect_id
             ,p_rec_def.def_rse_he_id
             ,p_rec_def.def_st_chain
@@ -293,7 +299,10 @@ BEGIN
             ,p_rec_def.def_iit_item_id
             ,p_rec_def.def_easting
             ,p_rec_def.def_northing
-            ,p_rec_def.def_response_category;
+            ,p_rec_def.def_response_category
+            ,p_rec_def.def_status_reason
+            ,p_rec_def.def_inspection_date
+            ;
 --
    nm_debug.proc_end(g_package_name,'ins');
 --
@@ -473,6 +482,9 @@ BEGIN
    nm_debug.debug('def_easting            : '||pi_rec_def.def_easting,p_level);
    nm_debug.debug('def_northing           : '||pi_rec_def.def_northing,p_level);
    nm_debug.debug('def_response_category  : '||pi_rec_def.def_response_category,p_level);
+   nm_debug.debug('def_status_reason      : '||pi_rec_def.def_status_reason,p_level);
+   nm_debug.debug('def_inspection_date    : '||pi_rec_def.def_inspection_date,p_level);
+
 --
    nm_debug.proc_end(g_package_name,'debug');
 --
