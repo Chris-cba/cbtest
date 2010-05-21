@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.6   May 14 2010 16:55:00   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.7   May 21 2010 16:34:44   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   May 14 2010 16:55:00  $
---       Date fetched Out : $Modtime:   May 14 2010 15:04:06  $
---       PVCS Version     : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   May 21 2010 16:34:44  $
+--       Date fetched Out : $Modtime:   May 21 2010 15:40:06  $
+--       PVCS Version     : $Revision:   3.7  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.6  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.7  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -646,7 +646,8 @@ BEGIN
         ,def_x_sect
         ,def_easting
         ,def_northing
-        ,def_response_category) 
+        ,def_response_category
+        ,def_inspection_date) 
  VALUES (lv_defect_id
         ,pi_defect_rec.def_rse_he_id
         ,pi_defect_rec.def_iit_item_id
@@ -655,7 +656,7 @@ BEGIN
         ,pi_defect_rec.def_atv_acty_area_code
         ,pi_defect_rec.def_siss_id
         ,pi_defect_rec.def_works_order_no
-        ,pi_defect_rec.def_created_date
+        ,sysdate
         ,pi_defect_rec.def_defect_code
         ,sysdate
         ,pi_defect_rec.def_orig_priority
@@ -695,7 +696,8 @@ BEGIN
         ,pi_defect_rec.def_x_sect
         ,pi_defect_rec.def_easting
         ,pi_defect_rec.def_northing
-        ,pi_defect_rec.def_response_category);
+        ,pi_defect_rec.def_response_category
+        ,pi_defect_rec.def_inspection_date);
   --
   IF SQL%rowcount != 1 THEN
     RAISE insert_error;
@@ -1920,15 +1922,12 @@ BEGIN
       END IF;
   END IF;
   /*
-  ||Set The Created Date Fields
+  ||Set The Inspection Date
   */
   nm_debug.debug('Dates');
-  IF lr_defect_rec.def_created_date IS NULL
-   THEN
-      lr_defect_rec.def_created_date := TRUNC(pi_are_date_work_done);
-      lr_defect_rec.def_time_hrs     := 0;
-      lr_defect_rec.def_time_mins    := 0;
-  END IF;
+  lr_defect_rec.def_inspection_date := pi_are_date_work_done;
+  lr_defect_rec.def_time_hrs  := NVL(lr_defect_rec.def_time_hrs,0);
+  lr_defect_rec.def_time_mins := NVL(lr_defect_rec.def_time_mins,0);
   /*
   ||Default / Validate Defect Status.
   */
@@ -1951,7 +1950,7 @@ BEGIN
   IF lr_defect_rec.def_status_code = get_complete_defect_status(pi_effective_date => pi_are_date_work_done)
    AND lr_defect_rec.def_date_compl IS NULL
    THEN
-      lr_defect_rec.def_date_compl := lr_defect_rec.def_created_date;
+      lr_defect_rec.def_date_compl := pi_are_date_work_done;
   END IF;
   --
   IF NOT validate_defect_status(pi_defect_rec     => lr_defect_rec
@@ -2217,8 +2216,8 @@ BEGIN
       /*
       ||Default Date Created And Date Updated.
       */
-      lt_rep_tab(i).rep_record.rep_created_date      := pi_defect_rec.def_created_date;
-      lt_rep_tab(i).rep_record.rep_last_updated_date := pi_defect_rec.def_created_date;
+      lt_rep_tab(i).rep_record.rep_created_date      := SYSDATE;
+      lt_rep_tab(i).rep_record.rep_last_updated_date := lt_rep_tab(i).rep_record.rep_created_date;
       /*
       ||Default Superceded Flag.
       */
@@ -2268,7 +2267,7 @@ BEGIN
          lv_action_cat := lt_rep_tab(i).rep_record.rep_action_cat;
       END IF;
       --
-      mai.rep_date_due(pi_defect_rec.def_created_date
+      mai.rep_date_due(pi_defect_rec.def_inspection_date
                       ,lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                       ,pi_defect_rec.def_priority
                       ,lv_action_cat
