@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.20   May 21 2010 15:34:58   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.21   May 21 2010 17:53:04   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   May 21 2010 15:34:58  $
---       Date fetched Out : $Modtime:   May 21 2010 15:33:22  $
---       PVCS Version     : $Revision:   2.20  $
+--       Date into PVCS   : $Date:   May 21 2010 17:53:04  $
+--       Date fetched Out : $Modtime:   May 21 2010 17:51:24  $
+--       PVCS Version     : $Revision:   2.21  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri May 21  14:50:16 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri May 21  17:48:04 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -3229,6 +3229,8 @@ CREATE TABLE TEMP_REPLACE_DEFECTS
  ,DEF_EASTING NUMBER
  ,DEF_NORTHING NUMBER
  ,DEF_RESPONSE_CATEGORY VARCHAR2(4)
+ ,DEF_INSPECTION_DATE DATE
+ ,DEF_STATUS_REASON VARCHAR2(500)
  )
 /
 
@@ -3296,6 +3298,8 @@ CREATE GLOBAL TEMPORARY TABLE TEMP_UNDO_DEFECT_EDIT
  ,DEF_EASTING NUMBER
  ,DEF_NORTHING NUMBER
  ,DEF_RESPONSE_CATEGORY VARCHAR2(4)
+ ,DEF_INSPECTION_DATE DATE
+ ,DEF_STATUS_REASON VARCHAR2(500)
  )
 /
 
