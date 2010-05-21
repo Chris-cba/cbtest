@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maimerge AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maimerge.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maimerge.pkb-arc   2.1   May 21 2010 18:12:56   mhuitson  $
 --       Module Name      : $Workfile:   maimerge.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   May 21 2010 18:12:56  $
+--       Date fetched Out : $Modtime:   May 21 2010 17:59:46  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based onSCCS Version     : 1.5
 --
 -----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ CREATE OR REPLACE PACKAGE BODY maimerge AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.0  $"';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.1  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maimerge';
@@ -753,7 +753,9 @@ END get_body_version;
                                     ,def_x_sect
                                     ,def_easting
                                     ,def_northing
-                                    ,def_response_category)
+                                    ,def_response_category
+                                    ,def_status_reason
+                                    ,def_inspection_date)
    SELECT def_defect_id
          ,def_rse_he_id
          ,def_iit_item_id
@@ -803,6 +805,8 @@ END get_body_version;
          ,def_easting
          ,def_northing
          ,def_response_category
+         ,def_status_reason
+         ,def_inspection_date
    FROM DEFECTS
    WHERE def_rse_he_id = p_id;
 --

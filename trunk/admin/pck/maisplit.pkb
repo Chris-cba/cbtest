@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.3   Jul 14 2009 16:06:04   dyounger  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.4   May 21 2010 18:12:56   mhuitson  $
 --       Module Name      : $Workfile:   maisplit.pkb  $
---       Date into SCCS   : $Date:   Jul 14 2009 16:06:04  $
---       Date fetched Out : $Modtime:   Jul 14 2009 15:51:54  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   May 21 2010 18:12:56  $
+--       Date fetched Out : $Modtime:   May 21 2010 17:58:28  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based onSCCS Version     : 1.7
 --
 -- This package contains procedures and functions which are required by
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maisplit';
@@ -366,7 +366,7 @@ END get_body_version;
        DEF_PER_CENT_REM, DEF_RECHAR_ORG_ID, DEF_SERIAL_NO, DEF_SKID_COEFF,
        DEF_SPECIAL_INSTR, DEF_SUPERSEDED_ID, DEF_TIME_HRS, DEF_TIME_MINS,
        DEF_UPDATE_INV, DEF_X_SECT, DEF_NORTHING, DEF_EASTING,
-       DEF_RESPONSE_CATEGORY)
+       DEF_RESPONSE_CATEGORY,DEF_STATUS_REASON,DEF_INSPECTION_DATE)
     select p_new_defect, p_road, iih_new_item_id, p_st_chain,
            p_new_insp, def_atv_acty_area_code, def_siss_id, def_works_order_no,
            def_created_date, def_defect_code, p_actioned, def_orig_priority,
@@ -378,7 +378,8 @@ END get_body_version;
            def_notify_org_id, def_number, def_per_cent, def_per_cent_orig,
            def_per_cent_rem, def_rechar_org_id, def_serial_no, def_skid_coeff,
            def_special_instr, def_superseded_id, def_time_hrs, def_time_mins,
-           def_update_inv, def_x_sect, def_northing, def_easting, def_response_category
+           def_update_inv, def_x_sect, def_northing, def_easting, def_response_category,
+           def_status_reason,def_inspection_date
     from   inv_item_history
     ,      defects
     where  iih_new_rse_he_id(+) = p_road
@@ -1431,7 +1432,9 @@ END get_body_version;
                                     ,def_x_sect
                                     ,def_easting
                                     ,def_northing
-                                    ,def_response_category)
+                                    ,def_response_category
+                                    ,def_status_reason
+                                    ,def_inspection_date)
    SELECT def_defect_id
          ,def_rse_he_id
          ,def_iit_item_id
@@ -1481,6 +1484,8 @@ END get_body_version;
          ,def_easting
          ,def_northing
          ,def_response_category
+         ,def_status_reason
+         ,def_inspection_date
    FROM DEFECTS
    WHERE def_rse_he_id IN(p_id1,p_id2);
 
