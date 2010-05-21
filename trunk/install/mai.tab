@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.19   May 13 2010 17:31:42   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.20   May 21 2010 15:34:58   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   May 13 2010 17:31:42  $
---       Date fetched Out : $Modtime:   May 13 2010 17:21:10  $
---       PVCS Version     : $Revision:   2.19  $
+--       Date into PVCS   : $Date:   May 21 2010 15:34:58  $
+--       Date fetched Out : $Modtime:   May 21 2010 15:33:22  $
+--       PVCS Version     : $Revision:   2.20  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Thu May 13  17:16:25 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri May 21  14:50:16 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -2224,6 +2224,7 @@ CREATE TABLE MAI_INSP_LOAD_ERROR_DEF
  ,DEF_EASTING NUMBER
  ,DEF_NORTHING NUMBER
  ,DEF_RESPONSE_CATEGORY VARCHAR2(4)
+ ,DEF_INSPECTION_DATE DATE
  ,DEF_ERROR VARCHAR2(4000)
  )
 /
