@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.4   May 06 2010 16:59:32   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.5   May 25 2010 14:49:18   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkh  $
---       Date into PVCS   : $Date:   May 06 2010 16:59:32  $
---       Date fetched Out : $Modtime:   May 04 2010 16:40:00  $
---       PVCS Version     : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   May 25 2010 14:49:18  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:43:28  $
+--       PVCS Version     : $Revision:   3.5  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --</PACKAGE>
 --<GLOBVAR>
   --
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
   g_application_owner  VARCHAR2(30);
   --
 --</GLOBVAR>
@@ -66,7 +66,7 @@ PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_re
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE ftp_in_to_database(pi_ftp_type                IN hig_ftp_types.hft_type%TYPE);
+PROCEDURE initialise;
 --
 -----------------------------------------------------------------------------
 --
