@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.3   May 13 2010 18:36:30   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.4   May 25 2010 14:48:20   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 13 2010 18:36:30  $
---       Date fetched Out : $Modtime:   May 13 2010 18:33:16  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   May 25 2010 14:48:20  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:39:18  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.4  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -695,191 +695,191 @@ END get_initial_defect_status;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE validate_repair_boqs(pi_def_defect_id      IN     defects.def_defect_id%TYPE
---                              ,pi_rep_action_cat     IN     repairs.rep_action_cat%TYPE
---                              ,pi_rep_created_date   IN     repairs.rep_created_date%TYPE
---                              ,pi_admin_unit         IN     nm_admin_units.nau_admin_unit%TYPE
---                              ,pi_rep_tre_treat_code IN     treatments.tre_treat_code%TYPE
---                              ,pi_atv_acty_area_code IN     activities.atv_acty_area_code%TYPE
---                              ,pi_def_defect_code    IN     defects.def_defect_code%TYPE
---                              ,pi_sys_flag           IN     VARCHAR2
---                              ,pio_boq_tab           IN OUT boq_tab)
---  IS
---  --
---  lt_boq_tab       boq_tab;
---  lt_tre_boqs_tab  mai.tre_boqs_tab;
---  --
---  lr_sta  standard_items%ROWTYPE;
---  --
---  lv_usetremodd   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
---  lv_usetremodl   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
---  lv_tremodlev    hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
---  lv_perc_item    hig_option_values.hov_value%TYPE := hig.get_sysopt('PERC_ITEM');
---  --
---BEGIN
---  /*
---  ||If BOQs Have Been Provided Then Validate Them
---  ||Otherwise If The System Is Configured To Enforce
---  ||Treatment Models Check For A Valid Model And
---  ||Apply It.
---  */
---  IF pio_boq_tab.count > 0
---   THEN
---      --
---      lt_boq_tab := pio_boq_tab;
---      --
---      FOR i IN 1..lt_boq_tab.COUNT LOOP
---        --
---        lt_boq_tab(i).boq_work_flag      := 'D';
---        lt_boq_tab(i).boq_defect_id      := pi_def_defect_id;
---        lt_boq_tab(i).boq_wol_id         := 0;
---        lt_boq_tab(i).boq_date_created   := pi_rep_created_date;
---        /*
---        ||Validate Standard Item Code.
---        */
---        IF lt_boq_tab(i).boq_sta_item_code IS NOT NULL
---         THEN
---            lr_sta := get_sta(pi_sta_item_code => lt_boq_tab(i).boq_sta_item_code);
---            IF lr_sta.sta_unit = lv_perc_item
---             THEN
---                raise_application_error(-20099,'Parent BOQs Based On Percentage Items Codes Are Not Supported.');
---            END IF;
---        ELSE
---            raise_application_error(-20032,'Invalid Standard Item Code Specified.');
---        END IF;
---        lt_boq_tab(i).boq_item_name := lr_sta.sta_item_name;
---        /*
---        ||Check/Default Dimentions.
---        */
---        IF lt_boq_tab(i).boq_est_dim1 IS NULL
---         THEN
---            lt_boq_tab(i).boq_est_dim1 := 0;
---        END IF;
---        --
---        IF lr_sta.sta_dim2_text IS NOT NULL
---         AND lt_boq_tab(i).boq_est_dim2 IS NULL
---         THEN
---            lt_boq_tab(i).boq_est_dim2 := 1;
---        END IF;
---        --
---        IF lr_sta.sta_dim3_text IS NOT NULL
---         AND lt_boq_tab(i).boq_est_dim3 IS NULL
---         THEN
---            lt_boq_tab(i).boq_est_dim3 := 1;
---        END IF;
---        --
---        /*
---        ||Set Estimated Quantity.
---        */
---        lt_boq_tab(i).boq_est_quantity := lt_boq_tab(i).boq_est_dim1
---                                          * NVL(lt_boq_tab(i).boq_est_dim2,1)
---                                          * NVL(lt_boq_tab(i).boq_est_dim3,1);
---        /*
---        ||Check Quantity.
---        */
---        IF lt_boq_tab(i).boq_est_quantity < lr_sta.sta_min_quantity
---         AND lt_boq_tab(i).boq_est_quantity != 0
---         THEN
---            raise_application_error(-20035,'Estimated Quantity Is Below The Minimum Quantity.');
---        END IF;
---        --
---        IF lt_boq_tab(i).boq_est_quantity > lr_sta.sta_max_quantity
---         AND lt_boq_tab(i).boq_est_quantity != 0
---         THEN
---            raise_application_error(-20036,'Estimated Quantity Is Above The Maximum Quantity.');
---        END IF;
---        /*
---        ||Calculate Estimated Labour
---        */
---        lt_boq_tab(i).boq_est_labour := lt_boq_tab(i).boq_est_quantity * NVL(lr_sta.sta_labour_units,0);
---        /*
---        ||Validate Estimated Rate.
---        */
---        lt_boq_tab(i).boq_est_rate := lr_sta.sta_rate;
---        /*
---        ||Validate Estimated Cost.
---        */
---        IF lt_boq_tab(i).boq_est_cost IS NULL
---         OR lt_boq_tab(i).boq_est_cost != ROUND((lt_boq_tab(i).boq_est_rate * lt_boq_tab(i).boq_est_quantity),2)
---         THEN
---            lt_boq_tab(i).boq_est_cost := ROUND((lt_boq_tab(i).boq_est_rate * lt_boq_tab(i).boq_est_quantity),2);
---        END IF;
---        --
---      END LOOP;
---      --
---  ELSE
---      IF((pi_sys_flag = 'D' and lv_usetremodd = 'Y') OR
---         (pi_sys_flag = 'L' and lv_usetremodl = 'Y'))
---       THEN
---          --
---          mai.get_tre_boqs(pi_admin_unit         => pi_admin_unit
---                          ,pi_treat_code         => pi_rep_tre_treat_code
---                          ,pi_atv_acty_area_code => pi_atv_acty_area_code
---                          ,pi_defect_code        => pi_def_defect_code
---                          ,pi_sys_flag           => pi_sys_flag
---                          ,po_results            => lt_tre_boqs_tab);
---          --
---          FOR i IN 1..lt_tre_boqs_tab.count LOOP
---            --
---            lt_boq_tab(i).boq_work_flag      := 'D';
---            lt_boq_tab(i).boq_defect_id      := pi_def_defect_id;
---            lt_boq_tab(i).boq_rep_action_cat := pi_rep_action_cat;
---            lt_boq_tab(i).boq_wol_id         := 0;
---            lt_boq_tab(i).boq_date_created   := pi_rep_created_date;
---            lt_boq_tab(i).boq_sta_item_code  := lt_tre_boqs_tab(i).boq_sta_item_code;
---            lt_boq_tab(i).boq_item_name      := lt_tre_boqs_tab(i).sta_item_name;
---            lt_boq_tab(i).boq_est_dim1       := lt_tre_boqs_tab(i).boq_est_dim1;
---            lt_boq_tab(i).boq_est_dim2       := lt_tre_boqs_tab(i).boq_est_dim2;
---            lt_boq_tab(i).boq_est_dim3       := lt_tre_boqs_tab(i).boq_est_dim3;
---            lt_boq_tab(i).boq_est_quantity   := lt_tre_boqs_tab(i).boq_est_quantity;
---            lt_boq_tab(i).boq_est_rate       := lt_tre_boqs_tab(i).boq_est_rate;
---            lt_boq_tab(i).boq_est_cost       := lt_tre_boqs_tab(i).boq_est_cost;
---            lt_boq_tab(i).boq_est_labour     := lt_tre_boqs_tab(i).boq_est_labour;
---            --
---          END LOOP;
---      END IF;
---  END IF;
---  /*
---  ||Assign The Validated Table To The Output Table.
---  */
---  pio_boq_tab := lt_boq_tab;
---  --
---END validate_repair_boqs;
+PROCEDURE validate_repair_boqs(pi_def_defect_id      IN     defects.def_defect_id%TYPE
+                              ,pi_rep_action_cat     IN     repairs.rep_action_cat%TYPE
+                              ,pi_rep_created_date   IN     repairs.rep_created_date%TYPE
+                              ,pi_admin_unit         IN     nm_admin_units.nau_admin_unit%TYPE
+                              ,pi_rep_tre_treat_code IN     treatments.tre_treat_code%TYPE
+                              ,pi_atv_acty_area_code IN     activities.atv_acty_area_code%TYPE
+                              ,pi_def_defect_code    IN     defects.def_defect_code%TYPE
+                              ,pi_sys_flag           IN     VARCHAR2
+                              ,pio_boq_tab           IN OUT boq_tab)
+  IS
+  --
+  lt_boq_tab       boq_tab;
+  lt_tre_boqs_tab  mai.tre_boqs_tab;
+  --
+  lr_sta  standard_items%ROWTYPE;
+  --
+  lv_usetremodd   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
+  lv_usetremodl   hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
+  lv_tremodlev    hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
+  lv_perc_item    hig_option_values.hov_value%TYPE := hig.get_sysopt('PERC_ITEM');
+  --
+BEGIN
+  /*
+  ||If BOQs Have Been Provided Then Validate Them
+  ||Otherwise If The System Is Configured To Enforce
+  ||Treatment Models Check For A Valid Model And
+  ||Apply It.
+  */
+  IF pio_boq_tab.count > 0
+   THEN
+      --
+      lt_boq_tab := pio_boq_tab;
+      --
+      FOR i IN 1..lt_boq_tab.COUNT LOOP
+        --
+        lt_boq_tab(i).boq_work_flag      := 'D';
+        lt_boq_tab(i).boq_defect_id      := pi_def_defect_id;
+        lt_boq_tab(i).boq_wol_id         := 0;
+        lt_boq_tab(i).boq_date_created   := pi_rep_created_date;
+        /*
+        ||Validate Standard Item Code.
+        */
+        IF lt_boq_tab(i).boq_sta_item_code IS NOT NULL
+         THEN
+            lr_sta := get_sta(pi_sta_item_code => lt_boq_tab(i).boq_sta_item_code);
+            IF lr_sta.sta_unit = lv_perc_item
+             THEN
+                raise_application_error(-20099,'Parent BOQs Based On Percentage Items Codes Are Not Supported.');
+            END IF;
+        ELSE
+            raise_application_error(-20032,'Invalid Standard Item Code Specified.');
+        END IF;
+        lt_boq_tab(i).boq_item_name := lr_sta.sta_item_name;
+        /*
+        ||Check/Default Dimentions.
+        */
+        IF lt_boq_tab(i).boq_est_dim1 IS NULL
+         THEN
+            lt_boq_tab(i).boq_est_dim1 := 0;
+        END IF;
+        --
+        IF lr_sta.sta_dim2_text IS NOT NULL
+         AND lt_boq_tab(i).boq_est_dim2 IS NULL
+         THEN
+            lt_boq_tab(i).boq_est_dim2 := 1;
+        END IF;
+        --
+        IF lr_sta.sta_dim3_text IS NOT NULL
+         AND lt_boq_tab(i).boq_est_dim3 IS NULL
+         THEN
+            lt_boq_tab(i).boq_est_dim3 := 1;
+        END IF;
+        --
+        /*
+        ||Set Estimated Quantity.
+        */
+        lt_boq_tab(i).boq_est_quantity := lt_boq_tab(i).boq_est_dim1
+                                          * NVL(lt_boq_tab(i).boq_est_dim2,1)
+                                          * NVL(lt_boq_tab(i).boq_est_dim3,1);
+        /*
+        ||Check Quantity.
+        */
+        IF lt_boq_tab(i).boq_est_quantity < lr_sta.sta_min_quantity
+         AND lt_boq_tab(i).boq_est_quantity != 0
+         THEN
+            raise_application_error(-20035,'Estimated Quantity Is Below The Minimum Quantity.');
+        END IF;
+        --
+        IF lt_boq_tab(i).boq_est_quantity > lr_sta.sta_max_quantity
+         AND lt_boq_tab(i).boq_est_quantity != 0
+         THEN
+            raise_application_error(-20036,'Estimated Quantity Is Above The Maximum Quantity.');
+        END IF;
+        /*
+        ||Calculate Estimated Labour
+        */
+        lt_boq_tab(i).boq_est_labour := lt_boq_tab(i).boq_est_quantity * NVL(lr_sta.sta_labour_units,0);
+        /*
+        ||Validate Estimated Rate.
+        */
+        lt_boq_tab(i).boq_est_rate := lr_sta.sta_rate;
+        /*
+        ||Validate Estimated Cost.
+        */
+        IF lt_boq_tab(i).boq_est_cost IS NULL
+         OR lt_boq_tab(i).boq_est_cost != ROUND((lt_boq_tab(i).boq_est_rate * lt_boq_tab(i).boq_est_quantity),2)
+         THEN
+            lt_boq_tab(i).boq_est_cost := ROUND((lt_boq_tab(i).boq_est_rate * lt_boq_tab(i).boq_est_quantity),2);
+        END IF;
+        --
+      END LOOP;
+      --
+  ELSE
+      IF((pi_sys_flag = 'D' and lv_usetremodd = 'Y') OR
+         (pi_sys_flag = 'L' and lv_usetremodl = 'Y'))
+       THEN
+          --
+          mai.get_tre_boqs(pi_admin_unit         => pi_admin_unit
+                          ,pi_treat_code         => pi_rep_tre_treat_code
+                          ,pi_atv_acty_area_code => pi_atv_acty_area_code
+                          ,pi_defect_code        => pi_def_defect_code
+                          ,pi_sys_flag           => pi_sys_flag
+                          ,po_results            => lt_tre_boqs_tab);
+          --
+          FOR i IN 1..lt_tre_boqs_tab.count LOOP
+            --
+            lt_boq_tab(i).boq_work_flag      := 'D';
+            lt_boq_tab(i).boq_defect_id      := pi_def_defect_id;
+            lt_boq_tab(i).boq_rep_action_cat := pi_rep_action_cat;
+            lt_boq_tab(i).boq_wol_id         := 0;
+            lt_boq_tab(i).boq_date_created   := pi_rep_created_date;
+            lt_boq_tab(i).boq_sta_item_code  := lt_tre_boqs_tab(i).boq_sta_item_code;
+            lt_boq_tab(i).boq_item_name      := lt_tre_boqs_tab(i).sta_item_name;
+            lt_boq_tab(i).boq_est_dim1       := lt_tre_boqs_tab(i).boq_est_dim1;
+            lt_boq_tab(i).boq_est_dim2       := lt_tre_boqs_tab(i).boq_est_dim2;
+            lt_boq_tab(i).boq_est_dim3       := lt_tre_boqs_tab(i).boq_est_dim3;
+            lt_boq_tab(i).boq_est_quantity   := lt_tre_boqs_tab(i).boq_est_quantity;
+            lt_boq_tab(i).boq_est_rate       := lt_tre_boqs_tab(i).boq_est_rate;
+            lt_boq_tab(i).boq_est_cost       := lt_tre_boqs_tab(i).boq_est_cost;
+            lt_boq_tab(i).boq_est_labour     := lt_tre_boqs_tab(i).boq_est_labour;
+            --
+          END LOOP;
+      END IF;
+  END IF;
+  /*
+  ||Assign The Validated Table To The Output Table.
+  */
+  pio_boq_tab := lt_boq_tab;
+  --
+END validate_repair_boqs;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE ins_boqs(pi_boq_tab IN boq_tab) IS
---  --
---  lt_boq_tab  boq_tab;
---  --
---BEGIN
---  --
---  lt_boq_tab := pi_boq_tab;
---  /*
---  ||Check The BOQ Id (Primary Key).
---  */
---  FOR i IN 1..lt_boq_tab.count LOOP
---    --
---    IF lt_boq_tab(i).boq_id IS NULL
---     THEN
---        lt_boq_tab(i).boq_id := get_next_id('boq_id_seq');
---    END IF;
---    --
---  END LOOP;
---  /*
---  ||Insert The BOQs.
---  */
---  FORALL i IN 1 .. lt_boq_tab.COUNT
---    INSERT
---      INTO boq_items
---    VALUES lt_boq_tab(i)
---         ;
---  --
---EXCEPTION
---  WHEN others
---   THEN
---      raise_application_error(-20042, 'Error Occured While Creating BOQs : '||SQLERRM);
---END ins_boqs;
+PROCEDURE ins_boqs(pi_boq_tab IN boq_tab) IS
+  --
+  lt_boq_tab  boq_tab;
+  --
+BEGIN
+  --
+  lt_boq_tab := pi_boq_tab;
+  /*
+  ||Check The BOQ Id (Primary Key).
+  */
+  FOR i IN 1..lt_boq_tab.count LOOP
+    --
+    IF lt_boq_tab(i).boq_id IS NULL
+     THEN
+        lt_boq_tab(i).boq_id := get_next_id('boq_id_seq');
+    END IF;
+    --
+  END LOOP;
+  /*
+  ||Insert The BOQs.
+  */
+  FORALL i IN 1 .. lt_boq_tab.COUNT
+    INSERT
+      INTO boq_items
+    VALUES lt_boq_tab(i)
+         ;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      raise_application_error(-20042, 'Error Occured While Creating BOQs : '||SQLERRM);
+END ins_boqs;
 --
 -----------------------------------------------------------------------------
 --
@@ -1042,1372 +1042,1374 @@ END add_to_budget;
 --
 -----------------------------------------------------------------------------
 --This Procedure Is Intended To Emulate The Form mai3801.
---
---PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
---                                  ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
---                                  ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
---                                  ,pi_con_id            IN  contracts.con_id%TYPE
---                                  ,pi_interim_payment   IN  work_orders.wor_interim_payment_flag%TYPE
---                                  ,pi_priority          IN  work_orders.wor_priority%TYPE
---                                  ,pi_cost_centre       IN  work_orders.wor_coc_cost_centre%TYPE
---                                  ,pi_road_group_id     IN  nm_elements_all.ne_id%TYPE
---                                  ,pi_tma_register_flag IN  work_orders.wor_register_flag%TYPE
---                                  ,pi_contact           IN  work_orders.wor_contact%TYPE
---                                  ,pi_job_number        IN  work_orders.wor_job_number%TYPE
---                                  ,pi_rechargeable      IN  work_orders.wor_rechargeable%TYPE
---                                  ,pi_date_raised       IN  work_orders.wor_date_raised%TYPE
---                                  ,pi_target_date       IN  work_orders.wor_est_complete%TYPE
---                                  ,pi_defects           IN  def_rep_list_in_tab
---                                  ,pi_defect_boqs       IN  boq_tab
---                                  ,pi_commit            IN  VARCHAR2
---                                  ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
---                                  ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
---                                  ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab)
---  IS
---  --
---  lv_work_order_no  work_orders.wor_works_order_no%TYPE;
---  --
---  lv_sys_flag           VARCHAR2(1);
---  lv_worrefgen          hig_option_values.hov_value%TYPE := hig.get_sysopt('WORREFGEN');
---  lv_gisgrptyp          hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPTYP');
---  lv_gisgrpl            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPL');
---  lv_gisgrpd            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPD');
---  lv_dumconcode         hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DUMCONCODE'),'DEFAULT');
---  lv_scheme_type_upd    hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPU'),'Y');
---  lv_def_scheme_type_l  hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPL'),'LR');
---  lv_def_scheme_type_d  hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPD'),'RD');
---  lv_user_admin_unit    nm_admin_units_all.nau_admin_unit%TYPE;
---  lv_road_group_id      nm_elements_all.ne_id%TYPE;
---  lv_rse_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
---  lv_rse_sys_flag       VARCHAR2(1);
---  lv_work_code          item_code_breakdowns.icb_work_code%TYPE;
---  lv_scheme_type        work_orders.wor_scheme_type%TYPE;
---  lv_con_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
---  lv_discount_group     org_units.oun_cng_disc_group%TYPE;
---  lv_wor_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
---  lv_bud_rse_he_id      nm_elements_all.ne_id%TYPE;
---  lv_icb_id             item_code_breakdowns.icb_id%TYPE;
---  lv_date_raised        work_orders.wor_date_raised%TYPE;
---  --
---  lv_wor_est_cost          work_orders.wor_est_cost%TYPE := 0;
---  lv_wor_est_labour        work_orders.wor_est_labour%TYPE := 0;
---  lv_wor_est_balancing_sum work_orders.wor_est_balancing_sum%TYPE := 0;
---  --
---  lv_wol_not_done    hig_status_codes.hsc_status_code%TYPE;
---  lv_wol_instructed  hig_status_codes.hsc_status_code%TYPE;
---  lv_def_instructed  hig_status_codes.hsc_status_code%TYPE;
---  lv_def_available   hig_status_codes.hsc_status_code%TYPE;
---  --
---  lv_wol_null_boq_exists BOOLEAN := FALSE;
---  lv_wor_null_boq_exists BOOLEAN := FALSE;
---  --
---  TYPE wol_rec IS RECORD(wol_id              work_order_lines.wol_id%TYPE
---                        ,wol_works_order_no  work_order_lines.wol_works_order_no%TYPE
---                        ,wol_rse_he_id       work_order_lines.wol_rse_he_id%TYPE
---                        ,wol_siss_id         work_order_lines.wol_siss_id%TYPE
---                        ,wol_icb_work_code   work_order_lines.wol_icb_work_code%TYPE
---                        ,wol_act_area_code   work_order_lines.wol_act_area_code%TYPE
---                        ,wol_def_defect_id   work_order_lines.wol_def_defect_id%TYPE
---                        ,wol_rep_action_cat  work_order_lines.wol_rep_action_cat%TYPE
---                        ,wol_flag            work_order_lines.wol_flag%TYPE
---                        ,wol_status_code     work_order_lines.wol_status_code%TYPE
---                        ,wol_wor_flag        work_order_lines.wol_wor_flag%TYPE
---                        ,wol_date_created    work_order_lines.wol_date_created%TYPE
---                        ,wol_bud_id          work_order_lines.wol_bud_id%TYPE
---                        ,wol_est_cost        work_order_lines.wol_est_cost%TYPE
---                        ,wol_est_labour      work_order_lines.wol_est_labour%TYPE);
---  TYPE wol_tab IS TABLE OF wol_rec INDEX BY BINARY_INTEGER;
---  lt_wol wol_tab;
---  --
---  lt_boq boq_tab;
---  lv_boq_tab_ind PLS_INTEGER := 1;
---  --
---  TYPE selected_repairs_rec IS RECORD(rep_rse_he_id          repairs.rep_rse_he_id%TYPE
---                                     ,def_siss_id            defects.def_siss_id%TYPE
---                                     ,def_priority           defects.def_priority%TYPE
---                                     ,rep_atv_acty_area_code repairs.rep_atv_acty_area_code%TYPE
---                                     ,rep_def_defect_id      repairs.rep_def_defect_id%TYPE
---                                     ,rep_action_cat         repairs.rep_action_cat%TYPE
---                                     ,bud_id                 budgets.bud_id%TYPE
---                                     ,work_code              item_code_breakdowns.icb_work_code%TYPE);
---  TYPE selected_repairs_tab IS TABLE OF selected_repairs_rec INDEX BY BINARY_INTEGER;
---  lt_selected_repairs selected_repairs_tab;
---  --
---  TYPE repair_boqs_rec IS RECORD(boq_id            boq_items.boq_id%TYPE
---                                ,boq_sta_item_code boq_items.boq_sta_item_code%TYPE
---                                ,boq_est_quantity  boq_items.boq_est_quantity%TYPE
---                                ,boq_est_labour    boq_items.boq_est_labour%TYPE
---                                ,sta_rogue_flag    standard_items.sta_rogue_flag%TYPE);
---  TYPE repair_boqs_tab IS TABLE OF repair_boqs_rec INDEX BY BINARY_INTEGER;
---  lt_repair_boqs repair_boqs_tab;
---  --
---  PROCEDURE init_defaults
---    IS
---    --
---    PROCEDURE set_date_raised
---      IS
---    BEGIN
---      IF pi_date_raised IS NOT NULL
---       THEN
---          IF pi_date_raised > TRUNC(SYSDATE)
---           THEN
---              raise_application_error(-20084,'Date Raised Must Be Less Than Or Equal To Todays Date.');
---          ELSE
---              lv_date_raised := pi_date_raised;
---          END IF;
---      ELSE
---          lv_date_raised := TRUNC(SYSDATE);
---      END IF;
---    END set_date_raised;
---    --
---    PROCEDURE ins_defect_list_temp
---      IS
---      --
---      lv_matching_defects NUMBER;
---      --
---    BEGIN
---      /*
---      ||If pi_commit wasn't 'Y' the last time
---      ||the procedure was called there may still
---      ||be records in the temp table.
---      */
---      DELETE
---        FROM defect_list_temp;
---      /*
---      ||Insert the supplied Defect Ids
---      ||into the temp table.
---      */
---      nm_debug.debug('inserting '||pi_defects.count||'records into defect_list_temp');
---      FORALL i IN 1..pi_defects.count
---      INSERT
---        INTO defect_list_temp
---      VALUES pi_defects(i)
---           ;
---      /*
---      ||Make sure all supplied Defect Ids exist.
---      */
---      SELECT count(*)
---        INTO lv_matching_defects
---        FROM defects
---            ,repairs
---       WHERE rep_def_defect_id = def_defect_id
---         AND (def_defect_id,rep_action_cat) IN(SELECT dlt_defect_id
---                                                     ,dlt_rep_action_cat
---                                                 FROM defect_list_temp)
---           ;
---      --
---      IF lv_matching_defects != pi_defects.count
---       THEN
---          raise_application_error(-20072,'Supplied List Of Defects Contains Invalid Ids');
---      END IF;
---      --
---    EXCEPTION
---      WHEN dup_val_on_index
---       THEN
---          raise_application_error(-20071,'Supplied List Of Defects Contains Duplicates');
---      WHEN others
---       THEN
---          RAISE;
---    END ins_defect_list_temp;
---    --
---    PROCEDURE validate_user
---      IS
---    BEGIN
---      SELECT hus_admin_unit
---        INTO lv_user_admin_unit
---        FROM hig_users
---       WHERE hus_user_id = pi_user_id
---           ;
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_user_id)||'].');
---      WHEN others
---       THEN
---          RAISE;
---    END validate_user;
---    --
---    PROCEDURE validate_contract
---      IS
---      --
---      lv_con_code contracts.con_code%TYPE;
---      --
---    BEGIN
---      SELECT con_code
---            ,con_admin_org_id
---            ,oun_cng_disc_group
---        INTO lv_con_code
---            ,lv_con_admin_unit
---            ,lv_discount_group
---        FROM org_units
---            ,contracts
---       WHERE con_id = pi_con_id
---         AND lv_date_raised BETWEEN NVL(con_start_date, lv_date_raised)
---                                AND NVL(con_end_date  , lv_date_raised)
---         AND ((con_admin_org_id IN(SELECT hag_child_admin_unit
---                                     FROM hig_admin_groups
---                                    WHERE hag_parent_admin_unit = lv_user_admin_unit))
---              OR con_code = lv_dumconcode)
---         AND con_contr_org_id = oun_org_id
---           ;
---      --
---      IF lv_con_code = lv_dumconcode
---       THEN
---          lv_wor_admin_unit := lv_con_admin_unit;
---      ELSE
---          lv_wor_admin_unit := lv_user_admin_unit;
---      END IF;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20063,'Invalid Contract Id Supplied.');
---      WHEN others
---       THEN
---          RAISE;
---    END validate_contract;
---    --
---    PROCEDURE validate_interim_flag
---      IS
---    BEGIN
---      --
---      IF pi_interim_payment IS NOT NULL
---       AND pi_interim_payment NOT IN ('Y', 'N')
---       THEN
---          raise_application_error(-20081,'Invalid Interim Flag Supplied.');
---      END IF;
---      --
---    END validate_interim_flag;
---    --
---    PROCEDURE validate_rechargeable
---      IS
---    BEGIN
---      --
---      IF pi_rechargeable IS NOT NULL
---       AND pi_rechargeable NOT IN ('Y', 'N')
---       THEN
---          raise_application_error(-20089,'Invalid Rechargeable Flag Supplied.');
---      END IF;
---      --
---    END validate_rechargeable;
---    --
---    PROCEDURE validate_tma_register_flag(pi_flag IN VARCHAR2)
---      IS
---    BEGIN
---      --
---      IF pi_flag IS NOT NULL
---       AND pi_flag NOT IN ('Y', 'N')
---       THEN
---          raise_application_error(-20088,'Invalid TMA Register Flag Supplied.');
---      END IF;
---      --
---    END validate_tma_register_flag;
---    --
---    PROCEDURE validate_wo_priority
---      IS
---      --
---      lv_dummy NUMBER;
---      --
---    BEGIN
---      --
---      IF pi_priority IS NOT NULL
---       THEN
---          SELECT 1
---            INTO lv_dummy
---            FROM hig_codes
---           WHERE hco_domain = 'WOR_PRIORITY'
---             AND hco_code   = pi_priority
---             AND lv_date_raised BETWEEN NVL(hco_start_date, lv_date_raised)
---                                    AND NVL(hco_end_date, lv_date_raised)
---               ;
---      END IF;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20082,'Invalid Work Order Priority Supplied.');
---      WHEN others
---       THEN
---          RAISE;
---    END validate_wo_priority;
---    --
---    PROCEDURE validate_cost_centre
---      IS
---      --
---      lv_dummy NUMBER;
---      --
---    BEGIN
---      --
---      IF pi_cost_centre IS NOT NULL
---       THEN
---          SELECT 1
---            INTO lv_dummy
---            FROM cost_centres
---                ,hig_admin_groups
---           WHERE hag_parent_admin_unit = lv_user_admin_unit
---             AND hag_child_admin_unit  = coc_org_id
---             AND coc_cost_centre       = pi_cost_centre
---             AND lv_date_raised BETWEEN NVL(coc_start_date, lv_date_raised)
---                                    AND NVL(coc_end_date, lv_date_raised)
---               ;
---      END IF;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20080,'Invalid Cost Centre Supplied.');
---      WHEN others
---       THEN
---          RAISE;
---    END validate_cost_centre;
---    --
---    PROCEDURE validate_target_complete
---      IS
---      --
---      lv_dummy NUMBER;
---      --
---    BEGIN
---      --
---      IF pi_target_date IS NOT NULL
---       AND pi_target_date < lv_date_raised
---       THEN
---          raise_application_error(-20086,'Target Complete Date Should Not Be Before The Date Raised.');
---      END IF;
---      --
---    END validate_target_complete;
---    --
---    PROCEDURE validate_road_group(pi_group_id IN nm_elements_all.ne_id%TYPE)
---      IS
---    BEGIN
---      --
---      SELECT rse_he_id
---            ,rse_admin_unit
---            ,rse_sys_flag
---        INTO lv_road_group_id
---            ,lv_rse_admin_unit
---            ,lv_sys_flag
---        FROM road_groups
---       WHERE rse_he_id = pi_group_id
---           ;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20087,'Invalid Road Group Id Supplied.');
---      WHEN others
---       THEN
---          RAISE;
---    END validate_road_group;
---    --
---    PROCEDURE set_sys_flag(pi_defect_id IN defects.def_defect_id%TYPE
---                          ,pi_rse_he_id IN nm_elements_all.ne_id%TYPE)
---      IS
---      --
---      lv_def_he_id nm_elements_all.ne_id%TYPE;
---      --
---    BEGIN
---      --
---      IF pi_rse_he_id IS NOT NULL
---       THEN
---          validate_road_group(pi_rse_he_id);
---      ELSE
---          SELECT def_ity_sys_flag
---                ,def_rse_he_id
---            INTO lv_sys_flag
---                ,lv_def_he_id
---            FROM defects
---           WHERE def_defect_id = pi_defect_id
---               ;
---          --
---          BEGIN
---            IF lv_sys_flag IS NULL
---             THEN
---                SELECT rse_sys_flag
---                  INTO lv_sys_flag
---                  FROM road_sections
---                 WHERE rse_he_id = lv_def_he_id
---                     ;
---            END IF;
---          EXCEPTION
---           WHEN others
---            THEN
---               null;
---          END;
---      END IF;
---      --
---      IF lv_sys_flag IS NULL
---       THEN
---          raise_application_error(-20074,'Unable To Obtain sys_flag.');
---      END IF;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20065,'Invalid Defect Id Supplied.');
---      WHEN others
---       THEN
---          RAISE;
---    END set_sys_flag;
---    --
---    PROCEDURE set_road_group(pi_group_name IN VARCHAR2)
---      IS
---    BEGIN
---      --
---      SELECT rse_he_id
---            ,rse_admin_unit
---        INTO lv_road_group_id
---            ,lv_rse_admin_unit
---        FROM road_groups
---       WHERE rse_unique = pi_group_name
---           ;
---      --
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20060,'Cannot Set Road Group. Please Check Product Options GISGRPTYP, GISGRPL and GISGRPD');
---      WHEN others
---       THEN
---          RAISE;
---    END set_road_group;
---    --
---    PROCEDURE get_wol_not_done
---      IS
---    BEGIN
---      SELECT hsc_status_code
---        INTO lv_wol_not_done
---        FROM hig_status_codes
---       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
---         AND hsc_allow_feature5 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
---           ;
---    EXCEPTION
---      WHEN too_many_rows
---       THEN
---          raise_application_error(-20059,'Too Many Values Defined For Work Order Line NOT_DONE Status');
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20055,'Cannot Obtain Value For Work Order Line NOT_DONE Status');
---      WHEN others
---       THEN
---          RAISE;
---    END get_wol_not_done;
---    --
---    PROCEDURE get_wol_instructed
---      IS
---    BEGIN
---      SELECT hsc_status_code
---        INTO lv_wol_instructed
---        FROM hig_status_codes
---       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
---         AND hsc_allow_feature1 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
---           ;
---    EXCEPTION
---      WHEN too_many_rows
---       THEN
---          raise_application_error(-20058,'Too Many Values Defined For Work Order Line INSTRUCTED Status');
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20054,'Cannot Obtain Value For Work Order Line INSTRUCTED Status');
---      WHEN others
---       THEN
---          RAISE;
---    END get_wol_instructed;
---    --
---    PROCEDURE get_def_instructed
---      IS
---    BEGIN
---      SELECT hsc_status_code
---        INTO lv_def_instructed
---        FROM hig_status_codes
---       WHERE hsc_domain_code = 'DEFECTS'
---         AND hsc_allow_feature3 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
---           ;
---    EXCEPTION
---      WHEN too_many_rows
---       THEN
---          raise_application_error(-20057,'Too Many Values Defined For Defect INSTRUCTED Status');
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20053,'Cannot Obtain Value For Defect INSTRUCTED Status');
---      WHEN others
---       THEN
---          RAISE;
---    END get_def_instructed;
---    --
---    PROCEDURE get_def_available
---      IS
---    BEGIN
---      SELECT hsc_status_code
---        INTO lv_def_available
---        FROM hig_status_codes
---       WHERE hsc_domain_code = 'DEFECTS'
---         AND hsc_allow_feature2 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
---           ;
---    EXCEPTION
---      WHEN too_many_rows
---       THEN
---          raise_application_error(-20056,'Too Many Values Defined For Defect AVAILABLE Status');
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20052,'Cannot Obtain Value For Defect AVAILABLE Status');
---      WHEN others
---       THEN
---          RAISE;
---    END get_def_available;
---    --
---    PROCEDURE set_scheme_type
---      IS
---      --
---      PROCEDURE validate_scheme_type
---        IS
---      BEGIN
---        SELECT icb_work_code
---          INTO lv_work_code
---          FROM item_code_breakdowns
---         WHERE icb_type_of_scheme = lv_scheme_type
---           AND icb_dtp_flag       = lv_sys_flag
---             ;
---      EXCEPTION
---        WHEN no_data_found
---         THEN
---            raise_application_error(-20066,'Invalid Scheme Type');
---        WHEN too_many_rows
---         THEN
---            lv_work_code := NULL;
---        WHEN others
---         THEN
---            RAISE;
---      END validate_scheme_type;
---      --
---    BEGIN
---      /*
---      ||Determine The Scheme Type To Use.
---      */
---      IF lv_scheme_type_upd = 'Y'
---       AND pi_scheme_type IS NOT NULL
---       THEN
---          lv_scheme_type := pi_scheme_type;
---      ELSE
---          IF lv_sys_flag = 'L'
---           THEN
---              lv_scheme_type := lv_def_scheme_type_l;
---          ELSE
---              lv_scheme_type := lv_def_scheme_type_d;
---          END IF;
---      END IF;
---      /*
---      ||Now Validate The Scheme Type
---      ||And Set The Work Code.
---      */
---      validate_scheme_type;
---      --
---    END set_scheme_type;
---    --
---  BEGIN
---    /*
---    ||Validate/Default the Date Raised.
---    */
---    set_date_raised;
---    /*
---    ||If No Defects Have Been Specified Raise An Error.
---    */
---    IF pi_defects.count = 0
---     THEN
---        raise_application_error(-20070,'Please Specify At Least One Defect For The Work Order.');
---    END IF;
---    /*
---    ||Insert The Defect Ids Into Temp Table
---    ||And Validate Against The Defects Table.
---    */
---    nm_debug.debug('ins_defect_list_temp');
---    ins_defect_list_temp;
---    /*
---    ||Get The Sys Flag For The Work Order
---    ||And Validate The Supplied Road Group Id.
---    */
---    nm_debug.debug('set_sys_flag');
---    set_sys_flag(pi_defect_id => pi_defects(1).dlt_defect_id
---                ,pi_rse_he_id => pi_road_group_id);
---    /*
---    ||Default The Road Group For The Work Order
---    ||If Not Suppled.
---    */
---    nm_debug.debug('set_road_group');
---    IF lv_road_group_id IS NULL
---     THEN
---        IF lv_sys_flag = 'L'
---         THEN
---            set_road_group(lv_gisgrpl);
---        ELSE
---            set_road_group(lv_gisgrpd);
---        END IF;
---    END IF;
---    /*
---    ||Get The Users Admin Unit.
---    */
---    nm_debug.debug('validate_user');
---    validate_user;
---    /*
---    ||Get The Contracts Admin Unit.
---    */
---    nm_debug.debug('validate_contract');
---    validate_contract;
---    /*
---    ||Validate/Default Scheme Type.
---    */
---    nm_debug.debug('set_scheme_type');
---    set_scheme_type;
---    /*
---    ||Validate The Interim Flag Supplied.
---    */
---    validate_interim_flag;
---    /*
---    ||Validate The Work Order Priority Supplied.
---    */
---    validate_wo_priority;
---    /*
---    ||Validate The Cost Centre Supplied.
---    */
---    validate_cost_centre;
---    /*
---    ||Validate The WO TMA Register Flag.
---    */
---    validate_tma_register_flag(pi_tma_register_flag);
---    /*
---    ||Validate The Rechargeable Flag.
---    */
---    validate_rechargeable;
---    /*
---    ||Validate The Target Complete Date Supplied.
---    */
---    validate_target_complete;
---    /*
---    ||Get Status Codes.
---    */
---    nm_debug.debug('get_wol_not_done');
---    get_wol_not_done;
---    nm_debug.debug('get_wol_instructed');
---    get_wol_instructed;
---    nm_debug.debug('get_def_instructed');
---    get_def_instructed;
---    nm_debug.debug('get_def_available');
---    get_def_available;
---    --
---  END init_defaults;
---  --
---  FUNCTION validate_budget(pi_budget_id   IN budgets.bud_id%TYPE
---                          ,pi_defect_id   IN defects.def_defect_id%TYPE)
---    RETURN BOOLEAN IS
---    --
---    lv_retval BOOLEAN := FALSE;
---    --
---  BEGIN
---    /*
---    ||Init Variables.
---    */
---    lv_bud_rse_he_id := NULL;
---    lv_icb_id        := NULL;
---    lv_work_code     := NULL;
---    --
---    SELECT bud_rse_he_id
---          ,icb_id
---          ,icb_work_code
---      INTO lv_bud_rse_he_id
---          ,lv_icb_id
---          ,lv_work_code
---      FROM item_code_breakdowns
---          ,budgets
---          ,financial_years
---     WHERE TRUNC(fyr_end_date) >= lv_date_raised
---       AND fyr_id = bud_fyr_id
---       AND bud_id = pi_budget_id
---       AND bud_icb_item_code = icb_item_code
---       AND bud_icb_sub_item_code = icb_sub_item_code
---       AND bud_icb_sub_sub_item_code = icb_sub_sub_item_code
---       AND bud_sys_flag = icb_dtp_flag
---       AND icb_type_of_scheme = lv_scheme_type
---       AND EXISTS(SELECT 1
---                    FROM defects
---                   WHERE def_defect_id = pi_defect_id
---                     AND (def_rse_he_id IN(SELECT nm_ne_id_of
---                                             FROM nm_members
---                                            WHERE nm_type = 'G'
---                                          CONNECT BY
---                                            PRIOR nm_ne_id_of = nm_ne_id_in
---                                            START
---                                             WITH nm_ne_id_in = bud_rse_he_id)
---                          OR def_rse_he_id = NVL(bud_rse_he_id,def_rse_he_id)))
---         ;
---    --
---    RETURN TRUE;
---    --
---  EXCEPTION
---    WHEN no_data_found
---     THEN
---        RETURN FALSE;
---    WHEN others
---     THEN
---        RAISE;
---  END validate_budget;
---  --
---  PROCEDURE validate_and_replace_boqs(pi_defect_id      IN defects.def_defect_id%TYPE
---                                     ,pi_rep_action_cat IN repairs.rep_action_cat%TYPE
---                                     ,pi_boqs_tab       IN boq_tab)
---    IS
---    --
---    lv_dummy boq_items.boq_id%TYPE;
---    --
---    lt_boqs boq_tab;
---    --
---  BEGIN
---    /*
---    ||Build A Table Of Supplied BOQs Related To This Defect/Repair For Validation.
---    */
---    FOR i IN 1..pi_boqs_tab.count LOOP
---      --
---      IF pi_boqs_tab(i).boq_rep_action_cat IS NULL
---       OR pi_boqs_tab(i).boq_defect_id IS NULL
---       THEN
---          raise_application_error(-20090,'No BOQ Defect Id or Repair Action Category Specified.');
---      END IF;
---      --
---      IF pi_boqs_tab(i).boq_defect_id = pi_defect_id
---       AND pi_boqs_tab(i).boq_rep_action_cat = pi_rep_action_cat
---       THEN
---          lt_boqs(lt_boqs.count+1) := pi_boqs_tab (i);
---      END IF;
---      --
---    END LOOP;
---    --
---    IF lt_boqs.count > 0
---     THEN
---        /*
---        ||Make Sure The BOQs Specified With A BOQ_ID
---        ||Belong To The Specified Defect/Repair.
---        */
---        FOR i IN 1..lt_boqs.count LOOP
---          --
---          IF lt_boqs(i).boq_id IS NOT NULL
---           THEN
---              --
---              BEGIN
---                SELECT boq_id
---                  INTO lv_dummy
---                  FROM boq_items
---                 WHERE boq_id = lt_boqs(i).boq_id
---                   AND boq_defect_id = pi_defect_id
---                   AND boq_rep_action_cat = pi_rep_action_cat
---                     ;
---              EXCEPTION
---                WHEN no_data_found
---                 THEN
---                    raise_application_error(-20091,'BOQ_ID ['||TO_CHAR(lt_boqs(i).boq_id)
---                                                 ||'] Is Not A Child Of The Specified Parent - Defect ['
---                                                 ||TO_CHAR(pi_defect_id)||'] Repair Type ['||pi_rep_action_cat||'].');
---                WHEN others
---                 THEN
---                    RAISE;
---              END;
---              --
---          END IF;
---          --
---        END LOOP;
---        /*
---        ||Validate And Build The New BOQs.
---        */
---        validate_repair_boqs(pi_def_defect_id      => pi_defect_id
---                            ,pi_rep_action_cat     => pi_rep_action_cat
---                            ,pi_rep_created_date   => TRUNC(SYSDATE)
---                            ,pi_admin_unit         => NULL
---                            ,pi_rep_tre_treat_code => NULL
---                            ,pi_atv_acty_area_code => NULL
---                            ,pi_def_defect_code    => NULL
---                            ,pi_sys_flag           => NULL
---                            ,pio_boq_tab           => lt_boqs);
---        /*
---        ||Remove The Old BOQs.
---        */
---        DELETE boq_items
---         WHERE boq_defect_id = pi_defect_id
---           AND boq_rep_action_cat = pi_rep_action_cat
---             ;
---        /*
---        ||Insert The New BOQs.
---        */
---        ins_boqs(pi_boq_tab => lt_boqs);
---        --
---    END IF;
---    --
---  END validate_and_replace_boqs;
---  --
---  PROCEDURE select_defects
---    IS
---    --
---    lt_defect_repairs     mai_wo_api.def_rep_list_in_tab;
---    lr_selected_repair    selected_repairs_rec;
---    lt_defect_repair_boqs boq_tab;
---    --
---    PROCEDURE check_defect(pi_budget_id   IN budgets.bud_id%TYPE
---                          ,pi_defect_id   IN defects.def_defect_id%TYPE
---                          ,pi_repair_type IN repairs.rep_action_cat%TYPE
---                          ,pi_work_code   IN item_code_breakdowns.icb_work_code%TYPE)
---      IS
---      --
---      lv_reason VARCHAR2(500);
---      --
---    BEGIN
---      /*
---      ||Check The Defect/Repair Against The Selection Criteria.
---      */
---      SELECT CASE WHEN def_status_code NOT IN(lv_def_available,lv_def_instructed)
---                    OR def_date_compl IS NOT NULL
---                    OR rep_date_completed IS NOT NULL
---                   THEN 'Defect/Repair Is Already Complete.'
---                  WHEN NVL(rep_superseded_flag,'N') = 'Y'
---                   THEN 'Repair Has Been Superseded.'
---                  WHEN rep_action_cat NOT IN('P','T')
---                   THEN 'Invalid Repair Type.'
---                  WHEN def_notify_org_id IS NOT NULL
---                   AND def_rechar_org_id IS NULL
---                   THEN 'Notifiable Organisation Specifed On Defect But No Rechargeable Organisation Specified.'
---                  WHEN def_rse_he_id != rep_rse_he_id
---                   THEN 'Repair And Defect Are On Different Sections.'
---                  WHEN EXISTS(SELECT 1
---                                FROM work_order_lines
---                               WHERE wol_def_defect_id  = rep_def_defect_id
---                                 AND wol_rep_action_cat = rep_action_cat
---                                 AND wol_status_code   != lv_wol_not_done)
---                   THEN 'Repair Is Already On A Work Order.'
---                  WHEN NOT EXISTS(SELECT 1
---                                    FROM ihms_conversions
---                                   WHERE ihc_atv_acty_area_code = rep_atv_acty_area_code
---                                     AND ihc_atv_acty_area_code = def_atv_acty_area_code
---                                     AND ihc_icb_id = lv_icb_id)
---                   THEN 'Defect Activity Code Is Invalid For The Budget Specified.'
---                  WHEN NOT EXISTS(SELECT 1
---                                    FROM hig_admin_groups
---                                        ,road_sections
---                                   WHERE hag_parent_admin_unit = lv_con_admin_unit
---                                     AND hag_child_admin_unit  = rse_admin_unit
---                                     AND rse_he_id             = def_rse_he_id)
---                   THEN 'Defect Is On A Section Outside Of The Admin Unit Of The Specified Contract.'
---                  WHEN def_rse_he_id NOT IN((SELECT nm_ne_id_of
---                                               FROM nm_members
---                                              WHERE nm_type = 'G'
---                                            CONNECT BY
---                                              PRIOR nm_ne_id_of = nm_ne_id_in
---                                                AND nm_end_date IS NULL
---                                              START
---                                               WITH nm_ne_id_in = lv_road_group_id
---                                              UNION
---                                             SELECT ne_id
---                                               FROM nm_elements
---                                              WHERE ne_id = lv_road_group_id)
---                                          INTERSECT
---                                             SELECT nm_ne_id_of
---                                               FROM nm_members
---                                              WHERE nm_type = 'G'
---                                            CONNECT BY
---                                              PRIOR nm_ne_id_of = nm_ne_id_in
---                                                AND nm_end_date IS NULL
---                                              START
---                                               WITH nm_ne_id_in = NVL(lv_bud_rse_he_id,lv_road_group_id))
---                   THEN 'Defect Is On A Section That Is Not A Member Of The Specified Work Order Road Group.'
---                  WHEN lv_sys_flag != 'L'
---                   AND NOT EXISTS(SELECT 1
---                                    FROM road_segments_all
---                                        ,item_code_breakdowns
---                                   WHERE icb_id = lv_icb_id
---                                     AND DECODE(icb_rse_road_environment,null,rse_road_environment
---                                                                        , 'R',DECODE(rse_road_environment,'S','S'
---                                                                                                             ,'R')
---                                                                        , 'S',DECODE(rse_road_environment,'R','R'
---                                                                                                             ,'S')
---                                                                             ,icb_rse_road_environment)
---                                          = rse_road_environment
---                                     AND rse_he_id = def_rse_he_id)
---                   THEN 'Defect Is On A Section With An Invalid Environment Type For The Budget Specified.'
---                  ELSE NULL
---             END reason
---        INTO lv_reason
---        FROM repairs
---            ,defects
---       WHERE def_defect_id = pi_defect_id
---         AND def_defect_id = rep_def_defect_id
---         AND rep_action_cat = pi_repair_type
---           ;
---      --
---      IF lv_reason IS NULL
---       THEN
---          /*
---          ||The Repair Has Passed The Checks So Lock The Defect/Repair
---          ||Records And Add It To The List To Go On The Work Order.
---          */
---          SELECT rep_rse_he_id
---                ,def_siss_id
---                ,def_priority
---                ,rep_atv_acty_area_code
---                ,rep_def_defect_id
---                ,rep_action_cat
---                ,pi_budget_id
---                ,pi_work_code
---            INTO lr_selected_repair
---            FROM repairs
---                ,defects
---           WHERE def_defect_id  = pi_defect_id
---             AND def_defect_id  = rep_def_defect_id
---             AND rep_action_cat = pi_repair_type
---             FOR UPDATE
---              OF def_status_code
---                 NOWAIT
---               ;
---          --
---          lt_selected_repairs(lt_selected_repairs.count+1) := lr_selected_repair;
---          po_defects_on_wo(po_defects_on_wo.count+1).defect_id    := pi_defect_id;
---          po_defects_on_wo(po_defects_on_wo.count).rep_action_cat := pi_repair_type;
---          --
---      ELSE
---          /*
---          ||Repair Failed Checks So Add It To The List
---          ||Of Defect/Repairs Not On The Work Order.
---          */
---          po_defects_not_on_wo(po_defects_not_on_wo.count+1).defect_id    := pi_defect_id;
---          po_defects_not_on_wo(po_defects_not_on_wo.count).rep_action_cat := pi_repair_type;
---          po_defects_not_on_wo(po_defects_not_on_wo.count).reason         := lv_reason;
---          nm_debug.debug('repair not on WO : '||pi_defect_id||' : '||pi_repair_type||' : '||lv_reason);
---      END IF;
---    END check_defect;
---    --
---  BEGIN
---    --
---    nm_debug.debug('Fetching Defects');
---    /*
---    ||Get The Supplied Defects From
---    ||The Temp Table.
---    */
---    SELECT *
---      BULK COLLECT
---      INTO lt_defect_repairs
---      FROM defect_list_temp
---         ;
---    --
---    nm_debug.debug(lt_defect_repairs.count||' records fetched');
---    FOR i IN 1..lt_defect_repairs.count LOOP
---      /*
---      ||Validate The Budget.
---      */
---      IF validate_budget(pi_budget_id   => lt_defect_repairs(i).dlt_budget_id
---                        ,pi_defect_id   => lt_defect_repairs(i).dlt_defect_id)
---       THEN
---          /*
---          ||Budget Is Valid So Check That The
---          ||Defect Is Valid For The Work Order.
---          */
---          check_defect(pi_budget_id   => lt_defect_repairs(i).dlt_budget_id
---                      ,pi_defect_id   => lt_defect_repairs(i).dlt_defect_id
---                      ,pi_repair_type => lt_defect_repairs(i).dlt_rep_action_cat
---                      ,pi_work_code   => lv_work_code);
---      ELSE
---          /*
---          ||Repair Failed Budget Check So Add It
---          ||To The List Of Defect/Repairs Not On
---          ||The Work Order.
---          */
---          po_defects_not_on_wo(po_defects_not_on_wo.count+1).defect_id    := lt_defect_repairs(i).dlt_defect_id;
---          po_defects_not_on_wo(po_defects_not_on_wo.count).rep_action_cat := lt_defect_repairs(i).dlt_rep_action_cat;
---          po_defects_not_on_wo(po_defects_not_on_wo.count).reason         := 'Invalid Budget Supplied.';
---      END IF;
---      --
---    END LOOP;
---nm_debug.debug('generate WOLs');
---    /*
---    ||Generate The Work Order Lines For The Selected Defects.
---    */
---    FOR i IN 1..lt_selected_repairs.count LOOP
---      nm_debug.debug('Setting WOL Fields');
---      /*
---      ||Set The Work Order Line Columns.
---      */
---      lt_wol(i).wol_works_order_no := lv_work_order_no;
---      lt_wol(i).wol_rse_he_id      := lt_selected_repairs(i).rep_rse_he_id;
---      lt_wol(i).wol_siss_id        := lt_selected_repairs(i).def_siss_id;
---      lt_wol(i).wol_icb_work_code  := lt_selected_repairs(i).work_code;
---      lt_wol(i).wol_act_area_code  := lt_selected_repairs(i).rep_atv_acty_area_code;
---      lt_wol(i).wol_def_defect_id  := lt_selected_repairs(i).rep_def_defect_id;
---      lt_wol(i).wol_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
---      lt_wol(i).wol_flag           := 'D';
---      lt_wol(i).wol_status_code    := lv_wol_instructed;
---      lt_wol(i).wol_wor_flag       := 'D';
---      lt_wol(i).wol_date_created   := SYSDATE;
---      lt_wol(i).wol_bud_id         := lt_selected_repairs(i).bud_id;
---      lt_wol(i).wol_est_cost       := 0;
---      lt_wol(i).wol_est_labour     := 0;
---      /*
---      ||Reset The Null BOQ Cost WOL Level Flag.
---      */
---      lv_wol_null_boq_exists := FALSE;
---      --
---      /*
---      ||Process BOQs.
---      */
---      /*
---      ||Validate Any Supplied BOQs And Use Them To Replace The Existing Ones.
---      */
---      IF pi_defect_boqs.count > 0
---       THEN
---         validate_and_replace_boqs(pi_defect_id      => lt_selected_repairs(i).rep_def_defect_id
---                                  ,pi_rep_action_cat => lt_selected_repairs(i).rep_action_cat
---                                  ,pi_boqs_tab       => pi_defect_boqs);
---      END IF;
---      /*
---      ||Get Any Boq's For The Repair.
---      */
---      nm_debug.debug('Fetching BOQs');
---      SELECT boq_id
---            ,boq_sta_item_code
---            ,boq_est_quantity
---            ,boq_est_labour
---            ,sta_rogue_flag
---        BULK COLLECT
---        INTO lt_repair_boqs
---        FROM boq_items
---            ,standard_items
---       WHERE sta_item_code      = boq_sta_item_code
---         AND boq_rep_action_cat = lt_selected_repairs(i).rep_action_cat
---         AND boq_defect_id      = lt_selected_repairs(i).rep_def_defect_id
---         FOR UPDATE
---          OF boq_est_rate
---             NOWAIT
---             ;
---      --
---      FOR j IN 1..lt_repair_boqs.count LOOP
---        /*
---        ||Set The Identifiers For The BOQ Table.
---        */
---        nm_debug.debug('Setting BOQ Fields');
---        lt_boq(lv_boq_tab_ind).boq_id             := lt_repair_boqs(j).boq_id;
---        lt_boq(lv_boq_tab_ind).boq_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
---        lt_boq(lv_boq_tab_ind).boq_defect_id      := lt_selected_repairs(i).rep_def_defect_id;
---        /*
---        ||Update Work Order and Work Order Line Labour Units.
---        */
---        nm_debug.debug('Calc Labour Units');
---        IF lt_repair_boqs(j).boq_est_labour IS NOT NULL
---         THEN
---            lt_wol(i).wol_est_labour := lt_wol(i).wol_est_labour + lt_repair_boqs(j).boq_est_labour;
---            lv_wor_est_labour := lv_wor_est_labour + lt_repair_boqs(j).boq_est_labour;
---        END IF;
---        /*
---        ||Set The Rate For The BOQ From The Contract Item.
---        */
---        nm_debug.debug('Set BOQ Rate');
---        IF lt_repair_boqs(j).sta_rogue_flag != 'Y'
---         THEN
---            lt_boq(lv_boq_tab_ind).boq_est_rate := maiwo.reprice_item(p_item_code => lt_repair_boqs(j).boq_sta_item_code
---                                                                     ,p_con_id    => pi_con_id
---                                                                     ,p_rse_he_id => lt_selected_repairs(i).rep_rse_he_id
---                                                                     ,p_priority  => lt_selected_repairs(i).def_priority);
---        END IF;
---        /*
---        ||Calculate The Estimated Cost.
---        */
---        nm_debug.debug('Calc Costs');
---        IF lt_boq(lv_boq_tab_ind).boq_est_rate IS NOT NULL
---         THEN
---            BEGIN
---              /*
---              ||Update The BOQ Estimated Cost.
---              */
---              lt_boq(lv_boq_tab_ind).boq_est_cost := ROUND(lt_boq(lv_boq_tab_ind).boq_est_rate*lt_repair_boqs(j).boq_est_quantity,2);
---              --
---              IF NOT lv_wol_null_boq_exists
---               THEN
---                  /*
---                  ||No Null BOQ Rates Detected So Far
---                  ||On This WOL So Add The BOQ Estimated
---                  ||Cost To The WOL Total Estimated Cost.
---                  */
---                  BEGIN
---                  /*
---                  ||Update Work Order Line Total.
---                  */
---                  lt_wol(i).wol_est_cost := lt_wol(i).wol_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
---                  EXCEPTION
---                    /*
---                    ||Trap The Possibility Of The Value
---                    ||Being Too Large For The Column.
---                    */
---                    WHEN value_error
---                     THEN
---                        raise_application_error(-20077,'Value Too Large For Work Order Line Estimated Cost');
---                    WHEN others
---                     THEN
---                        RAISE;
---                  END;
---                  --
---              END IF;
---                --
---              IF NOT lv_wor_null_boq_exists
---               THEN
---                  /*
---                  ||No Null BOQ Rates Detected So Far
---                  ||On This WO So Add The BOQ Estimated
---                  ||Cost To The WO Total Estimated Cost.
---                  */
---                  BEGIN
---                    /*
---                    ||Update Work Order Total.
---                    */
---                    lv_wor_est_cost := lv_wor_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
---                  EXCEPTION
---                    /*
---                    ||Trap The Possibility Of The Value
---                    ||Being Too Large For The Column.
---                    */
---                    WHEN value_error
---                     THEN
---                        raise_application_error(-20076,'Value Too Large For Work Order Estimated Cost');
---                    WHEN others
---                     THEN
---                        RAISE;
---                  END;
---                  --
---              END IF;
---              --
---            EXCEPTION
---              /*
---              ||Trap The Possibility Of The Value
---              ||Being Too Large For The Column.
---              */
---              WHEN value_error
---               THEN
---                  lt_boq(lv_boq_tab_ind).boq_est_cost := NULL;
---                  lv_wol_null_boq_exists := TRUE;
---                  lv_wor_null_boq_exists := TRUE;
---              WHEN others
---               THEN
---                  RAISE;
---            END;
---        ELSE
---            lt_boq(lv_boq_tab_ind).boq_est_cost := NULL;
---            lv_wol_null_boq_exists := TRUE;
---            lv_wor_null_boq_exists := TRUE;
---        END IF;
---        --
---        lv_boq_tab_ind := lv_boq_tab_ind+1;
---        --
---      END LOOP; --lt_repair_boqs
---      /*
---      ||If Null BOQ Estimated Cost Detected
---      ||At WOL Level Nullify The WOL Estimated Cost.
---      */
---      IF lv_wol_null_boq_exists
---       THEN
---          lt_wol(i).wol_est_cost := NULL;
---      END IF;
---      --
---    END LOOP; --lt_selected_repairs
---    /*
---    ||If Null BOQ Estimated Cost Detected
---    ||At WO Level Nullify The WO Estimated Cost.
---    */
---    IF lv_wor_null_boq_exists
---     THEN
---        lv_wor_est_cost := NULL;
---    END IF;
---    /*
---    ||Repricing Caused No Errors So Get The WOL_IDs.
---    */
---    FOR i IN 1..lt_wol.count LOOP
---      --
---      lt_wol(i).wol_id := get_next_id('wol_id_seq');
---      --
---    END LOOP;
---    /*
---    ||Set The WOL_ID On The BOQs.
---    */
---    FOR i IN 1..lt_boq.count LOOP
---      --
---      FOR j IN 1..lt_wol.count LOOP
---        IF lt_wol(j).wol_def_defect_id = lt_boq(i).boq_defect_id
---         AND lt_wol(j).wol_rep_action_cat = lt_boq(i).boq_rep_action_cat
---         THEN
---            lt_boq(i).boq_wol_id := lt_wol(j).wol_id;
---            exit;
---        END IF;
---      END LOOP;
---      --
---    END LOOP;
---    --
---  END select_defects;
---  --
---BEGIN
---  --
---  nm_debug.debug_on;
---  /*
---  ||Initialise Defaults.
---  */
---  init_defaults;
---  /*
---  ||Generate Work Order No.
---  */
---  lv_work_order_no := mai.generate_works_order_no(p_con_id     => pi_con_id
---                                                 ,p_admin_unit => lv_wor_admin_unit);
---  /*
---  ||Determine Which Defects Will Go On The WO.
---  */
---  select_defects;
---  /*
---  ||Create The Work Order.
---  */
---  IF lt_wol.count > 0
---   THEN
---      /*
---      ||Calaculate The Estmated Balancing Sum.
---      */
---      lv_wor_est_balancing_sum := get_balancing_sum(pi_con_id,lv_wor_est_cost);
---      /*
---      ||Insert The Work Order.
---      */
---      INSERT
---        INTO work_orders
---            (wor_scheme_type
---            ,wor_works_order_no
---            ,wor_descr
---            ,wor_sys_flag
---            ,wor_rse_he_id_group
---            ,wor_flag
---            ,wor_con_id
---            ,wor_date_raised
---            ,wor_est_complete
---            ,wor_job_number
---            ,wor_peo_person_id
---            ,wor_icb_item_code
---            ,wor_icb_sub_item_code
---            ,wor_icb_sub_sub_item_code
---            ,wor_interim_payment_flag
---            ,wor_priority
---            ,wor_coc_cost_centre
---            ,wor_register_flag
---            ,wor_contact
---            ,wor_rechargeable
---            ,wor_est_cost
---            ,wor_est_labour
---            ,wor_est_balancing_sum
---            )
---      VALUES(lv_scheme_type
---            ,lv_work_order_no
---            ,pi_wo_descr
---            ,lv_sys_flag
---            ,lv_road_group_id
---            ,'D'
---            ,pi_con_id
---            ,lv_date_raised
---            ,pi_target_date
---            ,NVL(pi_job_number,'00000')
---            ,pi_user_id
---            ,substr(lv_work_code,1,2)
---            ,substr(lv_work_code,3,2)
---            ,substr(lv_work_code,5,2)
---            ,pi_interim_payment
---            ,pi_priority
---            ,pi_cost_centre
---            ,NVL(pi_tma_register_flag,'N')
---            ,pi_contact
---            ,pi_rechargeable
---            ,lv_wor_est_cost
---            ,lv_wor_est_labour
---            ,lv_wor_est_balancing_sum
---            )
---            ;
---      /*
---      ||Insert The Work Order Lines.
---      */
---      FORALL i IN 1..lt_wol.count
---      INSERT
---        INTO(SELECT wol_id
---                   ,wol_works_order_no
---                   ,wol_rse_he_id
---                   ,wol_siss_id
---                   ,wol_icb_work_code
---                   ,wol_act_area_code
---                   ,wol_def_defect_id
---                   ,wol_rep_action_cat
---                   ,wol_flag
---                   ,wol_status_code
---                   ,wol_wor_flag
---                   ,wol_date_created
---                   ,wol_bud_id
---                   ,wol_est_cost
---                   ,wol_est_labour
---               FROM work_order_lines)
---      VALUES lt_wol(i)
---           ;
---      /*
---      ||Update Defects.
---      */
---      FOR i IN 1..lt_wol.count LOOP
---        UPDATE defects
---           SET def_status_code       = lv_def_instructed
---              ,def_last_updated_date = SYSDATE
---              ,def_works_order_no    = lv_work_order_no
---         WHERE def_defect_id = lt_wol(i).wol_def_defect_id
---             ;
---      END LOOP;
---      /*
---      ||Update BOQs.
---      */
---      FOR i IN 1..lt_boq.count LOOP
---        UPDATE boq_items
---           SET boq_wol_id   = lt_boq(i).boq_wol_id
---              ,boq_est_rate = lt_boq(i).boq_est_rate
---              ,boq_est_cost = lt_boq(i).boq_est_cost
---         WHERE boq_id = lt_boq(i).boq_id
---             ;
---      END LOOP;
---      /*
---      ||Set The Output Parameters.
---      */
---      po_work_order_no := lv_work_order_no;
---      --
---  END IF;
---  /*
---  ||Commit If Required.
---  */
---  IF lt_wol.count > 0
---   THEN
---      IF NVL(pi_commit,'Y') = 'Y'
---       THEN
---          nm_debug.debug('Commit.');
---          COMMIT;
---      END IF;
---  ELSE
---      /*
---      ||No WO created so rollback to ensure
---      ||any updates (e.g. last wo number)
---      ||are undone.
---      */
---      ROLLBACK;
---  END IF;
---  --
-----  nm_debug.debug_off;
---  --
---EXCEPTION
---  WHEN OTHERS
---   THEN
---      ROLLBACK;
---      --
-----      nm_debug.debug_off;
---      --
---      RAISE;
---END create_defect_work_order;
+
+PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
+                                  ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
+                                  ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
+                                  ,pi_con_id            IN  contracts.con_id%TYPE
+                                  ,pi_interim_payment   IN  work_orders.wor_interim_payment_flag%TYPE
+                                  ,pi_priority          IN  work_orders.wor_priority%TYPE
+                                  ,pi_cost_centre       IN  work_orders.wor_coc_cost_centre%TYPE
+                                  ,pi_road_group_id     IN  nm_elements_all.ne_id%TYPE
+                                  ,pi_tma_register_flag IN  work_orders.wor_register_flag%TYPE
+                                  ,pi_contact           IN  work_orders.wor_contact%TYPE
+                                  ,pi_job_number        IN  work_orders.wor_job_number%TYPE
+                                  ,pi_rechargeable      IN  work_orders.wor_rechargeable%TYPE
+                                  ,pi_date_raised       IN  work_orders.wor_date_raised%TYPE
+                                  ,pi_target_date       IN  work_orders.wor_est_complete%TYPE
+                                  ,pi_defects           IN  def_rep_list_in_tab
+                                  ,pi_defect_boqs       IN  boq_tab
+                                  ,pi_commit            IN  VARCHAR2
+                                  ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
+                                  ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
+                                  ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab)
+  IS
+  --
+  lv_work_order_no  work_orders.wor_works_order_no%TYPE;
+  --
+  lv_sys_flag           VARCHAR2(1);
+  lv_worrefgen          hig_option_values.hov_value%TYPE := hig.get_sysopt('WORREFGEN');
+  lv_gisgrptyp          hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPTYP');
+  lv_gisgrpl            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPL');
+  lv_gisgrpd            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPD');
+  lv_dumconcode         hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DUMCONCODE'),'DEFAULT');
+  lv_scheme_type_upd    hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPU'),'Y');
+  lv_def_scheme_type_l  hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPL'),'LR');
+  lv_def_scheme_type_d  hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPD'),'RD');
+  lv_user_admin_unit    nm_admin_units_all.nau_admin_unit%TYPE;
+  lv_road_group_id      nm_elements_all.ne_id%TYPE;
+  lv_rse_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
+  lv_rse_sys_flag       VARCHAR2(1);
+  lv_work_code          item_code_breakdowns.icb_work_code%TYPE;
+  lv_scheme_type        work_orders.wor_scheme_type%TYPE;
+  lv_con_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
+  lv_discount_group     org_units.oun_cng_disc_group%TYPE;
+  lv_wor_admin_unit     nm_admin_units_all.nau_admin_unit%TYPE;
+  lv_bud_rse_he_id      nm_elements_all.ne_id%TYPE;
+  lv_icb_id             item_code_breakdowns.icb_id%TYPE;
+  lv_date_raised        work_orders.wor_date_raised%TYPE;
+  --
+  lv_wor_est_cost          work_orders.wor_est_cost%TYPE := 0;
+  lv_wor_est_labour        work_orders.wor_est_labour%TYPE := 0;
+  lv_wor_est_balancing_sum work_orders.wor_est_balancing_sum%TYPE := 0;
+  --
+  lv_wol_not_done    hig_status_codes.hsc_status_code%TYPE;
+  lv_wol_instructed  hig_status_codes.hsc_status_code%TYPE;
+  lv_def_instructed  hig_status_codes.hsc_status_code%TYPE;
+  lv_def_available   hig_status_codes.hsc_status_code%TYPE;
+  --
+  lv_wol_null_boq_exists BOOLEAN := FALSE;
+  lv_wor_null_boq_exists BOOLEAN := FALSE;
+  --
+  TYPE wol_rec IS RECORD(wol_id              work_order_lines.wol_id%TYPE
+                        ,wol_works_order_no  work_order_lines.wol_works_order_no%TYPE
+                        ,wol_rse_he_id       work_order_lines.wol_rse_he_id%TYPE
+                        ,wol_siss_id         work_order_lines.wol_siss_id%TYPE
+                        ,wol_icb_work_code   work_order_lines.wol_icb_work_code%TYPE
+                        ,wol_act_area_code   work_order_lines.wol_act_area_code%TYPE
+                        ,wol_def_defect_id   work_order_lines.wol_def_defect_id%TYPE
+                        ,wol_rep_action_cat  work_order_lines.wol_rep_action_cat%TYPE
+                        ,wol_flag            work_order_lines.wol_flag%TYPE
+                        ,wol_status_code     work_order_lines.wol_status_code%TYPE
+                        ,wol_wor_flag        work_order_lines.wol_wor_flag%TYPE
+                        ,wol_date_created    work_order_lines.wol_date_created%TYPE
+                        ,wol_bud_id          work_order_lines.wol_bud_id%TYPE
+                        ,wol_est_cost        work_order_lines.wol_est_cost%TYPE
+                        ,wol_est_labour      work_order_lines.wol_est_labour%TYPE);
+  TYPE wol_tab IS TABLE OF wol_rec INDEX BY BINARY_INTEGER;
+  lt_wol wol_tab;
+  --
+  lt_boq boq_tab;
+  lv_boq_tab_ind PLS_INTEGER := 1;
+  --
+  TYPE selected_repairs_rec IS RECORD(rep_rse_he_id          repairs.rep_rse_he_id%TYPE
+                                     ,def_siss_id            defects.def_siss_id%TYPE
+                                     ,def_priority           defects.def_priority%TYPE
+                                     ,rep_atv_acty_area_code repairs.rep_atv_acty_area_code%TYPE
+                                     ,rep_def_defect_id      repairs.rep_def_defect_id%TYPE
+                                     ,rep_action_cat         repairs.rep_action_cat%TYPE
+                                     ,bud_id                 budgets.bud_id%TYPE
+                                     ,work_code              item_code_breakdowns.icb_work_code%TYPE);
+  TYPE selected_repairs_tab IS TABLE OF selected_repairs_rec INDEX BY BINARY_INTEGER;
+  lt_selected_repairs selected_repairs_tab;
+  --
+  TYPE repair_boqs_rec IS RECORD(boq_id            boq_items.boq_id%TYPE
+                                ,boq_sta_item_code boq_items.boq_sta_item_code%TYPE
+                                ,boq_est_quantity  boq_items.boq_est_quantity%TYPE
+                                ,boq_est_labour    boq_items.boq_est_labour%TYPE
+                                ,sta_rogue_flag    standard_items.sta_rogue_flag%TYPE);
+  TYPE repair_boqs_tab IS TABLE OF repair_boqs_rec INDEX BY BINARY_INTEGER;
+  lt_repair_boqs repair_boqs_tab;
+  --
+  PROCEDURE init_defaults
+    IS
+    --
+    PROCEDURE set_date_raised
+      IS
+    BEGIN
+      IF pi_date_raised IS NOT NULL
+       THEN
+          IF pi_date_raised > TRUNC(SYSDATE)
+           THEN
+              raise_application_error(-20084,'Date Raised Must Be Less Than Or Equal To Todays Date.');
+          ELSE
+              lv_date_raised := pi_date_raised;
+          END IF;
+      ELSE
+          lv_date_raised := TRUNC(SYSDATE);
+      END IF;
+    END set_date_raised;
+    --
+    PROCEDURE ins_defect_list_temp
+      IS
+      --
+      lv_matching_defects NUMBER;
+      --
+    BEGIN
+      /*
+      ||If pi_commit wasn't 'Y' the last time
+      ||the procedure was called there may still
+      ||be records in the temp table.
+      */
+      DELETE
+        FROM defect_list_temp;
+      /*
+      ||Insert the supplied Defect Ids
+      ||into the temp table.
+      */
+      nm_debug.debug('inserting '||pi_defects.count||'records into defect_list_temp');
+      FORALL i IN 1..pi_defects.count
+      INSERT
+        INTO defect_list_temp
+      VALUES pi_defects(i)
+           ;
+      /*
+      ||Make sure all supplied Defect Ids exist.
+      */
+      SELECT count(*)
+        INTO lv_matching_defects
+        FROM defects
+            ,repairs
+       WHERE rep_def_defect_id = def_defect_id
+         AND (def_defect_id,rep_action_cat) IN(SELECT dlt_defect_id
+                                                     ,dlt_rep_action_cat
+                                                 FROM defect_list_temp)
+           ;
+      --
+      IF lv_matching_defects != pi_defects.count
+       THEN
+          raise_application_error(-20072,'Supplied List Of Defects Contains Invalid Ids');
+      END IF;
+      --
+    EXCEPTION
+      WHEN dup_val_on_index
+       THEN
+          raise_application_error(-20071,'Supplied List Of Defects Contains Duplicates');
+      WHEN others
+       THEN
+          RAISE;
+    END ins_defect_list_temp;
+    --
+    PROCEDURE validate_user
+      IS
+    BEGIN
+      SELECT hus_admin_unit
+        INTO lv_user_admin_unit
+        FROM hig_users
+       WHERE hus_user_id = pi_user_id
+           ;
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_user_id)||'].');
+      WHEN others
+       THEN
+          RAISE;
+    END validate_user;
+    --
+    PROCEDURE validate_contract
+      IS
+      --
+      lv_con_code contracts.con_code%TYPE;
+       --
+     BEGIN
+      SELECT con_code
+            ,con_admin_org_id
+            ,oun_cng_disc_group
+        INTO lv_con_code
+            ,lv_con_admin_unit
+            ,lv_discount_group
+        FROM org_units
+            ,contracts
+       WHERE con_id = pi_con_id
+         AND lv_date_raised BETWEEN NVL(con_start_date, lv_date_raised)
+                                AND NVL(con_end_date  , lv_date_raised)
+         AND ((con_admin_org_id IN(SELECT hag_child_admin_unit
+                                     FROM hig_admin_groups
+                                    WHERE hag_parent_admin_unit = lv_user_admin_unit))
+              OR con_code = lv_dumconcode)
+         AND con_contr_org_id = oun_org_id
+           ;
+      --
+      IF lv_con_code = lv_dumconcode
+       THEN
+          lv_wor_admin_unit := lv_con_admin_unit;
+      ELSE
+          lv_wor_admin_unit := lv_user_admin_unit;
+      END IF;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20063,'Invalid Contract Id Supplied.');
+      WHEN others
+       THEN
+          RAISE;
+    END validate_contract;
+    --
+    PROCEDURE validate_interim_flag
+      IS
+    BEGIN
+      --
+      IF pi_interim_payment IS NOT NULL
+       AND pi_interim_payment NOT IN ('Y', 'N')
+       THEN
+          raise_application_error(-20081,'Invalid Interim Flag Supplied.');
+      END IF;
+      --
+    END validate_interim_flag;
+    --
+    PROCEDURE validate_rechargeable
+      IS
+    BEGIN
+      --
+      IF pi_rechargeable IS NOT NULL
+       AND pi_rechargeable NOT IN ('Y', 'N')
+       THEN
+          raise_application_error(-20089,'Invalid Rechargeable Flag Supplied.');
+      END IF;
+      --
+    END validate_rechargeable;
+    --
+    PROCEDURE validate_tma_register_flag(pi_flag IN VARCHAR2)
+      IS
+    BEGIN
+      --
+      IF pi_flag IS NOT NULL
+       AND pi_flag NOT IN ('Y', 'N')
+       THEN
+          raise_application_error(-20088,'Invalid TMA Register Flag Supplied.');
+      END IF;
+      --
+    END validate_tma_register_flag;
+    --
+    PROCEDURE validate_wo_priority
+      IS
+      --
+      lv_dummy NUMBER;
+      --
+    BEGIN
+      --
+      IF pi_priority IS NOT NULL
+       THEN
+          SELECT 1
+            INTO lv_dummy
+            FROM hig_codes
+           WHERE hco_domain = 'WOR_PRIORITY'
+             AND hco_code   = pi_priority
+             AND lv_date_raised BETWEEN NVL(hco_start_date, lv_date_raised)
+                                    AND NVL(hco_end_date, lv_date_raised)
+               ;
+      END IF;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20082,'Invalid Work Order Priority Supplied.');
+      WHEN others
+       THEN
+          RAISE;
+    END validate_wo_priority;
+    --
+    PROCEDURE validate_cost_centre
+      IS
+      --
+      lv_dummy NUMBER;
+      --
+    BEGIN
+      --
+      IF pi_cost_centre IS NOT NULL
+       THEN
+          SELECT 1
+            INTO lv_dummy
+            FROM cost_centres
+                ,hig_admin_groups
+           WHERE hag_parent_admin_unit = lv_user_admin_unit
+             AND hag_child_admin_unit  = coc_org_id
+             AND coc_cost_centre       = pi_cost_centre
+             AND lv_date_raised BETWEEN NVL(coc_start_date, lv_date_raised)
+                                    AND NVL(coc_end_date, lv_date_raised)
+               ;
+      END IF;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20080,'Invalid Cost Centre Supplied.');
+      WHEN others
+       THEN
+          RAISE;
+    END validate_cost_centre;
+    --
+    PROCEDURE validate_target_complete
+      IS
+      --
+      lv_dummy NUMBER;
+      --
+    BEGIN
+      --
+      IF pi_target_date IS NOT NULL
+       AND pi_target_date < lv_date_raised
+       THEN
+          raise_application_error(-20086,'Target Complete Date Should Not Be Before The Date Raised.');
+      END IF;
+      --
+    END validate_target_complete;
+    --
+    PROCEDURE validate_road_group(pi_group_id IN nm_elements_all.ne_id%TYPE)
+      IS
+    BEGIN
+      --
+      SELECT rse_he_id
+            ,rse_admin_unit
+            ,rse_sys_flag
+        INTO lv_road_group_id
+            ,lv_rse_admin_unit
+            ,lv_sys_flag
+        FROM road_groups
+       WHERE rse_he_id = pi_group_id
+           ;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20087,'Invalid Road Group Id Supplied.');
+      WHEN others
+       THEN
+          RAISE;
+    END validate_road_group;
+    --
+    PROCEDURE set_sys_flag(pi_defect_id IN defects.def_defect_id%TYPE
+                          ,pi_rse_he_id IN nm_elements_all.ne_id%TYPE)
+      IS
+      --
+      lv_def_he_id nm_elements_all.ne_id%TYPE;
+      --
+    BEGIN
+      --
+      IF pi_rse_he_id IS NOT NULL
+       THEN
+          validate_road_group(pi_rse_he_id);
+      ELSE
+          SELECT def_ity_sys_flag
+                ,def_rse_he_id
+            INTO lv_sys_flag
+                ,lv_def_he_id
+            FROM defects
+           WHERE def_defect_id = pi_defect_id
+               ;
+          --
+          BEGIN
+            IF lv_sys_flag IS NULL
+             THEN
+                SELECT rse_sys_flag
+                  INTO lv_sys_flag
+                  FROM road_sections
+                 WHERE rse_he_id = lv_def_he_id
+                     ;
+            END IF;
+          EXCEPTION
+           WHEN others
+            THEN
+               null;
+          END;
+      END IF;
+      --
+      IF lv_sys_flag IS NULL
+       THEN
+          raise_application_error(-20074,'Unable To Obtain sys_flag.');
+      END IF;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20065,'Invalid Defect Id Supplied.');
+      WHEN others
+       THEN
+          RAISE;
+    END set_sys_flag;
+    --
+    PROCEDURE set_road_group(pi_group_name IN VARCHAR2)
+      IS
+    BEGIN
+      --
+      SELECT rse_he_id
+            ,rse_admin_unit
+        INTO lv_road_group_id
+            ,lv_rse_admin_unit
+        FROM road_groups
+       WHERE rse_unique = pi_group_name
+           ;
+      --
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20060,'Cannot Set Road Group. Please Check Product Options GISGRPTYP, GISGRPL and GISGRPD');
+      WHEN others
+       THEN
+          RAISE;
+    END set_road_group;
+    --
+    PROCEDURE get_wol_not_done
+      IS
+    BEGIN
+      SELECT hsc_status_code
+        INTO lv_wol_not_done
+        FROM hig_status_codes
+       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+         AND hsc_allow_feature5 = 'Y'
+         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
+                                AND NVL(hsc_end_date  ,lv_date_raised)
+           ;
+    EXCEPTION
+      WHEN too_many_rows
+       THEN
+          raise_application_error(-20059,'Too Many Values Defined For Work Order Line NOT_DONE Status');
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20055,'Cannot Obtain Value For Work Order Line NOT_DONE Status');
+      WHEN others
+       THEN
+          RAISE;
+    END get_wol_not_done;
+    --
+    PROCEDURE get_wol_instructed
+      IS
+    BEGIN
+      SELECT hsc_status_code
+        INTO lv_wol_instructed
+        FROM hig_status_codes
+       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+         AND hsc_allow_feature1 = 'Y'
+         AND hsc_allow_feature10 = 'Y'  --clb
+         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
+                                AND NVL(hsc_end_date  ,lv_date_raised)
+           ;
+    EXCEPTION
+      WHEN too_many_rows
+       THEN
+          raise_application_error(-20058,'Too Many Values Defined For Work Order Line INSTRUCTED Status');
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20054,'Cannot Obtain Value For Work Order Line INSTRUCTED Status');
+      WHEN others
+       THEN
+          RAISE;
+    END get_wol_instructed;
+    --
+    PROCEDURE get_def_instructed
+      IS
+    BEGIN
+      SELECT hsc_status_code
+        INTO lv_def_instructed
+        FROM hig_status_codes
+       WHERE hsc_domain_code = 'DEFECTS'
+         AND hsc_allow_feature3 = 'Y'
+         AND hsc_allow_feature10 = 'Y'  --clb
+         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
+                                AND NVL(hsc_end_date  ,lv_date_raised)
+           ;
+    EXCEPTION
+      WHEN too_many_rows
+       THEN
+          raise_application_error(-20057,'Too Many Values Defined For Defect INSTRUCTED Status');
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20053,'Cannot Obtain Value For Defect INSTRUCTED Status');
+      WHEN others
+       THEN
+          RAISE;
+    END get_def_instructed;
+    --
+    PROCEDURE get_def_available
+      IS
+    BEGIN
+      SELECT hsc_status_code
+        INTO lv_def_available
+        FROM hig_status_codes
+       WHERE hsc_domain_code = 'DEFECTS'
+         AND hsc_allow_feature2 = 'Y'
+         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
+                                AND NVL(hsc_end_date  ,lv_date_raised)
+           ;
+    EXCEPTION
+      WHEN too_many_rows
+       THEN
+          raise_application_error(-20056,'Too Many Values Defined For Defect AVAILABLE Status');
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20052,'Cannot Obtain Value For Defect AVAILABLE Status');
+      WHEN others
+       THEN
+          RAISE;
+    END get_def_available;
+    --
+    PROCEDURE set_scheme_type
+      IS
+      --
+      PROCEDURE validate_scheme_type
+        IS
+      BEGIN
+        SELECT icb_work_code
+          INTO lv_work_code
+          FROM item_code_breakdowns
+         WHERE icb_type_of_scheme = lv_scheme_type
+           AND icb_dtp_flag       = lv_sys_flag
+             ;
+      EXCEPTION
+        WHEN no_data_found
+         THEN
+            raise_application_error(-20066,'Invalid Scheme Type');
+        WHEN too_many_rows
+         THEN
+            lv_work_code := NULL;
+        WHEN others
+         THEN
+            RAISE;
+      END validate_scheme_type;
+      --
+    BEGIN
+      /*
+      ||Determine The Scheme Type To Use.
+      */
+      IF lv_scheme_type_upd = 'Y'
+       AND pi_scheme_type IS NOT NULL
+       THEN
+          lv_scheme_type := pi_scheme_type;
+      ELSE
+          IF lv_sys_flag = 'L'
+           THEN
+              lv_scheme_type := lv_def_scheme_type_l;
+          ELSE
+              lv_scheme_type := lv_def_scheme_type_d;
+          END IF;
+      END IF;
+      /*
+      ||Now Validate The Scheme Type
+      ||And Set The Work Code.
+      */
+      validate_scheme_type;
+      --
+    END set_scheme_type;
+    --
+  BEGIN
+    /*
+    ||Validate/Default the Date Raised.
+    */
+    set_date_raised;
+    /*
+    ||If No Defects Have Been Specified Raise An Error.
+    */
+    IF pi_defects.count = 0
+     THEN
+        raise_application_error(-20070,'Please Specify At Least One Defect For The Work Order.');
+    END IF;
+    /*
+    ||Insert The Defect Ids Into Temp Table
+    ||And Validate Against The Defects Table.
+    */
+    nm_debug.debug('ins_defect_list_temp');
+    ins_defect_list_temp;
+    /*
+    ||Get The Sys Flag For The Work Order
+    ||And Validate The Supplied Road Group Id.
+    */
+    nm_debug.debug('set_sys_flag');
+    set_sys_flag(pi_defect_id => pi_defects(1).dlt_defect_id
+                ,pi_rse_he_id => pi_road_group_id);
+    /*
+    ||Default The Road Group For The Work Order
+    ||If Not Suppled.
+    */
+    nm_debug.debug('set_road_group');
+    IF lv_road_group_id IS NULL
+     THEN
+        IF lv_sys_flag = 'L'
+         THEN
+            set_road_group(lv_gisgrpl);
+        ELSE
+            set_road_group(lv_gisgrpd);
+        END IF;
+    END IF;
+    /*
+    ||Get The Users Admin Unit.
+    */
+    nm_debug.debug('validate_user');
+    validate_user;
+    /*
+    ||Get The Contracts Admin Unit.
+    */
+    nm_debug.debug('validate_contract');
+    validate_contract;
+    /*
+    ||Validate/Default Scheme Type.
+    */
+    nm_debug.debug('set_scheme_type');
+    set_scheme_type;
+    /*
+    ||Validate The Interim Flag Supplied.
+    */
+    validate_interim_flag;
+    /*
+    ||Validate The Work Order Priority Supplied.
+    */
+    validate_wo_priority;
+    /*
+    ||Validate The Cost Centre Supplied.
+    */
+    validate_cost_centre;
+    /*
+    ||Validate The WO TMA Register Flag.
+    */
+    validate_tma_register_flag(pi_tma_register_flag);
+    /*
+    ||Validate The Rechargeable Flag.
+    */
+    validate_rechargeable;
+    /*
+    ||Validate The Target Complete Date Supplied.
+    */
+    validate_target_complete;
+    /*
+    ||Get Status Codes.
+    */
+    nm_debug.debug('get_wol_not_done');
+    get_wol_not_done;
+    nm_debug.debug('get_wol_instructed');
+    get_wol_instructed;
+    nm_debug.debug('get_def_instructed');
+    get_def_instructed;
+    nm_debug.debug('get_def_available');
+    get_def_available;
+    --
+  END init_defaults;
+  --
+  FUNCTION validate_budget(pi_budget_id   IN budgets.bud_id%TYPE
+                          ,pi_defect_id   IN defects.def_defect_id%TYPE)
+    RETURN BOOLEAN IS
+    --
+    lv_retval BOOLEAN := FALSE;
+    --
+  BEGIN
+    /*
+    ||Init Variables.
+    */
+    lv_bud_rse_he_id := NULL;
+    lv_icb_id        := NULL;
+    lv_work_code     := NULL;
+    --
+    SELECT bud_rse_he_id
+          ,icb_id
+          ,icb_work_code
+      INTO lv_bud_rse_he_id
+          ,lv_icb_id
+          ,lv_work_code
+      FROM item_code_breakdowns
+          ,budgets
+          ,financial_years
+     WHERE TRUNC(fyr_end_date) >= lv_date_raised
+       AND fyr_id = bud_fyr_id
+       AND bud_id = pi_budget_id
+       AND bud_icb_item_code = icb_item_code
+       AND bud_icb_sub_item_code = icb_sub_item_code
+       AND bud_icb_sub_sub_item_code = icb_sub_sub_item_code
+       AND bud_sys_flag = icb_dtp_flag
+       AND icb_type_of_scheme = lv_scheme_type
+       AND EXISTS(SELECT 1
+                    FROM defects
+                   WHERE def_defect_id = pi_defect_id
+                     AND (def_rse_he_id IN(SELECT nm_ne_id_of
+                                             FROM nm_members
+                                            WHERE nm_type = 'G'
+                                          CONNECT BY
+                                            PRIOR nm_ne_id_of = nm_ne_id_in
+                                            START
+                                             WITH nm_ne_id_in = bud_rse_he_id)
+                          OR def_rse_he_id = NVL(bud_rse_he_id,def_rse_he_id)))
+         ;
+    --
+    RETURN TRUE;
+    --
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        RETURN FALSE;
+    WHEN others
+     THEN
+        RAISE;
+  END validate_budget;
+  --
+  PROCEDURE validate_and_replace_boqs(pi_defect_id      IN defects.def_defect_id%TYPE
+                                     ,pi_rep_action_cat IN repairs.rep_action_cat%TYPE
+                                     ,pi_boqs_tab       IN boq_tab)
+    IS
+    --
+    lv_dummy boq_items.boq_id%TYPE;
+    --
+    lt_boqs boq_tab;
+    --
+  BEGIN
+    /*
+    ||Build A Table Of Supplied BOQs Related To This Defect/Repair For Validation.
+    */
+    FOR i IN 1..pi_boqs_tab.count LOOP
+      --
+      IF pi_boqs_tab(i).boq_rep_action_cat IS NULL
+       OR pi_boqs_tab(i).boq_defect_id IS NULL
+       THEN
+          raise_application_error(-20090,'No BOQ Defect Id or Repair Action Category Specified.');
+      END IF;
+      --
+      IF pi_boqs_tab(i).boq_defect_id = pi_defect_id
+       AND pi_boqs_tab(i).boq_rep_action_cat = pi_rep_action_cat
+       THEN
+          lt_boqs(lt_boqs.count+1) := pi_boqs_tab (i);
+      END IF;
+      --
+    END LOOP;
+    --
+    IF lt_boqs.count > 0
+     THEN
+        /*
+        ||Make Sure The BOQs Specified With A BOQ_ID
+        ||Belong To The Specified Defect/Repair.
+        */
+        FOR i IN 1..lt_boqs.count LOOP
+          --
+          IF lt_boqs(i).boq_id IS NOT NULL
+           THEN
+              --
+              BEGIN
+                SELECT boq_id
+                  INTO lv_dummy
+                  FROM boq_items
+                 WHERE boq_id = lt_boqs(i).boq_id
+                   AND boq_defect_id = pi_defect_id
+                   AND boq_rep_action_cat = pi_rep_action_cat
+                     ;
+              EXCEPTION
+                WHEN no_data_found
+                 THEN
+                    raise_application_error(-20091,'BOQ_ID ['||TO_CHAR(lt_boqs(i).boq_id)
+                                                 ||'] Is Not A Child Of The Specified Parent - Defect ['
+                                                 ||TO_CHAR(pi_defect_id)||'] Repair Type ['||pi_rep_action_cat||'].');
+                WHEN others
+                 THEN
+                    RAISE;
+              END;
+              --
+          END IF;
+          --
+        END LOOP;
+        /*
+        ||Validate And Build The New BOQs.
+        */
+        validate_repair_boqs(pi_def_defect_id      => pi_defect_id
+                            ,pi_rep_action_cat     => pi_rep_action_cat
+                            ,pi_rep_created_date   => TRUNC(SYSDATE)
+                            ,pi_admin_unit         => NULL
+                            ,pi_rep_tre_treat_code => NULL
+                            ,pi_atv_acty_area_code => NULL
+                            ,pi_def_defect_code    => NULL
+                            ,pi_sys_flag           => NULL
+                            ,pio_boq_tab           => lt_boqs);
+        /*
+        ||Remove The Old BOQs.
+        */
+        DELETE boq_items
+         WHERE boq_defect_id = pi_defect_id
+           AND boq_rep_action_cat = pi_rep_action_cat
+             ;
+        /*
+        ||Insert The New BOQs.
+        */
+        ins_boqs(pi_boq_tab => lt_boqs);
+        --
+    END IF;
+    --
+  END validate_and_replace_boqs;
+  --
+  PROCEDURE select_defects
+    IS
+    --
+    lt_defect_repairs     mai_wo_api.def_rep_list_in_tab;
+    lr_selected_repair    selected_repairs_rec;
+    lt_defect_repair_boqs boq_tab;
+    --
+    PROCEDURE check_defect(pi_budget_id   IN budgets.bud_id%TYPE
+                          ,pi_defect_id   IN defects.def_defect_id%TYPE
+                          ,pi_repair_type IN repairs.rep_action_cat%TYPE
+                          ,pi_work_code   IN item_code_breakdowns.icb_work_code%TYPE)
+      IS
+      --
+      lv_reason VARCHAR2(500);
+      --
+    BEGIN
+      /*
+      ||Check The Defect/Repair Against The Selection Criteria.
+      */
+      SELECT CASE WHEN def_status_code NOT IN(lv_def_available,lv_def_instructed)
+                    OR def_date_compl IS NOT NULL
+                    OR rep_date_completed IS NOT NULL
+                   THEN 'Defect/Repair Is Already Complete.'
+                  WHEN NVL(rep_superseded_flag,'N') = 'Y'
+                   THEN 'Repair Has Been Superseded.'
+                  WHEN rep_action_cat NOT IN('P','T')
+                   THEN 'Invalid Repair Type.'
+                  WHEN def_notify_org_id IS NOT NULL
+                   AND def_rechar_org_id IS NULL
+                   THEN 'Notifiable Organisation Specifed On Defect But No Rechargeable Organisation Specified.'
+                  WHEN def_rse_he_id != rep_rse_he_id
+                   THEN 'Repair And Defect Are On Different Sections.'
+                  WHEN EXISTS(SELECT 1
+                                FROM work_order_lines
+                               WHERE wol_def_defect_id  = rep_def_defect_id
+                                 AND wol_rep_action_cat = rep_action_cat
+                                 AND wol_status_code   != lv_wol_not_done)
+                   THEN 'Repair Is Already On A Work Order.'
+                  WHEN NOT EXISTS(SELECT 1
+                                    FROM ihms_conversions
+                                   WHERE ihc_atv_acty_area_code = rep_atv_acty_area_code
+                                     AND ihc_atv_acty_area_code = def_atv_acty_area_code
+                                     AND ihc_icb_id = lv_icb_id)
+                   THEN 'Defect Activity Code Is Invalid For The Budget Specified.'
+                  WHEN NOT EXISTS(SELECT 1
+                                    FROM hig_admin_groups
+                                        ,road_sections
+                                   WHERE hag_parent_admin_unit = lv_con_admin_unit
+                                     AND hag_child_admin_unit  = rse_admin_unit
+                                     AND rse_he_id             = def_rse_he_id)
+                   THEN 'Defect Is On A Section Outside Of The Admin Unit Of The Specified Contract.'
+                  WHEN def_rse_he_id NOT IN((SELECT nm_ne_id_of
+                                               FROM nm_members
+                                              WHERE nm_type = 'G'
+                                            CONNECT BY
+                                              PRIOR nm_ne_id_of = nm_ne_id_in
+                                                AND nm_end_date IS NULL
+                                              START
+                                               WITH nm_ne_id_in = lv_road_group_id
+                                              UNION
+                                             SELECT ne_id
+                                               FROM nm_elements
+                                              WHERE ne_id = lv_road_group_id)
+                                          INTERSECT
+                                             SELECT nm_ne_id_of
+                                               FROM nm_members
+                                              WHERE nm_type = 'G'
+                                            CONNECT BY
+                                              PRIOR nm_ne_id_of = nm_ne_id_in
+                                                AND nm_end_date IS NULL
+                                              START
+                                               WITH nm_ne_id_in = NVL(lv_bud_rse_he_id,lv_road_group_id))
+                   THEN 'Defect Is On A Section That Is Not A Member Of The Specified Work Order Road Group.'
+                  WHEN lv_sys_flag != 'L'
+                   AND NOT EXISTS(SELECT 1
+                                    FROM road_segments_all
+                                        ,item_code_breakdowns
+                                   WHERE icb_id = lv_icb_id
+                                     AND DECODE(icb_rse_road_environment,null,rse_road_environment
+                                                                        , 'R',DECODE(rse_road_environment,'S','S'
+                                                                                                             ,'R')
+                                                                        , 'S',DECODE(rse_road_environment,'R','R'
+                                                                                                             ,'S')
+                                                                             ,icb_rse_road_environment)
+                                          = rse_road_environment
+                                     AND rse_he_id = def_rse_he_id)
+                   THEN 'Defect Is On A Section With An Invalid Environment Type For The Budget Specified.'
+                  ELSE NULL
+             END reason
+        INTO lv_reason
+        FROM repairs
+            ,defects
+       WHERE def_defect_id = pi_defect_id
+         AND def_defect_id = rep_def_defect_id
+         AND rep_action_cat = pi_repair_type
+           ;
+      --
+      IF lv_reason IS NULL
+       THEN
+          /*
+          ||The Repair Has Passed The Checks So Lock The Defect/Repair
+          ||Records And Add It To The List To Go On The Work Order.
+          */
+          SELECT rep_rse_he_id
+                ,def_siss_id
+                ,def_priority
+                ,rep_atv_acty_area_code
+                ,rep_def_defect_id
+                ,rep_action_cat
+                ,pi_budget_id
+                ,pi_work_code
+            INTO lr_selected_repair
+            FROM repairs
+                ,defects
+           WHERE def_defect_id  = pi_defect_id
+             AND def_defect_id  = rep_def_defect_id
+             AND rep_action_cat = pi_repair_type
+             FOR UPDATE
+              OF def_status_code
+                 NOWAIT
+               ;
+          --
+          lt_selected_repairs(lt_selected_repairs.count+1) := lr_selected_repair;
+          po_defects_on_wo(po_defects_on_wo.count+1).defect_id    := pi_defect_id;
+          po_defects_on_wo(po_defects_on_wo.count).rep_action_cat := pi_repair_type;
+          --
+      ELSE
+          /*
+          ||Repair Failed Checks So Add It To The List
+          ||Of Defect/Repairs Not On The Work Order.
+          */
+          po_defects_not_on_wo(po_defects_not_on_wo.count+1).defect_id    := pi_defect_id;
+          po_defects_not_on_wo(po_defects_not_on_wo.count).rep_action_cat := pi_repair_type;
+          po_defects_not_on_wo(po_defects_not_on_wo.count).reason         := lv_reason;
+          nm_debug.debug('repair not on WO : '||pi_defect_id||' : '||pi_repair_type||' : '||lv_reason);
+      END IF;
+    END check_defect;
+    --
+  BEGIN
+    --
+    nm_debug.debug('Fetching Defects');
+    /*
+    ||Get The Supplied Defects From
+    ||The Temp Table.
+    */
+    SELECT *
+      BULK COLLECT
+      INTO lt_defect_repairs
+      FROM defect_list_temp
+         ;
+    --
+    nm_debug.debug(lt_defect_repairs.count||' records fetched');
+    FOR i IN 1..lt_defect_repairs.count LOOP
+      /*
+      ||Validate The Budget.
+      */
+      IF validate_budget(pi_budget_id   => lt_defect_repairs(i).dlt_budget_id
+                        ,pi_defect_id   => lt_defect_repairs(i).dlt_defect_id)
+       THEN
+          /*
+          ||Budget Is Valid So Check That The
+          ||Defect Is Valid For The Work Order.
+          */
+          check_defect(pi_budget_id   => lt_defect_repairs(i).dlt_budget_id
+                      ,pi_defect_id   => lt_defect_repairs(i).dlt_defect_id
+                      ,pi_repair_type => lt_defect_repairs(i).dlt_rep_action_cat
+                      ,pi_work_code   => lv_work_code);
+      ELSE
+          /*
+          ||Repair Failed Budget Check So Add It
+          ||To The List Of Defect/Repairs Not On
+          ||The Work Order.
+          */
+          po_defects_not_on_wo(po_defects_not_on_wo.count+1).defect_id    := lt_defect_repairs(i).dlt_defect_id;
+          po_defects_not_on_wo(po_defects_not_on_wo.count).rep_action_cat := lt_defect_repairs(i).dlt_rep_action_cat;
+          po_defects_not_on_wo(po_defects_not_on_wo.count).reason         := 'Invalid Budget Supplied.';
+      END IF;
+      --
+    END LOOP;
+nm_debug.debug('generate WOLs');
+    /*
+    ||Generate The Work Order Lines For The Selected Defects.
+    */
+    FOR i IN 1..lt_selected_repairs.count LOOP
+      nm_debug.debug('Setting WOL Fields');
+      /*
+      ||Set The Work Order Line Columns.
+      */
+      lt_wol(i).wol_works_order_no := lv_work_order_no;
+      lt_wol(i).wol_rse_he_id      := lt_selected_repairs(i).rep_rse_he_id;
+      lt_wol(i).wol_siss_id        := lt_selected_repairs(i).def_siss_id;
+      lt_wol(i).wol_icb_work_code  := lt_selected_repairs(i).work_code;
+      lt_wol(i).wol_act_area_code  := lt_selected_repairs(i).rep_atv_acty_area_code;
+      lt_wol(i).wol_def_defect_id  := lt_selected_repairs(i).rep_def_defect_id;
+      lt_wol(i).wol_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
+      lt_wol(i).wol_flag           := 'D';
+      lt_wol(i).wol_status_code    := lv_wol_instructed;
+      lt_wol(i).wol_wor_flag       := 'D';
+      lt_wol(i).wol_date_created   := SYSDATE;
+      lt_wol(i).wol_bud_id         := lt_selected_repairs(i).bud_id;
+      lt_wol(i).wol_est_cost       := 0;
+      lt_wol(i).wol_est_labour     := 0;
+      /*
+      ||Reset The Null BOQ Cost WOL Level Flag.
+      */
+      lv_wol_null_boq_exists := FALSE;
+      --
+      /*
+      ||Process BOQs.
+      */
+      /*
+      ||Validate Any Supplied BOQs And Use Them To Replace The Existing Ones.
+      */
+      IF pi_defect_boqs.count > 0
+       THEN
+         validate_and_replace_boqs(pi_defect_id      => lt_selected_repairs(i).rep_def_defect_id
+                                  ,pi_rep_action_cat => lt_selected_repairs(i).rep_action_cat
+                                  ,pi_boqs_tab       => pi_defect_boqs);
+      END IF;
+      /*
+      ||Get Any Boq's For The Repair.
+      */
+      nm_debug.debug('Fetching BOQs');
+      SELECT boq_id
+            ,boq_sta_item_code
+            ,boq_est_quantity
+            ,boq_est_labour
+            ,sta_rogue_flag
+        BULK COLLECT
+        INTO lt_repair_boqs
+        FROM boq_items
+            ,standard_items
+       WHERE sta_item_code      = boq_sta_item_code
+         AND boq_rep_action_cat = lt_selected_repairs(i).rep_action_cat
+         AND boq_defect_id      = lt_selected_repairs(i).rep_def_defect_id
+         FOR UPDATE
+          OF boq_est_rate
+             NOWAIT
+             ;
+      --
+      FOR j IN 1..lt_repair_boqs.count LOOP
+        /*
+        ||Set The Identifiers For The BOQ Table.
+        */
+        nm_debug.debug('Setting BOQ Fields');
+        lt_boq(lv_boq_tab_ind).boq_id             := lt_repair_boqs(j).boq_id;
+        lt_boq(lv_boq_tab_ind).boq_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
+        lt_boq(lv_boq_tab_ind).boq_defect_id      := lt_selected_repairs(i).rep_def_defect_id;
+        /*
+        ||Update Work Order and Work Order Line Labour Units.
+        */
+        nm_debug.debug('Calc Labour Units');
+        IF lt_repair_boqs(j).boq_est_labour IS NOT NULL
+         THEN
+            lt_wol(i).wol_est_labour := lt_wol(i).wol_est_labour + lt_repair_boqs(j).boq_est_labour;
+            lv_wor_est_labour := lv_wor_est_labour + lt_repair_boqs(j).boq_est_labour;
+        END IF;
+        /*
+        ||Set The Rate For The BOQ From The Contract Item.
+        */
+        nm_debug.debug('Set BOQ Rate');
+        IF lt_repair_boqs(j).sta_rogue_flag != 'Y'
+         THEN
+            lt_boq(lv_boq_tab_ind).boq_est_rate := maiwo.reprice_item(p_item_code => lt_repair_boqs(j).boq_sta_item_code
+                                                                     ,p_con_id    => pi_con_id
+                                                                     ,p_rse_he_id => lt_selected_repairs(i).rep_rse_he_id
+                                                                     ,p_priority  => lt_selected_repairs(i).def_priority);
+        END IF;
+        /*
+        ||Calculate The Estimated Cost.
+        */
+        nm_debug.debug('Calc Costs');
+        IF lt_boq(lv_boq_tab_ind).boq_est_rate IS NOT NULL
+         THEN
+            BEGIN
+              /*
+              ||Update The BOQ Estimated Cost.
+              */
+              lt_boq(lv_boq_tab_ind).boq_est_cost := ROUND(lt_boq(lv_boq_tab_ind).boq_est_rate*lt_repair_boqs(j).boq_est_quantity,2);
+              --
+              IF NOT lv_wol_null_boq_exists
+               THEN
+                  /*
+                  ||No Null BOQ Rates Detected So Far
+                  ||On This WOL So Add The BOQ Estimated
+                  ||Cost To The WOL Total Estimated Cost.
+                  */
+                  BEGIN
+                  /*
+                  ||Update Work Order Line Total.
+                  */
+                  lt_wol(i).wol_est_cost := lt_wol(i).wol_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
+                  EXCEPTION
+                    /*
+                    ||Trap The Possibility Of The Value
+                    ||Being Too Large For The Column.
+                    */
+                    WHEN value_error
+                     THEN
+                        raise_application_error(-20077,'Value Too Large For Work Order Line Estimated Cost');
+                    WHEN others
+                     THEN
+                        RAISE;
+                  END;
+                  --
+              END IF;
+                --
+              IF NOT lv_wor_null_boq_exists
+               THEN
+                  /*
+                  ||No Null BOQ Rates Detected So Far
+                  ||On This WO So Add The BOQ Estimated
+                  ||Cost To The WO Total Estimated Cost.
+                  */
+                  BEGIN
+                    /*
+                    ||Update Work Order Total.
+                    */
+                    lv_wor_est_cost := lv_wor_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
+                  EXCEPTION
+                    /*
+                    ||Trap The Possibility Of The Value
+                    ||Being Too Large For The Column.
+                    */
+                    WHEN value_error
+                     THEN
+                        raise_application_error(-20076,'Value Too Large For Work Order Estimated Cost');
+                    WHEN others
+                     THEN
+                        RAISE;
+                  END;
+                  --
+              END IF;
+              --
+            EXCEPTION
+              /*
+              ||Trap The Possibility Of The Value
+              ||Being Too Large For The Column.
+              */
+              WHEN value_error
+               THEN
+                  lt_boq(lv_boq_tab_ind).boq_est_cost := NULL;
+                  lv_wol_null_boq_exists := TRUE;
+                  lv_wor_null_boq_exists := TRUE;
+              WHEN others
+               THEN
+                  RAISE;
+            END;
+        ELSE
+            lt_boq(lv_boq_tab_ind).boq_est_cost := NULL;
+            lv_wol_null_boq_exists := TRUE;
+            lv_wor_null_boq_exists := TRUE;
+        END IF;
+        --
+        lv_boq_tab_ind := lv_boq_tab_ind+1;
+        --
+      END LOOP; --lt_repair_boqs
+      /*
+      ||If Null BOQ Estimated Cost Detected
+      ||At WOL Level Nullify The WOL Estimated Cost.
+      */
+      IF lv_wol_null_boq_exists
+       THEN
+          lt_wol(i).wol_est_cost := NULL;
+      END IF;
+      --
+    END LOOP; --lt_selected_repairs
+    /*
+    ||If Null BOQ Estimated Cost Detected
+    ||At WO Level Nullify The WO Estimated Cost.
+    */
+    IF lv_wor_null_boq_exists
+     THEN
+        lv_wor_est_cost := NULL;
+    END IF;
+    /*
+    ||Repricing Caused No Errors So Get The WOL_IDs.
+    */
+    FOR i IN 1..lt_wol.count LOOP
+      --
+      lt_wol(i).wol_id := get_next_id('wol_id_seq');
+      --
+    END LOOP;
+    /*
+    ||Set The WOL_ID On The BOQs.
+    */
+    FOR i IN 1..lt_boq.count LOOP
+      --
+      FOR j IN 1..lt_wol.count LOOP
+        IF lt_wol(j).wol_def_defect_id = lt_boq(i).boq_defect_id
+         AND lt_wol(j).wol_rep_action_cat = lt_boq(i).boq_rep_action_cat
+         THEN
+            lt_boq(i).boq_wol_id := lt_wol(j).wol_id;
+            exit;
+        END IF;
+      END LOOP;
+      --
+    END LOOP;
+    --
+  END select_defects;
+  --
+BEGIN
+  --
+  nm_debug.debug_on;
+  /*
+  ||Initialise Defaults.
+  */
+  init_defaults;
+  /*
+  ||Generate Work Order No.
+  */
+  lv_work_order_no := mai.generate_works_order_no(p_con_id     => pi_con_id
+                                                 ,p_admin_unit => lv_wor_admin_unit);
+  /*
+  ||Determine Which Defects Will Go On The WO.
+  */
+  select_defects;
+  /*
+  ||Create The Work Order.
+  */
+  IF lt_wol.count > 0
+   THEN
+      /*
+      ||Calaculate The Estmated Balancing Sum.
+      */
+      lv_wor_est_balancing_sum := get_balancing_sum(pi_con_id,lv_wor_est_cost);
+      /*
+      ||Insert The Work Order.
+      */
+      INSERT
+        INTO work_orders
+            (wor_scheme_type
+            ,wor_works_order_no
+            ,wor_descr
+            ,wor_sys_flag
+            ,wor_rse_he_id_group
+            ,wor_flag
+            ,wor_con_id
+            ,wor_date_raised
+            ,wor_est_complete
+            ,wor_job_number
+            ,wor_peo_person_id
+            ,wor_icb_item_code
+            ,wor_icb_sub_item_code
+            ,wor_icb_sub_sub_item_code
+            ,wor_interim_payment_flag
+            ,wor_priority
+            ,wor_coc_cost_centre
+            ,wor_register_flag
+            ,wor_contact
+            ,wor_rechargeable
+            ,wor_est_cost
+            ,wor_est_labour
+            ,wor_est_balancing_sum
+            )
+      VALUES(lv_scheme_type
+            ,lv_work_order_no
+            ,pi_wo_descr
+            ,lv_sys_flag
+            ,lv_road_group_id
+            ,'D'
+            ,pi_con_id
+            ,lv_date_raised
+            ,pi_target_date
+            ,NVL(pi_job_number,'00000')
+            ,pi_user_id
+            ,substr(lv_work_code,1,2)
+            ,substr(lv_work_code,3,2)
+            ,substr(lv_work_code,5,2)
+            ,pi_interim_payment
+            ,pi_priority
+            ,pi_cost_centre
+            ,NVL(pi_tma_register_flag,'N')
+            ,pi_contact
+            ,pi_rechargeable
+            ,lv_wor_est_cost
+            ,lv_wor_est_labour
+            ,lv_wor_est_balancing_sum
+            )
+            ;
+      /*
+      ||Insert The Work Order Lines.
+      */
+      FORALL i IN 1..lt_wol.count
+      INSERT
+        INTO(SELECT wol_id
+                   ,wol_works_order_no
+                   ,wol_rse_he_id
+                   ,wol_siss_id
+                   ,wol_icb_work_code
+                   ,wol_act_area_code
+                   ,wol_def_defect_id
+                   ,wol_rep_action_cat
+                   ,wol_flag
+                   ,wol_status_code
+                   ,wol_wor_flag
+                   ,wol_date_created
+                   ,wol_bud_id
+                   ,wol_est_cost
+                   ,wol_est_labour
+               FROM work_order_lines)
+      VALUES lt_wol(i)
+           ;
+      /*
+      ||Update Defects.
+      */
+      FOR i IN 1..lt_wol.count LOOP
+        UPDATE defects
+           SET def_status_code       = lv_def_instructed
+              ,def_last_updated_date = SYSDATE
+              ,def_works_order_no    = lv_work_order_no
+         WHERE def_defect_id = lt_wol(i).wol_def_defect_id
+             ;
+      END LOOP;
+      /*
+      ||Update BOQs.
+      */
+      FOR i IN 1..lt_boq.count LOOP
+        UPDATE boq_items
+           SET boq_wol_id   = lt_boq(i).boq_wol_id
+              ,boq_est_rate = lt_boq(i).boq_est_rate
+              ,boq_est_cost = lt_boq(i).boq_est_cost
+         WHERE boq_id = lt_boq(i).boq_id
+             ;
+      END LOOP;
+      /*
+      ||Set The Output Parameters.
+      */
+      po_work_order_no := lv_work_order_no;
+      --
+  END IF;
+  /*
+  ||Commit If Required.
+  */
+  IF lt_wol.count > 0
+   THEN
+      IF NVL(pi_commit,'Y') = 'Y'
+       THEN
+          nm_debug.debug('Commit.');
+          COMMIT;
+      END IF;
+  ELSE
+      /*
+      ||No WO created so rollback to ensure
+      ||any updates (e.g. last wo number)
+      ||are undone.
+      */
+      ROLLBACK;
+  END IF;
+  --
+  nm_debug.debug_off;
+  --
+EXCEPTION
+  WHEN OTHERS
+   THEN
+      ROLLBACK;
+      --
+      nm_debug.debug_off;
+      --
+      RAISE;
+END create_defect_work_order;
 --
 -----------------------------------------------------------------------------
 --
@@ -2469,6 +2471,7 @@ BEGIN
   /*
   ||Commit If Required.
   */
+  nm_debug.debug('Authorise Work Order '||pi_works_order_no||' complete '||pi_user_id);
   IF NVL(pi_commit,'Y') = 'Y'
    THEN
       COMMIT;
@@ -2477,6 +2480,7 @@ BEGIN
 EXCEPTION
   WHEN OTHERS
    THEN
+      nm_debug.debug('authorise_work_order '||SQLERRM);
       ROLLBACK;
       RAISE;
 END authorise_work_order;
@@ -2679,6 +2683,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                        ,pi_est    => lt_wols(i).wol_est_cost
                        ,pi_act    => lt_wols(i).wol_act_cost);
       ELSE
+          nm_debug.debug('Budget Exceeded.');
           raise_application_error(-20047,'Budget Exceeded.');
       END IF;
       --
@@ -2797,6 +2802,7 @@ BEGIN
   */
   IF lr_wo.wor_mod_by_id IS NULL
    THEN
+      nm_debug.debug('Authorising work order');
       authorise_work_order(pi_user_id        => pi_user_id
                           ,pi_works_order_no => pi_works_order_no
                           ,pi_commit         => 'N');
@@ -2805,8 +2811,7 @@ BEGIN
   ||Instruct The Work Order.
   */
   UPDATE work_orders
-     SET wor_mod_by_id      = lr_wo.wor_mod_by_id
-        ,wor_date_confirmed = pi_date_instructed
+     SET wor_date_confirmed = pi_date_instructed
    WHERE wor_works_order_no = pi_works_order_no
        ;
   /*
@@ -2839,7 +2844,7 @@ BEGIN
   */
   IF NVL(pi_commit,'Y') = 'Y'
    THEN
-      nm_debug.debug('Commit.');
+      nm_debug.debug('Instruct_work_order Commit. ');
       COMMIT;
   END IF;
   --
@@ -4620,312 +4625,308 @@ END create_gdo_for_mai3801;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE check_auto_wo_rules(pi_activity      IN  activities.atv_acty_area_code%TYPE
---                             ,pi_defect_code   IN  def_types.dty_defect_code%TYPE
---                             ,pi_treatment     IN  treatments.tre_treat_code%TYPE
---                             ,po_required      OUT auto_wo_rules.awr_enabled%TYPE
---                             ,po_auto_instruct OUT auto_wo_rules.awr_auto_instruct%TYPE)
---  IS
---  --
---  lv_specific_rule_not_found BOOLEAN := FALSE;
---  --
---BEGIN
---  IF pi_treatment IS NOT NULL
---   THEN
---      /*
---      ||Check for a Rule for the specified Treatment.
---      */
---      BEGIN
---        SELECT awr_enabled
---              ,awr_auto_instruct
---          INTO po_required
---              ,po_auto_instruct
---          FROM auto_wo_rules
---         WHERE awr_atv_acty_area_code = pi_activity
---           AND awr_dty_defect_code = pi_defect_code
---           AND awr_tre_treat_code = pi_treatment
---             ;
---      EXCEPTION
---        WHEN no_data_found
---         THEN
---            lv_specific_rule_not_found := TRUE;
---        WHEN others
---         THEN raise;
---      END;
---      /*
---      ||If no Treatment specif rule is found check for one
---      ||against the Activity/Defect Code with no Treatment.
---      */
---  END IF;
---  --
---  IF pi_treatment IS NULL
---   OR lv_specific_rule_not_found
---   THEN
---      /*
---      ||No Treatment specified on the Repair
---      ||or no Treatment specific rule was found
---      ||so check for a general rule for the
---      ||Activity / Defect Code.
---      */
---      SELECT awr_enabled
---            ,awr_auto_instruct
---        INTO po_required
---            ,po_auto_instruct
---        FROM auto_wo_rules
---       WHERE awr_atv_acty_area_code = pi_activity
---         AND awr_dty_defect_code = pi_defect_code
---         AND awr_tre_treat_code IS NULL
---           ;
---  END IF;
---  --
---EXCEPTION
---  WHEN no_data_found
---   THEN
---      /*
---      ||No Rule Found.
---      */
---      po_required      := 'N';
---      po_auto_instruct := 'N';
---  WHEN others
---   THEN
---      RAISE;
---END check_auto_wo_rules;
+PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
+                             ,pi_rse_he_id       IN  defects.def_rse_he_id%TYPE
+                             ,pi_activity        IN  activities.atv_acty_area_code%TYPE
+                             ,pi_priority        IN  defects.def_priority%TYPE
+                             ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
+                             ,pi_rep_action_cat  IN  VARCHAR2
+                             ,pi_treatment       IN  treatments.tre_treat_code%TYPE
+                             ,po_scheme_type     OUT mai_auto_wo_rules.mawr_scheme_type%TYPE
+                             ,po_bud_id          OUT mai_auto_wo_rules.mawr_bud_id%TYPE
+                             ,po_con_id          OUT mai_auto_wo_rules.mawr_con_id%TYPE
+                             ,po_aggregate       OUT mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
+                             ,po_auto_instruct   OUT mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
+                             ,po_create_wo       OUT VARCHAR2
+                             ,po_error           OUT VARCHAR2
+                             ) 
+  IS
+  --
+  lv_admin_unit     hig_admin_units.hau_admin_unit%TYPE;
+  --
+BEGIN
+  /*
+  ||Get The Admin Unit Of the Defect Section.
+  */
+  nm_debug.debug('Looking up Admin Unit');
+  lv_admin_unit := nm3net.get_ne(pi_rse_he_id).ne_admin_unit;
+  
+  nm_debug.debug('Checking rules for Admin Unit = '||lv_admin_unit||
+                 ' Road Id = '||pi_rse_he_id);
+  nm_debug.debug('Activity = '||pi_activity);
+  nm_debug.debug('Priority = '||pi_priority);
+  nm_debug.debug('Defect Code = '||pi_defect_code);
+  nm_debug.debug('Action Cat = '||pi_rep_action_cat);
+  nm_debug.debug('Treatment = '||pi_treatment);
+  
+    /*
+    ||Check for matching rules.
+    */
+    BEGIN
+      SELECT mawr_scheme_type
+            ,mawr_bud_id
+            ,mawr_con_id
+            ,mawr_aggregate_repairs
+            ,NVL(mawc_auto_instruct, 'N')
+       INTO po_scheme_type
+           ,po_bud_id      
+           ,po_con_id      
+           ,po_aggregate  
+           ,po_auto_instruct
+      FROM mai_auto_wo_rule_criteria,
+           mai_auto_wo_rules
+     WHERE mawc_mawr_id = mawr_id
+       AND mawr_admin_unit IN 
+                       (SELECT hag_parent_admin_unit
+                          FROM hig_admin_groups,
+                               hig_admin_units
+                         WHERE hag_direct_link='Y'
+                           AND hau_admin_unit = hag_parent_admin_unit
+                         START WITH hag_child_admin_unit = lv_admin_unit                                                                     
+                       CONNECT BY 
+                         PRIOR hag_parent_admin_unit=hag_child_admin_unit
+                           AND hag_direct_link='Y'
+                         UNION
+                        SELECT lv_admin_unit 
+                          FROM dual)
+       AND NVL(mawr_road_group_id, pi_rse_he_id) IN 
+                       (SELECT nm_ne_id_of
+                          FROM nm_members
+                         WHERE nm_type = 'G'
+                    CONNECT BY
+                         PRIOR nm_ne_id_of = nm_ne_id_in
+                         START WITH nm_ne_id_in = pi_rse_he_id
+                         UNION
+                        SELECT pi_rse_he_id 
+                          FROM dual)
+       AND mawr_enabled = 'Y'
+       AND mawc_enabled = 'Y'
+       -- clb AND trunc(sysdate) BETWEEN mawr_start_date AND
+       --                           NVL(mawr_end_date, trunc(sysdate))
+       AND mawc_atv_acty_area_code = pi_activity
+       AND NVL(mawc_priority, pi_priority) = pi_priority
+       AND NVL(mawc_dty_defect_code, pi_defect_code) = pi_defect_code
+       AND pi_rep_action_cat IN (DECODE(mawc_include_temp_repair, 'Y', 'T', '@'),
+                                 DECODE(mawc_include_perm_repair, 'Y', 'P', '@'))
+       AND NVL(mawc_tre_treat_code, '@') = NVL(pi_treatment, '@');
+         
+       po_create_wo := 'Y';
+
+     EXCEPTION
+      WHEN no_data_found
+       THEN
+          po_error:= 'No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id;
+          po_create_wo := 'N';
+      WHEN too_many_rows
+       THEN
+          po_error:= 'Multiple Automatic Work Order creation criteria found for Defect '||pi_defect_id;
+          po_create_wo := 'N';
+      WHEN others
+       THEN
+          RAISE;
+    END;
+
+END check_auto_wo_rules;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
---                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
---                               ,po_error             IN OUT nm3type.max_varchar2)
---  IS
---  --
---  lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
---  lv_wo_descr          work_orders.wor_descr%TYPE := 'Auto Work Order For Defect '||TO_CHAR(pi_defect_id);
---  lv_scheme_type       work_orders.wor_scheme_type%TYPE := 'LR';
---  lv_con_id            contracts.con_id%TYPE;
---  lv_bud_id            budgets.bud_id%TYPE;
---  lv_interim_payment   work_orders.wor_interim_payment_flag%TYPE;
---  lv_priority          work_orders.wor_priority%TYPE;
---  lv_cost_centre       work_orders.wor_coc_cost_centre%TYPE;
---  lv_road_group        nm_elements_all.ne_id%TYPE;
---  lv_tma_register_flag work_orders.wor_register_flag%TYPE;
---  lv_contact           work_orders.wor_contact%TYPE;
---  lv_job_number        work_orders.wor_job_number%TYPE;
---  lv_rechargeable      work_orders.wor_rechargeable%TYPE;
---  lv_date_raised       DATE;
---  lv_target_date       DATE;
---  lv_commit            VARCHAR2(1) := 'Y';
---  --
---  lt_defects_in   mai_wo_api.def_rep_list_in_tab;
---  lt_defect_boqs  mai_wo_api.boq_tab;
---  --
---  lv_work_order_no      work_orders.wor_works_order_no%TYPE;
---  lt_defects_on_wo      mai_wo_api.def_rep_list_on_wo_tab;
---  lt_defects_not_on_wo  mai_wo_api.def_rep_list_not_on_wo_tab;
---  --
---  lv_create_work_order    BOOLEAN := FALSE;
---  lv_instruct_work_order  BOOLEAN := FALSE;
---  --
---  lv_tab_ind  BINARY_INTEGER := gt_work_orders.count+1;
---  --
---  FUNCTION get_con_id RETURN contracts.con_id%TYPE IS
---    --
---    lv_retval contracts.con_id%TYPE;
---    --
---  BEGIN
---    --
---    SELECT con_id
---      INTO lv_retval
---      FROM contracts
---     WHERE con_code = 'EXOR'  -- Hardcoded for demo.
---         ;
---    --
---    RETURN lv_retval;
---    --
---  EXCEPTION
---    WHEN no_data_found
---     THEN
---        raise_application_error(-20001,'Cannot Find Contract: EXOR');
---    WHEN others
---     THEN 
---        RAISE;
---  END get_con_id;
---  --
---  PROCEDURE get_budget
---    IS
---  BEGIN
---    SELECT bud_id
---      INTO lv_bud_id
---      FROM budgets
---     WHERE bud_icb_item_code||bud_icb_sub_item_code||bud_icb_sub_sub_item_code = '060111'
---       AND bud_fyr_id = '2010'
---       AND bud_rse_he_id IS NULL
---         ;
---  EXCEPTION
---    WHEN no_data_found
---     THEN
---        raise_application_error(-20001,'Cannot Find Budget: 060111');
---    WHEN too_many_rows
---     THEN
---        raise_application_error(-20001,'Too Many Budgets For 060111 Found');
---    WHEN others
---     THEN
---        RAISE;
---  END get_budget;
---  --
---  PROCEDURE build_def_rep_list(pi_defect_id IN defects.def_defect_id%TYPE
---                              ,pi_bud_id    IN budgets.bud_id%TYPE)
---    IS
---    --
---    lv_required auto_wo_rules.awr_enabled%TYPE;
---    lv_instruct auto_wo_rules.awr_auto_instruct%TYPE;
---    --
---    TYPE defect_repairs_rec IS RECORD(def_defect_id          defects.def_defect_id%TYPE
---                                     ,def_atv_acty_area_code defects.def_atv_acty_area_code%TYPE
---                                     ,def_defect_code        defects.def_defect_code%TYPE
---                                     ,rep_tre_treat_code     repairs.rep_tre_treat_code%TYPE
---                                     ,rep_action_cat         repairs.rep_action_cat%TYPE);
---    TYPE defect_repairs_tab IS TABLE OF defect_repairs_rec;
---    lt_defect_repairs defect_repairs_tab;
---    --
---    PROCEDURE get_repairs
---      IS
---    BEGIN
---      SELECT def_defect_id
---            ,def_atv_acty_area_code
---            ,def_defect_code
---            ,rep_tre_treat_code
---            ,rep_action_cat
---        BULK COLLECT
---        INTO lt_defect_repairs
---        FROM repairs
---            ,defects
---       WHERE def_defect_id = pi_defect_id
---         AND def_defect_id = rep_def_defect_id
---         AND rep_action_cat IN('P','T')
---           ;
---    EXCEPTION
---      WHEN no_data_found
---       THEN
---          raise_application_error(-20001,'No Repairs Found For Defect: '||TO_CHAR(pi_defect_id));
---      WHEN others
---       THEN
---          RAISE;
---    END get_repairs;
---  BEGIN
---    --
---    get_repairs;
---    --
---    FOR i IN 1..lt_defect_repairs.count LOOP
---      mai_wo_api.check_auto_wo_rules(pi_activity      => lt_defect_repairs(i).def_atv_acty_area_code
---                                    ,pi_defect_code   => lt_defect_repairs(i).def_defect_code
---                                    ,pi_treatment     => lt_defect_repairs(i).rep_tre_treat_code
---                                    ,po_required      => lv_required
---                                    ,po_auto_instruct => lv_instruct);
---      IF lv_required = 'Y'
---       THEN
---          lv_create_work_order := TRUE;
---      END IF;
---      --
---      IF lv_instruct = 'Y'
---       THEN
---          lv_instruct_work_order := TRUE;
---      END IF;
---nm_debug.debug('Required = '||lv_required||' instruct = '||lv_instruct);
---    END LOOP;
---    --
---    FOR i IN 1..lt_defect_repairs.count LOOP
---      lt_defects_in(i).dlt_defect_id      := pi_defect_id;
---      lt_defects_in(i).dlt_rep_action_cat := lt_defect_repairs(i).rep_action_cat;
---      lt_defects_in(i).dlt_budget_id      := pi_bud_id;
---    END LOOP;
---    --
---  END build_def_rep_list;
---  --
---BEGIN
---nm_debug.debug_on;
---  /*
---  ||Derive the budget to be used (hardcoded here).
---  */
---  get_budget;
---  nm_debug.debug('Budget Id = '||lv_bud_id);
---  /*
---  ||Build the list of repairs to go on the WO.
---  */
---  build_def_rep_list(pi_defect_id => pi_defect_id
---                    ,pi_bud_id    => lv_bud_id);
---nm_debug.debug('def/rep count = '||lt_defects_in.count);
---  /*
---  ||Call The API To Create The Work Order.
---  */
---  IF lv_create_work_order
---   THEN
---      --
---nm_debug.debug('Creating WO');
---      create_defect_work_order(pi_user_id           => lv_user_id
---                              ,pi_wo_descr          => lv_wo_descr
---                              ,pi_scheme_type       => lv_scheme_type
---                              ,pi_con_id            => get_con_id
---                              ,pi_interim_payment   => lv_interim_payment
---                              ,pi_priority          => lv_priority
---                              ,pi_cost_centre       => lv_cost_centre
---                              ,pi_road_group_id     => lv_road_group
---                              ,pi_tma_register_flag => lv_tma_register_flag
---                              ,pi_contact           => lv_contact
---                              ,pi_job_number        => lv_job_number
---                              ,pi_rechargeable      => lv_rechargeable
---                              ,pi_date_raised       => lv_date_raised
---                              ,pi_target_date       => lv_target_date
---                              ,pi_defects           => lt_defects_in
---                              ,pi_defect_boqs       => lt_defect_boqs
---                              ,pi_commit            => lv_commit
---                              ,po_work_order_no     => po_work_order_no
---                              ,po_defects_on_wo     => lt_defects_on_wo
---                              ,po_defects_not_on_wo => lt_defects_not_on_wo);
---      --
---nm_debug.debug('WO No = '||po_work_order_no);
---      gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
---      gt_work_orders(lv_tab_ind).works_order_no := po_work_order_no;
---      --
---      IF lt_defects_not_on_wo.count > 0
---       THEN
---          FOR i IN 1..lt_defects_not_on_wo.count LOOP
---            IF i > 1
---             THEN
---                gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error||CHR(10);
---            END IF;
---            gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error
---                                              ||'Defect Id: '||lt_defects_not_on_wo(i).defect_id
---                                              ||' Repair Type: '|| lt_defects_not_on_wo(i).rep_action_cat
---                                              ||' was not added to the Work Order because: '
---                                              ||lt_defects_not_on_wo(i).reason;
---
---          END LOOP;
---          po_error := gt_work_orders(lv_tab_ind).error;
---      END IF;
---      --
---  END IF;
---  --
---  IF lv_instruct_work_order
---   THEN
---      --
---      instruct_work_order(pi_user_id         => lv_user_id
---                         ,pi_works_order_no  => po_work_order_no
---                         ,pi_date_instructed => SYSDATE
---                         ,pi_commit          => 'Y');
---      --
---      gt_work_orders(lv_tab_ind).instructed := 'Y';
---      --
---  END IF;
---  --
---nm_debug.debug_off;
---EXCEPTION
---  WHEN others
---   THEN
---      gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
---      gt_work_orders(lv_tab_ind).error := SQLERRM;
---      po_error := SQLERRM;
---      RAISE;
---END create_auto_defect_wo;
+PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
+                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
+                               ,po_error             IN OUT nm3type.max_varchar2)
+  IS
+  --
+  lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  lv_wo_descr          work_orders.wor_descr%TYPE := 'Auto Work Order For Defect '||TO_CHAR(pi_defect_id);
+  lv_scheme_type       work_orders.wor_scheme_type%TYPE := 'LR';
+  lv_con_id            contracts.con_id%TYPE;
+  lv_bud_id            budgets.bud_id%TYPE;
+  lv_aggregate         mai_auto_wo_rules.mawr_aggregate_repairs%TYPE;
+  lv_interim_payment   work_orders.wor_interim_payment_flag%TYPE;
+  lv_priority          work_orders.wor_priority%TYPE;
+  lv_cost_centre       work_orders.wor_coc_cost_centre%TYPE;
+  lv_road_group        nm_elements_all.ne_id%TYPE;
+  lv_tma_register_flag work_orders.wor_register_flag%TYPE;
+  lv_contact           work_orders.wor_contact%TYPE;
+  lv_job_number        work_orders.wor_job_number%TYPE;
+  lv_rechargeable      work_orders.wor_rechargeable%TYPE;
+  lv_date_raised       DATE;
+  lv_target_date       DATE;
+  lv_required          VARCHAR2(1);
+  lv_instruct          VARCHAR2(1);
+  lv_commit            VARCHAR2(1) := 'Y';
+  --
+  lt_defects_in   mai_wo_api.def_rep_list_in_tab;
+  lt_defect_boqs  mai_wo_api.boq_tab;
+  --
+  lv_work_order_no      work_orders.wor_works_order_no%TYPE;
+  lt_defects_on_wo      mai_wo_api.def_rep_list_on_wo_tab;
+  lt_defects_not_on_wo  mai_wo_api.def_rep_list_not_on_wo_tab;
+  --
+  lv_create_work_order    BOOLEAN := FALSE;
+  lv_instruct_work_order  BOOLEAN := FALSE;
+  --
+  lv_tab_ind  BINARY_INTEGER := gt_work_orders.count+1;
+  --
+  PROCEDURE build_def_rep_list(pi_defect_id IN defects.def_defect_id%TYPE)
+    IS
+    --
+    TYPE defect_repairs_rec IS RECORD(def_defect_id            defects.def_defect_id%TYPE
+                                     ,def_rse_he_id            defects.def_rse_he_id%TYPE
+                                     ,def_atv_acty_area_code   defects.def_atv_acty_area_code%TYPE
+                                     ,def_defect_code          defects.def_defect_code%TYPE
+                                     ,def_priority             defects.def_priority%TYPE
+                                     ,rep_tre_treat_code       repairs.rep_tre_treat_code%TYPE
+                                     ,rep_action_cat           repairs.rep_action_cat%TYPE);
+    TYPE defect_repairs_tab IS TABLE OF defect_repairs_rec;
+    lt_defect_repairs defect_repairs_tab;
+    --
+    PROCEDURE get_repairs
+      IS
+    BEGIN
+      SELECT def_defect_id
+            ,def_rse_he_id
+            ,def_atv_acty_area_code
+            ,def_defect_code
+            ,def_priority
+            ,rep_tre_treat_code
+            ,rep_action_cat
+        BULK COLLECT
+        INTO lt_defect_repairs
+        FROM repairs
+            ,defects
+       WHERE def_defect_id = pi_defect_id
+         AND def_defect_id = rep_def_defect_id
+         AND rep_action_cat IN('P','T')
+           ;
+    EXCEPTION
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20001,'No Repairs Found For Defect: '||TO_CHAR(pi_defect_id));
+      WHEN others
+       THEN
+          RAISE;
+    END get_repairs;
+  BEGIN
+    --
+    nm_debug.debug('Attempting Auto WO creation for Defect = '||pi_defect_id);
+    --
+    get_repairs;
+    --
+    nm_debug.debug(lt_defect_repairs.count||' details found');
+    --
+    FOR i IN 1..lt_defect_repairs.count LOOP
+      check_auto_wo_rules(pi_defect_id       =>pi_defect_id
+                         ,pi_rse_he_id       => lt_defect_repairs(i).def_rse_he_id
+                         ,pi_activity        => lt_defect_repairs(i).def_atv_acty_area_code
+                         ,pi_priority        => lt_defect_repairs(i).def_priority
+                         ,pi_defect_code     => lt_defect_repairs(i).def_defect_code
+                         ,pi_rep_action_cat  => lt_defect_repairs(i).rep_action_cat
+                         ,pi_treatment       => lt_defect_repairs(i).rep_tre_treat_code
+                         ,po_scheme_type     => lv_scheme_type
+                         ,po_bud_id          => lv_bud_id
+                         ,po_con_id          => lv_con_id
+                         ,po_aggregate       => lv_aggregate
+                         ,po_auto_instruct   => lv_instruct
+                         ,po_create_wo       => lv_required
+                         ,po_error           => po_error);
+                         
+      IF lv_required = 'Y'
+       THEN
+          lv_create_work_order := TRUE;
+      END IF;
+      --
+      IF lv_instruct = 'Y'
+       THEN
+          lv_instruct_work_order := TRUE;
+      END IF;
+nm_debug.debug('Required = '||lv_required||' instruct = '||lv_instruct);
+
+      lt_defects_in(i).dlt_defect_id      := pi_defect_id;
+      lt_defects_in(i).dlt_rep_action_cat := lt_defect_repairs(i).rep_action_cat;
+      lt_defects_in(i).dlt_budget_id      := lv_bud_id;
+
+    END LOOP;
+    --
+  END build_def_rep_list;
+  --
+BEGIN
+nm_debug.debug_on;
+  /*
+  ||Build the list of repairs to go on the WO.
+  */
+  build_def_rep_list(pi_defect_id => pi_defect_id);
+  /*
+  ||Call The API To Create The Work Order.
+  */
+  IF lv_create_work_order
+   THEN
+      --
+nm_debug.debug('Creating WO');
+      create_defect_work_order(pi_user_id           => lv_user_id
+                              ,pi_wo_descr          => lv_wo_descr
+                              ,pi_scheme_type       => lv_scheme_type
+                              ,pi_con_id            => lv_con_id
+                              ,pi_interim_payment   => lv_interim_payment
+                              ,pi_priority          => lv_priority
+                              ,pi_cost_centre       => lv_cost_centre
+                              ,pi_road_group_id     => lv_road_group
+                              ,pi_tma_register_flag => lv_tma_register_flag
+                              ,pi_contact           => lv_contact
+                              ,pi_job_number        => lv_job_number
+                              ,pi_rechargeable      => lv_rechargeable
+                              ,pi_date_raised       => lv_date_raised
+                              ,pi_target_date       => lv_target_date
+                              ,pi_defects           => lt_defects_in
+                              ,pi_defect_boqs       => lt_defect_boqs
+                              ,pi_commit            => lv_commit
+                              ,po_work_order_no     => po_work_order_no
+                              ,po_defects_on_wo     => lt_defects_on_wo
+                              ,po_defects_not_on_wo => lt_defects_not_on_wo);
+      --
+nm_debug.debug('WO No = '||po_work_order_no);
+      gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
+      gt_work_orders(lv_tab_ind).works_order_no := po_work_order_no;
+      --
+      IF lt_defects_not_on_wo.count > 0
+       THEN
+          FOR i IN 1..lt_defects_not_on_wo.count LOOP
+            IF i > 1
+             THEN
+                gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error||CHR(10);
+            END IF;
+            gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error
+                                              ||'Defect Id: '||lt_defects_not_on_wo(i).defect_id
+                                              ||' Repair Type: '|| lt_defects_not_on_wo(i).rep_action_cat
+                                              ||' was not added to the Work Order because: '
+                                              ||lt_defects_not_on_wo(i).reason;
+
+          END LOOP;
+          po_error := gt_work_orders(lv_tab_ind).error;
+      END IF;
+      --
+  END IF;
+  --
+  IF lv_instruct_work_order
+   THEN
+      --
+      instruct_work_order(pi_user_id         => lv_user_id
+                         ,pi_works_order_no  => po_work_order_no
+                         ,pi_date_instructed => SYSDATE
+                         ,pi_commit          => 'Y');
+      --
+      gt_work_orders(lv_tab_ind).instructed := 'Y';
+      --
+  END IF;
+  --
+nm_debug.debug_off;
+EXCEPTION
+  WHEN others
+   THEN
+      gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
+      gt_work_orders(lv_tab_ind).error := SQLERRM;
+      po_error := SQLERRM;
+      RAISE;
+END create_auto_defect_wo;
 --
 -----------------------------------------------------------------------------
 --
