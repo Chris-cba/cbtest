@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.21   Mar 18 2010 11:29:10   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.22   May 25 2010 09:18:58   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Mar 18 2010 11:29:10  $
---       Date fetched Out : $Modtime:   Mar 18 2010 11:07:54  $
---       SCCS Version     : $Revision:   2.21  $
+--       Date into SCCS   : $Date:   May 25 2010 09:18:58  $
+--       Date fetched Out : $Modtime:   Mar 31 2010 11:13:14  $
+--       SCCS Version     : $Revision:   2.22  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,11 +20,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.21  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.22  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
-g_filepath  varchar2(250) := hig.get_useopt('INTERPATH', USER);
+g_filepath  varchar2(250) := 'CIM_DIR'; --hig.get_useopt('INTERPATH', USER);
 g_wol_index integer;
 g_wor_index integer;
 --
@@ -1018,6 +1018,7 @@ BEGIN
       --
   END IF;
   --
+  UTL_FILE.FCLOSE(l_fhand);
   RETURN l_filename;
   --
 EXCEPTION
@@ -3309,6 +3310,7 @@ BEGIN
   END;
   IF NOT l_auto_load 
   THEN
+      nm3ctx.set_context('CIM_IH_ID',l_ih_id); 
       validate_completion_data(l_ih_id);
   END IF ;
   COMMIT;
@@ -4246,7 +4248,7 @@ BEGIN
   END;
 
   validate_claim_data(l_ih_id);
-
+  nm3ctx.set_context('CIM_WI_IH_ID',l_ih_id);
   COMMIT;
 
 END;
