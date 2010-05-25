@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.7   May 21 2010 16:34:44   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.8   May 25 2010 14:50:10   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   May 21 2010 16:34:44  $
---       Date fetched Out : $Modtime:   May 21 2010 15:40:06  $
---       PVCS Version     : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   May 25 2010 14:50:10  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:06:02  $
+--       PVCS Version     : $Revision:   3.8  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.7  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.8  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -418,6 +418,27 @@ END get_admin_unit;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_insp_defects(pi_are_report_id   IN  activities_report.are_report_id%TYPE)
+   RETURN defects_tab
+    IS
+
+  lt_insp_defects defects_tab;
+
+BEGIN
+  --
+  SELECT *
+    BULK COLLECT
+    INTO lt_insp_defects
+    FROM defects
+   WHERE def_are_report_id = pi_are_report_id
+       ;
+         
+  return lt_insp_defects;
+  --
+END get_insp_defects;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION defect_on_wol(pi_defect_id IN defects.def_defect_id%TYPE)
   RETURN BOOLEAN IS
   --
@@ -646,8 +667,7 @@ BEGIN
         ,def_x_sect
         ,def_easting
         ,def_northing
-        ,def_response_category
-        ,def_inspection_date) 
+        ,def_response_category) 
  VALUES (lv_defect_id
         ,pi_defect_rec.def_rse_he_id
         ,pi_defect_rec.def_iit_item_id
@@ -656,7 +676,7 @@ BEGIN
         ,pi_defect_rec.def_atv_acty_area_code
         ,pi_defect_rec.def_siss_id
         ,pi_defect_rec.def_works_order_no
-        ,sysdate
+        ,pi_defect_rec.def_created_date
         ,pi_defect_rec.def_defect_code
         ,sysdate
         ,pi_defect_rec.def_orig_priority
@@ -696,8 +716,7 @@ BEGIN
         ,pi_defect_rec.def_x_sect
         ,pi_defect_rec.def_easting
         ,pi_defect_rec.def_northing
-        ,pi_defect_rec.def_response_category
-        ,pi_defect_rec.def_inspection_date);
+        ,pi_defect_rec.def_response_category);
   --
   IF SQL%rowcount != 1 THEN
     RAISE insert_error;
@@ -1922,12 +1941,15 @@ BEGIN
       END IF;
   END IF;
   /*
-  ||Set The Inspection Date
+  ||Set The Created Date Fields
   */
   nm_debug.debug('Dates');
-  lr_defect_rec.def_inspection_date := pi_are_date_work_done;
-  lr_defect_rec.def_time_hrs  := NVL(lr_defect_rec.def_time_hrs,0);
-  lr_defect_rec.def_time_mins := NVL(lr_defect_rec.def_time_mins,0);
+  IF lr_defect_rec.def_created_date IS NULL
+   THEN
+      lr_defect_rec.def_created_date := TRUNC(pi_are_date_work_done);
+      lr_defect_rec.def_time_hrs     := 0;
+      lr_defect_rec.def_time_mins    := 0;
+  END IF;
   /*
   ||Default / Validate Defect Status.
   */
@@ -1950,7 +1972,7 @@ BEGIN
   IF lr_defect_rec.def_status_code = get_complete_defect_status(pi_effective_date => pi_are_date_work_done)
    AND lr_defect_rec.def_date_compl IS NULL
    THEN
-      lr_defect_rec.def_date_compl := pi_are_date_work_done;
+      lr_defect_rec.def_date_compl := lr_defect_rec.def_created_date;
   END IF;
   --
   IF NOT validate_defect_status(pi_defect_rec     => lr_defect_rec
@@ -2216,8 +2238,8 @@ BEGIN
       /*
       ||Default Date Created And Date Updated.
       */
-      lt_rep_tab(i).rep_record.rep_created_date      := SYSDATE;
-      lt_rep_tab(i).rep_record.rep_last_updated_date := lt_rep_tab(i).rep_record.rep_created_date;
+      lt_rep_tab(i).rep_record.rep_created_date      := pi_defect_rec.def_created_date;
+      lt_rep_tab(i).rep_record.rep_last_updated_date := pi_defect_rec.def_created_date;
       /*
       ||Default Superceded Flag.
       */
@@ -2267,7 +2289,7 @@ BEGIN
          lv_action_cat := lt_rep_tab(i).rep_record.rep_action_cat;
       END IF;
       --
-      mai.rep_date_due(pi_defect_rec.def_inspection_date
+      mai.rep_date_due(pi_defect_rec.def_created_date
                       ,lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                       ,pi_defect_rec.def_priority
                       ,lv_action_cat
@@ -2351,7 +2373,7 @@ END validate_repairs;
 -----------------------------------------------------------------------------
 --
 PROCEDURE validate_doc_assocs(pi_effective_date IN     date
-                             ,po_error_flag        OUT VARCHAR2
+                             ,pio_error_flag    IN OUT VARCHAR2
                              ,pio_das_tab       IN OUT das_tab)
   IS
   --
@@ -2361,7 +2383,6 @@ PROCEDURE validate_doc_assocs(pi_effective_date IN     date
   lv_ner_id          nm_errors.ner_id%TYPE;
   lv_doc_type        doc_types.dtp_code%TYPE := NULL;
   lv_doc_locn        doc_locations.dlc_location_name%TYPE;
-  lv_das_error_flag  VARCHAR2(1) := 'N';
   --
   doc_assoc_error    EXCEPTION;
   --
@@ -2452,7 +2473,7 @@ BEGIN
       WHEN doc_assoc_error
        THEN
           --
-          lv_das_error_flag := 'Y';
+          pio_error_flag := 'Y';
           lv_text := SUBSTR(nm3get.get_ner(pi_ner_id   => lv_ner_id
                      ,pi_ner_appl => 'MAI').ner_descr
                      ,1
@@ -2462,7 +2483,7 @@ BEGIN
       WHEN others
        THEN
           --
-          lv_das_error_flag := 'Y';
+          pio_error_flag := 'Y';
           lt_das_tab(i).das_error := SQLERRM;
     END;
     --
@@ -2471,8 +2492,7 @@ BEGIN
   /*       
   ||Assign The Validated Table To The Output Table.
   */
-  nm_debug.debug('validate_doc_assocs = '||lv_das_error_flag);
-  po_error_flag := lv_das_error_flag;
+  nm_debug.debug('validate_doc_assocs = '||pio_error_flag);
   pio_das_tab := lt_das_tab;
   --
 END validate_doc_assocs;
@@ -3253,24 +3273,9 @@ PROCEDURE supersede_insp_defects(pi_are_report_id       IN activities_report.are
   lv_dsr_tolerance  def_superseding_rules.dsr_tolerance%TYPE := NULL;
 
   --
-  TYPE defects_tab IS TABLE OF defects%ROWTYPE INDEX BY BINARY_INTEGER;
-  lt_insp_defects defects_tab;
-  --
   lt_matched_defects  matched_defects_tab;
   --
-  PROCEDURE get_insp_defects
-    IS
-  BEGIN
-    --
-    SELECT *
-      BULK COLLECT
-      INTO lt_insp_defects
-      FROM defects
-     WHERE def_are_report_id = pi_are_report_id
-         ;
-    --
-  END get_insp_defects;
-  --
+  lt_insp_defects     defects_tab;
   --
 BEGIN
   /*
@@ -3290,7 +3295,7 @@ BEGIN
       ||On The Inspection Passed In.
       */
       nm_debug.debug('Looking up Inspection Defects.');
-      get_insp_defects;
+      lt_insp_defects := get_insp_defects(pi_are_report_id  =>pi_are_report_id);
       nm_debug.debug(lt_insp_defects.count||' Defects found.');
       /*
       ||Search For Matching Defects On
@@ -3368,6 +3373,44 @@ BEGIN
                         ,pi_are_date_work_done  => lr_insp.are_date_work_done);
   --
 END supersede_insp_defects;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE auto_create_wo(pi_are_report_id       IN activities_report.are_report_id%TYPE)
+  IS
+  --
+  lv_work_order_no       work_orders.wor_works_order_no%TYPE;
+  lv_auto_create_error   VARCHAR2(4000);
+  --
+  lt_insp_defects     defects_tab;
+  --
+BEGIN
+   lt_insp_defects := get_insp_defects(pi_are_report_id  =>pi_are_report_id);
+
+   /*
+   || For each of the Defects on the Inspection
+   || check if Auto Create Work Orders is required
+   */
+   hig_process_api.log_it(' ');
+   hig_process_api.log_it('Attempting Automatic Work Order Creation');
+   
+   FOR i IN 1..lt_insp_defects.count LOOP
+              
+      mai_wo_api.create_auto_defect_wo(pi_defect_id      => lt_insp_defects(i).def_defect_id
+                                      ,po_work_order_no  => lv_work_order_no
+                                      ,po_error          => lv_auto_create_error);
+                                                
+      IF lv_auto_create_error IS NULL 
+       THEN
+         hig_process_api.log_it('Created Work Order '||lv_work_order_no);
+      ELSE
+         hig_process_api.log_it(pi_message       => 'Warning: '||lv_auto_create_error
+                               ,pi_message_type  => 'W');
+      END IF;
+                                                         
+   END LOOP;
+  --
+END auto_create_wo;
 --
 -----------------------------------------------------------------------------
 --
@@ -3610,7 +3653,7 @@ BEGIN
       */
       nm_debug.debug('Validating Doc Assocs.');
       validate_doc_assocs(pi_effective_date => lr_insp_rec.are_date_work_done
-                         ,po_error_flag     => lv_error_flag
+                         ,pio_error_flag    => lv_error_flag
                          ,pio_das_tab       => lt_das_tab);
 
       IF NVL(lv_error_flag,'N') != 'Y'
@@ -3690,6 +3733,16 @@ BEGIN
   ELSE
       RAISE invalid_inspection;
   END IF;
+  
+  BEGIN
+    --
+    auto_create_wo(pi_are_report_id       => lr_insp_rec.are_report_id); 
+    --  
+  EXCEPTION
+    WHEN others
+         THEN
+            nm_debug.debug('Auto create Work Order error :'||SQLERRM);
+  END;
   /*
   ||Loop Through The Comments.
   */
