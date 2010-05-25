@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.22   May 25 2010 09:18:58   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.23   May 25 2010 14:02:32   lsorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   May 25 2010 09:18:58  $
---       Date fetched Out : $Modtime:   Mar 31 2010 11:13:14  $
---       SCCS Version     : $Revision:   2.22  $
+--       Date into SCCS   : $Date:   May 25 2010 14:02:32  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:02:12  $
+--       SCCS Version     : $Revision:   2.23  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.22  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.23  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -4575,7 +4575,8 @@ BEGIN
         SET    boq_act_dim1 = 0
               ,boq_act_dim2 = DECODE(boq_est_dim2, NULL, NULL, 0)
               ,boq_act_dim3 = DECODE(boq_est_dim3, NULL, NULL, 0)
-              ,boq_act_rate = 0
+              --,boq_act_rate = 0                            -- Task 0109687 
+              ,boq_act_rate = NVL(boq_act_rate,boq_est_rate) -- Task 0109687 copied the estimated rate into the actual if actual is null, instead of zero
               ,boq_act_quantity = 0
               ,boq_act_cost = 0
               ,boq_act_labour = 0
@@ -5254,7 +5255,8 @@ BEGIN
         SET    boq_act_dim1 = 0
               ,boq_act_dim2 = DECODE(boq_est_dim2, NULL, NULL, 0)
               ,boq_act_dim3 = DECODE(boq_est_dim3, NULL, NULL, 0)
-              ,boq_act_rate = 0
+              --,boq_act_rate = 0                            -- Task 0109687 
+              ,boq_act_rate = NVL(boq_act_rate,boq_est_rate) -- Task 0109687 copied the estimated rate into the actual if actual is null, instead of zero
               ,boq_act_quantity = 0
               ,boq_act_cost = 0
               ,boq_act_labour = 0
