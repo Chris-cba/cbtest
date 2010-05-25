@@ -1,0 +1,74 @@
+CREATE OR REPLACE PACKAGE mai_inspection_loader AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.5   May 25 2010 14:49:18   cbaugh  $
+--       Module Name      : $Workfile:   mai_inspection_loader.pkh  $
+--       Date into PVCS   : $Date:   May 25 2010 14:49:18  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:43:28  $
+--       PVCS Version     : $Revision:   3.5  $
+--
+-----------------------------------------------------------------------------
+--      Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  --
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
+  g_application_owner  VARCHAR2(30);
+  --
+--</GLOBVAR>
+--
+--<TYPE>
+--
+TYPE seq_no_store_rec IS RECORD(g_seq_no  mai_insp_load_recs.milr_seq_no%TYPE
+                               ,p_seq_no  mai_insp_load_recs.milr_seq_no%TYPE);
+TYPE seq_no_store_tab IS TABLE OF seq_no_store_rec INDEX BY BINARY_INTEGER;
+--
+--</TYPE>
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION tokenise_string(pi_string         IN VARCHAR2
+                        ,pi_enclosed_by    IN VARCHAR2 DEFAULT '"'
+                        ,pi_raised_enc_err IN VARCHAR2 DEFAULT 'Y'
+                        ,pi_delimiter      IN VARCHAR2 DEFAULT ','
+                        ,pi_trim           IN VARCHAR2 DEFAULT 'Y')
+  RETURN nm3type.tab_varchar4000;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_batch_id%TYPE
+                                  ,pio_api_params IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE load_rmms_or_eid_file;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE resubmit_batch(pi_insp_batch_id IN PLS_INTEGER);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_report_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE initialise;
+--
+-----------------------------------------------------------------------------
+--
+END mai_inspection_loader;
+/
