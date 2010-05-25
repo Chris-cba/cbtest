@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.1   May 13 2010 17:43:56   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.2   May 25 2010 14:48:38   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   May 13 2010 17:43:56  $
---       Date fetched Out : $Modtime:   May 13 2010 16:41:20  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 25 2010 14:48:38  $
+--       Date fetched Out : $Modtime:   May 21 2010 15:20:06  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --<TYPE>
 --
 --
---TYPE boq_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
+TYPE boq_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
 ----
 TYPE act_boq_rec IS RECORD(boq_id             boq_items.boq_id%TYPE
                           ,boq_sta_item_code  boq_items.boq_sta_item_code%TYPE
@@ -41,17 +41,17 @@ TYPE act_boq_tab IS TABLE OF act_boq_rec INDEX BY BINARY_INTEGER;
 --                                   ,boqs       boq_tab);
 --TYPE sections_list_in_tab IS TABLE OF sections_list_in_rec INDEX BY BINARY_INTEGER;
 ----
---TYPE def_rep_list_in_tab IS TABLE OF defect_list_temp%ROWTYPE INDEX BY BINARY_INTEGER;
+TYPE def_rep_list_in_tab IS TABLE OF defect_list_temp%ROWTYPE INDEX BY BINARY_INTEGER;
 ----
---TYPE def_rep_list_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
---                                     ,rep_action_cat  repairs.rep_action_cat%TYPE);
---TYPE def_rep_list_on_wo_tab IS TABLE OF def_rep_list_on_wo_rec INDEX BY BINARY_INTEGER;
-----
---TYPE def_rep_list_not_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
---                                         ,rep_action_cat  repairs.rep_action_cat%TYPE
---                                         ,reason          VARCHAR2(500));
---TYPE def_rep_list_not_on_wo_tab IS TABLE OF def_rep_list_not_on_wo_rec INDEX BY BINARY_INTEGER;
-----
+TYPE def_rep_list_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
+                                     ,rep_action_cat  repairs.rep_action_cat%TYPE);
+TYPE def_rep_list_on_wo_tab IS TABLE OF def_rep_list_on_wo_rec INDEX BY BINARY_INTEGER;
+--
+TYPE def_rep_list_not_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
+                                         ,rep_action_cat  repairs.rep_action_cat%TYPE
+                                         ,reason          VARCHAR2(500));
+TYPE def_rep_list_not_on_wo_tab IS TABLE OF def_rep_list_not_on_wo_rec INDEX BY BINARY_INTEGER;
+--
 TYPE flags_rec IS RECORD(feature1  hig_status_codes.hsc_allow_feature1%TYPE
                         ,feature2  hig_status_codes.hsc_allow_feature2%TYPE
                         ,feature3  hig_status_codes.hsc_allow_feature3%TYPE
@@ -104,27 +104,27 @@ FUNCTION get_body_version RETURN varchar2;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
---                                  ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
---                                  ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
---                                  ,pi_con_id            IN  contracts.con_id%TYPE
---                                  ,pi_interim_payment   IN  work_orders.wor_interim_payment_flag%TYPE
---                                  ,pi_priority          IN  work_orders.wor_priority%TYPE
---                                  ,pi_cost_centre       IN  work_orders.wor_coc_cost_centre%TYPE
---                                  ,pi_road_group_id     IN  nm_elements_all.ne_id%TYPE
---                                  ,pi_tma_register_flag IN  work_orders.wor_register_flag%TYPE
---                                  ,pi_contact           IN  work_orders.wor_contact%TYPE
---                                  ,pi_job_number        IN  work_orders.wor_job_number%TYPE
---                                  ,pi_rechargeable      IN  work_orders.wor_rechargeable%TYPE
---                                  ,pi_date_raised       IN  work_orders.wor_date_raised%TYPE
---                                  ,pi_target_date       IN  work_orders.wor_est_complete%TYPE
---                                  ,pi_defects           IN  def_rep_list_in_tab
---                                  ,pi_defect_boqs       IN  boq_tab
---                                  ,pi_commit            IN  VARCHAR2
---                                  ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
---                                  ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
---                                  ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab);
---
+PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
+                                  ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
+                                  ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
+                                  ,pi_con_id            IN  contracts.con_id%TYPE
+                                  ,pi_interim_payment   IN  work_orders.wor_interim_payment_flag%TYPE
+                                  ,pi_priority          IN  work_orders.wor_priority%TYPE
+                                  ,pi_cost_centre       IN  work_orders.wor_coc_cost_centre%TYPE
+                                  ,pi_road_group_id     IN  nm_elements_all.ne_id%TYPE
+                                  ,pi_tma_register_flag IN  work_orders.wor_register_flag%TYPE
+                                  ,pi_contact           IN  work_orders.wor_contact%TYPE
+                                  ,pi_job_number        IN  work_orders.wor_job_number%TYPE
+                                  ,pi_rechargeable      IN  work_orders.wor_rechargeable%TYPE
+                                  ,pi_date_raised       IN  work_orders.wor_date_raised%TYPE
+                                  ,pi_target_date       IN  work_orders.wor_est_complete%TYPE
+                                  ,pi_defects           IN  def_rep_list_in_tab
+                                  ,pi_defect_boqs       IN  boq_tab
+                                  ,pi_commit            IN  VARCHAR2
+                                  ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
+                                  ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
+                                  ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab);
+
 -----------------------------------------------------------------------------
 --
 PROCEDURE authorise_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
@@ -203,9 +203,9 @@ PROCEDURE create_gdo_for_mai3801(pi_report_id  IN  activities_report.are_report_
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
---                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
---                               ,po_error             IN OUT nm3type.max_varchar2);
+PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
+                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
+                               ,po_error             IN OUT nm3type.max_varchar2);
 --
 -----------------------------------------------------------------------------
 --
