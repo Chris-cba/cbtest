@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.5   May 14 2010 16:55:18   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.6   May 25 2010 14:50:00   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   May 14 2010 16:55:18  $
---       Date fetched Out : $Modtime:   May 14 2010 15:04:08  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   May 25 2010 14:50:00  $
+--       Date fetched Out : $Modtime:   May 25 2010 14:39:20  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -91,6 +91,8 @@ TYPE boq_items_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
 TYPE matched_defect_rec IS RECORD(def_defect_id defects.def_defect_id%TYPE
                                  ,def_priority  defects.def_priority%TYPE);
 TYPE matched_defects_tab IS TABLE OF matched_defect_rec INDEX BY BINARY_INTEGER;
+--
+TYPE defects_tab IS TABLE OF defects%ROWTYPE INDEX BY BINARY_INTEGER;
 --
 --</TYPE>
 --
