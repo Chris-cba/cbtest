@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.2   May 11 2010 14:08:06   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.3   May 26 2010 10:27:20   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   May 11 2010 14:08:06  $
---       Date fetched Out : $Modtime:   May 11 2010 14:05:26  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   May 26 2010 10:27:20  $
+--       Date fetched Out : $Modtime:   May 26 2010 10:08:00  $
+--       Version          : $Revision:   3.3  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -235,7 +235,7 @@ CREATE SEQUENCE dsr_id_seq
 CREATE TABLE def_superseding_rules
   (dsr_id               NUMBER(9)    NOT NULL
   ,dsr_admin_unit       NUMBER(9)    NOT NULL
-  ,dsr_inititation_type VARCHAR2(3)  NOT NULL
+  ,dsr_initiation_type VARCHAR2(3)  NOT NULL
   ,dsr_tolerance        NUMBER       NOT NULL
   ,dsr_created_by       VARCHAR2(30) NOT NULL
   ,dsr_date_created     DATE         NOT NULL
@@ -767,6 +767,24 @@ SET TERM OFF
 ALTER TABLE defects
   ADD(def_status_reason   VARCHAR2(500)
      ,def_inspection_date DATE);
+
+UPDATE defects def1
+   SET def1.def_inspection_date = (SELECT NVL(are.are_date_work_done,TRUNC(def2.def_created_date))
+                                     FROM activities_report are
+                                         ,defects def2
+                                    WHERE def2.def_defect_id = def1.def_defect_id
+                                      AND def2.def_are_report_id = are.are_report_id(+))
+     ;
+
+COMMIT;
+
+ALTER TABLE temp_replace_defects
+  ADD(def_status_reason   VARCHAR2(500)
+     ,def_inspection_date DATE);
+
+ALTER TABLE temp_undo_defect_edit
+  ADD(def_status_reason   VARCHAR2(500)
+     ,def_inspection_date DATE);
 ------------------------------------------------------------------
 
 
@@ -933,6 +951,7 @@ CREATE TABLE mai_insp_load_error_def
   ,def_easting             NUMBER
   ,def_northing            NUMBER
   ,def_response_category   VARCHAR2(4)
+  ,def_inspection_date     DATE
   ,def_error               VARCHAR2(4000)
   )
 /

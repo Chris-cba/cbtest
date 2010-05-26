@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.5   May 11 2010 15:08:28   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.6   May 26 2010 10:27:20   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 11 2010 15:08:28  $
---       Date fetched Out : $Modtime:   May 11 2010 15:06:44  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   May 26 2010 10:27:20  $
+--       Date fetched Out : $Modtime:   May 26 2010 10:22:24  $
+--       Version          : $Revision:   3.6  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -201,6 +201,96 @@ SELECT 'DEFECTS'
                    WHERE HSC_DOMAIN_CODE = 'DEFECTS'
                      AND HSC_STATUS_CODE = 'SELECTED')
 /
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Product Options DEFDOCTYPE and DEFDOCLOCN
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (CHRIS BAUGH)
+-- New Product Options DEFDOCTYPE and DEFDOCLOCN to provide default Document Type and Document Location values for Defect document attachments loaded via Maintenance Inspection Loader
+-- 
+------------------------------------------------------------------
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'DEFDOCTYPE'
+      ,'MAI'
+      ,'Default Defect Document Type'      
+      ,'Contains the default Document Type for Defect document attachments loaded via Maintenace Inspection Loader.'
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'DEFDOCTYPE')
+/
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'DEFDOCLOCN'
+      ,'MAI'
+      ,'Default Document Location'      
+      ,'Contains the default Document Location for Defect document attachments loaded via Maintenace Inspection Loader.'
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'DEFDOCLOCN')
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Setup HIG_PROCESS_AREAS
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Setup HIG_PROCESS_AREAS
+-- 
+------------------------------------------------------------------
+Delete From HIG_PROCESS_AREAS
+Where HPA_AREA_TYPE IN ('CONTRACTOR','CIM_CONTRACTOR');
+
+Prompt Inserting into HIG_PROCESS_AREAS
+Insert into HIG_PROCESS_AREAS
+   (HPA_AREA_TYPE, HPA_DESCRIPTION, HPA_TABLE, HPA_RESTRICTED_TABLE, HPA_WHERE_CLAUSE, 
+    HPA_RESTRICTED_WHERE_CLAUSE, HPA_ID_COLUMN, HPA_MEANING_COLUMN)
+ Values
+   ('CONTRACTOR', 'Contractor', 'ORG_UNITS', 'V_PROCESS_CONTRACTORS', NULL, 
+    NULL, 'OUN_ORG_ID', 'OUN_UNIT_CODE||'' - ''||OUN_NAME');
+Insert into HIG_PROCESS_AREAS
+   (HPA_AREA_TYPE, HPA_DESCRIPTION, HPA_TABLE, HPA_RESTRICTED_TABLE, HPA_WHERE_CLAUSE, 
+    HPA_RESTRICTED_WHERE_CLAUSE, HPA_ID_COLUMN, HPA_MEANING_COLUMN)
+ Values
+   ('CIM_CONTRACTOR', 'CIM Contractor', 'ORG_UNITS', 'V_PROCESS_CONTRACTORS', 'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL', 
+    'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL', 'OUN_ORG_ID', 'OUN_UNIT_CODE||'' - ''||OUN_NAME');
 
 ------------------------------------------------------------------
 
@@ -2778,7 +2868,9 @@ Insert into nm_inv_type_attribs_all
     'N', NULL, NULL, NULL, 'DEF_STATUS_CODE', 
     'DEF_STATUS_CODE', TO_DATE('03/04/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'Y', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('03/04/2010 14:53:52', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('03/04/2010 14:53:52', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'Y', 
+    TO_DATE('03/04/2010 14:53:52', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT HSC_STATUS_CODE,HSC_STATUS_NAME,HSC_STATUS_CODE FROM HIG_STATUS_CODES
+WHERE HSC_DOMAIN_CODE = ''DEFECTS''
+ORDER BY HSC_STATUS_NAME', 'Y', 
     10, 'N', 'MIXED');
 Insert into nm_inv_type_attribs_all
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -5792,18 +5884,25 @@ INSERT INTO HIG_PROCESS_TYPES
        ,HPT_PROCESS_LIMIT
        ,HPT_RESTARTABLE
        ,HPT_SEE_IN_HIG2510
-       )
+       ,HPT_AREA_TYPE
+       ,HPT_POLLING_ENABLED
+       ,HPT_POLLING_FTP_TYPE_ID 
+)
 SELECT 
         -1001
        ,'Maintenance Inspection Loader'
        ,'Loads maintenance inspections from RMMS or EID format files'
-       ,'mai_inspection_loader.load_rmms_or_eid_file;'
+       ,'mai_inspection_loader.initialise;'
        ,'MAI4400'
        ,'MAI4405'
        ,'PROCESS_ID'
        ,null
        ,'N'
-       ,'Y' FROM DUAL
+       ,'Y'
+       ,'ADMIN_UNIT'
+       ,'Y'
+       ,NULL
+        FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
                    WHERE HPT_PROCESS_TYPE_ID = -1001);
 --
@@ -6111,60 +6210,466 @@ Insert into nm_errors Select 'MAI',9807,Null,'A Ruleset already exists with thes
 
 ------------------------------------------------------------------
 SET TERM ON
-PROMPT New Product Options DEFDOCTYPE and DEFDOCLOCN
+PROMPT Process Alert Asset
 SET TERM OFF
 
 ------------------------------------------------------------------
 -- 
--- DEVELOPMENT COMMENTS (CHRIS BAUGH)
--- New Product Options DEFDOCTYPE and DEFDOCLOCN to provide default Document Type and Document Location values for Defect document attachments loaded via Maintenance Inspection Loader
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Process Alert Asset
 -- 
 ------------------------------------------------------------------
-insert into hig_option_list
-      (hol_id
-      ,hol_product
-      ,hol_name
-      ,hol_remarks
-      ,hol_domain
-      ,hol_datatype
-      ,hol_mixed_case
-      ,hol_user_option) 
-select 'DEFDOCTYPE'
-      ,'MAI'
-      ,'Default Defect Document Type'      
-      ,'Contains the default Document Type for Defect document attachments loaded via Maintenace Inspection Loader.'
-      ,null
-      ,'VARCHAR2'
-      ,'N'
-      ,'N'
-  from dual
- where not exists (select 1
-                     from hig_option_list
-                    where hol_id = 'DEFDOCTYPE')
-/
-insert into hig_option_list
-      (hol_id
-      ,hol_product
-      ,hol_name
-      ,hol_remarks
-      ,hol_domain
-      ,hol_datatype
-      ,hol_mixed_case
-      ,hol_user_option) 
-select 'DEFDOCLOCN'
-      ,'MAI'
-      ,'Default Document Location'      
-      ,'Contains the default Document Location for Defect document attachments loaded via Maintenace Inspection Loader.'
-      ,null
-      ,'VARCHAR2'
-      ,'N'
-      ,'N'
-  from dual
- where not exists (select 1
-                     from hig_option_list
-                    where hol_id = 'DEFDOCLOCN')
-/
+Prompt Inserting into  NM_INV_TYPES_ALL
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'PRO$'
+       ,'P'
+       ,'N'
+       ,'C'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'A'
+       ,'Process Alerts'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,'V_NM_PRO$'
+       ,to_date('19010101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,'hig_process_alert_log'
+       ,''
+       ,''
+       ,''
+       ,'EXT$'
+       ,''
+       ,'N'
+       ,'HPAL_ID'
+       ,'Y'
+       ,Sysdate
+       ,sysdate
+       ,USER
+       ,USER
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'PRO$');
 
+Delete FROM NM_INV_TYPE_ATTRIBS_ALL
+WHERE ita_inv_type = 'PRO$';
+
+
+Prompt Inserting into  NM_INV_TYPE_ATTRIBS_ALL
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_ID', 'N', 1, 'N', 
+    'NUMBER', 38, NULL, 'Primary Key', NULL, 
+    'N', NULL, NULL, NULL, 'ID', 
+    'ID', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:34:32', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:34:32', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'UPPER');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_ADMIN_UNIT', 'N', 2, 'N', 
+    'NUMBER', 9, NULL, 'Admin Unit', NULL, 
+    'N', NULL, NULL, NULL, 'ADMIN_UNIT', 
+    'ADMIN_UNIT', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:34:52', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:34:52', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'UPPER');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_CONTRACT_ID', 'N', 3, 'N', 
+    'VARCHAR2', 10, NULL, 'Contract ID', NULL, 
+    'N', NULL, NULL, NULL, 'CON_ID', 
+    'CON_ID', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_CON_CODE', 'N', 4, 'N', 
+    'VARCHAR2', 10, NULL, 'Con Code', NULL, 
+    'N', NULL, NULL, NULL, 'CON_CODE', 
+    'CON_CODE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_CON_NAME', 'N', 5, 'N', 
+    'VARCHAR2', 40, NULL, 'Con Name', NULL, 
+    'N', NULL, NULL, NULL, 'CON_NAME', 
+    'CON_NAME', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:36:00', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:36:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_EMAIL_BODY', 'N', 6, 'N', 
+    'VARCHAR2', 500, NULL, 'Text 2', NULL, 
+    'N', NULL, NULL, NULL, 'TEXT_2', 
+    'TEXT_2', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:36:36', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:36:36', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_EMAIL_SUBJECT', 'N', 7, 'N', 
+    'VARCHAR2', 100, NULL, 'Text 1', NULL, 
+    'N', NULL, NULL, NULL, 'TEXT_1', 
+    'TEXT_1', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:37:02', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:37:02', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_INITIATED_USER', 'N', 8, 'N', 
+    'VARCHAR2', 30, NULL, 'Initiator', NULL, 
+    'N', NULL, NULL, NULL, 'INITIATOR', 
+    'INITIATOR', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:38:00', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:38:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_PROCESS_TYPE_ID', 'N', 9, 'N', 
+    'NUMBER', 38, NULL, 'Process Type', NULL, 
+    'N', NULL, NULL, NULL, 'PROCESS_TYPE', 
+    'PROCESS_TYPE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:38:29', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:39:47', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT HPT_NAME,HPT_DESCR,HPT_PROCESS_TYPE_ID FROM HIG_PROCESS_TYPES
+ORDER BY HPT_NAME', 'N', 
+    NULL, 'N', 'UPPER');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_UNIT_CODE', 'N', 10, 'N', 
+    'VARCHAR2', 10, NULL, 'Admin Unit Code', NULL, 
+    'N', NULL, NULL, NULL, 'UNIT_CODE', 
+    'UNIT_CODE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_UNIT_NAME', 'N', 11, 'N', 
+    'VARCHAR2', 40, NULL, 'Unit Name', NULL, 
+    'N', NULL, NULL, NULL, 'UNIT_NAME', 
+    'UNIT_NAME', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_PROCESS_ID', 'N', 12, 'N', 
+    'NUMBER', 38, NULL, 'Process ID', NULL, 
+    'N', NULL, NULL, NULL, 'Process_ID', 
+    'Process_ID', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    NULL, 'N', 'MIXED');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_JOB_RUN_SEQ', 'N', 13, 'N', 
+    'NUMBER', 38, NULL, 'Job Run Seq', NULL, 
+    'N', NULL, NULL, NULL, 'JOB_RUN_SEQ', 
+    'JOB_RUN_SEQ', TO_DATE('05/10/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/10/2010 14:07:14', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/10/2010 14:07:14', 'MM/DD/YYYY HH24:MI:SS'), 'HIGHWAYS', 'HIGHWAYS', NULL, 'N', 
+    NULL, 'N', 'UPPER');
+Insert into NM_INV_TYPE_ATTRIBS_ALL
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('PRO$', 'HPAL_SUCCESS_FLAG', 'N', 14, 'N', 
+    'VARCHAR2', 1, NULL, 'Outcome', NULL, 
+    'N', NULL, NULL, NULL, 'OUTCOME', 
+    'OUTCOME', TO_DATE('05/10/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('05/10/2010 14:08:05', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('05/10/2010 14:11:18', 'MM/DD/YYYY HH24:MI:SS'), 'HIGHWAYS', 'HIGHWAYS', 'SELECT HCO_CODE,HCO_MEANING,HCO_CODE CODE FROM HIG_CODES WHERE 
+HCO_DOMAIN = ''PROCESS_SUCCESS_FLAG'' AND HCO_CODE != ''TBD'' 
+ORDER BY HCO_SEQ', 'N', 
+    NULL, 'N', 'MIXED');
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Process Framework metadat for CIM
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+-- Process Framework metadat for CIM
+-- 
+------------------------------------------------------------------
+INSERT INTO HIG_DIRECTORIES
+       (HDIR_NAME
+       ,HDIR_PATH
+       ,HDIR_URL
+       ,HDIR_COMMENTS
+       ,HDIR_PROTECTED
+       )
+SELECT 
+        'CIM_DIR'
+       ,'<to be specified>'
+       ,'<to be specified>'
+       ,'Location for CIM files to load'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORIES
+                   WHERE HDIR_NAME = 'CIM_DIR');
+--
+INSERT INTO HIG_DIRECTORIES
+       (HDIR_NAME
+       ,HDIR_PATH
+       ,HDIR_URL
+       ,HDIR_COMMENTS
+       ,HDIR_PROTECTED
+       )
+SELECT 
+        'CIM_ARC'
+       ,'<to be specified>'
+       ,'<to be specified>'
+       ,'Location for CIM files to be archived '
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORIES
+                   WHERE HDIR_NAME = 'CIM_ARC');
+
+
+
+INSERT INTO HIG_DIRECTORY_ROLES
+       (HDR_NAME
+       ,HDR_ROLE
+       ,HDR_MODE
+       )
+SELECT 
+        'CIM_DIR'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORY_ROLES
+                   WHERE HDR_NAME = 'CIM_DIR'
+                    AND  HDR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_DIRECTORY_ROLES
+       (HDR_NAME
+       ,HDR_ROLE
+       ,HDR_MODE
+       )
+SELECT 
+        'CIM_ARC'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORY_ROLES
+                   WHERE HDR_NAME = 'CIM_ARC'
+                    AND  HDR_ROLE = 'MAI_ADMIN');
+
+
+PROMPT Creating Alert Manager Process Type
+Insert into HIG_PROCESS_TYPES
+Select 
+   -1002, 'CIM Works Order Extract', 'CIM Works Order Extract', 'mai_cim_automation.run_batch(''WO'');', NULL, 
+    NULL, NULL, NULL, 'Y', 'Y', 'N', NULL, 'CIM_CONTRACTOR' 
+from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1002);
+Insert into HIG_PROCESS_TYPES
+Select
+   -1003, 'CIM Completions File', 'CIM Completions File ', 'mai_cim_automation.run_batch(''WC'');', NULL, 
+    'MAI3854', 'ih_id', NULL, 'Y', 'Y','N', NULL, 'CIM_CONTRACTOR' 
+from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1003);
+Insert into HIG_PROCESS_TYPES
+Select
+   -1004, 'CIM Invoice File', 'CIM Invoice File', 'mai_cim_automation.run_batch(''WI'');', NULL, 
+    'MAI3854', 'ih_id', NULL, 'Y', 'Y',  'Y', NULL, 'CIM_CONTRACTOR'
+from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1004);
+
+
+PROMPT Creating Alert Manager Process Type Roles
+Insert into HIG_PROCESS_TYPE_ROLES
+SELECT -1002, 'MAI_USER'
+FROm dual 
+WHERE not exists (SELECT 1 from HIG_PROCESS_TYPE_ROLES WHERE HPTR_PROCESS_TYPE_ID = -1002);
+
+Insert into HIG_PROCESS_TYPE_ROLES
+SELECT -1003, 'MAI_USER'
+FROm dual 
+WHERE not exists (SELECT 1 from HIG_PROCESS_TYPE_ROLES WHERE HPTR_PROCESS_TYPE_ID = -1003);
+
+Insert into HIG_PROCESS_TYPE_ROLES
+SELECT -1004, 'MAI_USER'
+FROm dual 
+WHERE not exists (SELECT 1 from HIG_PROCESS_TYPE_ROLES WHERE HPTR_PROCESS_TYPE_ID = -1004);
+
+PROMPT Creating Alert Manager Process Type Frequency
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1002,-5,1 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1002 And hpfr_frequency_id = -5);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1003,-5,1 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1003 And hpfr_frequency_id = -5);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1004,-5,1 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1004 And hpfr_frequency_id = -5);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1002,-7,2 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1002 And hpfr_frequency_id = -7);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1003,-7,2 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1003 And hpfr_frequency_id = -7);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1004,-7,2 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1004 And hpfr_frequency_id = -7);
+
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1002,-8,3 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1002 And hpfr_frequency_id = -8);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1003,-8,3 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1003 And hpfr_frequency_id = -8);
+
+Insert into HIG_PROCESS_TYPE_FREQUENCIES
+Select -1004,-8,3 FRom dual
+Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1004 And hpfr_frequency_id = -8);
 ------------------------------------------------------------------
 
 
