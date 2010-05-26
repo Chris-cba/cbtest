@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.1   May 07 2010 15:51:56   lsorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.2   May 26 2010 14:12:44   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkb  $
---       Date into PVCS   : $Date:   May 07 2010 15:51:56  $
---       Date fetched Out : $Modtime:   May 07 2010 14:40:38  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 26 2010 14:12:44  $
+--       Date fetched Out : $Modtime:   May 26 2010 14:11:18  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -17,7 +17,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.1  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.2  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_wo_automation' ;
 --
@@ -44,9 +44,9 @@ IS
    CURSOR c_get_rse
    IS
    SELECT *
-   FROM   road_segments 
+   FROM   road_segs 
    WHERE  rse_he_id = pi_rse_he_id;
-   l_rse_rec road_segments_all%ROWTYPE;
+   l_rse_rec road_segs%ROWTYPE;
 --
 BEGIN
 --
@@ -58,25 +58,27 @@ BEGIN
 --
 END get_rse;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION get_bud_details(pi_bud_id IN budgets.bud_id%TYPE)
 Return g_bud_rec%TYPE  
 IS 
 --
    CURSOR c_bud
    IS
-   SELECT BUD_ICB_ITEM_CODE||BUD_ICB_SUB_ITEM_CODE||BUD_ICB_SUB_SUB_ITEM_CODE 
+   SELECT icb_work_code
          ,icb_work_category_name
-         ,BUD_SYS_FLAG
-         ,BUD_RSE_HE_ID
-         ,BUD_FYR_ID
+         ,bud_sys_flag
+         ,bud_rse_he_id
+         ,bud_fyr_id
          ,icb_id
-   From   Budgets
+   FROM   Budgets
          ,item_code_breakdowns
-   WHERE  icb_dtp_flag = BUD_SYS_FLAG
-   AND    icb_item_code = BUD_ICB_ITEM_CODE  
-   AND    icb_sub_item_code = BUD_ICB_SUB_ITEM_CODE  
-   AND    icb_sub_sub_item_code = BUD_ICB_SUB_SUB_ITEM_CODE
-   AND    decode(hig.get_sysopt('ICBFGAC'),'Y',icb_agency_code,BUD_AGENCY) = BUD_AGENCY
+   WHERE  icb_dtp_flag = bud_sys_flag
+   AND    icb_item_code = bud_icb_item_code  
+   AND    icb_sub_item_code = bud_icb_sub_item_code  
+   AND    icb_sub_sub_item_code = bud_icb_sub_sub_item_code
+   AND    DECODE(hig.get_sysopt('ICBFGAC'),'Y',icb_agency_code,bud_agency) = bud_agency
    AND    bud_id = pi_bud_id ;
    l_bud_rec g_bud_rec%TYPE;
 --
@@ -89,6 +91,8 @@ BEGIN
    Return l_bud_rec;
 --
 END get_bud_details;
+--
+-----------------------------------------------------------------------------
 --
 FUNCTION get_con(pi_con_id IN contracts.con_id%TYPE)
 Return   contracts%ROWTYPE
@@ -111,6 +115,8 @@ BEGIN
 --
 END  get_con;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION get_atv(pi_atv_acty_code IN Varchar2)
 Return   activities%ROWTYPE
 IS
@@ -131,6 +137,8 @@ BEGIN
    Return l_atv_rec ;
 --
 END  get_atv;
+--
+-----------------------------------------------------------------------------
 --
 FUNCTION get_dty(pi_dty_code IN Varchar2)
 Return   def_types%ROWTYPE
@@ -153,6 +161,8 @@ BEGIN
 --
 END  get_dty;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION get_tre(pi_tre_code IN Varchar2)
 Return   treatments%ROWTYPE
 IS
@@ -174,6 +184,8 @@ BEGIN
 --
 END  get_tre;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION check_detail_exists(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
 Return   Boolean
 IS
@@ -191,6 +203,8 @@ BEGIN
 --
 END check_detail_exists;
 --
+-----------------------------------------------------------------------------
+--
 PROCEDURE delete_criteria(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
 IS
 BEGIN
@@ -200,6 +214,8 @@ BEGIN
    WHERE  mawc_mawr_id = pi_mawr_id;
 --
 END delete_criteria;
+--
+-----------------------------------------------------------------------------
 --
 PROCEDURE copy_rule(pi_mawr_id IN  mai_auto_wo_rules.mawr_id%TYPE
                    ,po_mawr_id OUT mai_auto_wo_rules.mawr_id%TYPE)
@@ -251,6 +267,8 @@ BEGIN
 --
 END copy_rule;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION duplicate_rule(pi_mawr_rec IN mai_auto_wo_rules%ROWTYPE)
 RETURN BOOLEAN
 IS
@@ -274,6 +292,8 @@ BEGIN
 --
 END duplicate_rule;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION get_mawr(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
 Return   mai_auto_wo_rules%ROWTYPE
 IS
@@ -295,6 +315,8 @@ BEGIN
 --
 END get_mawr;
 --
+-----------------------------------------------------------------------------
+--
 FUNCTION get_fyr(pi_fyr_id IN financial_years.fyr_id%TYPE)
 Return   financial_years%ROWTYPE
 IS
@@ -304,7 +326,7 @@ IS
    SELECT *
    FROM   financial_years
    WHERE  fyr_id = pi_fyr_id ;
-   l_fyr_rec financial_years%ROWTYPe;
+   l_fyr_rec financial_years%ROWTYPE;
 --
 BEGIN
 --
@@ -315,7 +337,9 @@ BEGIN
    Return l_fyr_rec ;
 --
 END get_fyr;
-
+--
+-----------------------------------------------------------------------------
+--
 END mai_wo_automation;
 /
 
