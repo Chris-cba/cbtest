@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.5   May 12 2010 00:14:54   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.6   May 26 2010 10:27:16   malexander  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   May 12 2010 00:14:54  $
---       Date fetched Out : $Modtime:   May 12 2010 00:09:44  $
---       Version          : $Revision:   2.5  $
+--       Date into PVCS   : $Date:   May 26 2010 10:27:16  $
+--       Date fetched Out : $Modtime:   May 26 2010 10:24:58  $
+--       Version          : $Revision:   2.6  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 12-MAY-2010 00:09
+--       Generation Date  : 26-MAY-2010 10:24
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -21,6 +21,7 @@
 --   HIG_MODULE_ROLES
 --   DOC_GATEWAYS
 --   DOC_GATE_SYNS
+--   HIG_PROCESS_AREAS
 --   HIG_PROCESS_TYPES
 --   HIG_PROCESS_TYPE_ROLES
 --   HIG_PROCESS_TYPE_FREQUENCIES
@@ -5408,6 +5409,67 @@ SELECT
 
 
 ----------------------------------------------------------------------------------------
+-- HIG_PROCESS_AREAS
+--
+-- select * from mai_metadata.hig_process_areas
+-- order by hpa_area_type
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_process_areas
+SET TERM OFF
+
+INSERT INTO HIG_PROCESS_AREAS
+       (HPA_AREA_TYPE
+       ,HPA_DESCRIPTION
+       ,HPA_TABLE
+       ,HPA_RESTRICTED_TABLE
+       ,HPA_WHERE_CLAUSE
+       ,HPA_RESTRICTED_WHERE_CLAUSE
+       ,HPA_ID_COLUMN
+       ,HPA_MEANING_COLUMN
+       )
+SELECT 
+        'CIM_CONTRACTOR'
+       ,'CIM Contractor'
+       ,'ORG_UNITS'
+       ,'V_PROCESS_CONTRACTORS'
+       ,'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL'
+       ,'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL'
+       ,'OUN_ORG_ID'
+       ,'OUN_UNIT_CODE||'' - ''||OUN_NAME' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_AREAS
+                   WHERE HPA_AREA_TYPE = 'CIM_CONTRACTOR');
+--
+INSERT INTO HIG_PROCESS_AREAS
+       (HPA_AREA_TYPE
+       ,HPA_DESCRIPTION
+       ,HPA_TABLE
+       ,HPA_RESTRICTED_TABLE
+       ,HPA_WHERE_CLAUSE
+       ,HPA_RESTRICTED_WHERE_CLAUSE
+       ,HPA_ID_COLUMN
+       ,HPA_MEANING_COLUMN
+       )
+SELECT 
+        'CONTRACTOR'
+       ,'Contractor'
+       ,'ORG_UNITS'
+       ,'V_PROCESS_CONTRACTORS'
+       ,''
+       ,''
+       ,'OUN_ORG_ID'
+       ,'OUN_UNIT_CODE||'' - ''||OUN_NAME' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_AREAS
+                   WHERE HPA_AREA_TYPE = 'CONTRACTOR');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
 -- HIG_PROCESS_TYPES
 --
 -- select * from mai_metadata.hig_process_types
@@ -5430,18 +5492,120 @@ INSERT INTO HIG_PROCESS_TYPES
        ,HPT_PROCESS_LIMIT
        ,HPT_RESTARTABLE
        ,HPT_SEE_IN_HIG2510
+       ,HPT_POLLING_ENABLED
+       ,HPT_POLLING_FTP_TYPE_ID
+       ,HPT_AREA_TYPE
+       )
+SELECT 
+        -1004
+       ,'CIM Invoice File'
+       ,'CIM Invoice File'
+       ,'mai_cim_automation.run_batch(''WI'');'
+       ,''
+       ,'MAI3854'
+       ,'ih_id'
+       ,null
+       ,'Y'
+       ,'Y'
+       ,'Y'
+       ,null
+       ,'CIM_CONTRACTOR' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
+                   WHERE HPT_PROCESS_TYPE_ID = -1004);
+--
+INSERT INTO HIG_PROCESS_TYPES
+       (HPT_PROCESS_TYPE_ID
+       ,HPT_NAME
+       ,HPT_DESCR
+       ,HPT_WHAT_TO_CALL
+       ,HPT_INITIATION_MODULE
+       ,HPT_INTERNAL_MODULE
+       ,HPT_INTERNAL_MODULE_PARAM
+       ,HPT_PROCESS_LIMIT
+       ,HPT_RESTARTABLE
+       ,HPT_SEE_IN_HIG2510
+       ,HPT_POLLING_ENABLED
+       ,HPT_POLLING_FTP_TYPE_ID
+       ,HPT_AREA_TYPE
+       )
+SELECT 
+        -1003
+       ,'CIM Completions File'
+       ,'CIM Completions File '
+       ,'mai_cim_automation.run_batch(''WC'');'
+       ,''
+       ,'MAI3854'
+       ,'ih_id'
+       ,null
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,null
+       ,'CIM_CONTRACTOR' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
+                   WHERE HPT_PROCESS_TYPE_ID = -1003);
+--
+INSERT INTO HIG_PROCESS_TYPES
+       (HPT_PROCESS_TYPE_ID
+       ,HPT_NAME
+       ,HPT_DESCR
+       ,HPT_WHAT_TO_CALL
+       ,HPT_INITIATION_MODULE
+       ,HPT_INTERNAL_MODULE
+       ,HPT_INTERNAL_MODULE_PARAM
+       ,HPT_PROCESS_LIMIT
+       ,HPT_RESTARTABLE
+       ,HPT_SEE_IN_HIG2510
+       ,HPT_POLLING_ENABLED
+       ,HPT_POLLING_FTP_TYPE_ID
+       ,HPT_AREA_TYPE
+       )
+SELECT 
+        -1002
+       ,'CIM Works Order Extract'
+       ,'CIM Works Order Extract'
+       ,'mai_cim_automation.run_batch(''WO'');'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,null
+       ,'CIM_CONTRACTOR' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
+                   WHERE HPT_PROCESS_TYPE_ID = -1002);
+--
+INSERT INTO HIG_PROCESS_TYPES
+       (HPT_PROCESS_TYPE_ID
+       ,HPT_NAME
+       ,HPT_DESCR
+       ,HPT_WHAT_TO_CALL
+       ,HPT_INITIATION_MODULE
+       ,HPT_INTERNAL_MODULE
+       ,HPT_INTERNAL_MODULE_PARAM
+       ,HPT_PROCESS_LIMIT
+       ,HPT_RESTARTABLE
+       ,HPT_SEE_IN_HIG2510
+       ,HPT_POLLING_ENABLED
+       ,HPT_POLLING_FTP_TYPE_ID
+       ,HPT_AREA_TYPE
        )
 SELECT 
         -1001
        ,'Maintenance Inspection Loader'
        ,'Loads maintenance inspections from RMMS or EID format files'
-       ,'mai_inspection_loader.load_rmms_or_eid_file;'
+       ,'mai_inspection_loader.initialise;'
        ,'MAI4400'
        ,'MAI4405'
        ,'PROCESS_ID'
        ,null
        ,'N'
-       ,'Y' FROM DUAL
+       ,'Y'
+       ,'Y'
+       ,null
+       ,'ADMIN_UNIT' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPES
                    WHERE HPT_PROCESS_TYPE_ID = -1001);
 --
@@ -5463,6 +5627,39 @@ SET TERM ON
 PROMPT hig_process_type_roles
 SET TERM OFF
 
+INSERT INTO HIG_PROCESS_TYPE_ROLES
+       (HPTR_PROCESS_TYPE_ID
+       ,HPTR_ROLE
+       )
+SELECT 
+        -1004
+       ,'MAI_USER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_ROLES
+                   WHERE HPTR_PROCESS_TYPE_ID = -1004
+                    AND  HPTR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_PROCESS_TYPE_ROLES
+       (HPTR_PROCESS_TYPE_ID
+       ,HPTR_ROLE
+       )
+SELECT 
+        -1003
+       ,'MAI_USER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_ROLES
+                   WHERE HPTR_PROCESS_TYPE_ID = -1003
+                    AND  HPTR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_PROCESS_TYPE_ROLES
+       (HPTR_PROCESS_TYPE_ID
+       ,HPTR_ROLE
+       )
+SELECT 
+        -1002
+       ,'MAI_USER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_ROLES
+                   WHERE HPTR_PROCESS_TYPE_ID = -1002
+                    AND  HPTR_ROLE = 'MAI_USER');
+--
 INSERT INTO HIG_PROCESS_TYPE_ROLES
        (HPTR_PROCESS_TYPE_ID
        ,HPTR_ROLE
@@ -5503,6 +5700,123 @@ SET TERM ON
 PROMPT hig_process_type_frequencies
 SET TERM OFF
 
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1004
+       ,-8
+       ,3 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1004
+                    AND  HPFR_FREQUENCY_ID = -8);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1004
+       ,-7
+       ,2 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1004
+                    AND  HPFR_FREQUENCY_ID = -7);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1004
+       ,-5
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1004
+                    AND  HPFR_FREQUENCY_ID = -5);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1003
+       ,-8
+       ,3 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1003
+                    AND  HPFR_FREQUENCY_ID = -8);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1003
+       ,-7
+       ,2 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1003
+                    AND  HPFR_FREQUENCY_ID = -7);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1003
+       ,-5
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1003
+                    AND  HPFR_FREQUENCY_ID = -5);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1002
+       ,-8
+       ,3 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1002
+                    AND  HPFR_FREQUENCY_ID = -8);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1002
+       ,-7
+       ,2 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1002
+                    AND  HPFR_FREQUENCY_ID = -7);
+--
+INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
+       (HPFR_PROCESS_TYPE_ID
+       ,HPFR_FREQUENCY_ID
+       ,HPFR_SEQ
+       )
+SELECT 
+        -1002
+       ,-5
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_PROCESS_TYPE_FREQUENCIES
+                   WHERE HPFR_PROCESS_TYPE_ID = -1002
+                    AND  HPFR_FREQUENCY_ID = -5);
+--
 INSERT INTO HIG_PROCESS_TYPE_FREQUENCIES
        (HPFR_PROCESS_TYPE_ID
        ,HPFR_FREQUENCY_ID
