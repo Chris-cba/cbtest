@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.21   May 21 2010 17:53:04   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.22   May 27 2010 17:50:26   mhuitson  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   May 21 2010 17:53:04  $
---       Date fetched Out : $Modtime:   May 21 2010 17:51:24  $
---       PVCS Version     : $Revision:   2.21  $
+--       Date into PVCS   : $Date:   May 27 2010 17:50:26  $
+--       Date fetched Out : $Modtime:   May 27 2010 17:49:40  $
+--       PVCS Version     : $Revision:   2.22  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri May 21  17:48:04 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu May 27  17:40:07 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -493,6 +493,14 @@ CREATE TABLE DEFECTS
 /
 
 COMMENT ON TABLE DEFECTS IS 'Details of defective inventory items.'
+/
+
+PROMPT Creating Table 'DEFECT_LIST_TEMP'
+CREATE GLOBAL TEMPORARY TABLE DEFECT_LIST_TEMP
+ (DLT_DEFECT_ID NUMBER(8) NOT NULL
+ ,DLT_REP_ACTION_CAT VARCHAR2(1) NOT NULL
+ ,DLT_BUDGET_ID NUMBER(9)
+ )
 /
 
 PROMPT Creating Table 'DEFECT_PRIORITIES'
