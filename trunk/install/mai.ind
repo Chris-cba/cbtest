@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.5   May 05 2010 14:14:38   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.6   May 27 2010 19:07:08   mhuitson  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   May 05 2010 14:14:38  $
---       Date fetched Out : $Modtime:   May 05 2010 14:12:04  $
---       PVCS Version     : $Revision:   2.5  $
+--       Date into PVCS   : $Date:   May 27 2010 19:07:08  $
+--       Date fetched Out : $Modtime:   May 27 2010 19:05:52  $
+--       PVCS Version     : $Revision:   2.6  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Wed May 05  14:04:31 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu May 27  19:02:48 2010 by Server Generator 10.1.2.9.28
   
 
 PROMPT Creating Index 'ATV_INDEX_P1'
@@ -546,6 +546,21 @@ PROMPT Creating Index 'MIL_BOQ_REP_FK_IND'
 CREATE INDEX MIL_BOQ_REP_FK_IND ON MAI_INSP_LOAD_ERROR_BOQ
  (BOQ_DEFECT_ID
  ,BOQ_REP_ACTION_CAT)
+/
+
+PROMPT Creating Index 'MIL_COM_ARE_FK_IND'
+CREATE INDEX MIL_COM_ARE_FK_IND ON MAI_INSP_LOAD_ERROR_COM
+ (COM_ARE_REPORT_ID)
+/
+
+PROMPT Creating Index 'MIL_DAS_ARE_FK_IND'
+CREATE INDEX MIL_DAS_ARE_FK_IND ON MAI_INSP_LOAD_ERROR_DAS
+ (DAS_ARE_REPORT_ID)
+/
+
+PROMPT Creating Index 'MIL_DAS_DEF_FK_IND'
+CREATE INDEX MIL_DAS_DEF_FK_IND ON MAI_INSP_LOAD_ERROR_DAS
+ (DAS_DEF_DEFECT_ID)
 /
 
 PROMPT Creating Index 'MIL_DEF_ARE_FK_IND'
