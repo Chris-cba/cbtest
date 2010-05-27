@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.5   May 05 2010 14:14:38   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.6   May 27 2010 17:50:24   mhuitson  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   May 05 2010 14:14:38  $
---       Date fetched Out : $Modtime:   May 05 2010 14:11:48  $
---       PVCS Version     : $Revision:   2.5  $
+--       Date into PVCS   : $Date:   May 27 2010 17:50:24  $
+--       Date fetched Out : $Modtime:   May 27 2010 17:49:40  $
+--       PVCS Version     : $Revision:   2.6  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Wed May 05  14:04:31 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu May 27  17:40:07 2010 by Server Generator 10.1.2.9.28
   
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
@@ -38,6 +38,13 @@ ALTER TABLE CONTRACTOR_USERS
  ADD (CONSTRAINT COU_PK PRIMARY KEY 
   (COU_OUN_ORG_ID
   ,COU_HUS_USER_ID))
+/
+
+PROMPT Creating Primary Key on 'DEFECT_LIST_TEMP'
+ALTER TABLE DEFECT_LIST_TEMP
+ ADD (CONSTRAINT DLT_PK PRIMARY KEY 
+  (DLT_DEFECT_ID
+  ,DLT_REP_ACTION_CAT))
 /
 
 PROMPT Creating Primary Key on 'DEF_SUPERSEDING_RULES'
@@ -173,7 +180,7 @@ PROMPT Creating Unique Key on 'DEF_SUPERSEDING_RULES'
 ALTER TABLE DEF_SUPERSEDING_RULES
  ADD (CONSTRAINT DSR_UK UNIQUE 
   (DSR_ADMIN_UNIT
-  ,DSR_INITITATION_TYPE))
+  ,DSR_INITIATION_TYPE))
 /
 
 PROMPT Creating Unique Key on 'MAI_AUTO_WO_RULE_CRITERIA'
@@ -197,7 +204,7 @@ ALTER TABLE MAI_WO_USER_WORK_CODES
   ,MWUW_ICB_SUB_SUB_ITEM_CODE))
 /
 
-                               
+                                
 PROMPT Creating Check Constraint on 'DEF_SUPERSEDING_RULES'
 ALTER TABLE DEF_SUPERSEDING_RULES
  ADD (CONSTRAINT DSR_TOLERANCE_CHK CHECK (dsr_tolerance >= 0))
