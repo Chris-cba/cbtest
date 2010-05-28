@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.3   May 26 2010 10:27:20   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.4   May 28 2010 09:51:04   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   May 26 2010 10:27:20  $
---       Date fetched Out : $Modtime:   May 26 2010 10:08:00  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   May 28 2010 09:51:04  $
+--       Date fetched Out : $Modtime:   May 28 2010 09:27:34  $
+--       Version          : $Revision:   3.4  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -63,6 +63,13 @@ CREATE TABLE mai_auto_wo_rules
 
 ALTER TABLE mai_auto_wo_rules
   ADD(CONSTRAINT mawr_pk PRIMARY KEY (mawr_id));
+
+ALTER TABLE mai_auto_wo_rules
+  ADD CONSTRAINT mawr_uk UNIQUE(mawr_admin_unit
+                               ,mawr_road_group_id
+                               ,mawr_scheme_type
+                               ,mawr_bud_id
+                               ,mawr_con_id);
 
 ALTER TABLE mai_auto_wo_rules
   ADD (CONSTRAINT mawr_ne_fk 
@@ -207,6 +214,17 @@ COMMENT ON COLUMN mai_auto_wo_rule_criteria.mawc_CREATED_BY IS 'Audit details'
 /
 
 COMMENT ON COLUMN mai_auto_wo_rule_criteria.mawc_MODIFIED_BY IS 'Audit details'
+/
+
+CREATE GLOBAL TEMPORARY TABLE defect_list_temp
+  (dlt_defect_id      NUMBER(8)   NOT NULL
+  ,dlt_rep_action_cat VARCHAR2(1) NOT NULL
+  ,dlt_budget_id      NUMBER(9))
+  ON COMMIT DELETE ROWS
+/
+
+ALTER TABLE defect_list_temp
+  ADD (CONSTRAINT dlt_pk PRIMARY KEY (dlt_defect_id,dlt_rep_action_cat))
 /
 
 ------------------------------------------------------------------
@@ -1087,6 +1105,9 @@ ALTER TABLE mai_insp_load_error_com
   REFERENCES mai_insp_load_error_are(are_report_id)
 /
 
+CREATE INDEX mil_com_are_fk_ind ON mai_insp_load_error_com(com_are_report_id)
+/
+
 CREATE TABLE mai_insp_load_error_das
   (das_doc_id						NUMBER(9)    NOT NULL
   ,das_are_report_id    NUMBER(8,0)  NOT NULL
@@ -1116,10 +1137,16 @@ ALTER TABLE mai_insp_load_error_das
   REFERENCES mai_insp_load_error_are(are_report_id)
 /
 
+CREATE INDEX mil_das_are_fk_ind ON mai_insp_load_error_das(das_are_report_id)
+/
+
 ALTER TABLE mai_insp_load_error_das
   ADD CONSTRAINT mil_das_def_fk
   FOREIGN KEY (das_def_defect_id)
   REFERENCES mai_insp_load_error_def(def_defect_id)
+/
+
+CREATE INDEX mil_das_def_fk_ind ON mai_insp_load_error_das(das_def_defect_id);
 /
 
 ------------------------------------------------------------------

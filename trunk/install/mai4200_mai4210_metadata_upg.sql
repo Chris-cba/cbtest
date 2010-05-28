@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.6   May 26 2010 10:27:20   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.7   May 28 2010 09:51:04   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 26 2010 10:27:20  $
---       Date fetched Out : $Modtime:   May 26 2010 10:22:24  $
---       Version          : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   May 28 2010 09:51:04  $
+--       Date fetched Out : $Modtime:   May 28 2010 09:27:36  $
+--       Version          : $Revision:   3.7  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -3686,7 +3686,22 @@ Insert into nm_inv_type_attribs_all
     NULL, NULL, 'N', 'N', TO_DATE('03/19/2010 10:23:32', 'MM/DD/YYYY HH24:MI:SS'), 
     TO_DATE('03/19/2010 10:23:32', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'Y', 
     6, 'N', 'UPPER');
-
+Insert into nm_inv_type_attribs_all
+   (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
+    ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
+    ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
+    ITA_VIEW_COL_NAME, ITA_START_DATE, ITA_END_DATE, ITA_QUERYABLE, ITA_UKPMS_PARAM_NO, 
+    ITA_UNITS, ITA_FORMAT_MASK, ITA_EXCLUSIVE, ITA_KEEP_HISTORY_YN, ITA_DATE_CREATED, 
+    ITA_DATE_MODIFIED, ITA_MODIFIED_BY, ITA_CREATED_BY, ITA_QUERY, ITA_DISPLAYED, 
+    ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
+ Values
+   ('BOQ$', 'BOQ_ID', 'N', 25, 'N', 
+    'NUMBER', 9, 3, 'BOQ ID', NULL, 
+    'N', NULL, NULL, NULL, 'BOQ_ID', 
+    'BOQ_ID', TO_DATE('03/19/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'Y', NULL, 
+    NULL, NULL, 'N', 'N', TO_DATE('03/19/2010 10:23:32', 'MM/DD/YYYY HH24:MI:SS'), 
+    TO_DATE('03/19/2010 10:23:32', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'Y', 
+    9, 'N', 'UPPER');
 
 ------------------------------------------------------------------
 
@@ -6603,17 +6618,17 @@ PROMPT Creating Alert Manager Process Type
 Insert into HIG_PROCESS_TYPES
 Select 
    -1002, 'CIM Works Order Extract', 'CIM Works Order Extract', 'mai_cim_automation.run_batch(''WO'');', NULL, 
-    NULL, NULL, NULL, 'Y', 'Y', 'N', NULL, 'CIM_CONTRACTOR' 
+    NULL, NULL, NULL, 'Y', 'Y', 'CIM_CONTRACTOR','N', NULL 
 from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1002);
 Insert into HIG_PROCESS_TYPES
 Select
    -1003, 'CIM Completions File', 'CIM Completions File ', 'mai_cim_automation.run_batch(''WC'');', NULL, 
-    'MAI3854', 'ih_id', NULL, 'Y', 'Y','N', NULL, 'CIM_CONTRACTOR' 
+    'MAI3854', 'ih_id', NULL, 'Y', 'Y','CIM_CONTRACTOR','Y', NULL
 from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1003);
 Insert into HIG_PROCESS_TYPES
 Select
    -1004, 'CIM Invoice File', 'CIM Invoice File', 'mai_cim_automation.run_batch(''WI'');', NULL, 
-    'MAI3854', 'ih_id', NULL, 'Y', 'Y',  'Y', NULL, 'CIM_CONTRACTOR'
+    'MAI3854', 'ih_id', NULL, 'Y', 'Y',  'CIM_CONTRACTOR','Y', NULL 
 from dual WHERE not exists (select 1 from HIG_PROCESS_TYPES    where hpt_process_type_id =  -1004);
 
 
