@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.4   May 28 2010 09:51:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.5   May 28 2010 14:45:56   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   May 28 2010 09:51:04  $
---       Date fetched Out : $Modtime:   May 28 2010 09:27:34  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   May 28 2010 14:45:56  $
+--       Date fetched Out : $Modtime:   May 28 2010 14:44:12  $
+--       Version          : $Revision:   3.5  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -266,7 +266,7 @@ ALTER TABLE def_superseding_rules
 
 ALTER TABLE def_superseding_rules
   ADD CONSTRAINT dsr_uk
-  UNIQUE (dsr_admin_unit,dsr_inititation_type);
+  UNIQUE (dsr_admin_unit,dsr_initiation_type);
 
 ALTER TABLE def_superseding_rules
   ADD (CONSTRAINT dsr_nau_fk
@@ -287,7 +287,7 @@ COMMENT ON COLUMN def_superseding_rules.dsr_id IS 'Unique identifier generated f
 COMMENT ON COLUMN def_superseding_rules.dsr_admin_unit IS 'Identifies the Admin Unit to which Superseding will be applied'
 /
 
-COMMENT ON COLUMN def_superseding_rules.dsr_inititation_type IS 'Identifies the Initiation Type to which Superseding will be applied'
+COMMENT ON COLUMN def_superseding_rules.dsr_initiation_type IS 'Identifies the Initiation Type to which Superseding will be applied'
 /
 
 COMMENT ON COLUMN def_superseding_rules.dsr_tolerance IS 'Identifies the Tolerance to be used when matching Defects.'
@@ -1146,7 +1146,7 @@ ALTER TABLE mai_insp_load_error_das
   REFERENCES mai_insp_load_error_def(def_defect_id)
 /
 
-CREATE INDEX mil_das_def_fk_ind ON mai_insp_load_error_das(das_def_defect_id);
+CREATE INDEX mil_das_def_fk_ind ON mai_insp_load_error_das(das_def_defect_id)
 /
 
 ------------------------------------------------------------------
