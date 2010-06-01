@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.5   May 28 2010 14:45:56   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.6   Jun 01 2010 12:02:52   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   May 28 2010 14:45:56  $
---       Date fetched Out : $Modtime:   May 28 2010 14:44:12  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Jun 01 2010 12:02:52  $
+--       Date fetched Out : $Modtime:   Jun 01 2010 11:44:02  $
+--       Version          : $Revision:   3.6  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -76,10 +76,16 @@ ALTER TABLE mai_auto_wo_rules
   FOREIGN KEY (mawr_road_group_id) 
   REFERENCES nm_elements_all(ne_id));
 
+CREATE INDEX MAWR_NE_FK_IND
+  ON MAI_AUTO_WO_RULES (MAWR_ROAD_GROUP_ID);
+
 ALTER TABLE mai_auto_wo_rules
   ADD (CONSTRAINT mawr_nau_fk 
   FOREIGN KEY (mawr_admin_unit) 
   REFERENCES nm_admin_units_all(nau_admin_unit));
+
+CREATE INDEX MAWR_NAU_FK_IND
+  ON MAI_AUTO_WO_RULES (MAWR_ADMIN_UNIT);
 
 Alter TABLE mai_auto_wo_rules ADD (CONSTRAINT mawr_aggregate_repairs_chk CHECK (mawr_aggregate_repairs IN ('Y','N')));
 
@@ -393,6 +399,9 @@ ALTER TABLE mai_wo_user_road_groups
   ADD (CONSTRAINT mwur_ne_fk 
   FOREIGN KEY (mwur_road_group_id) 
   REFERENCES nm_elements_all(ne_id));
+
+CREATE INDEX MWUR_NE_FK_IND
+  ON MAI_WO_USER_ROAD_GROUPS (MWUR_ROAD_GROUP_ID);
 
 COMMENT ON TABLE mai_wo_user_road_groups IS 'The Works Order Work Tray will be restricted to the Road Groups specified in this table'
 /
