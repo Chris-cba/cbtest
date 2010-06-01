@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.6   May 27 2010 17:50:24   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.7   Jun 01 2010 10:45:48   mhuitson  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   May 27 2010 17:50:24  $
---       Date fetched Out : $Modtime:   May 27 2010 17:49:40  $
---       PVCS Version     : $Revision:   2.6  $
+--       Date into PVCS   : $Date:   Jun 01 2010 10:45:48  $
+--       Date fetched Out : $Modtime:   Jun 01 2010 10:44:14  $
+--       PVCS Version     : $Revision:   2.7  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Thu May 27  17:40:07 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Tue Jun 01  10:38:38 2010 by Server Generator 10.1.2.9.28
   
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
@@ -181,6 +181,16 @@ ALTER TABLE DEF_SUPERSEDING_RULES
  ADD (CONSTRAINT DSR_UK UNIQUE 
   (DSR_ADMIN_UNIT
   ,DSR_INITIATION_TYPE))
+/
+
+PROMPT Creating Unique Key on 'MAI_AUTO_WO_RULES'
+ALTER TABLE MAI_AUTO_WO_RULES
+ ADD (CONSTRAINT MAWR_UK UNIQUE 
+  (MAWR_ADMIN_UNIT
+  ,MAWR_ROAD_GROUP_ID
+  ,MAWR_SCHEME_TYPE
+  ,MAWR_BUD_ID
+  ,MAWR_CON_ID))
 /
 
 PROMPT Creating Unique Key on 'MAI_AUTO_WO_RULE_CRITERIA'
