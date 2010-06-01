@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.7   May 28 2010 09:51:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.8   Jun 01 2010 12:03:08   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   May 28 2010 09:51:04  $
---       Date fetched Out : $Modtime:   May 28 2010 09:27:36  $
---       Version          : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   Jun 01 2010 12:03:08  $
+--       Date fetched Out : $Modtime:   Jun 01 2010 11:44:02  $
+--       Version          : $Revision:   3.8  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -6290,7 +6290,7 @@ SELECT
        ,null
        ,''
        ,'N'
-       ,'hig_process_alert_log'
+       ,'HIG_PROCESS_ALERT_LOG'
        ,''
        ,''
        ,''
