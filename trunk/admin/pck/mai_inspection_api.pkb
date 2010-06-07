@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.8   May 25 2010 14:50:10   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.9   Jun 07 2010 10:13:04   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   May 25 2010 14:50:10  $
---       Date fetched Out : $Modtime:   May 25 2010 14:06:02  $
---       PVCS Version     : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jun 07 2010 10:13:04  $
+--       Date fetched Out : $Modtime:   Jun 03 2010 13:43:26  $
+--       PVCS Version     : $Revision:   3.9  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.8  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2194,7 +2194,7 @@ END validate_repair_boqs;
 PROCEDURE validate_repairs(pi_insp_rec    IN     activities_report%ROWTYPE
                           ,pi_defect_rec  IN     defects%ROWTYPE
                           ,pi_admin_unit  IN     hig_admin_units.hau_admin_unit%TYPE
-                          ,po_error_flag     OUT VARCHAR2
+                          ,pio_error_flag IN OUT VARCHAR2
                           ,pio_repair_tab IN OUT rep_tab)
   IS
   --
@@ -2214,6 +2214,7 @@ PROCEDURE validate_repairs(pi_insp_rec    IN     activities_report%ROWTYPE
   --
 BEGIN
   --
+  lv_rep_error_flag := pio_error_flag;
   lt_rep_tab := pio_repair_tab;
   --
   FOR i IN 1..lt_rep_tab.count LOOP
@@ -2365,7 +2366,7 @@ BEGIN
   /*
   ||Assign The Validated Table To The Output Table.
   */
-  po_error_flag := lv_rep_error_flag;
+  pio_error_flag := lv_rep_error_flag;
   pio_repair_tab := lt_rep_tab;
   --
 END validate_repairs;
@@ -3379,11 +3380,61 @@ END supersede_insp_defects;
 PROCEDURE auto_create_wo(pi_are_report_id       IN activities_report.are_report_id%TYPE)
   IS
   --
-  lv_work_order_no       work_orders.wor_works_order_no%TYPE;
-  lv_auto_create_error   VARCHAR2(4000);
-  --
   lt_insp_defects     defects_tab;
+  lt_work_orders_tab  mai_wo_api.works_order_tab;
   --
+  lv_alert_subject    hig_process_alert_log.hpal_email_subject%TYPE;
+  lv_alert_body       hig_process_alert_log.hpal_email_body%TYPE;
+  
+  PROCEDURE create_wo_failure_alert(pi_subject    IN hig_process_alert_log.hpal_email_subject%TYPE
+                                   ,pi_body       IN hig_process_alert_log.hpal_email_body%TYPE) IS
+
+   l_current_process_rec  hig_processes%ROWTYPE;
+   l_current_job_run_seq  hig_process_job_runs.hpjr_job_run_seq%TYPE;
+   l_hpal_rec             hig_process_alert_log%ROWTYPE;
+   
+   l_nau_rec              nm_admin_units_all%ROWTYPE;
+   l_refcursor            nm3type.ref_cursor;
+   
+
+  BEGIN
+
+    l_current_process_rec := hig_process_api.get_current_process;
+    l_current_job_run_seq := hig_process_api.get_current_job_run_seq;
+   
+    /*
+    || Create an Interim alert message indicating an Automatic Work Order Creation error
+    */
+    
+    l_hpal_rec.hpal_success_flag      := 'I'; 
+    l_hpal_rec.hpal_process_type_id   := l_current_process_rec.hp_process_type_id; 
+    l_hpal_rec.hpal_process_id        := l_current_process_rec.hp_process_id;
+    l_hpal_rec.hpal_job_run_seq       := l_current_job_run_seq;
+    l_hpal_rec.hpal_initiated_user    := l_current_process_rec.hp_initiated_by_username;
+    l_hpal_rec.hpal_email_subject     := pi_subject;
+    l_hpal_rec.hpal_email_body        := pi_body;
+                  
+    IF l_current_process_rec.hp_area_type = 'ADMIN_UNIT' AND l_current_process_rec.hp_area_id IS NOT NULL THEN
+       l_nau_rec := nm3get.get_nau_all(pi_nau_admin_unit =>  l_current_process_rec.hp_area_id
+                                      ,pi_raise_not_found => FALSE);  
+                      
+       l_hpal_rec.hpal_admin_unit     := l_nau_rec.nau_admin_unit;
+       l_hpal_rec.hpal_unit_code      := l_nau_rec.nau_unit_code;
+       l_hpal_rec.hpal_unit_name      := l_nau_rec.nau_name;
+
+    ELSIF l_current_process_rec.hp_area_type IN ('CONTRACTOR','CIM_CONTRACTOR') AND l_current_process_rec.hp_area_id IS NOT NULL THEN 
+                  
+       OPEN l_refcursor FOR 'SELECT oun_unit_code, oun_name FROM org_units WHERE oun_org_id = :a' USING l_current_process_rec.hp_area_id;
+       FETCH l_refcursor INTO l_hpal_rec.hpal_con_code,l_hpal_rec.hpal_con_name;
+       CLOSE l_refcursor;
+                     
+    END IF;
+                  
+    hig_process_api.create_alert_log (pi_hpal_rec => l_hpal_rec);
+                
+   
+  END create_wo_failure_alert;
+
 BEGIN
    lt_insp_defects := get_insp_defects(pi_are_report_id  =>pi_are_report_id);
 
@@ -3393,23 +3444,70 @@ BEGIN
    */
    hig_process_api.log_it(' ');
    hig_process_api.log_it('Attempting Automatic Work Order Creation');
+   nm_debug.debug('Defects count = '||lt_insp_defects.count);
    
    FOR i IN 1..lt_insp_defects.count LOOP
               
-      mai_wo_api.create_auto_defect_wo(pi_defect_id      => lt_insp_defects(i).def_defect_id
-                                      ,po_work_order_no  => lv_work_order_no
-                                      ,po_error          => lv_auto_create_error);
+      BEGIN
+         mai_wo_api.create_auto_defect_wo(pi_defect_id    => lt_insp_defects(i).def_defect_id
+                                      ,po_work_order_tab  => lt_work_orders_tab);
                                                 
-      IF lv_auto_create_error IS NULL 
-       THEN
-         hig_process_api.log_it('Created Work Order '||lv_work_order_no);
-      ELSE
-         hig_process_api.log_it(pi_message       => 'Warning: '||lv_auto_create_error
-                               ,pi_message_type  => 'W');
-      END IF;
+         FOR j IN 1 .. lt_work_orders_tab.count LOOP
+         
+            IF lt_work_orders_tab(j).error IS NULL 
+             THEN
+               hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
+            ELSE
+               hig_process_api.log_it(pi_message       => 'Warning: '||lt_work_orders_tab(j).error
+                                     ,pi_message_type  => 'W');
+                                     
+               lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
+                                   lt_insp_defects(i).def_defect_id;
+               lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
+                                   lt_work_orders_tab(j).error||chr(10)||
+                                   'Inspection = '||pi_are_report_id||chr(10)||
+                                   'Defect     = '||lt_insp_defects(i).def_defect_id;
+               
+               create_wo_failure_alert(pi_subject => lv_alert_subject
+                                      ,pi_body    =>lv_alert_body);
+                                      
+            END IF;
+            
+         END LOOP;
+        
+      EXCEPTION
+         WHEN OTHERS 
+           THEN
+               hig_process_api.log_it(pi_message       => 'Warning: '||SQLERRM
+                                     ,pi_message_type  => 'W');
+                                     
+              lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
+                                  lt_insp_defects(i).def_defect_id;
+              lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
+                                  SQLERRM||chr(10)||
+                                  'Inspection = '||pi_are_report_id||chr(10)||
+                                  'Defect     = '||lt_insp_defects(i).def_defect_id;
+               
+              create_wo_failure_alert(pi_subject => lv_alert_subject
+                                     ,pi_body    =>lv_alert_body);
+      END;
                                                          
    END LOOP;
   --
+
+EXCEPTION
+   WHEN OTHERS 
+     THEN
+         hig_process_api.log_it(pi_message       => 'Automatic Work Order creation error:'||SQLERRM 
+                               ,pi_message_type  => 'W');
+                                     
+        lv_alert_subject := 'Error: Automatic Work Order creation failure for Inspection '||pi_are_report_id;
+        lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
+                            SQLERRM||chr(10)||
+                            'Inspection = '||pi_are_report_id;
+
+        create_wo_failure_alert(pi_subject => lv_alert_subject
+                               ,pi_body    =>lv_alert_body);
 END auto_create_wo;
 --
 -----------------------------------------------------------------------------
@@ -3500,6 +3598,7 @@ BEGIN
   /*
   ||Loop Through The Supplied Defects.
   */
+  nm_debug.debug('Supplied defect count = '||pio_insp_rec.insp_defects.count);
   FOR i IN 1..pio_insp_rec.insp_defects.count LOOP
     --
     BEGIN
@@ -3614,7 +3713,7 @@ BEGIN
       validate_repairs(pi_insp_rec    => lr_insp_rec
                       ,pi_defect_rec  => lr_defect_rec
                       ,pi_admin_unit  => lv_admin_unit
-                      ,po_error_flag  => lv_error_flag
+                      ,pio_error_flag => lv_error_flag
                       ,pio_repair_tab => lt_repairs);
       --
       
@@ -3734,15 +3833,13 @@ BEGIN
       RAISE invalid_inspection;
   END IF;
   
-  BEGIN
-    --
-    auto_create_wo(pi_are_report_id       => lr_insp_rec.are_report_id); 
-    --  
-  EXCEPTION
-    WHEN others
-         THEN
-            nm_debug.debug('Auto create Work Order error :'||SQLERRM);
-  END;
+  /*
+  || Auto create Work Orders, if required
+  */
+  --
+  auto_create_wo(pi_are_report_id       => lr_insp_rec.are_report_id); 
+  --  
+
   /*
   ||Loop Through The Comments.
   */
@@ -3855,7 +3952,8 @@ BEGIN
   FROM mai_insp_load_batches,
        mai_insp_load_error_are
   WHERE are_batch_id = milb_batch_id
-    AND milb_hp_process_id = pi_process_id;
+    AND milb_hp_process_id = pi_process_id
+  ORDER BY milb_batch_id;
     
   FOR b IN 1 .. lt_batches.count LOOP
 
