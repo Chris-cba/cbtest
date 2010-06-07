@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.6   May 25 2010 14:50:00   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.7   Jun 07 2010 10:18:10   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   May 25 2010 14:50:00  $
---       Date fetched Out : $Modtime:   May 25 2010 14:39:20  $
---       PVCS Version     : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   Jun 07 2010 10:18:10  $
+--       Date fetched Out : $Modtime:   May 26 2010 13:38:54  $
+--       PVCS Version     : $Revision:   3.7  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -49,7 +49,7 @@ TYPE das_rec IS RECORD (das_doc_id            NUMBER(9)
                        ,das_dlc_id            NUMBER(9)
                        ,das_reference_code    VARCHAR2(254)
                        ,das_descr             VARCHAR2(2000)
-                       ,das_location          VARCHAR2(2000)
+                       ,das_location          VARCHAR2(30)
                        ,das_error             VARCHAR2(4000)); 
 TYPE das_tab IS TABLE OF das_rec INDEX BY BINARY_INTEGER;
 --
