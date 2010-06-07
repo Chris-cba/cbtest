@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.8   May 25 2010 14:49:40   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.9   Jun 07 2010 10:19:16   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   May 25 2010 14:49:40  $
---       Date fetched Out : $Modtime:   May 25 2010 14:07:22  $
---       PVCS Version     : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jun 07 2010 10:19:16  $
+--       Date fetched Out : $Modtime:   Jun 03 2010 13:49:52  $
+--       PVCS Version     : $Revision:   3.9  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.8  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -486,7 +486,6 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
   lv_h_rec_index  PLS_INTEGER;
   lv_r_rec_index  PLS_INTEGER;
   --
-  invalid_record  EXCEPTION;
   --
   PROCEDURE add_error_to_stack(pi_seq_no             IN mai_insp_load_recs.milr_seq_no%TYPE
                               ,pi_ner_id             IN nm_errors.ner_id%TYPE
@@ -1282,7 +1281,8 @@ nm_debug.debug('File inspdate = '||lv_token);
     FOR i IN 1..lt_tokens.count LOOP
       --
       IF set_varchar2(pi_value   => lt_tokens(i)
-                     ,pio_target => lv_activity)
+                     ,pio_target => lv_activity) AND
+         lv_activity IS NOT NULL
        THEN
           lt_activities(i).atv_acty_area_code := lv_activity;
       ELSE
@@ -1636,8 +1636,7 @@ nm_debug.debug('File inspdate = '||lv_token);
                           ,pi_ner_id             => 9107
                           ,pi_supplementary_info => SQLERRM);
         process_error_stack;
---        RAISE invalid_record;
-        RAISE;
+        RAISE invalid_record;
   END process_i_rec;
   --
   PROCEDURE process_j_rec(pi_i_rec_index IN BINARY_INTEGER)
@@ -1863,8 +1862,8 @@ nm_debug.debug('File inspdate = '||lv_token);
                           ,pi_ner_id             => 9107
                           ,pi_supplementary_info => SQLERRM);
         process_error_stack;
---        RAISE invalid_record;
-        RAISE;
+        RAISE invalid_record;
+--        RAISE;
   END process_j_rec;
   --
   PROCEDURE process_d_rec(pi_d_rec_index IN BINARY_INTEGER)
@@ -1938,7 +1937,8 @@ nm_debug.debug('File inspdate = '||lv_token);
                           ,pi_ner_id             => 9107
                           ,pi_supplementary_info => SQLERRM);
         process_error_stack;
-        RAISE;
+--        RAISE;
+        RAISE invalid_record;
   END process_d_rec;
   --
   --
@@ -2634,7 +2634,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
           CASE lt_records(i-1).milr_rec_type
             WHEN '1'
              THEN
-                IF lt_records(i).milr_rec_type != 'G'
+                IF NVL(lt_records(i).milr_rec_type, '@') != 'G'
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9520);
@@ -2647,7 +2647,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 */
                 lt_g_rec_index(lt_g_rec_index.count+1) := i-1;
                 --
-                IF lt_records(i).milr_rec_type != 'H'
+                IF NVL(lt_records(i).milr_rec_type, '@') != 'H'
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9521);
@@ -2655,7 +2655,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'H'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('I','P','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','P','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9522);
@@ -2663,7 +2663,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'I'
              THEN
-                IF lt_records(i).milr_rec_type != 'J'
+                IF NVL(lt_records(i).milr_rec_type, '@') != 'J'
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9523);
@@ -2671,7 +2671,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'J'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('D','K','L','M','N')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('D','K','L','M','N')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9524);
@@ -2679,7 +2679,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'D'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('D','K','L','M','N')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('D','K','L','M','N')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9525);
@@ -2687,7 +2687,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'K'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('L','M','N','P','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('L','M','N','P','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9526);
@@ -2695,7 +2695,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'L'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('M','N','P','Q','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('M','N','P','Q','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9527);
@@ -2703,7 +2703,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'M'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('I','P','Q','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','P','Q','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9528);
@@ -2711,7 +2711,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'N'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('I','P','Q','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','P','Q','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9529);
@@ -2719,7 +2719,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'P'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('G','S','X')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('G','S','X')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9530);
@@ -2727,7 +2727,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'Q'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('I','M','N','P','Q','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','M','N','P','Q','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9531);
@@ -2735,7 +2735,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'R'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('R','P')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('R','P')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9532);
@@ -2743,7 +2743,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'S'
              THEN
-                IF lt_records(i).milr_rec_type NOT IN('S','X')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('S','X')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9533);
@@ -2757,7 +2757,8 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
             ELSE
               --ERROR: unknown husky hunter record type BPR-8008
               add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
-                                ,pi_ner_id => 9534);RAISE invalid_file;
+                                ,pi_ner_id => 9534);
+              RAISE invalid_file;
           END CASE;
       END IF;
       /*
@@ -2884,13 +2885,13 @@ BEGIN
   --
 EXCEPTION
   WHEN invalid_record then
-      nm_debug.debug('Raised invalid_record'); --clb
+      nm_debug.debug('Raised invalid_record'); 
       RAISE;
   WHEN invalid_file
    THEN
       process_error_stack;
       nm_debug.debug('Invalid File raised');
-      RAISE; --clb
+      RAISE; 
   WHEN others
    THEN
       RAISE;
@@ -3264,6 +3265,7 @@ PROCEDURE load_rmms_or_eid_file
   lv_file_loaded    BOOLEAN;
   lv_insp_batch_id  mai_insp_load_recs.milr_batch_id%TYPE;
   lv_process_id     hig_processes.hp_process_id%TYPE;
+  --
   lv_api_error      VARCHAR2(1);
   lv_comment_error  VARCHAR2(1);
   lv_errors         BOOLEAN := FALSE;
@@ -3282,6 +3284,8 @@ PROCEDURE load_rmms_or_eid_file
     --
     lt_files := hig_process_api.get_current_process_in_files;
     --
+ 
+
   END;
   --
 BEGIN
@@ -3464,7 +3468,7 @@ BEGIN
       WHEN others
        THEN
           --
-          hig_process_api.log_it(pi_message_type => 'E' --clb
+          hig_process_api.log_it(pi_message_type => 'E' 
                                 ,pi_message => SQLERRM);
           lv_errors := TRUE;
           --
