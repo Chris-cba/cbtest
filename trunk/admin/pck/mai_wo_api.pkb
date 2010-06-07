@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.4   May 25 2010 14:48:20   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.5   Jun 07 2010 10:19:58   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 25 2010 14:48:20  $
---       Date fetched Out : $Modtime:   May 25 2010 14:39:18  $
---       PVCS Version     : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Jun 07 2010 10:19:58  $
+--       Date fetched Out : $Modtime:   Jun 07 2010 10:18:40  $
+--       PVCS Version     : $Revision:   3.5  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.4  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.5  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -65,7 +65,7 @@ END count_created_work_orders;
 --
 PROCEDURE get_created_work_orders(po_work_orders IN OUT works_order_tab) IS
 BEGIN
-	po_work_orders := gt_work_orders;
+  po_work_orders := gt_work_orders;
 END;
 --
 -----------------------------------------------------------------------------
@@ -571,9 +571,9 @@ BEGIN
   SELECT hsc_status_code
     INTO lv_retval
     FROM hig_status_codes
-   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
-     AND hsc_allow_feature1 = 'Y'
-     AND hsc_allow_feature10 = 'Y'
+   WHERE hsc_domain_code = 'DEFECTS'
+     AND hsc_allow_feature3 = 'Y'
+     AND hsc_allow_feature10 = 'N'
        ;
   --
   RETURN lv_retval;
@@ -1094,8 +1094,9 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   lv_wor_est_balancing_sum work_orders.wor_est_balancing_sum%TYPE := 0;
   --
   lv_wol_not_done    hig_status_codes.hsc_status_code%TYPE;
-  lv_wol_instructed  hig_status_codes.hsc_status_code%TYPE;
+  lv_wol_draft       hig_status_codes.hsc_status_code%TYPE;
   lv_def_instructed  hig_status_codes.hsc_status_code%TYPE;
+  lv_def_selected    hig_status_codes.hsc_status_code%TYPE;
   lv_def_available   hig_status_codes.hsc_status_code%TYPE;
   --
   lv_wol_null_boq_exists BOOLEAN := FALSE;
@@ -1233,6 +1234,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
       lv_con_code contracts.con_code%TYPE;
        --
      BEGIN
+     nm_debug.debug('con_id = '||pi_con_id);
+     nm_debug.debug('Date Raised = '||TO_CHAR(lv_date_raised));
       SELECT con_code
             ,con_admin_org_id
             ,oun_cng_disc_group
@@ -1261,9 +1264,11 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
     EXCEPTION
       WHEN no_data_found
        THEN
+          nm_debug.debug('validate_contract Raised 20063');
           raise_application_error(-20063,'Invalid Contract Id Supplied.');
       WHEN others
        THEN
+          nm_debug.debug('validate_contract Raised Others');
           RAISE;
     END validate_contract;
     --
@@ -1493,29 +1498,29 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
           RAISE;
     END get_wol_not_done;
     --
-    PROCEDURE get_wol_instructed
+    PROCEDURE get_wol_draft
       IS
     BEGIN
       SELECT hsc_status_code
-        INTO lv_wol_instructed
+        INTO lv_wol_draft
         FROM hig_status_codes
        WHERE hsc_domain_code = 'WORK_ORDER_LINES'
          AND hsc_allow_feature1 = 'Y'
-         AND hsc_allow_feature10 = 'Y'  --clb
+         AND hsc_allow_feature10 = 'Y'  
          AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
                                 AND NVL(hsc_end_date  ,lv_date_raised)
            ;
     EXCEPTION
       WHEN too_many_rows
        THEN
-          raise_application_error(-20058,'Too Many Values Defined For Work Order Line INSTRUCTED Status');
+          raise_application_error(-20058,'Too Many Values Defined For Work Order Line DRAFT Status');
       WHEN no_data_found
        THEN
-          raise_application_error(-20054,'Cannot Obtain Value For Work Order Line INSTRUCTED Status');
+          raise_application_error(-20054,'Cannot Obtain Value For Work Order Line DRAFT Status');
       WHEN others
        THEN
           RAISE;
-    END get_wol_instructed;
+    END get_wol_draft;
     --
     PROCEDURE get_def_instructed
       IS
@@ -1525,7 +1530,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature3 = 'Y'
-         AND hsc_allow_feature10 = 'Y'  --clb
+         AND hsc_allow_feature10 = 'N'  
          AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
                                 AND NVL(hsc_end_date  ,lv_date_raised)
            ;
@@ -1540,6 +1545,30 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
        THEN
           RAISE;
     END get_def_instructed;
+    --
+    PROCEDURE get_def_selected
+      IS
+    BEGIN
+      SELECT hsc_status_code
+        INTO lv_def_selected
+        FROM hig_status_codes
+       WHERE hsc_domain_code = 'DEFECTS'
+         AND hsc_allow_feature3 = 'Y'
+         AND hsc_allow_feature10 = 'Y'  
+         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
+                                AND NVL(hsc_end_date  ,lv_date_raised)
+           ;
+    EXCEPTION
+      WHEN too_many_rows
+       THEN
+          raise_application_error(-20057,'Too Many Values Defined For Defect SELECTED Status');
+      WHEN no_data_found
+       THEN
+          raise_application_error(-20053,'Cannot Obtain Value For Defect SELECTED Status');
+      WHEN others
+       THEN
+          RAISE;
+    END get_def_selected;
     --
     PROCEDURE get_def_available
       IS
@@ -1695,10 +1724,12 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
     */
     nm_debug.debug('get_wol_not_done');
     get_wol_not_done;
-    nm_debug.debug('get_wol_instructed');
-    get_wol_instructed;
+    nm_debug.debug('get_wol_draft');
+    get_wol_draft;
     nm_debug.debug('get_def_instructed');
     get_def_instructed;
+    nm_debug.debug('get_def_selected');
+    get_def_selected;
     nm_debug.debug('get_def_available');
     get_def_available;
     --
@@ -1868,7 +1899,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
       /*
       ||Check The Defect/Repair Against The Selection Criteria.
       */
-      SELECT CASE WHEN def_status_code NOT IN(lv_def_available,lv_def_instructed)
+      SELECT CASE WHEN def_status_code NOT IN(lv_def_available,lv_def_selected,lv_def_instructed)
                     OR def_date_compl IS NOT NULL
                     OR rep_date_completed IS NOT NULL
                    THEN 'Defect/Repair Is Already Complete.'
@@ -1988,6 +2019,11 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
     END check_defect;
     --
   BEGIN
+    /*
+    || Issue a savepoint, to avoid rolling back
+    || changes in calling module
+    */
+    SAVEPOINT create_defect_wo;
     --
     nm_debug.debug('Fetching Defects');
     /*
@@ -2045,7 +2081,7 @@ nm_debug.debug('generate WOLs');
       lt_wol(i).wol_def_defect_id  := lt_selected_repairs(i).rep_def_defect_id;
       lt_wol(i).wol_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
       lt_wol(i).wol_flag           := 'D';
-      lt_wol(i).wol_status_code    := lv_wol_instructed;
+      lt_wol(i).wol_status_code    := lv_wol_draft;
       lt_wol(i).wol_wor_flag       := 'D';
       lt_wol(i).wol_date_created   := SYSDATE;
       lt_wol(i).wol_bud_id         := lt_selected_repairs(i).bud_id;
@@ -2252,7 +2288,7 @@ nm_debug.debug('generate WOLs');
   --
 BEGIN
   --
-  nm_debug.debug_on;
+  --nm_debug.debug_on;
   /*
   ||Initialise Defaults.
   */
@@ -2357,7 +2393,8 @@ BEGIN
       */
       FOR i IN 1..lt_wol.count LOOP
         UPDATE defects
-           SET def_status_code       = lv_def_instructed
+           SET def_status_code = DECODE(def_status_code,lv_def_instructed,def_status_code
+                                                                         ,lv_def_selected)
               ,def_last_updated_date = SYSDATE
               ,def_works_order_no    = lv_work_order_no
          WHERE def_defect_id = lt_wol(i).wol_def_defect_id
@@ -2396,17 +2433,17 @@ BEGIN
       ||any updates (e.g. last wo number)
       ||are undone.
       */
-      ROLLBACK;
+      ROLLBACK TO create_defect_wo;
   END IF;
   --
-  nm_debug.debug_off;
+ -- nm_debug.debug_off;
   --
 EXCEPTION
   WHEN OTHERS
    THEN
-      ROLLBACK;
+      --ROLLBACK TO create_defect_wo;
       --
-      nm_debug.debug_off;
+      --nm_debug.debug_off;
       --
       RAISE;
 END create_defect_work_order;
@@ -2785,6 +2822,13 @@ BEGIN
                                      ||TO_CHAR(lr_wo.wor_date_raised,'DD-MON-RRRR')||'].');
   END IF;
   /*
+  ||Check The Date Confirmed Provided.
+  */
+  IF pi_date_instructed > sysdate 
+   THEN
+      raise_application_error(-20085,'Date Confirmed must not be later than today''s date.');
+  END IF;
+  /*
   ||Check The Contract.
   */
   check_contract;
@@ -2824,7 +2868,7 @@ BEGIN
   /*
   ||Set the status of any associated Defects to INSTRUCTED
   */
-	UPDATE defects
+  UPDATE defects
      SET def_status_code = lv_def_inst_status
         ,def_last_updated_date = SYSDATE
    WHERE def_defect_id IN(SELECT wol_def_defect_id
@@ -4632,6 +4676,8 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
                              ,pi_rep_action_cat  IN  VARCHAR2
                              ,pi_treatment       IN  treatments.tre_treat_code%TYPE
+                             ,pi_rep_date_due    IN  repairs.rep_date_due%TYPE
+                             ,po_rule_id         OUT mai_auto_wo_rules.mawr_id%TYPE
                              ,po_scheme_type     OUT mai_auto_wo_rules.mawr_scheme_type%TYPE
                              ,po_bud_id          OUT mai_auto_wo_rules.mawr_bud_id%TYPE
                              ,po_con_id          OUT mai_auto_wo_rules.mawr_con_id%TYPE
@@ -4642,7 +4688,20 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ) 
   IS
   --
-  lv_admin_unit     hig_admin_units.hau_admin_unit%TYPE;
+  TYPE wo_criteria_rec IS RECORD 
+     (mawr_id                 mai_auto_wo_rules.mawr_id%TYPE
+     ,mawr_scheme_type        mai_auto_wo_rules.mawr_scheme_type%TYPE
+     ,mawr_bud_id             mai_auto_wo_rules.mawr_bud_id%TYPE
+     ,mawr_con_id             mai_auto_wo_rules.mawr_con_id%TYPE
+     ,mawr_aggregate_repairs  mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
+     ,mawc_auto_instruct      mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE);
+  TYPE wo_criteria_tab IS TABLE OF wo_criteria_rec INDEX BY BINARY_INTEGER;
+  -- 
+  lt_criteria       wo_criteria_tab;
+  --
+  lv_admin_unit         hig_admin_units.hau_admin_unit%TYPE;
+  lv_mawr_id            mai_auto_wo_rules.mawr_id%TYPE := NULL;
+  lv_multiple_criteria  BOOLEAN := FALSE;
   --
 BEGIN
   /*
@@ -4659,85 +4718,121 @@ BEGIN
   nm_debug.debug('Action Cat = '||pi_rep_action_cat);
   nm_debug.debug('Treatment = '||pi_treatment);
   
-    /*
-    ||Check for matching rules.
-    */
-    BEGIN
-      SELECT mawr_scheme_type
-            ,mawr_bud_id
-            ,mawr_con_id
-            ,mawr_aggregate_repairs
-            ,NVL(mawc_auto_instruct, 'N')
-       INTO po_scheme_type
-           ,po_bud_id      
-           ,po_con_id      
-           ,po_aggregate  
-           ,po_auto_instruct
-      FROM mai_auto_wo_rule_criteria,
-           mai_auto_wo_rules
-     WHERE mawc_mawr_id = mawr_id
-       AND mawr_admin_unit IN 
-                       (SELECT hag_parent_admin_unit
-                          FROM hig_admin_groups,
-                               hig_admin_units
-                         WHERE hag_direct_link='Y'
-                           AND hau_admin_unit = hag_parent_admin_unit
-                         START WITH hag_child_admin_unit = lv_admin_unit                                                                     
-                       CONNECT BY 
-                         PRIOR hag_parent_admin_unit=hag_child_admin_unit
-                           AND hag_direct_link='Y'
-                         UNION
-                        SELECT lv_admin_unit 
-                          FROM dual)
-       AND NVL(mawr_road_group_id, pi_rse_he_id) IN 
-                       (SELECT nm_ne_id_of
-                          FROM nm_members
-                         WHERE nm_type = 'G'
-                    CONNECT BY
-                         PRIOR nm_ne_id_of = nm_ne_id_in
-                         START WITH nm_ne_id_in = pi_rse_he_id
-                         UNION
-                        SELECT pi_rse_he_id 
-                          FROM dual)
-       AND mawr_enabled = 'Y'
-       AND mawc_enabled = 'Y'
-       -- clb AND trunc(sysdate) BETWEEN mawr_start_date AND
-       --                           NVL(mawr_end_date, trunc(sysdate))
-       AND mawc_atv_acty_area_code = pi_activity
-       AND NVL(mawc_priority, pi_priority) = pi_priority
-       AND NVL(mawc_dty_defect_code, pi_defect_code) = pi_defect_code
-       AND pi_rep_action_cat IN (DECODE(mawc_include_temp_repair, 'Y', 'T', '@'),
-                                 DECODE(mawc_include_perm_repair, 'Y', 'P', '@'))
-       AND NVL(mawc_tre_treat_code, '@') = NVL(pi_treatment, '@');
+  /*
+  ||Check for matching rules.
+  */
+  BEGIN
+    SELECT mawr_id
+          ,mawr_scheme_type
+          ,mawr_bud_id
+          ,mawr_con_id
+          ,mawr_aggregate_repairs
+          ,NVL(mawc_auto_instruct, 'N')
+     BULK COLLECT
+     INTO lt_criteria
+    FROM mai_auto_wo_rule_criteria,
+         mai_auto_wo_rules
+   WHERE mawc_mawr_id = mawr_id
+     AND mawr_admin_unit IN 
+                     (SELECT hag_parent_admin_unit
+                        FROM hig_admin_groups,
+                             hig_admin_units
+                       WHERE hag_direct_link='Y'
+                         AND hau_admin_unit = hag_parent_admin_unit
+                       START WITH hag_child_admin_unit = lv_admin_unit                                                                     
+                     CONNECT BY 
+                       PRIOR hag_parent_admin_unit=hag_child_admin_unit
+                         AND hag_direct_link='Y'
+                       UNION
+                      SELECT lv_admin_unit 
+                        FROM dual)
+     AND NVL(mawr_road_group_id, pi_rse_he_id) IN 
+                     (SELECT nm_ne_id_of
+                        FROM nm_members
+                       WHERE nm_type = 'G'
+                  CONNECT BY
+                       PRIOR nm_ne_id_of = nm_ne_id_in
+                       START WITH nm_ne_id_in = pi_rse_he_id
+                       UNION
+                      SELECT pi_rse_he_id 
+                        FROM dual)
+     AND mawr_enabled = 'Y'
+     AND mawc_enabled = 'Y'
+     AND pi_rep_date_due BETWEEN mawr_start_date AND
+                             NVL(mawr_end_date, pi_rep_date_due)
+     AND mawc_atv_acty_area_code = pi_activity
+     AND NVL(mawc_priority, pi_priority) = pi_priority
+     AND NVL(mawc_dty_defect_code, pi_defect_code) = pi_defect_code
+     AND pi_rep_action_cat IN (DECODE(mawc_include_temp_repair, 'Y', 'T', '@'),
+                               DECODE(mawc_include_perm_repair, 'Y', 'P', '@'))
+     AND NVL(mawc_tre_treat_code, '@') = NVL(pi_treatment, '@');
          
-       po_create_wo := 'Y';
-
-     EXCEPTION
-      WHEN no_data_found
+     IF lt_criteria.count = 0 
        THEN
-          po_error:= 'No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id;
-          po_create_wo := 'N';
-      WHEN too_many_rows
-       THEN
-          po_error:= 'Multiple Automatic Work Order creation criteria found for Defect '||pi_defect_id;
-          po_create_wo := 'N';
-      WHEN others
-       THEN
-          RAISE;
-    END;
+         --po_error:= 'No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id;
+         nm_debug.debug('No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id);
+         po_create_wo := 'N';
+     ELSE
+         FOR i IN 1 .. lt_criteria.count LOOP
+     
+            /*
+            || If mawr_id does not match previous non-null value, got
+            || multiple matching rules
+            */
+            IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id 
+              THEN
+               lv_multiple_criteria := TRUE;
+               EXIT;
+            END IF;
+                  
+            /*
+            || Check if any auto instruct = 'Y' for any matching criteria
+            */
+            IF lt_criteria(i).mawc_auto_instruct = 'Y'
+              THEN
+               po_auto_instruct := 'Y';
+                     
+            END IF;
+                  
+            po_rule_id      := lt_criteria(i).mawr_id;
+            po_scheme_type  := lt_criteria(i).mawr_scheme_type;
+            po_bud_id       := lt_criteria(i).mawr_bud_id;
+            po_con_id       := lt_criteria(i).mawr_con_id;
+            po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
+              
+            lv_mawr_id := lt_criteria(i).mawr_id;
+              
+         END LOOP;
+         --
+         IF lv_multiple_criteria 
+          THEN
+             po_rule_id     := NULL;
+             po_scheme_type := NULL;
+             po_bud_id      := NULL;
+             po_con_id      := NULL;
+             po_aggregate   := NULL;
+             po_error       := 'Multiple Automatic Work Order creation criteria found for Defect '||pi_defect_id;
+             po_create_wo   := 'N';
+         ELSE
+             po_create_wo := 'Y';
+         END IF;
+           
+      END IF;
+         --
+  END;
 
 END check_auto_wo_rules;
 --
 -----------------------------------------------------------------------------
 --
 PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
-                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
-                               ,po_error             IN OUT nm3type.max_varchar2)
+                               ,po_work_order_tab       OUT works_order_tab)
   IS
   --
   lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
   lv_wo_descr          work_orders.wor_descr%TYPE := 'Auto Work Order For Defect '||TO_CHAR(pi_defect_id);
-  lv_scheme_type       work_orders.wor_scheme_type%TYPE := 'LR';
+  lv_rule_id           mai_auto_wo_rules.mawr_id%TYPE;
+  lv_scheme_type       work_orders.wor_scheme_type%TYPE;
   lv_con_id            contracts.con_id%TYPE;
   lv_bud_id            budgets.bud_id%TYPE;
   lv_aggregate         mai_auto_wo_rules.mawr_aggregate_repairs%TYPE;
@@ -4754,9 +4849,17 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
   lv_required          VARCHAR2(1);
   lv_instruct          VARCHAR2(1);
   lv_commit            VARCHAR2(1) := 'Y';
+  lv_error             nm3type.max_varchar2;
   --
-  lt_defects_in   mai_wo_api.def_rep_list_in_tab;
-  lt_defect_boqs  mai_wo_api.boq_tab;
+  lt_defects_in        mai_wo_api.def_rep_list_in_tab;
+  lt_defects_noagg     mai_wo_api.def_rep_list_in_tab;
+  lt_defect_boqs       mai_wo_api.boq_tab;
+  TYPE wo_rule_rec IS RECORD(rule_id     mai_auto_wo_rules.mawr_id%TYPE
+                            ,scheme_type work_orders.wor_scheme_type%TYPE
+                            ,con_id      contracts.con_id%TYPE
+                            ,instruct    BOOLEAN);
+  TYPE wo_rule_tab IS TABLE OF wo_rule_rec INDEX BY BINARY_INTEGER;
+  lt_rules  wo_rule_tab;
   --
   lv_work_order_no      work_orders.wor_works_order_no%TYPE;
   lt_defects_on_wo      mai_wo_api.def_rep_list_on_wo_tab;
@@ -4764,8 +4867,9 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
   --
   lv_create_work_order    BOOLEAN := FALSE;
   lv_instruct_work_order  BOOLEAN := FALSE;
+  lv_multiple_rules       BOOLEAN := FALSE;
   --
-  lv_tab_ind  BINARY_INTEGER := gt_work_orders.count+1;
+  lv_tab_ind  BINARY_INTEGER;
   --
   PROCEDURE build_def_rep_list(pi_defect_id IN defects.def_defect_id%TYPE)
     IS
@@ -4776,7 +4880,8 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                                      ,def_defect_code          defects.def_defect_code%TYPE
                                      ,def_priority             defects.def_priority%TYPE
                                      ,rep_tre_treat_code       repairs.rep_tre_treat_code%TYPE
-                                     ,rep_action_cat           repairs.rep_action_cat%TYPE);
+                                     ,rep_action_cat           repairs.rep_action_cat%TYPE
+                                     ,rep_date_due             DATE);
     TYPE defect_repairs_tab IS TABLE OF defect_repairs_rec;
     lt_defect_repairs defect_repairs_tab;
     --
@@ -4790,6 +4895,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
             ,def_priority
             ,rep_tre_treat_code
             ,rep_action_cat
+            ,rep_date_due
         BULK COLLECT
         INTO lt_defect_repairs
         FROM repairs
@@ -4797,6 +4903,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
        WHERE def_defect_id = pi_defect_id
          AND def_defect_id = rep_def_defect_id
          AND rep_action_cat IN('P','T')
+       ORDER BY rep_action_cat desc
            ;
     EXCEPTION
       WHEN no_data_found
@@ -4808,6 +4915,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
     END get_repairs;
   BEGIN
     --
+  
     nm_debug.debug('Attempting Auto WO creation for Defect = '||pi_defect_id);
     --
     get_repairs;
@@ -4822,13 +4930,15 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                          ,pi_defect_code     => lt_defect_repairs(i).def_defect_code
                          ,pi_rep_action_cat  => lt_defect_repairs(i).rep_action_cat
                          ,pi_treatment       => lt_defect_repairs(i).rep_tre_treat_code
+                         ,pi_rep_date_due    => lt_defect_repairs(i).rep_date_due
+                         ,po_rule_id         => lv_rule_id
                          ,po_scheme_type     => lv_scheme_type
                          ,po_bud_id          => lv_bud_id
                          ,po_con_id          => lv_con_id
                          ,po_aggregate       => lv_aggregate
                          ,po_auto_instruct   => lv_instruct
                          ,po_create_wo       => lv_required
-                         ,po_error           => po_error);
+                         ,po_error           => lv_error);
                          
       IF lv_required = 'Y'
        THEN
@@ -4840,91 +4950,168 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
           lv_instruct_work_order := TRUE;
       END IF;
 nm_debug.debug('Required = '||lv_required||' instruct = '||lv_instruct);
+nm_debug.debug('lv_error = '||lv_error);
+nm_debug.debug('lv_con_id = '||lv_con_id);
 
-      lt_defects_in(i).dlt_defect_id      := pi_defect_id;
-      lt_defects_in(i).dlt_rep_action_cat := lt_defect_repairs(i).rep_action_cat;
-      lt_defects_in(i).dlt_budget_id      := lv_bud_id;
+      IF lv_required = 'Y'
+       THEN
+          lt_defects_in(lt_defects_in.count+1).dlt_defect_id    := pi_defect_id;
+          lt_defects_in(lt_defects_in.count).dlt_rep_action_cat := lt_defect_repairs(i).rep_action_cat;
+          lt_defects_in(lt_defects_in.count).dlt_budget_id      := lv_bud_id;
+          lt_rules(lt_defects_in.count).rule_id     := lv_rule_id;
+          lt_rules(lt_defects_in.count).scheme_type := lv_scheme_type;
+          lt_rules(lt_defects_in.count).con_id      := lv_con_id;
+          lt_rules(lt_defects_in.count).instruct    := (lv_instruct = 'Y');
+      END IF;
 
+    END LOOP;
+    /*
+    ||Check for multiple rules.
+    ||NB, checking against previous record in
+    ||table so start the loop at index 2.
+    */
+    FOR i IN 2..lt_rules.count LOOP
+      IF lt_rules(i).rule_id != lt_rules(i-1).rule_id
+       THEN
+          lv_multiple_rules := TRUE;
+          exit;
+      END IF;
     END LOOP;
     --
   END build_def_rep_list;
   --
+  PROCEDURE create_work_order(pi_defects     IN mai_wo_api.def_rep_list_in_tab
+                             ,pi_scheme_type IN work_orders.wor_scheme_type%TYPE
+                             ,pi_con_id      IN contracts.con_id%TYPE
+                             ,pi_instruct    IN BOOLEAN)
+    IS
+  BEGIN
+    IF lv_create_work_order
+     THEN
+        --
+  nm_debug.debug('Creating WO');
+        lv_tab_ind := gt_work_orders.count+1;
+        
+        create_defect_work_order(pi_user_id           => lv_user_id
+                                ,pi_wo_descr          => lv_wo_descr
+                                ,pi_scheme_type       => pi_scheme_type
+                                ,pi_con_id            => pi_con_id
+                                ,pi_interim_payment   => lv_interim_payment
+                                ,pi_priority          => lv_priority
+                                ,pi_cost_centre       => lv_cost_centre
+                                ,pi_road_group_id     => lv_road_group
+                                ,pi_tma_register_flag => lv_tma_register_flag
+                                ,pi_contact           => lv_contact
+                                ,pi_job_number        => lv_job_number
+                                ,pi_rechargeable      => lv_rechargeable
+                                ,pi_date_raised       => lv_date_raised
+                                ,pi_target_date       => lv_target_date
+                                ,pi_defects           => pi_defects
+                                ,pi_defect_boqs       => lt_defect_boqs
+                                ,pi_commit            => lv_commit
+                                ,po_work_order_no     => lv_work_order_no
+                                ,po_defects_on_wo     => lt_defects_on_wo
+                                ,po_defects_not_on_wo => lt_defects_not_on_wo);
+        --
+  nm_debug.debug('WO No = '||lv_work_order_no);
+        gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
+        gt_work_orders(lv_tab_ind).works_order_no := lv_work_order_no;
+        --
+        IF lt_defects_not_on_wo.count > 0
+         THEN
+            FOR i IN 1..lt_defects_not_on_wo.count LOOP
+              IF i > 1
+               THEN
+                  gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error||CHR(10);
+              END IF;
+              gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error
+                                                ||'Defect Id: '||lt_defects_not_on_wo(i).defect_id
+                                                ||' Repair Type: '|| lt_defects_not_on_wo(i).rep_action_cat
+                                                ||' was not added to the Work Order because: '
+                                                ||lt_defects_not_on_wo(i).reason;
+
+            END LOOP;
+        END IF;
+        --
+    END IF;
+    --
+    IF pi_instruct
+     AND lv_work_order_no IS NOT NULL
+     THEN
+        --
+        instruct_work_order(pi_user_id         => lv_user_id
+                           ,pi_works_order_no  => lv_work_order_no
+                           ,pi_date_instructed => SYSDATE
+                           ,pi_commit          => 'Y');
+        --
+        gt_work_orders(lv_tab_ind).instructed := 'Y';
+        --
+    END IF;
+  END create_work_order;
+  
 BEGIN
-nm_debug.debug_on;
+--nm_debug.debug_on;
+  gt_work_orders.DELETE;
   /*
   ||Build the list of repairs to go on the WO.
   */
   build_def_rep_list(pi_defect_id => pi_defect_id);
+  
   /*
-  ||Call The API To Create The Work Order.
+  ||Check if auto create criteria matched
   */
-  IF lv_create_work_order
+  IF lv_error IS NOT NULL 
    THEN
-      --
-nm_debug.debug('Creating WO');
-      create_defect_work_order(pi_user_id           => lv_user_id
-                              ,pi_wo_descr          => lv_wo_descr
-                              ,pi_scheme_type       => lv_scheme_type
-                              ,pi_con_id            => lv_con_id
-                              ,pi_interim_payment   => lv_interim_payment
-                              ,pi_priority          => lv_priority
-                              ,pi_cost_centre       => lv_cost_centre
-                              ,pi_road_group_id     => lv_road_group
-                              ,pi_tma_register_flag => lv_tma_register_flag
-                              ,pi_contact           => lv_contact
-                              ,pi_job_number        => lv_job_number
-                              ,pi_rechargeable      => lv_rechargeable
-                              ,pi_date_raised       => lv_date_raised
-                              ,pi_target_date       => lv_target_date
-                              ,pi_defects           => lt_defects_in
-                              ,pi_defect_boqs       => lt_defect_boqs
-                              ,pi_commit            => lv_commit
-                              ,po_work_order_no     => po_work_order_no
-                              ,po_defects_on_wo     => lt_defects_on_wo
-                              ,po_defects_not_on_wo => lt_defects_not_on_wo);
-      --
-nm_debug.debug('WO No = '||po_work_order_no);
+      lv_tab_ind := gt_work_orders.count+1;
       gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
-      gt_work_orders(lv_tab_ind).works_order_no := po_work_order_no;
-      --
-      IF lt_defects_not_on_wo.count > 0
+      gt_work_orders(lv_tab_ind).error     := lv_error;
+  ELSE
+      IF lt_defects_in.count > 0
        THEN
-          FOR i IN 1..lt_defects_not_on_wo.count LOOP
-            IF i > 1
-             THEN
-                gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error||CHR(10);
-            END IF;
-            gt_work_orders(lv_tab_ind).error := gt_work_orders(lv_tab_ind).error
-                                              ||'Defect Id: '||lt_defects_not_on_wo(i).defect_id
-                                              ||' Repair Type: '|| lt_defects_not_on_wo(i).rep_action_cat
-                                              ||' was not added to the Work Order because: '
-                                              ||lt_defects_not_on_wo(i).reason;
-
-          END LOOP;
-          po_error := gt_work_orders(lv_tab_ind).error;
+          /*
+          ||Call The API To Create The Work Order.
+          */
+          IF lv_aggregate = 'N'
+           AND NOT lv_multiple_rules
+           THEN
+              /*
+              ||The aggregate flag is set and only one
+              ||rule has been found so create a single
+              ||Work Order for all elegible repairs
+              ||and just pass in the data from the
+              ||first record in the rules table.
+              */
+              create_work_order(pi_defects     => lt_defects_in
+                               ,pi_scheme_type => lt_rules(1).scheme_type
+                               ,pi_con_id      => lt_rules(1).con_id
+                               ,pi_instruct    => lv_instruct_work_order);
+          ELSE
+              /*
+              ||Create A Work Order Per Repair.
+              */
+              FOR k IN 1 .. lt_defects_in.count LOOP
+                --
+                lt_defects_noagg(1) := lt_defects_in(k);
+                --
+                create_work_order(pi_defects     => lt_defects_noagg
+                                 ,pi_scheme_type => lt_rules(k).scheme_type
+                                 ,pi_con_id      => lt_rules(k).con_id
+                                 ,pi_instruct    => lt_rules(k).instruct);
+                --
+              END LOOP;
+          END IF;
       END IF;
-      --
   END IF;
   --
-  IF lv_instruct_work_order
-   THEN
-      --
-      instruct_work_order(pi_user_id         => lv_user_id
-                         ,pi_works_order_no  => po_work_order_no
-                         ,pi_date_instructed => SYSDATE
-                         ,pi_commit          => 'Y');
-      --
-      gt_work_orders(lv_tab_ind).instructed := 'Y';
-      --
-  END IF;
+  po_work_order_tab := gt_work_orders;
   --
-nm_debug.debug_off;
+--nm_debug.debug_off;
 EXCEPTION
   WHEN others
    THEN
       gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
       gt_work_orders(lv_tab_ind).error := SQLERRM;
-      po_error := SQLERRM;
+      po_work_order_tab := gt_work_orders;
       RAISE;
 END create_auto_defect_wo;
 --
