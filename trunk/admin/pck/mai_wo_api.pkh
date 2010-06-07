@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.2   May 25 2010 14:48:38   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.3   Jun 07 2010 10:20:22   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   May 25 2010 14:48:38  $
---       Date fetched Out : $Modtime:   May 21 2010 15:20:06  $
---       PVCS Version     : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Jun 07 2010 10:20:22  $
+--       Date fetched Out : $Modtime:   Jun 07 2010 08:45:10  $
+--       PVCS Version     : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -91,16 +91,16 @@ FUNCTION get_body_version RETURN varchar2;
 --
 -----------------------------------------------------------------------------
 --
---FUNCTION count_created_work_orders
---  RETURN NUMBER;
+FUNCTION count_created_work_orders
+  RETURN NUMBER;
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE get_created_work_orders(po_work_orders IN OUT works_order_tab);
+PROCEDURE get_created_work_orders(po_work_orders IN OUT works_order_tab);
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE clear_created_work_orders_tab;
+PROCEDURE clear_created_work_orders_tab;
 --
 -----------------------------------------------------------------------------
 --
@@ -195,17 +195,28 @@ PROCEDURE create_gdo_for_mai3801(pi_report_id  IN  activities_report.are_report_
 --
 -----------------------------------------------------------------------------
 --
---PROCEDURE check_auto_wo_rules(pi_activity      IN  activities.atv_acty_area_code%TYPE
---                             ,pi_defect_code   IN  def_types.dty_defect_code%TYPE
---                             ,pi_treatment     IN  treatments.tre_treat_code%TYPE
---                             ,po_required      OUT auto_wo_rules.awr_enabled%TYPE
---                             ,po_auto_instruct OUT auto_wo_rules.awr_auto_instruct%TYPE);
+PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
+                             ,pi_rse_he_id       IN  defects.def_rse_he_id%TYPE
+                             ,pi_activity        IN  activities.atv_acty_area_code%TYPE
+                             ,pi_priority        IN  defects.def_priority%TYPE
+                             ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
+                             ,pi_rep_action_cat  IN  VARCHAR2
+                             ,pi_treatment       IN  treatments.tre_treat_code%TYPE
+                             ,pi_rep_date_due    IN  repairs.rep_date_due%TYPE
+                             ,po_rule_id         OUT mai_auto_wo_rules.mawr_id%TYPE
+                             ,po_scheme_type     OUT mai_auto_wo_rules.mawr_scheme_type%TYPE
+                             ,po_bud_id          OUT mai_auto_wo_rules.mawr_bud_id%TYPE
+                             ,po_con_id          OUT mai_auto_wo_rules.mawr_con_id%TYPE
+                             ,po_aggregate       OUT mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
+                             ,po_auto_instruct   OUT mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
+                             ,po_create_wo       OUT VARCHAR2
+                             ,po_error           OUT VARCHAR2
+                             );
 --
 -----------------------------------------------------------------------------
 --
 PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
-                               ,po_work_order_no     IN OUT work_orders.wor_works_order_no%TYPE
-                               ,po_error             IN OUT nm3type.max_varchar2);
+                               ,po_work_order_tab       OUT works_order_tab);
 --
 -----------------------------------------------------------------------------
 --
