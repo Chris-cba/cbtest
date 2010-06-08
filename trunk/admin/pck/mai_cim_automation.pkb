@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.0   May 25 2010 09:19:34   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.1   Jun 08 2010 12:57:10   lsorathia  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   May 25 2010 09:19:34  $
---       Date fetched Out : $Modtime:   May 25 2010 09:18:58  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jun 08 2010 12:57:10  $
+--       Date fetched Out : $Modtime:   Jun 08 2010 12:55:46  $
+--       Version          : $Revision:   3.1  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,9 +20,10 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.0  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.1  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
+  l_failed       Varchar2(1) ;
 --
 -----------------------------------------------------------------------------
 --
@@ -182,14 +183,17 @@ IS
               l_msg := 'Loading file '||pi_file_name||' : Completed Successfully';
           ELSE
               l_msg := 'Loading file '||pi_file_name||' failed '|| l_ih_rec.ih_error;
+              l_failed := 'Y' ;
           END IF ;
       ELSE    
           l_msg :=     'Error while loading file '||pi_file_name;
+          l_failed := 'Y' ;
       END IF ;      
       hig_process_api.log_it(pi_process_id   => l_process_id
                             ,pi_message      => l_msg
                             ,pi_summary_flag => 'Y' );
-      nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error); 
+      nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+
    --
    END run_comp_file;
    --
@@ -278,9 +282,11 @@ IS
               l_msg := 'Loading file '||pi_file_name||' : Completed Successfully';
           ELSE
               l_msg := 'Loading file '||pi_file_name||' failed '|| l_ih_rec.ih_error;
+              l_failed := 'Y' ;
           END IF ;
       ELSE    
           l_msg :=     'Error while loading file '||pi_file_name;
+          l_failed := 'Y' ;
       END IF ;
       hig_process_api.log_it(pi_process_id   => l_process_id
                             ,pi_message      => l_msg
@@ -487,7 +493,7 @@ BEGIN
                                   THEN
                                       BEGIN 
                                          --
-                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name);
+                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name,TRUE,TRUE);
                                          l_continue := True;
                                          --
                                       EXCEPTION
@@ -623,7 +629,7 @@ BEGIN
                                   THEN
                                       BEGIN
                                       --                              
-                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name);                      
+                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name,TRUE,TRUE);                      
                                          l_continue := True;
                                       --
                                       EXCEPTION
@@ -682,6 +688,11 @@ BEGIN
            END IF ;
        END IF ; -- Batch Type 
    END LOOP;
+   IF   Nvl(l_failed,'N') ='Y'
+   AND  l_process_id IS NOT NULL
+   THEN
+       hig_process_api.process_execution_end('N'); 
+   END IF ;
 --
 END run_batch;
 --
