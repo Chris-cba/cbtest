@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.7   Nov 23 2009 15:47:40   cbaugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.8   Jun 10 2010 14:36:06   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Nov 23 2009 15:47:40  $
---       Date fetched Out : $Modtime:   Nov 23 2009 09:11:58  $
---       SCCS Version     : $Revision:   2.7  $
+--       Date into SCCS   : $Date:   Jun 10 2010 14:36:06  $
+--       Date fetched Out : $Modtime:   Jun 10 2010 14:35:04  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.7  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.8  $';
     g_application_owner		  VARCHAR2(30);
     g_language			        VARCHAR2(30);
     g_thing_already_exists	VARCHAR2(2000);
@@ -119,15 +119,16 @@ TYPE child_asset_tab IS TABLE OF child_asset_rec INDEX BY BINARY_INTEGER;
 TYPE wol_id_tab IS TABLE OF work_order_lines.wol_id%TYPE INDEX BY BINARY_INTEGER;
 
 
-TYPE feature_flags_rec IS RECORD(hsc_allow_feature1 hig_status_codes.hsc_allow_feature1%TYPE
-                                ,hsc_allow_feature2 hig_status_codes.hsc_allow_feature2%TYPE
-                                ,hsc_allow_feature3 hig_status_codes.hsc_allow_feature3%TYPE
-                                ,hsc_allow_feature4 hig_status_codes.hsc_allow_feature4%TYPE
-                                ,hsc_allow_feature5 hig_status_codes.hsc_allow_feature5%TYPE
-                                ,hsc_allow_feature6 hig_status_codes.hsc_allow_feature6%TYPE
-                                ,hsc_allow_feature7 hig_status_codes.hsc_allow_feature7%TYPE
-                                ,hsc_allow_feature8 hig_status_codes.hsc_allow_feature8%TYPE
-                                ,hsc_allow_feature9 hig_status_codes.hsc_allow_feature9%TYPE);
+TYPE feature_flags_rec IS RECORD(hsc_allow_feature1  hig_status_codes.hsc_allow_feature1%TYPE
+                                ,hsc_allow_feature2  hig_status_codes.hsc_allow_feature2%TYPE
+                                ,hsc_allow_feature3  hig_status_codes.hsc_allow_feature3%TYPE
+                                ,hsc_allow_feature4  hig_status_codes.hsc_allow_feature4%TYPE
+                                ,hsc_allow_feature5  hig_status_codes.hsc_allow_feature5%TYPE
+                                ,hsc_allow_feature6  hig_status_codes.hsc_allow_feature6%TYPE
+                                ,hsc_allow_feature7  hig_status_codes.hsc_allow_feature7%TYPE
+                                ,hsc_allow_feature8  hig_status_codes.hsc_allow_feature8%TYPE
+                                ,hsc_allow_feature9  hig_status_codes.hsc_allow_feature9%TYPE
+                                ,hsc_allow_feature10 hig_status_codes.hsc_allow_feature9%TYPE);
 --
 --</TYPE>
 --
