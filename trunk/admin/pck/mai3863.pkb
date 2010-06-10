@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.6   Oct 16 2009 10:31:38   aedwards  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.7   Jun 10 2010 13:46:20   aedwards  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Oct 16 2009 10:31:38  $
- --       Date fetched Out : $Modtime:   Oct 16 2009 10:28:52  $
- --       SCCS Version     : $Revision:   2.6  $
+ --       Date into SCCS   : $Date:   Jun 10 2010 13:46:20  $
+ --       Date fetched Out : $Modtime:   May 13 2010 14:19:44  $
+ --       SCCS Version     : $Revision:   2.7  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -503,34 +503,34 @@ IS
     AND    INSTR(sysflags,ity_sys_flag)>0
     ORDER BY 1;
   CURSOR c12 IS
-    SELECT '12,'||ita_ity_sys_flag     ||','||
-           ita_iit_inv_code     ||','||
-           ita_disp_seq_no      ||','||
-           replace(ita_scrn_text,',',':')    ||','||
-           DECODE(ita_format,'NUMBER','I','VARCHAR2','S','S')||','||
-           ita_fld_length       ||','||
-           TO_CHAR(ita_dec_places)||','||
-           ita_min      ||','||
-           ita_max      ||','||
-           ita_validate_yn      ||','||
-           ita_manditory_yn rec
+    SELECT '12,'||i.ita_ity_sys_flag           ||','||
+           i.ita_iit_inv_code                  ||','||
+           i.ita_disp_seq_no                   ||','||
+           replace(i.ita_scrn_text,',',':')    ||','||
+           DECODE(i.ita_format,'NUMBER','I','VARCHAR2','S','S')||','||
+           i.ita_fld_length                    ||','||
+           TO_CHAR(i.ita_dec_places)           ||','||
+           i.ita_min                           ||','||
+           i.ita_max                           ||','||
+           i.ita_validate_yn                   ||','||
+           i.ita_manditory_yn rec
     FROM   inv_type_attribs i
-    WHERE EXISTS
-            (SELECT 1 
-               FROM nm_inv_type_attribs n
-                  , inv_type_translations t 
-              WHERE NVL(n.ita_inspectable,'Y') = 'Y'-- ita_disp_seq_no !=99 CWS 02/07/09
-                AND n.ita_inv_type        = t.nit_inv_type
-                AND i.ita_iit_inv_code    = t.ity_inv_code
-                AND i.ita_attrib_name     = i.ita_attrib_name)
-    AND    INSTR(sysflags,ita_ity_sys_flag)>0
-    AND    ita_end_date IS NULL
-    AND    ( FAsset IS NULL
-    OR     ita_iit_inv_code IN ( SELECT grp_value
-                                 FROM   gri_run_parameters
-                                 WHERE  grp_param  = 'INVENTORY_ITEM'
-                                 AND    grp_job_id = job_id))
-    ORDER BY 1;
+         , nm_inv_type_attribs n
+         , inv_type_translations t
+    WHERE  n.ita_inspectable = 'Y'
+       AND n.ita_attrib_name = i.ita_attrib_name
+       AND n.ita_inv_type = i.ita_iit_inv_code
+       AND i.ita_iit_inv_code    = t.ity_inv_code
+       AND t.ity_sys_flag = ita_ity_sys_flag
+       AND sysflags = ita_ity_sys_flag
+       AND INSTR(sysflags,ita_ity_sys_flag)>0
+       AND i.ita_end_date IS NULL
+       AND ( FAsset IS NULL
+        OR ita_iit_inv_code IN ( SELECT grp_value
+                                   FROM gri_run_parameters
+                                  WHERE grp_param  = 'INVENTORY_ITEM'
+                                    AND grp_job_id = job_id))
+  ORDER BY 1;
   CURSOR c13 IS
     SELECT DISTINCT '13,'||iad_ita_ity_sys_flag||','||
            iad_ita_inv_code    ||','||
