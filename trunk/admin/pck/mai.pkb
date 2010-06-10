@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.17   May 20 2010 16:54:30   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.18   Jun 10 2010 14:36:40   mhuitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   May 20 2010 16:54:30  $
---       Date fetched Out : $Modtime:   May 20 2010 16:34:30  $
---       SCCS Version     : $Revision:   2.17  $
+--       Date into SCCS   : $Date:   Jun 10 2010 14:36:40  $
+--       Date fetched Out : $Modtime:   Jun 10 2010 14:31:14  $
+--       SCCS Version     : $Revision:   2.18  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.17  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.18  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4817,21 +4817,40 @@ END check_wo_can_be_copied;
   l_wol_est_labour  work_order_lines.wol_est_labour%TYPE;
 
 
-  cursor c2 IS
+  cursor get_inst_status IS
   select hsc_status_code
   from hig_status_codes
   where hsc_domain_code = 'WORK_ORDER_LINES'
-  and hsc_allow_feature1 = 'Y';
+  and hsc_allow_feature1 = 'Y'
+  and hsc_allow_feature10 != 'Y';
+
+  cursor get_initial_status IS
+  select hsc_status_code
+  from hig_status_codes
+  where hsc_domain_code = 'WORK_ORDER_LINES'
+  and hsc_allow_feature1 = 'Y'
+  and hsc_allow_feature10 = 'Y';
 
   l_status_code hig_status_codes.hsc_status_code%TYPE;
   l_error number;
 
   BEGIN
-
-
-      open c2;
-      fetch c2 into l_status_code;
-      close c2;
+    /*
+    ||If WO has been instructed then the new line status should
+    ||be INSTRUCTED otherwise the line status should be DRAFT.
+    */
+    IF maiwo.get_wo(pi_wor_works_order_no => p_wol_works_order_no).wor_date_confirmed IS NOT NULL
+     THEN
+        OPEN  get_inst_status;
+        FETCH get_inst_status
+         INTO l_status_code;
+        CLOSE get_inst_status;
+     ELSE
+        OPEN  get_initial_status;
+        FETCH get_initial_status
+         INTO l_status_code;
+        CLOSE get_initial_status;     
+     END IF;
 
       IF pi_zeroize THEN
         l_wol_act_cost    := 0;
@@ -5322,10 +5341,10 @@ BEGIN
                   from work_order_lines wol
                  where wol.wol_works_order_no = :1
                    and NVL(wol.wol_register_flag,''N'') = ''Y''
-                   and wol.wol_status_code = (SELECT hsc_status_code  -- instructed
-                                                FROM hig_status_codes
-                                               WHERE hsc_domain_code = ''WORK_ORDER_LINES''
-                                                 AND hsc_allow_feature1 = ''Y'')';
+                   and wol.wol_status_code IN (SELECT hsc_status_code  -- instructed/draft
+                                                 FROM hig_status_codes
+                                                WHERE hsc_domain_code = ''WORK_ORDER_LINES''
+                                                  AND hsc_allow_feature1 = ''Y'')';
 
       IF g_swr_licenced THEN
         l_sql := l_sql ||' and not exists (select 1 from swr_id_mapping where sim_origin = ''WOL'' and sim_primary_key_value = wol_id)';
@@ -5815,13 +5834,11 @@ FUNCTION get_feature_flags_rec(pi_domain          IN VARCHAR2
 
 BEGIN
 
-
-  l_sql := 'SELECT hsc_allow_feature1,hsc_allow_feature2,hsc_allow_feature3,hsc_allow_feature4,hsc_allow_feature5,hsc_allow_feature6,hsc_allow_feature7,hsc_allow_feature8,hsc_allow_feature9'||chr(10)
+  l_sql := 'SELECT hsc_allow_feature1,hsc_allow_feature2,hsc_allow_feature3,hsc_allow_feature4,hsc_allow_feature5,hsc_allow_feature6,hsc_allow_feature7,hsc_allow_feature8,hsc_allow_feature9,hsc_allow_feature10'||chr(10)
          ||'  FROM hig_status_codes'||chr(10)
          ||' WHERE hsc_domain_code = :1'||chr(10)
          ||'   AND hsc_status_code = :2'||chr(10)
          ||'   AND :3 BETWEEN NVL(hsc_start_date,:4) AND NVL(hsc_end_date,:5)';
-
 
  OPEN l_refcursor FOR l_sql USING pi_domain, pi_status_code, pi_as_at_date,pi_as_at_date,pi_as_at_date;
 
