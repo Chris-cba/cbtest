@@ -1,5 +1,6 @@
 CREATE OR REPLACE FORCE VIEW imf_mai_bill_of_quantities
   (bill_of_quantities_id
+  ,bill_of_quantities_parent_id
   ,defect_id
   ,work_order_line_id
   ,standard_item_code
@@ -27,11 +28,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.5   May 21 2010 16:29:20   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.6   Jun 11 2010 18:45:38   mhuitson  $
 --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   May 21 2010 16:29:20  $
---       Date fetched Out : $Modtime:   May 17 2010 15:18:50  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Jun 11 2010 18:45:38  $
+--       Date fetched Out : $Modtime:   Jun 11 2010 18:27:26  $
+--       Version          : $Revision:   3.6  $
 -- Foundation view displaying bill of quantities for a defect
 -------------------------------------------------------------------------
 -- SM 03042009
@@ -51,7 +52,7 @@ SELECT
        bi.boq_rep_action_cat,  
        ( SELECT hco.hco_meaning
            FROM hig_codes hco
-          WHERE hco.hco_domain = 'repair_type' 
+          WHERE hco.hco_domain = 'REPAIR_TYPE'  
             AND hco.hco_code = bi.boq_rep_action_cat ),
        bi.boq_icb_work_code,
        (SELECT icb.icb_work_category_name 
@@ -62,13 +63,11 @@ SELECT
        si.sta_unit, 
        bi.boq_est_quantity,
        bi.boq_est_rate,
-       --bi.boq_est_discount,
        null,
        bi.boq_est_cost, 
        bi.boq_est_labour, 
        bi.boq_act_quantity,
        bi.boq_act_rate,
-       --bi.boq_act_discount,
        null,
        bi.boq_act_cost, 
        bi.boq_act_labour
@@ -82,29 +81,30 @@ SELECT
       ,boq_id
      ;
 
-COMMENT ON TABLE IMF_MAI_BILL_OF_QUANTITIES IS 'Maintenance Manager foundation view of all Bill of Quantities items, showing details of estimated and actual work items.   This view can be joined against defect or work order line foundation views to produce reports showing cost summaries and variances.';
+COMMENT ON TABLE IMF_MAI_BILL_OF_QUANTITIES IS 'Maintenance Manager foundation view of all Bill of Quantities Items, showing details of estimated and actual quantities and costs. This view can be joined to the defect or work order line foundation views to produce reports showing cost summaries and variances.';
 
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.BILL_OF_QUANTITIES_ID IS 'Internal Bill Of Quantities Id';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DEFECT_ID IS 'Internal Id for a defect';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_ORDER_LINE_ID IS 'Internal Id for work order line';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_CODE IS 'Standard item code for an item of work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_NAME IS 'Standard item name for an item of work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_ID IS 'Internal Id standard item sub sections';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_NAME IS 'Standard item sub section name';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY IS 'Repair Action Category';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY_DESCRIPTION IS 'Repair Action Category description';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY IS 'Internal Cost Breakdown work code';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY_DESCRIPTION IS 'Internal Cost Breakdown work description';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'Date the specific work was created';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.UNIT_OF_MEASURE IS 'Unit of measure for the quantity';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_QUANTITY IS 'Estimated quantity for the work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_RATE IS 'Estimated rate for the work cost';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_DISCOUNT IS 'Estimated discount on the work cost';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_COST IS 'Estimated cost for the work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_LABOUR IS 'Estimated labour cost for the work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_QUANTITY IS 'Actual quantity for the work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_RATE IS 'Actual rate for the work cost';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_DISCOUNT IS 'Actual discount on the work cost';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_COST IS 'Actual cost for the work';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_LABOUR IS 'Actual labour cost for the work';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.BILL_OF_QUANTITIES_ID IS 'The internal Bill Of Quantities Item Id';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.BILL_OF_QUANTITIES_PARENT_ID IS 'The internal Bill Of Quantities Item Id of a Percentage Items Parent';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DEFECT_ID IS 'The internal id of the Defect that the Bill Of Quantities Item is associated with';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_ORDER_LINE_ID IS 'The internal id of the Works Order Line that the Bill Of Quantities Item is associated with';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_CODE IS 'The Standard Item Code associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_NAME IS 'The Standard Item Name associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_ID IS 'The Standard Item Sub Section Id associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_NAME IS 'The Standard Item Sub Section Name associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY IS 'The Action Category of the Repair that the Bill Of Quantities Item is associated with';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY_DESCRIPTION IS 'The Description of the Action Category of the Repair that the Bill Of Quantities Item is associated with';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY IS 'Not Used';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY_DESCRIPTION IS 'Not Used';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'The date the Bill Of Quantities Item was created';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.UNIT_OF_MEASURE IS 'The Unit Of Measure used by the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_QUANTITY IS 'The Estimated Quantity of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_RATE IS 'The Rate used to calculate the Estimated Cost of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_DISCOUNT IS 'Not Used';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_COST IS 'The Estimated Cost of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_LABOUR IS 'The Estimated Labour Units associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_QUANTITY IS 'The Actual Quantity of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_RATE IS 'The Rate used to calculate the Actual Cost of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_DISCOUNT IS 'Not Used';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_COST IS 'The Actual Cost of the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_LABOUR IS 'The Actual Labour Units associated with the Bill Of Quantities Item';
 
