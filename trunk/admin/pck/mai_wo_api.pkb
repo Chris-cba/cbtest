@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.5   Jun 07 2010 10:19:58   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.6   Jun 11 2010 15:24:12   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 07 2010 10:19:58  $
---       Date fetched Out : $Modtime:   Jun 07 2010 10:18:40  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Jun 11 2010 15:24:12  $
+--       Date fetched Out : $Modtime:   Jun 11 2010 15:19:50  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.5  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.6  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -4746,16 +4746,14 @@ BEGIN
                        UNION
                       SELECT lv_admin_unit 
                         FROM dual)
-     AND NVL(mawr_road_group_id, pi_rse_he_id) IN 
-                     (SELECT nm_ne_id_of
-                        FROM nm_members
-                       WHERE nm_type = 'G'
-                  CONNECT BY
-                       PRIOR nm_ne_id_of = nm_ne_id_in
-                       START WITH nm_ne_id_in = pi_rse_he_id
-                       UNION
-                      SELECT pi_rse_he_id 
-                        FROM dual)
+     AND (pi_rse_he_id IN (SELECT nm_ne_id_of
+                   FROM nm_members
+                  WHERE nm_type = 'G'
+                CONNECT BY
+                  PRIOR nm_ne_id_of = nm_ne_id_in
+                  START
+                   WITH nm_ne_id_in = mawr_road_group_id)
+               OR pi_rse_he_id = NVL(mawr_road_group_id,pi_rse_he_id))
      AND mawr_enabled = 'Y'
      AND mawc_enabled = 'Y'
      AND pi_rep_date_due BETWEEN mawr_start_date AND
