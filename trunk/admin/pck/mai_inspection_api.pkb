@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.9   Jun 07 2010 10:13:04   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.10   Jun 11 2010 11:28:22   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jun 07 2010 10:13:04  $
---       Date fetched Out : $Modtime:   Jun 03 2010 13:43:26  $
---       PVCS Version     : $Revision:   3.9  $
+--       Date into PVCS   : $Date:   Jun 11 2010 11:28:22  $
+--       Date fetched Out : $Modtime:   Jun 11 2010 11:27:32  $
+--       PVCS Version     : $Revision:   3.10  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3447,51 +3447,61 @@ BEGIN
    nm_debug.debug('Defects count = '||lt_insp_defects.count);
    
    FOR i IN 1..lt_insp_defects.count LOOP
+     
+     /*
+     || Exclude defects from autoamtic work order creation
+     || when they have been superseded, or the date complete has been set
+     */         
+     IF NVL(lt_insp_defects(i).def_superseded_flag,'N') != 'Y'
+      AND lt_insp_defects(i).def_date_compl IS NULL 
+      THEN
+
+        BEGIN
+           mai_wo_api.create_auto_defect_wo(pi_defect_id    => lt_insp_defects(i).def_defect_id
+                                        ,po_work_order_tab  => lt_work_orders_tab);
+                                                  
+           FOR j IN 1 .. lt_work_orders_tab.count LOOP
+           
+              IF lt_work_orders_tab(j).error IS NULL 
+               THEN
+                 hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
+              ELSE
+                 hig_process_api.log_it(pi_message       => 'Warning: '||lt_work_orders_tab(j).error
+                                       ,pi_message_type  => 'W');
+                                       
+                 lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
+                                     lt_insp_defects(i).def_defect_id;
+                 lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
+                                     lt_work_orders_tab(j).error||chr(10)||
+                                     'Inspection = '||pi_are_report_id||chr(10)||
+                                     'Defect     = '||lt_insp_defects(i).def_defect_id;
+                 
+                 create_wo_failure_alert(pi_subject => lv_alert_subject
+                                        ,pi_body    =>lv_alert_body);
+                                        
+              END IF;
               
-      BEGIN
-         mai_wo_api.create_auto_defect_wo(pi_defect_id    => lt_insp_defects(i).def_defect_id
-                                      ,po_work_order_tab  => lt_work_orders_tab);
-                                                
-         FOR j IN 1 .. lt_work_orders_tab.count LOOP
-         
-            IF lt_work_orders_tab(j).error IS NULL 
+           END LOOP;
+          
+        EXCEPTION
+           WHEN OTHERS 
              THEN
-               hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
-            ELSE
-               hig_process_api.log_it(pi_message       => 'Warning: '||lt_work_orders_tab(j).error
-                                     ,pi_message_type  => 'W');
-                                     
-               lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
-                                   lt_insp_defects(i).def_defect_id;
-               lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
-                                   lt_work_orders_tab(j).error||chr(10)||
-                                   'Inspection = '||pi_are_report_id||chr(10)||
-                                   'Defect     = '||lt_insp_defects(i).def_defect_id;
-               
-               create_wo_failure_alert(pi_subject => lv_alert_subject
-                                      ,pi_body    =>lv_alert_body);
-                                      
-            END IF;
-            
-         END LOOP;
-        
-      EXCEPTION
-         WHEN OTHERS 
-           THEN
-               hig_process_api.log_it(pi_message       => 'Warning: '||SQLERRM
-                                     ,pi_message_type  => 'W');
-                                     
-              lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
-                                  lt_insp_defects(i).def_defect_id;
-              lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
-                                  SQLERRM||chr(10)||
-                                  'Inspection = '||pi_are_report_id||chr(10)||
-                                  'Defect     = '||lt_insp_defects(i).def_defect_id;
-               
-              create_wo_failure_alert(pi_subject => lv_alert_subject
-                                     ,pi_body    =>lv_alert_body);
-      END;
+                 hig_process_api.log_it(pi_message       => 'Warning: '||SQLERRM
+                                       ,pi_message_type  => 'W');
+                                       
+                lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
+                                    lt_insp_defects(i).def_defect_id;
+                lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
+                                    SQLERRM||chr(10)||
+                                    'Inspection = '||pi_are_report_id||chr(10)||
+                                    'Defect     = '||lt_insp_defects(i).def_defect_id;
+                 
+                create_wo_failure_alert(pi_subject => lv_alert_subject
+                                       ,pi_body    =>lv_alert_body);
+        END;
                                                          
+     END IF;
+     
    END LOOP;
   --
 
