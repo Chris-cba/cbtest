@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.1   Jun 08 2010 12:57:10   lsorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.2   Jun 14 2010 12:34:08   lsorathia  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Jun 08 2010 12:57:10  $
---       Date fetched Out : $Modtime:   Jun 08 2010 12:55:46  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 14 2010 12:34:08  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 12:21:54  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,10 +20,11 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.1  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.2  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
+  l_found        Varchar2(1);
 --
 -----------------------------------------------------------------------------
 --
@@ -326,6 +327,7 @@ BEGIN
               IF l_cnt > 0
               THEN
                   -- Create WO file      
+                  l_found := 'Y' ;
                   OPEN  c_con_details(oun.oun_contractor_id) ;
                   FETCH c_con_details INTO l_con_details_rec;
                   CLOSE c_con_details ;
@@ -440,6 +442,7 @@ BEGIN
                          --
                       EXCEPTION
                           WHEN OTHERS THEN
+                              l_found := 'Y' ; 
                               l_continue := False;
                               hig_process_api.log_it(pi_process_id => l_process_id
                                                     ,pi_message    => 'Error while connecting to the FTP server for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
@@ -462,6 +465,7 @@ BEGIN
                               IF l_file_name IS NOT NULL                          
                               THEN
                                   l_file_name := Trim(l_file_name);
+                                  l_found := 'Y' ;
                                   BEGIN
                                      -- 
                                      nm3ftp.get(l_conn,ftp.hfc_ftp_in_dir||l_file_name,'CIM_DIR',l_file_name);
@@ -534,7 +538,8 @@ BEGIN
                    FOR i IN 1..l_flist.Count
                    LOOP
                        IF Trim(l_flist(i)) IS NOT NULL
-                       THEN                        
+                       THEN
+                          l_found := 'Y' ;                        
                            BEGIN
                            --
                               run_comp_file(oun.oun_contractor_id,Trim(l_flist(i)));
@@ -574,6 +579,7 @@ BEGIN
                          --
                       EXCEPTION
                           WHEN OTHERS THEN
+                              l_found := 'Y' ;
                               l_continue := False;
                               hig_process_api.log_it(pi_process_id => l_process_id
                                                     ,pi_message    => 'Error while connecting to the FTP server for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
@@ -596,6 +602,7 @@ BEGIN
                               IF l_file_name IS NOT NULL
                               THEN
                                   l_file_name := Trim(l_file_name); 
+                                  l_found := 'Y' ;
                                   BEGIN
                                   --
                                      nm3ftp.get(l_conn,ftp.hfc_ftp_in_dir||l_file_name,'CIM_DIR',l_file_name);                          
@@ -672,6 +679,7 @@ BEGIN
                    LOOP
                        IF Trim(l_flist(i)) IS NOT NULL
                        THEN
+                           l_found := 'Y' ;
                            BEGIN
                            --
                               run_claim_file(oun.oun_contractor_id,Trim(l_flist(i)));
@@ -688,6 +696,10 @@ BEGIN
            END IF ;
        END IF ; -- Batch Type 
    END LOOP;
+   IF   Nvl(l_found,'N') = 'N'
+   THEN
+       hig_process_api.drop_execution;
+   END IF ;
    IF   Nvl(l_failed,'N') ='Y'
    AND  l_process_id IS NOT NULL
    THEN
