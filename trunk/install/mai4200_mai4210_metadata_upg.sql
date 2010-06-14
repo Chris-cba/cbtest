@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.11   Jun 14 2010 12:35:46   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.12   Jun 14 2010 14:16:22   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 12:35:46  $
---       Date fetched Out : $Modtime:   Jun 14 2010 12:35:04  $
---       Version          : $Revision:   3.11  $
+--       Date into PVCS   : $Date:   Jun 14 2010 14:16:22  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 14:12:52  $
+--       Version          : $Revision:   3.12  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -6906,7 +6906,7 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:34:32', 'MM/DD/YYYY HH24:MI:SS'), 
     TO_DATE('05/05/2010 17:34:32', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
     NULL, 'N', 'UPPER');
-Insert into NM_INV_TYPE_ATTRIBS_ALL
+  Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
     ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
     ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
@@ -6916,11 +6916,12 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
  Values
    ('PRO$', 'HPAL_ADMIN_UNIT', 'N', 2, 'N', 
-    'NUMBER', 9, NULL, 'Admin Unit', NULL, 
+    'NUMBER', 9, NULL, 'Admin Unit ID', NULL, 
     'N', NULL, NULL, NULL, 'ADMIN_UNIT', 
     'ADMIN_UNIT', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:34:52', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:34:52', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:34:52', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'select nau_unit_code,nau_name,nau_admin_unit 
+  from nm_admin_units', 'N', 
     NULL, 'N', 'UPPER');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -6936,9 +6937,11 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     'N', NULL, NULL, NULL, 'CON_ID', 
     'CON_ID', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT con_code,con_name,con_id
+    FROM   contracts, org_units 
+    WHERE  con_contr_org_id = oun_org_id AND  oun_electronic_orders_flag = ''Y'' and oun_contractor_id IS NOT NULL', 'N', 
     NULL, 'N', 'MIXED');
-Insert into NM_INV_TYPE_ATTRIBS_ALL
+  Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
     ITA_FORMAT, ITA_FLD_LENGTH, ITA_DEC_PLACES, ITA_SCRN_TEXT, ITA_ID_DOMAIN, 
     ITA_VALIDATE_YN, ITA_DTP_CODE, ITA_MAX, ITA_MIN, ITA_VIEW_ATTRI, 
@@ -6948,11 +6951,13 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
  Values
    ('PRO$', 'HPAL_CON_CODE', 'N', 4, 'N', 
-    'VARCHAR2', 10, NULL, 'Con Code', NULL, 
+    'VARCHAR2', 10, NULL, 'Contract Code', NULL, 
     'N', NULL, NULL, NULL, 'CON_CODE', 
     'CON_CODE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:35:39', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT con_code,con_name,con_code contract_code
+    FROM   contracts, org_units 
+    WHERE  con_contr_org_id = oun_org_id AND  oun_electronic_orders_flag = ''Y'' and oun_contractor_id IS NOT NULL', 'N', 
     NULL, 'N', 'MIXED');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -6964,11 +6969,13 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
  Values
    ('PRO$', 'HPAL_CON_NAME', 'N', 5, 'N', 
-    'VARCHAR2', 40, NULL, 'Con Name', NULL, 
+    'VARCHAR2', 40, NULL, 'Contractor Name', NULL, 
     'N', NULL, NULL, NULL, 'CON_NAME', 
     'CON_NAME', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:36:00', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:36:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:36:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT oun_unit_code,oun_name,oun_name
+    FROM   org_units 
+    WHERE  oun_electronic_orders_flag = ''Y'' and oun_contractor_id IS NOT NULL', 'N', 
     NULL, 'N', 'MIXED');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -7016,7 +7023,9 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     'N', NULL, NULL, NULL, 'INITIATOR', 
     'INITIATOR', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:38:00', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:38:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:38:00', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT hus_initials,hus_name,hus_username
+    FROM hig_users
+    WHERE hus_end_date is null', 'N', 
     NULL, 'N', 'MIXED');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -7028,7 +7037,7 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
  Values
    ('PRO$', 'HPAL_PROCESS_TYPE_ID', 'N', 9, 'N', 
-    'NUMBER', 38, NULL, 'Process Type', NULL, 
+    'NUMBER', 38, NULL, 'Process Type ID', NULL, 
     'N', NULL, NULL, NULL, 'PROCESS_TYPE', 
     'PROCESS_TYPE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:38:29', 'MM/DD/YYYY HH24:MI:SS'), 
@@ -7049,7 +7058,8 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     'N', NULL, NULL, NULL, 'UNIT_CODE', 
     'UNIT_CODE', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT nau_unit_code,nau_name,nau_unit_code
+    FROM   nm_admin_units', 'N', 
     NULL, 'N', 'MIXED');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
@@ -7061,11 +7071,12 @@ Insert into NM_INV_TYPE_ATTRIBS_ALL
     ITA_DISP_WIDTH, ITA_INSPECTABLE, ITA_CASE)
  Values
    ('PRO$', 'HPAL_UNIT_NAME', 'N', 11, 'N', 
-    'VARCHAR2', 40, NULL, 'Unit Name', NULL, 
+    'VARCHAR2', 40, NULL, 'Admin Unit Name', NULL, 
     'N', NULL, NULL, NULL, 'UNIT_NAME', 
     'UNIT_NAME', TO_DATE('05/05/2010 00:00:00', 'MM/DD/YYYY HH24:MI:SS'), NULL, 'N', NULL, 
     NULL, NULL, 'N', 'N', TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 
-    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', NULL, 'N', 
+    TO_DATE('05/05/2010 17:40:40', 'MM/DD/YYYY HH24:MI:SS'), 'DORSET', 'DORSET', 'SELECT nau_unit_code,nau_name,nau_name
+    FROM   nm_admin_units', 'N', 
     NULL, 'N', 'MIXED');
 Insert into NM_INV_TYPE_ATTRIBS_ALL
    (ITA_INV_TYPE, ITA_ATTRIB_NAME, ITA_DYNAMIC_ATTRIB, ITA_DISP_SEQ_NO, ITA_MANDATORY_YN, 
