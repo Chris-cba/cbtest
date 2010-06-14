@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.9   Jun 14 2010 10:28:56   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.10   Jun 14 2010 10:55:30   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 10:28:56  $
---       Date fetched Out : $Modtime:   Jun 14 2010 10:27:52  $
---       Version          : $Revision:   3.9  $
+--       Date into PVCS   : $Date:   Jun 14 2010 10:55:30  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 10:54:36  $
+--       Version          : $Revision:   3.10  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -6734,13 +6734,6 @@ Insert into nm_errors Select 'MAI',9808,Null,'This data combination already exis
                            WHERE not exists (SELECT 'x'
                                                FROM    hig_modules 
                                                WHERE   hmo_module = 'MAI3821');
-
-Insert into hig_module_roles SELECT 'MAI3821','HIG_USER','NORMAL' 
-                           FROM dual 
-                           WHERE not exists (SELECT 'x'
-                                               FROM    hig_module_roles 
-                                               WHERE   hmr_module = 'MAI3821'
-                                               AND     hmr_role   = 'HIG_USER');
 
 Insert into hig_module_roles SELECT 'MAI3821','MAI_USER','NORMAL' 
                            FROM dual 
