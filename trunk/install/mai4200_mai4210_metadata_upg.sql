@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.8   Jun 01 2010 12:03:08   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.9   Jun 14 2010 10:28:56   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jun 01 2010 12:03:08  $
---       Date fetched Out : $Modtime:   Jun 01 2010 11:44:02  $
---       Version          : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jun 14 2010 10:28:56  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 10:27:52  $
+--       Version          : $Revision:   3.9  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -292,6 +292,460 @@ Insert into HIG_PROCESS_AREAS
    ('CIM_CONTRACTOR', 'CIM Contractor', 'ORG_UNITS', 'V_PROCESS_CONTRACTORS', 'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL', 
     'OUN_ELECTRONIC_ORDERS_FLAG = ''Y'' AND OUN_CONTRACTOR_ID IS NOT NULL', 'OUN_ORG_ID', 'OUN_UNIT_CODE||'' - ''||OUN_NAME');
 
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Missing metadata from 4100 and 4200 install - 4052
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109281
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- 1. Module Metadata for MAI3801_NET.
+-- 2. Hig Option Metadata for WCCOMPLETE.
+-- 
+------------------------------------------------------------------
+INSERT
+  INTO hig_modules
+      (hmo_module
+      ,hmo_title
+      ,hmo_filename
+      ,hmo_module_type
+      ,hmo_fastpath_invalid
+      ,hmo_use_gri
+      ,hmo_application
+      ,hmo_menu)
+SELECT 'MAI3801_NET'
+      ,'Raise Small Scheme Works Order (GIS)'
+      ,'mai3801'
+      ,'FMX'
+      ,'Y'
+      ,'N'
+      ,'MAI'
+      ,'FORM'
+ FROM DUAL
+ WHERE NOT EXISTS(SELECT 1
+                    FROM hig_modules
+                   WHERE hmo_module = 'MAI3801_NET')
+/
+
+INSERT
+  INTO hig_module_roles
+      (hmr_module
+      ,hmr_role
+      ,hmr_mode)
+SELECT 'MAI3801_NET'
+      ,'MAI_ADMIN'
+      ,'NORMAL'
+ FROM DUAL
+ WHERE NOT EXISTS(SELECT 1
+                    FROM hig_module_roles
+                   WHERE hmr_module = 'MAI3801_NET'
+                     AND hmr_role = 'MAI_ADMIN')
+/
+
+INSERT
+  INTO hig_module_roles
+      (hmr_module
+      ,hmr_role
+      ,hmr_mode)
+SELECT 'MAI3801_NET'
+      ,'MAI_USER'
+      ,'NORMAL'
+ FROM DUAL
+ WHERE NOT EXISTS(SELECT 1
+                    FROM hig_module_roles
+                   WHERE hmr_module = 'MAI3801_NET'
+                     AND hmr_role = 'MAI_USER')
+/
+
+INSERT into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+SELECT 'WCCOMPLETE'
+      ,'MAI'
+      ,'Full WC Complete'      
+      ,'WC file will complete repairs and defects appropriately when this option is set to ''Y''.'
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM hig_option_list
+                    WHERE hol_id = 'WCCOMPLETE')
+/
+
+INSERT into hig_option_values
+      (hov_id
+      ,hov_value)
+SELECT 'WCCOMPLETE'
+      ,'N'
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM hig_option_values
+                    WHERE hov_id = 'WCCOMPLETE')
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Incorrect metadata in 4050 upgrade
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109714
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- 1. Correction to hol_remarks for ZEROPAD option.
+-- 2. Correction of hol_mixed_case for XTRIFLDS option.
+-- 
+------------------------------------------------------------------
+UPDATE hig_option_list
+   SET hol_remarks = 'This option, when set to Y, means that all filenames used within Interfaces must be padded out with zeros until of the format <filetype><999999>.<concode> ie WO000001.CON.'
+ WHERE hol_id = 'ZEROPAD'
+/
+
+UPDATE hig_option_list
+   SET hol_mixed_case = 'N'
+ WHERE hol_id = 'XTRIFLDS'
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Metadata from 4100 upg not in subsequent installs
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109712
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Make AUTH_OWN a USER Option.
+-- 
+------------------------------------------------------------------
+update hig_option_list
+set hol_user_option = 'Y'
+where hol_id = 'AUTH_OWN'
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Missing metadata from 4040 install
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Module metadata for Print Gang Work Orders report.
+-- 
+------------------------------------------------------------------
+INSERT INTO hig_modules
+      (hmo_module
+      ,hmo_title
+      ,hmo_filename
+      ,hmo_module_type
+      ,hmo_fastpath_opts
+      ,hmo_fastpath_invalid
+      ,hmo_use_gri
+      ,hmo_application
+      ,hmo_menu
+      )
+SELECT
+       'MAI3970'
+      ,'Print Gang Work Orders'
+      ,'mai3970'
+      ,'R25'
+      ,NULL
+      ,'N'
+      ,'Y'
+      ,'MAI'
+      ,'FORM'
+  FROM dual
+ WHERE NOT EXISTS(SELECT 1
+                    FROM hig_modules
+                   WHERE hmo_module = 'MAI3970');
+
+INSERT INTO hig_module_roles
+      (hmr_module
+      ,hmr_role
+      ,hmr_mode
+      )
+SELECT 'MAI3970'
+      ,'MAI_ADMIN'
+      ,'NORMAL'
+ FROM  dual
+WHERE NOT EXISTS (SELECT 1
+                   FROM  hig_module_roles
+                  WHERE  hmr_module = 'MAI3970'
+                   AND   hmr_role   = 'MAI_ADMIN'
+                 )
+ AND  EXISTS     (SELECT 1
+                   FROM  hig_roles
+                  WHERE  hro_role   = 'MAI_ADMIN'
+                 )
+ AND  EXISTS     (SELECT 1
+                   FROM  hig_modules
+                  WHERE  hmo_module = 'MAI3970'
+                 );
+
+INSERT INTO hig_module_roles
+      (hmr_module
+      ,hmr_role
+      ,hmr_mode
+      )
+SELECT 'MAI3970'
+      ,'MAI_USER'
+      ,'NORMAL'
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                    FROM  hig_module_roles
+                   WHERE  hmr_module = 'MAI3970'
+                    AND   hmr_role   = 'MAI_USER'
+                  )
+  AND  EXISTS     (SELECT 1
+                    FROM  hig_roles
+                   WHERE  hro_role   = 'MAI_USER'
+                  )
+  AND  EXISTS     (SELECT 1
+                    FROM  hig_modules
+                   WHERE  hmo_module = 'MAI3970'
+                  );
+
+INSERT INTO hig_module_roles
+      (hmr_module
+      ,hmr_role
+      ,hmr_mode
+      )
+SELECT 'MAI3970'
+      ,'MAI_READONLY'
+      ,'READONLY'
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                    FROM  hig_module_roles
+                   WHERE  hmr_module = 'MAI3970'
+                    AND   hmr_role   = 'MAI_READONLY'
+                  )
+  AND  EXISTS     (SELECT 1
+                    FROM  hig_roles
+                   WHERE  hro_role   = 'MAI_READONLY'
+                  )
+  AND  EXISTS     (SELECT 1
+                    FROM  hig_modules
+                   WHERE  hmo_module = 'MAI3970'
+                  );
+
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+       'MAI_WORKS_REPORTS'
+      ,'MAI3970'
+      ,'Print Gang Work Orders'
+      ,'M'
+      ,3
+  FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_WORKS_REPORTS'
+                     AND  HSTF_CHILD = 'MAI3970');
+
+INSERT INTO GRI_PARAMS
+      (gp_param
+      ,gp_param_type
+      ,gp_table
+      ,gp_column
+      ,gp_descr_column
+      ,gp_shown_column
+      ,gp_shown_type
+      ,gp_descr_type
+      ,gp_order
+      ,gp_case
+      ,gp_gaz_restriction)
+SELECT
+       'GANG'
+      ,'NUMBER'
+      ,'HIG_CODES'
+      ,'TO_NUMBER(HCO_CODE)'
+      ,'HCO_MEANING'
+      ,'HCO_CODE'
+      ,'CHAR'
+      ,'CHAR'
+      ,NULL
+      ,NULL
+      ,NULL
+  FROM DUAL
+ WHERE NOT EXISTS (SELECT 1
+                     FROM GRI_PARAMS
+                    WHERE GP_PARAM = 'GANG');
+
+INSERT INTO GRI_MODULES
+      (GRM_MODULE
+      ,GRM_MODULE_TYPE
+      ,GRM_MODULE_PATH
+      ,GRM_FILE_TYPE
+      ,GRM_TAG_FLAG
+      ,GRM_TAG_TABLE
+      ,GRM_TAG_COLUMN
+      ,GRM_TAG_WHERE
+      ,GRM_LINESIZE
+      ,GRM_PAGESIZE
+      ,GRM_PRE_PROCESS
+      )
+SELECT
+       'MAI3970'
+      ,'N/A'
+      ,'$PROD_HOME/bin'
+      ,'lis'
+      ,'N'
+      ,NULL
+      ,NULL
+      ,NULL
+      ,80
+      ,66
+      ,NULL
+  FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
+                   WHERE GRM_MODULE = 'MAI3970');
+
+INSERT INTO gri_module_params
+      (gmp_module
+      ,gmp_param
+      ,gmp_seq
+      ,gmp_param_descr
+      ,gmp_mandatory
+      ,gmp_no_allowed
+      ,gmp_where
+      ,gmp_tag_restriction
+      ,gmp_tag_where
+      ,gmp_default_table
+      ,gmp_default_column
+      ,gmp_default_where
+      ,gmp_visible
+      ,gmp_gazetteer
+      ,gmp_lov
+      ,gmp_val_global
+      ,gmp_wildcard
+      ,gmp_hint_text
+      ,gmp_allow_partial
+      ,gmp_base_table
+      ,gmp_base_table_column
+      ,gmp_operator      
+      )
+SELECT
+       'MAI3970'
+      ,'GANG'
+      ,1
+      ,'Gang'
+      ,'Y' 
+      ,1
+      ,'HCO_DOMAIN=''GANG'' AND SYSDATE BETWEEN NVL(HCO_START_DATE,SYSDATE) AND NVL(HCO_END_DATE,SYSDATE)'
+      ,'N'
+      ,NULL
+      ,NULL 
+      ,NULL
+      ,NULL
+      ,'Y'
+      ,'N'
+      ,'Y'
+      ,NULL
+      ,'N'
+      ,'Enter The Gang For The Report'
+      ,'N'
+      ,NULL
+      ,NULL
+      ,NULL
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM gri_module_params
+                    WHERE gmp_module = 'MAI3970'
+                      AND gmp_param  = 'GANG');
+
+INSERT INTO gri_module_params
+      (gmp_module
+      ,gmp_param
+      ,gmp_seq
+      ,gmp_param_descr
+      ,gmp_mandatory
+      ,gmp_no_allowed
+      ,gmp_where
+      ,gmp_tag_restriction
+      ,gmp_tag_where
+      ,gmp_default_table
+      ,gmp_default_column
+      ,gmp_default_where
+      ,gmp_visible
+      ,gmp_gazetteer
+      ,gmp_lov
+      ,gmp_val_global
+      ,gmp_wildcard
+      ,gmp_hint_text
+      ,gmp_allow_partial
+      ,gmp_base_table
+      ,gmp_base_table_column
+      ,gmp_operator
+      )
+SELECT 'MAI3970'
+      ,'ORDER_SHEET_BOTH'
+      ,2
+      ,'Wrks Ord/Ctrl Sht/Both'
+      ,'Y'
+      ,1
+      ,'GPL_PARAM=''ORDER_SHEET_BOTH'''
+      ,'N'
+      ,NULL
+      ,'GRI_PARAM_LOOKUP'
+      ,'GPL_VALUE'
+      ,'GPL_VALUE=''W'' AND GPL_PARAM=''ORDER_SHEET_BOTH'''
+      ,'Y'
+      ,'N'
+      ,'Y'
+      ,NULL
+      ,'N'
+      ,'Enter W - Works Order, C - Control Sheet, B - Both'
+      ,'N'
+      ,NULL
+      ,NULL
+      ,NULL
+  FROM dual
+ WHERE NOT EXISTS (SELECT 1
+                     FROM gri_module_params
+                    WHERE gmp_module = 'MAI3970'
+                      AND gmp_param  = 'ORDER_SHEET_BOTH');
 ------------------------------------------------------------------
 
 
@@ -684,7 +1138,7 @@ Insert into HIG_NAVIGATOR
     HNV_DATE_CREATED, HNV_CREATED_BY, HNV_DATE_MODIFIED, HNV_MODIFIED_BY)
  Values
    ('Works Orders', 'WORK_ORDER_LINES', 'wol_id', 'tma_id_mapping', 'TIDM_PRIMARY_KEY_VALUE', 
-    3, 'Notice', 'wol_id', 'tidm_id', '-WOL', 
+    3, 'Notice', 'wol_id', 'TIDM_RESULTANT_WORKS_ID', '-WOL', 
     '-TMID', 'tma', 'AND TIDM_ORIGIN = ''WOL''', NULL, 'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)', 
     NULL, NULL, NULL, NULL, NULL, 
     NULL, NULL, NULL, NULL, 2, 
@@ -886,7 +1340,7 @@ Insert into HIG_NAVIGATOR
     HNV_DATE_CREATED, HNV_CREATED_BY, HNV_DATE_MODIFIED, HNV_MODIFIED_BY)
  Values
    ('Defects', 'work_order_lines', 'wol_id', 'tma_id_mapping', 'tidm_primary_key_value', 
-    4, 'Notice', 'wol_id', 'tidm_id', '-DWOL', 
+    4, 'Notice', 'wol_id', 'TIDM_RESULTANT_WORKS_ID', '-DWOL', 
     '-DTMA', 'tma', 'AND TIDM_ORIGIN = ''WOL''', NULL, 'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)', 
     NULL, NULL, NULL, NULL, NULL, 
     NULL, NULL, NULL, NULL, NULL, 
@@ -6114,7 +6568,112 @@ SELECT
 
 ------------------------------------------------------------------
 SET TERM ON
-PROMPT New Module Composite Flexible Attributes
+PROMPT Reconfigure MAI Inspection Loader Menu
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Remove Old Inspection Loader and related modules from the menu and add modules for the new Inspection Loader.
+-- 
+------------------------------------------------------------------
+DELETE hig_standard_favourites
+ WHERE hstf_parent = 'MAI_LOADERS_INSPECTIONS'
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI4400'
+      ,'Maintenance Inspection Loader'
+      ,'M'
+      ,10)
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI4405'
+      ,'Maintenance Inspection Error Correction'
+      ,'M'
+      ,20)
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI2220'
+      ,'Download Static Ref Data for DCD Inspections'
+      ,'M'
+      ,60)
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI2222'
+      ,'Download Standard Item Data for DCD Inspections'
+      ,'M'
+      ,70)
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI2224'
+      ,'Download Network Data for DCD Inspections'
+      ,'M'
+      ,80)
+/
+
+INSERT
+  INTO hig_standard_favourites
+      (hstf_parent
+      ,hstf_child
+      ,hstf_descr
+      ,hstf_type
+      ,hstf_order)
+VALUES('MAI_LOADERS_INSPECTIONS'
+      ,'MAI3863'
+      ,'Download Inspection by Assets'
+      ,'M'
+      ,90)
+/
+
+COMMIT
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Module Application Attributes
 SET TERM OFF
 
 ------------------------------------------------------------------
@@ -6126,7 +6685,7 @@ SET TERM OFF
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (LINESH SORATHIA)
--- New Module Composite Flexible Attributes
+-- New Module Application Attributes
 -- 
 ------------------------------------------------------------------
 Prompt Inserting into hig_modules
@@ -6145,7 +6704,7 @@ Prompt Inserting into hig_module_roles
                                                AND     hmr_role   = 'MAI_ADMIN');                                               
 
 Prompt Inserting into hig_standard_favourites
-Insert into hig_standard_favourites SELECT 'MAI_REF_MAINTENANCE', 'MAI3819','Composite Flexible Attributes','M',13.1 
+Insert into hig_standard_favourites SELECT 'MAI_REF_MAINTENANCE', 'MAI3819','Application Attributes','M',13.1 
                            FROM dual 
                            WHERE not exists (SELECT 'x'
                                                FROM    hig_standard_favourites 
@@ -6161,8 +6720,34 @@ Insert into HIG_FLEX_ATTRIBUTES
     HFA_ATTRIBUTE4, HFA_ATTRIBUTE5, HFA_DATE_CREATED, HFA_CREATED_BY, HFA_DATE_MODIFIED, 
     HFA_MODIFIED_BY)
  Values
-   (-1, 'WORK_ORDERS', 'WOR_SCHEME_TYPE', 'WOR_FLAG', NULL,NULL,NULL, 
+   (-1, 'WORK_ORDERS', 'WOR_SCHEME_TYPE', NULL, NULL,NULL,NULL, 
     NULL, NULL, Null,Null);
+
+Insert into nm_errors Select 'MAI',9808,Null,'This data combination already exists.',Null
+                        FROM  dual 
+                        WHERE Not Exists (SELECT 'x'
+                                            FROM    nm_errors
+                                            WHERe ner_id = 9808);
+
+ Insert into hig_modules SELECT 'MAI3821','Maintain Flexible Attributes','mai3821','FMX',Null,'N','N','MAI','FORM' 
+                           FROM dual 
+                           WHERE not exists (SELECT 'x'
+                                               FROM    hig_modules 
+                                               WHERE   hmo_module = 'MAI3821');
+
+Insert into hig_module_roles SELECT 'MAI3821','HIG_USER','NORMAL' 
+                           FROM dual 
+                           WHERE not exists (SELECT 'x'
+                                               FROM    hig_module_roles 
+                                               WHERE   hmr_module = 'MAI3821'
+                                               AND     hmr_role   = 'HIG_USER');
+
+Insert into hig_module_roles SELECT 'MAI3821','MAI_USER','NORMAL' 
+                           FROM dual 
+                           WHERE not exists (SELECT 'x'
+                                               FROM    hig_module_roles 
+                                               WHERE   hmr_module = 'MAI3821'
+                                               AND     hmr_role   = 'MAI_USER');
 ------------------------------------------------------------------
 
 
@@ -6544,7 +7129,7 @@ ORDER BY HCO_SEQ', 'N',
 
 ------------------------------------------------------------------
 SET TERM ON
-PROMPT Process Framework metadat for CIM
+PROMPT Process Framework metadata for CIM
 SET TERM OFF
 
 ------------------------------------------------------------------
@@ -6685,6 +7270,117 @@ Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_
 Insert into HIG_PROCESS_TYPE_FREQUENCIES
 Select -1004,-8,3 FRom dual
 Where not exists (Select 1 from HIG_PROCESS_TYPE_FREQUENCIES WHERE HPFR_PROCESS_TYPE_ID = -1004 And hpfr_frequency_id = -8);
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT  Audit and Alert asset roles
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (LINESH SORATHIA)
+--  Audit and Alert asset roles
+-- 
+------------------------------------------------------------------
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'WOR$','HIG_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='WOR$'
+                   AND    itr_hro_role = 'HIG_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'WOR$','MAI_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='WOR$'
+                   AND    itr_hro_role = 'MAI_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'WOL$','HIG_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='WOL$'
+                   AND    itr_hro_role = 'HIG_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'WOL$','MAI_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='WOL$'
+                   AND    itr_hro_role = 'MAI_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'DEF$','HIG_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='DEF$'
+                   AND    itr_hro_role = 'HIG_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'DEF$','MAI_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='DEF$'
+                   AND    itr_hro_role = 'MAI_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'BOQ$','HIG_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='BOQ$'
+                   AND    itr_hro_role = 'HIG_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'BOQ$','MAI_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='BOQ$'
+                   AND    itr_hro_role = 'MAI_USER'
+                   AND    itr_mode = 'NORMAL');
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'PRO$','HIG_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='PRO$'
+                   AND    itr_hro_role = 'HIG_USER'
+                   AND    itr_mode = 'NORMAL');
+
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'PRO$','MAI_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='PRO$'
+                   AND    itr_hro_role = 'MAI_USER'
+                   AND    itr_mode = 'NORMAL');
+
+INSERT INTO NM_INV_TYPE_ROLES
+SELECT 'PRO$','ENQ_USER','NORMAL'
+FROM dual 
+WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
+                   WHERE  itr_inv_type ='PRO$'
+                   AND    itr_hro_role = 'ENQ_USER'
+                   AND    itr_mode = 'NORMAL');
+
 ------------------------------------------------------------------
 
 

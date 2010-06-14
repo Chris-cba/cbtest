@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.6   Jun 01 2010 12:02:52   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_ddl_upg.sql-arc   3.7   Jun 14 2010 10:28:56   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Jun 01 2010 12:02:52  $
---       Date fetched Out : $Modtime:   Jun 01 2010 11:44:02  $
---       Version          : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   Jun 14 2010 10:28:56  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 10:27:48  $
+--       Version          : $Revision:   3.7  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -498,272 +498,354 @@ ALTER TABLE work_orders
      ,wor_num_attrib18  NUMBER
      ,wor_num_attrib19  NUMBER
      ,wor_num_attrib20  NUMBER
-     ,wor_char_attrib21 VARCHAR2(500)
-     ,wor_char_attrib22 VARCHAR2(500)
-     ,wor_char_attrib23 VARCHAR2(500)
-     ,wor_char_attrib24 VARCHAR2(500)
-     ,wor_char_attrib25 VARCHAR2(500)
-     ,wor_char_attrib26 VARCHAR2(500)
-     ,wor_char_attrib27 VARCHAR2(500)
-     ,wor_char_attrib28 VARCHAR2(500)
-     ,wor_char_attrib29 VARCHAR2(500)
-     ,wor_char_attrib30 VARCHAR2(500)
-     ,wor_char_attrib31 VARCHAR2(500)
-     ,wor_char_attrib32 VARCHAR2(500)
-     ,wor_char_attrib33 VARCHAR2(500)
-     ,wor_char_attrib34 VARCHAR2(500)
-     ,wor_char_attrib35 VARCHAR2(500)
-     ,wor_char_attrib36 VARCHAR2(500)
-     ,wor_char_attrib37 VARCHAR2(500)
-     ,wor_char_attrib38 VARCHAR2(500)
-     ,wor_char_attrib39 VARCHAR2(500)
-     ,wor_char_attrib40 VARCHAR2(500)
-     ,wor_char_attrib41 VARCHAR2(500)
-     ,wor_char_attrib42 VARCHAR2(500)
-     ,wor_char_attrib43 VARCHAR2(500)
-     ,wor_char_attrib44 VARCHAR2(500)
-     ,wor_char_attrib45 VARCHAR2(500)
-     ,wor_char_attrib46 VARCHAR2(500)
-     ,wor_char_attrib47 VARCHAR2(500)
-     ,wor_char_attrib48 VARCHAR2(500)
-     ,wor_char_attrib49 VARCHAR2(500)
-     ,wor_char_attrib50 VARCHAR2(500)
-     ,wor_date_attrib51 DATE
-     ,wor_date_attrib52 DATE
-     ,wor_date_attrib53 DATE
-     ,wor_date_attrib54 DATE
-     ,wor_date_attrib55 DATE
-     ,wor_date_attrib56 DATE
-     ,wor_date_attrib57 DATE
-     ,wor_date_attrib58 DATE
-     ,wor_date_attrib59 DATE
-     ,wor_date_attrib60 DATE
-     ,wor_date_attrib61 DATE
-     ,wor_date_attrib62 DATE
-     ,wor_date_attrib63 DATE
-     ,wor_date_attrib64 DATE
-     ,wor_date_attrib65 DATE
-     ,wor_date_attrib66 DATE
-     ,wor_date_attrib67 DATE
-     ,wor_date_attrib68 DATE
-     ,wor_date_attrib69 DATE
-     ,wor_date_attrib70 DATE);
+     ,wor_num_attrib21  NUMBER
+     ,wor_num_attrib22  NUMBER
+     ,wor_num_attrib23  NUMBER
+     ,wor_num_attrib24  NUMBER
+     ,wor_num_attrib25  NUMBER
+     ,wor_num_attrib26  NUMBER
+     ,wor_num_attrib27  NUMBER
+     ,wor_num_attrib28  NUMBER
+     ,wor_num_attrib29  NUMBER
+     ,wor_num_attrib30  NUMBER
+     ,wor_num_attrib31  NUMBER
+     ,wor_num_attrib32  NUMBER
+     ,wor_num_attrib33  NUMBER
+     ,wor_num_attrib34  NUMBER
+     ,wor_num_attrib35  NUMBER
+     ,wor_num_attrib36  NUMBER
+     ,wor_num_attrib37  NUMBER
+     ,wor_num_attrib38  NUMBER
+     ,wor_num_attrib39  NUMBER
+     ,wor_num_attrib40  NUMBER
+     ,wor_num_attrib41  NUMBER
+     ,wor_num_attrib42  NUMBER
+     ,wor_num_attrib43  NUMBER
+     ,wor_num_attrib44  NUMBER
+     ,wor_num_attrib45  NUMBER
+     ,wor_num_attrib46  NUMBER
+     ,wor_num_attrib47  NUMBER
+     ,wor_num_attrib48  NUMBER
+     ,wor_num_attrib49  NUMBER
+     ,wor_num_attrib50  NUMBER
+     ,wor_num_attrib51  NUMBER
+     ,wor_num_attrib52  NUMBER
+     ,wor_num_attrib53  NUMBER
+     ,wor_num_attrib54  NUMBER
+     ,wor_num_attrib55  NUMBER
+     ,wor_num_attrib56  NUMBER
+     ,wor_num_attrib57  NUMBER
+     ,wor_num_attrib58  NUMBER
+     ,wor_num_attrib59  NUMBER
+     ,wor_num_attrib60  NUMBER
+     ,wor_char_attrib61 VARCHAR2(500)
+     ,wor_char_attrib62 VARCHAR2(500)
+     ,wor_char_attrib63 VARCHAR2(500)
+     ,wor_char_attrib64 VARCHAR2(500)
+     ,wor_char_attrib65 VARCHAR2(500)
+     ,wor_char_attrib66 VARCHAR2(500)
+     ,wor_char_attrib67 VARCHAR2(500)
+     ,wor_char_attrib68 VARCHAR2(500)
+     ,wor_char_attrib69 VARCHAR2(500)
+     ,wor_char_attrib70 VARCHAR2(500)
+     ,wor_char_attrib71 VARCHAR2(500)
+     ,wor_char_attrib72 VARCHAR2(500)
+     ,wor_char_attrib73 VARCHAR2(500)
+     ,wor_char_attrib74 VARCHAR2(500)
+     ,wor_char_attrib75 VARCHAR2(500)
+     ,wor_char_attrib76 VARCHAR2(500)
+     ,wor_char_attrib77 VARCHAR2(500)
+     ,wor_char_attrib78 VARCHAR2(500)
+     ,wor_char_attrib79 VARCHAR2(500)
+     ,wor_char_attrib80 VARCHAR2(500)
+     ,wor_char_attrib81 VARCHAR2(500)
+     ,wor_char_attrib82 VARCHAR2(500)
+     ,wor_char_attrib83 VARCHAR2(500)
+     ,wor_char_attrib84 VARCHAR2(500)
+     ,wor_char_attrib85 VARCHAR2(500)
+     ,wor_char_attrib86 VARCHAR2(500)
+     ,wor_char_attrib87 VARCHAR2(500)
+     ,wor_char_attrib88 VARCHAR2(500)
+     ,wor_char_attrib89 VARCHAR2(500)
+     ,wor_char_attrib90 VARCHAR2(500)
+     ,wor_char_attrib91 VARCHAR2(500)
+     ,wor_char_attrib92 VARCHAR2(500)
+     ,wor_char_attrib93 VARCHAR2(500)
+     ,wor_char_attrib94 VARCHAR2(500)
+     ,wor_char_attrib95 VARCHAR2(500)
+     ,wor_char_attrib96 VARCHAR2(500)
+     ,wor_char_attrib97 VARCHAR2(500)
+     ,wor_char_attrib98 VARCHAR2(500)
+     ,wor_char_attrib99 VARCHAR2(500)
+     ,wor_char_attrib100 VARCHAR2(500)
+     ,wor_char_attrib101 VARCHAR2(500)
+     ,wor_char_attrib102 VARCHAR2(500)
+     ,wor_char_attrib103 VARCHAR2(500)
+     ,wor_char_attrib104 VARCHAR2(500)
+     ,wor_char_attrib105 VARCHAR2(500)
+     ,wor_char_attrib106 VARCHAR2(500)
+     ,wor_char_attrib107 VARCHAR2(500)
+     ,wor_char_attrib108 VARCHAR2(500)
+     ,wor_char_attrib109 VARCHAR2(500)
+     ,wor_char_attrib110 VARCHAR2(500)
+     ,wor_char_attrib111 VARCHAR2(500)
+     ,wor_char_attrib112 VARCHAR2(500)
+     ,wor_char_attrib113 VARCHAR2(500)
+     ,wor_char_attrib114 VARCHAR2(500)
+     ,wor_char_attrib115 VARCHAR2(500)
+     ,wor_char_attrib116 VARCHAR2(500)
+     ,wor_char_attrib117 VARCHAR2(500)
+     ,wor_char_attrib118 VARCHAR2(500)
+     ,wor_char_attrib119 VARCHAR2(500)
+     ,wor_char_attrib120 VARCHAR2(500)
+     ,wor_date_attrib121 DATE
+     ,wor_date_attrib122 DATE
+     ,wor_date_attrib123 DATE
+     ,wor_date_attrib124 DATE
+     ,wor_date_attrib125 DATE
+     ,wor_date_attrib126 DATE
+     ,wor_date_attrib127 DATE
+     ,wor_date_attrib128 DATE
+     ,wor_date_attrib129 DATE
+     ,wor_date_attrib130 DATE
+     ,wor_date_attrib131 DATE
+     ,wor_date_attrib132 DATE
+     ,wor_date_attrib133 DATE
+     ,wor_date_attrib134 DATE
+     ,wor_date_attrib135 DATE
+     ,wor_date_attrib136 DATE
+     ,wor_date_attrib137 DATE
+     ,wor_date_attrib138 DATE
+     ,wor_date_attrib139 DATE
+     ,wor_date_attrib140 DATE
+     ,wor_date_attrib141 DATE
+     ,wor_date_attrib142 DATE
+     ,wor_date_attrib143 DATE
+     ,wor_date_attrib144 DATE
+     ,wor_date_attrib145 DATE
+     ,wor_date_attrib146 DATE
+     ,wor_date_attrib147 DATE
+     ,wor_date_attrib148 DATE
+     ,wor_date_attrib149 DATE
+     ,wor_date_attrib150 DATE
+     ,wor_date_attrib151 DATE
+     ,wor_date_attrib152 DATE
+     ,wor_date_attrib153 DATE
+     ,wor_date_attrib154 DATE
+     ,wor_date_attrib155 DATE
+     ,wor_date_attrib156 DATE
+     ,wor_date_attrib157 DATE
+     ,wor_date_attrib158 DATE
+     ,wor_date_attrib159 DATE
+     ,wor_date_attrib160 DATE
+     ,wor_date_attrib161 DATE
+     ,wor_date_attrib162 DATE
+     ,wor_date_attrib163 DATE
+     ,wor_date_attrib164 DATE
+     ,wor_date_attrib165 DATE
+     ,wor_date_attrib166 DATE
+     ,wor_date_attrib167 DATE
+     ,wor_date_attrib168 DATE
+     ,wor_date_attrib169 DATE
+     ,wor_date_attrib170 DATE
+     ,wor_date_attrib171 DATE
+     ,wor_date_attrib172 DATE
+     ,wor_date_attrib173 DATE
+     ,wor_date_attrib174 DATE
+     ,wor_date_attrib175 DATE
+     ,wor_date_attrib176 DATE
+     ,wor_date_attrib177 DATE
+     ,wor_date_attrib178 DATE
+     ,wor_date_attrib179 DATE
+     ,wor_date_attrib180 DATE
+     );
      
-COMMENT ON COLUMN work_orders.wor_forwarded_to IS 'Id of the User that the Works Order Has Been forwarded to'
-/
-
-COMMENT ON COLUMN work_orders.wor_forwarded_by IS 'Id of the User that forwarded the Works Order'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib01  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib02  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib03  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib04  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib05  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib06  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib07  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib08  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib09  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib10  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib11  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib12  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib13  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib14  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib15  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib16  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib17  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib18  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib19  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_num_attrib20  IS 'Flexible Numeric Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib21 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib22 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib23 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib24 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib25 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib26 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib27 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib28 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib29 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib30 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib31 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib32 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib33 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib34 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib35 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib36 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib37 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib38 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib39 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib40 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib41 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib42 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib43 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib44 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib45 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib46 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib47 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib48 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib49 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_char_attrib50 IS 'Flexible Character Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib51 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib52 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib53 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib54 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib55 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib56 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib57 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib58 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib59 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib60 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib61 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib62 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib63 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib64 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib65 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib66 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib67 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib68 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib69 IS 'Flexible Date Attribute'
-/
-
-COMMENT ON COLUMN work_orders.wor_date_attrib70 IS 'Flexible Date Attribute'
-/
+COMMENT ON COLUMN work_orders.wor_forwarded_to IS 'Id of the User that the Works Order Has Been forwarded to';
+
+COMMENT ON COLUMN work_orders.wor_forwarded_by IS 'Id of the User that forwarded the Works Order';
+
+COMMENT ON COLUMN work_orders.wor_num_attrib01  IS 'Flexible Numeric Attribute';
+
+COMMENT ON COLUMN work_orders.wor_num_attrib01 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib02 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib03 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib04 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib05 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib06 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib07 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib08 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib09 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib10 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib11 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib12 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib13 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib14 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib15 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib16 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib17 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib18 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib19 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib20 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib21 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib22 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib23 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib24 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib25 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib26 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib27 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib28 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib29 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib30 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib31 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib32 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib33 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib34 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib35 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib36 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib37 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib38 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib39 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib40 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib41 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib42 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib43 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib44 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib45 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib46 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib47 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib48 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib49 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib50 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib51 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib52 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib53 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib54 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib55 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib56 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib57 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib58 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib59 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_num_attrib60 IS 'Flexible Numeric Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib61 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib62 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib63 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib64 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib65 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib66 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib67 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib68 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib69 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib70 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib71 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib72 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib73 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib74 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib75 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib76 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib77 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib78 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib79 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib80 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib81 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib82 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib83 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib84 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib85 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib86 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib87 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib88 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib89 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib90 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib91 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib92 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib93 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib94 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib95 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib96 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib97 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib98 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib99 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib100 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib101 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib102 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib103 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib104 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib105 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib106 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib107 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib108 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib109 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib110 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib111 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib112 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib113 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib114 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib115 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib116 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib117 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib118 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib119 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_char_attrib120 IS 'Flexible Character Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib121 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib122 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib123 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib124 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib125 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib126 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib127 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib128 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib129 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib130 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib131 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib132 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib133 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib134 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib135 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib136 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib137 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib138 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib139 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib140 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib141 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib142 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib143 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib144 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib145 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib146 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib147 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib148 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib149 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib150 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib151 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib152 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib153 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib154 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib155 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib156 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib157 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib158 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib159 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib160 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib161 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib162 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib163 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib164 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib165 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib166 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib167 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib168 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib169 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib170 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib171 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib172 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib173 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib174 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib175 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib176 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib177 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib178 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib179 IS 'Flexible Date Attribute';
+COMMENT ON COLUMN work_orders.wor_date_attrib180 IS 'Flexible Date Attribute';
 
 ------------------------------------------------------------------
 
