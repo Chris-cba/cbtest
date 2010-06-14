@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.8   Jun 01 2010 12:03:02   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.9   Jun 14 2010 10:59:06   malexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Jun 01 2010 12:03:02  $
---       Date fetched Out : $Modtime:   Jun 01 2010 11:55:00  $
---       Version          : $Revision:   2.8  $
+--       Date into PVCS   : $Date:   Jun 14 2010 10:59:06  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 10:57:18  $
+--       Version          : $Revision:   2.9  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 01-JUN-2010 11:54
+--       Generation Date  : 14-JUN-2010 10:57
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -29,6 +29,7 @@
 --   HIG_DIRECTORY_ROLES
 --   HIG_ALERT_RECIPIENT_RULES
 --   HIG_FLEX_ATTRIBUTES
+--   NM_INV_TYPE_ROLES
 --
 -----------------------------------------------------------------------------
 
@@ -1309,8 +1310,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1382,8 +1383,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1455,8 +1456,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1528,8 +1529,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1601,8 +1602,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1674,8 +1675,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1747,8 +1748,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1820,8 +1821,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1893,8 +1894,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -1966,8 +1967,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2039,8 +2040,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2112,8 +2113,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2185,8 +2186,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2258,8 +2259,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2331,8 +2332,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2404,8 +2405,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2477,8 +2478,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2550,8 +2551,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
-       ,to_date('20100601115227','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
+       ,to_date('20100614105615','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2623,8 +2624,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2696,8 +2697,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2769,8 +2770,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2842,8 +2843,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2915,8 +2916,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -2988,8 +2989,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select atv_acty_area_code, atv_descr,atv_acty_area_code from activities '||CHR(10)||'where atv_maint_insp_flag = ''D'' '
@@ -3061,8 +3062,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3134,8 +3135,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3207,8 +3208,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3280,8 +3281,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3353,8 +3354,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select distinct dty_defect_code,dty_descr1,dty_defect_code from def_types order by 1'
@@ -3426,8 +3427,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3499,8 +3500,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3572,8 +3573,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3645,8 +3646,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3718,8 +3719,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3791,8 +3792,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3864,8 +3865,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -3937,8 +3938,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4010,8 +4011,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select ity_inv_code, ity_descr, ity_sys_flag from inv_item_types'||CHR(10)||'order by ity_inv_code'
@@ -4083,8 +4084,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4156,8 +4157,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4229,8 +4230,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4302,8 +4303,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4375,8 +4376,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4448,8 +4449,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select oun_org_id ,oun_name ,oun_org_id  from org_units'
@@ -4521,8 +4522,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4594,8 +4595,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''DEFECT_PRIORITIES'''||CHR(10)||'order by hco_meaning'
@@ -4667,8 +4668,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -4740,8 +4741,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''DEFECT_PRIORITIES'''||CHR(10)||'order by hco_meaning'
@@ -4813,8 +4814,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select oun_org_id ,oun_name ,oun_org_id  from org_units'
@@ -4886,8 +4887,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_nt_TYPE IN  (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM = ''Y'')'
@@ -4959,8 +4960,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5032,8 +5033,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select siss_id,siss_name,siss_id from standard_item_sub_sections'||CHR(10)||'order by  siss_name'
@@ -5105,8 +5106,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
+       ,to_date('20100614105613','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5178,8 +5179,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5251,8 +5252,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT HSC_STATUS_CODE,HSC_STATUS_NAME,HSC_STATUS_CODE FROM HIG_STATUS_CODES'||CHR(10)||'WHERE HSC_DOMAIN_CODE = ''DEFECTS'''||CHR(10)||'ORDER BY HSC_STATUS_NAME'
@@ -5324,8 +5325,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5397,8 +5398,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5470,8 +5471,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
-       ,to_date('20100601115225','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5543,8 +5544,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5616,8 +5617,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5689,8 +5690,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5762,8 +5763,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
-       ,to_date('20100601115224','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
+       ,to_date('20100614105612','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -5835,8 +5836,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
-       ,to_date('20100601115226','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
+       ,to_date('20100614105614','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9120,8 +9121,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9193,8 +9194,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9266,8 +9267,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9339,8 +9340,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9412,8 +9413,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9485,8 +9486,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9558,8 +9559,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9631,8 +9632,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9704,8 +9705,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9777,8 +9778,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -9850,8 +9851,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
-       ,to_date('20100601115237','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT HPT_NAME,HPT_DESCR,HPT_PROCESS_TYPE_ID FROM HIG_PROCESS_TYPES'||CHR(10)||'ORDER BY HPT_NAME'
@@ -9923,8 +9924,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT HCO_CODE,HCO_MEANING,HCO_CODE CODE FROM HIG_CODES WHERE '||CHR(10)||'HCO_DOMAIN = ''PROCESS_SUCCESS_FLAG'' AND HCO_CODE != ''TBD'' '||CHR(10)||'ORDER BY HCO_SEQ'
@@ -9996,8 +9997,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10069,8 +10070,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
-       ,to_date('20100601115238','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
+       ,to_date('20100614105626','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10142,8 +10143,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10215,8 +10216,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10288,8 +10289,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select BUD_ICB_ITEM_CODE , bud_cost_code descr,bud_id '||CHR(10)||'from budgets'
@@ -10361,8 +10362,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10434,8 +10435,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10507,8 +10508,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10580,8 +10581,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10653,8 +10654,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
@@ -10726,8 +10727,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10799,8 +10800,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10872,8 +10873,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -10945,8 +10946,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11018,8 +11019,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11091,8 +11092,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11164,8 +11165,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11237,8 +11238,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11310,8 +11311,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11383,8 +11384,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''GANG'''||CHR(10)||'order by hco_meaning'
@@ -11456,8 +11457,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11529,8 +11530,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11602,8 +11603,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11675,8 +11676,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11748,8 +11749,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11821,8 +11822,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -11894,8 +11895,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_nt_TYPE IN  (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM = ''Y'')'
@@ -11967,8 +11968,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12040,8 +12041,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12113,8 +12114,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
-       ,to_date('20100601115223','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
+       ,to_date('20100614105611','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hsc_status_code,hsc_status_name,hsc_status_code FROM HIG_status_CODES'||CHR(10)||'WHERE hsc_domain_code = ''WORK_ORDER_LINES'' '||CHR(10)||'order by hsc_status_name'
@@ -12186,8 +12187,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12259,8 +12260,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12332,8 +12333,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12405,8 +12406,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12478,8 +12479,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12551,8 +12552,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12624,8 +12625,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12697,8 +12698,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12770,8 +12771,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12843,8 +12844,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
@@ -12916,8 +12917,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -12989,8 +12990,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13062,8 +13063,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13135,8 +13136,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13208,8 +13209,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13281,8 +13282,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13354,8 +13355,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select con_code ,con_name ,con_id  from contracts'
@@ -13427,8 +13428,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13500,8 +13501,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13573,8 +13574,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13646,8 +13647,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13719,8 +13720,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13792,8 +13793,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13865,8 +13866,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -13938,8 +13939,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14011,8 +14012,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14084,8 +14085,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14157,8 +14158,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14230,8 +14231,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14303,8 +14304,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14376,8 +14377,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14449,8 +14450,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14522,8 +14523,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14595,8 +14596,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14668,8 +14669,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14741,8 +14742,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14814,8 +14815,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14887,8 +14888,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -14960,8 +14961,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15033,8 +15034,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15106,8 +15107,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15179,8 +15180,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15252,8 +15253,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15325,8 +15326,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15398,8 +15399,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15471,8 +15472,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15544,8 +15545,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
@@ -15617,8 +15618,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select oun_org_id ,oun_name ,oun_org_id '||CHR(10)||'from org_units'
@@ -15690,8 +15691,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
@@ -15763,8 +15764,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15836,8 +15837,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15909,8 +15910,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -15982,8 +15983,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''WOR_PRIORITY'''||CHR(10)||'order by hco_meaning'
@@ -16055,8 +16056,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16128,8 +16129,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
@@ -16201,8 +16202,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16274,8 +16275,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16347,8 +16348,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''WOR_REGISTER_STATUS'''||CHR(10)||'order by hco_meaning'
@@ -16420,8 +16421,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16493,8 +16494,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16566,8 +16567,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16639,8 +16640,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_GTY_GROUP_TYPE IN (SELECT NGT_GROUP_TYPE FROM NM_GROUP_TYPES WHERE  NGT_NT_TYPE IN (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM != ''Y''))'
@@ -16712,8 +16713,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
-       ,to_date('20100601115219','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''SCHEME_TYPES'''||CHR(10)||'order by hco_meaning'
@@ -16785,8 +16786,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16858,8 +16859,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -16931,8 +16932,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
+       ,to_date('20100614105609','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -17004,8 +17005,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
-       ,to_date('20100601115221','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -17077,8 +17078,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
-       ,to_date('20100601115218','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
+       ,to_date('20100614105607','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -17150,8 +17151,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
-       ,to_date('20100601115220','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
+       ,to_date('20100614105608','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -17223,8 +17224,8 @@ SELECT
        ,''
        ,'N'
        ,'N'
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
-       ,to_date('20100601115222','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
+       ,to_date('20100614105610','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
        ,'MAI_METADATA'
        ,''
@@ -19972,7 +19973,7 @@ SELECT
        ,4
        ,'Notice'
        ,'wol_id'
-       ,'tidm_id'
+       ,'TIDM_RESULTANT_WORKS_ID'
        ,'-DWOL'
        ,'-DTMA'
        ,'tma'
@@ -20484,7 +20485,7 @@ SELECT
        ,3
        ,'Notice'
        ,'wol_id'
-       ,'tidm_id'
+       ,'TIDM_RESULTANT_WORKS_ID'
        ,'-WOL'
        ,'-TMID'
        ,'tma'
@@ -20708,7 +20709,10 @@ SELECT
 ----------------------------------------------------------------------------------------
 -- HIG_NAVIGATOR_MODULES
 --
--- WARNING - TABLE DOES NOT HAVE A UNIQUE KEY
+-- select * from mai_metadata.hig_navigator_modules
+-- order by hnm_module_name
+--         ,hnm_module_param
+--         ,hnm_hierarchy_label
 --
 ----------------------------------------------------------------------------------------
 
@@ -20741,142 +20745,10 @@ SELECT
        ,'DORSET'
        ,to_date('20100222165343','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
---
-INSERT INTO HIG_NAVIGATOR_MODULES
-       (HNM_MODULE_NAME
-       ,HNM_MODULE_PARAM
-       ,HNM_PRIMARY_MODULE
-       ,HNM_SEQUENCE
-       ,HNM_TABLE_NAME
-       ,HNM_FIELD_NAME
-       ,HNM_HIERARCHY_LABEL
-       ,HNM_DATE_CREATED
-       ,HNM_CREATED_BY
-       ,HNM_DATE_MODIFIED
-       ,HNM_MODIFIED_BY
-       )
-SELECT 
-        'MAI3806'
-       ,'defect_id'
-       ,'Y'
-       ,1
-       ,'DEFECTS'
-       ,'B1.DEF_DEFECT_ID'
-       ,'Defect'
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
---
-INSERT INTO HIG_NAVIGATOR_MODULES
-       (HNM_MODULE_NAME
-       ,HNM_MODULE_PARAM
-       ,HNM_PRIMARY_MODULE
-       ,HNM_SEQUENCE
-       ,HNM_TABLE_NAME
-       ,HNM_FIELD_NAME
-       ,HNM_HIERARCHY_LABEL
-       ,HNM_DATE_CREATED
-       ,HNM_CREATED_BY
-       ,HNM_DATE_MODIFIED
-       ,HNM_MODIFIED_BY
-       )
-SELECT 
-        'MAI3808'
-       ,'nav_defect_id'
-       ,'N'
-       ,2
-       ,''
-       ,''
-       ,'Defect'
-       ,to_date('20100330174740','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100330174740','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
---
-INSERT INTO HIG_NAVIGATOR_MODULES
-       (HNM_MODULE_NAME
-       ,HNM_MODULE_PARAM
-       ,HNM_PRIMARY_MODULE
-       ,HNM_SEQUENCE
-       ,HNM_TABLE_NAME
-       ,HNM_FIELD_NAME
-       ,HNM_HIERARCHY_LABEL
-       ,HNM_DATE_CREATED
-       ,HNM_CREATED_BY
-       ,HNM_DATE_MODIFIED
-       ,HNM_MODIFIED_BY
-       )
-SELECT 
-        'MAI3808'
-       ,'are_report_id'
-       ,'Y'
-       ,1
-       ,''
-       ,''
-       ,'Inspection'
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100224112703','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
---
-INSERT INTO HIG_NAVIGATOR_MODULES
-       (HNM_MODULE_NAME
-       ,HNM_MODULE_PARAM
-       ,HNM_PRIMARY_MODULE
-       ,HNM_SEQUENCE
-       ,HNM_TABLE_NAME
-       ,HNM_FIELD_NAME
-       ,HNM_HIERARCHY_LABEL
-       ,HNM_DATE_CREATED
-       ,HNM_CREATED_BY
-       ,HNM_DATE_MODIFIED
-       ,HNM_MODIFIED_BY
-       )
-SELECT 
-        'MAI3808'
-       ,'nav_defect_id'
-       ,'N'
-       ,2
-       ,''
-       ,''
-       ,'Repair'
-       ,to_date('20100330174829','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100330174829','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
---
-INSERT INTO HIG_NAVIGATOR_MODULES
-       (HNM_MODULE_NAME
-       ,HNM_MODULE_PARAM
-       ,HNM_PRIMARY_MODULE
-       ,HNM_SEQUENCE
-       ,HNM_TABLE_NAME
-       ,HNM_FIELD_NAME
-       ,HNM_HIERARCHY_LABEL
-       ,HNM_DATE_CREATED
-       ,HNM_CREATED_BY
-       ,HNM_DATE_MODIFIED
-       ,HNM_MODIFIED_BY
-       )
-SELECT 
-        'MAI3806'
-       ,'defect_id'
-       ,'Y'
-       ,1
-       ,''
-       ,''
-       ,'Repair'
-       ,to_date('20100330174829','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100330174829','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3660'
+                    AND  HNM_MODULE_PARAM = 'bud_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Budget');
 --
 INSERT INTO HIG_NAVIGATOR_MODULES
        (HNM_MODULE_NAME
@@ -20903,7 +20775,10 @@ SELECT
        ,'DORSET'
        ,to_date('20100222165343','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3800'
+                    AND  HNM_MODULE_PARAM = 'wo_no'
+                    AND  HNM_HIERARCHY_LABEL = 'Work Order');
 --
 INSERT INTO HIG_NAVIGATOR_MODULES
        (HNM_MODULE_NAME
@@ -20930,7 +20805,160 @@ SELECT
        ,'DORSET'
        ,to_date('20100222165343','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3800'
+                    AND  HNM_MODULE_PARAM = 'wol_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Work Order Line');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3806'
+       ,'defect_id'
+       ,'Y'
+       ,1
+       ,'DEFECTS'
+       ,'B1.DEF_DEFECT_ID'
+       ,'Defect'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3806'
+                    AND  HNM_MODULE_PARAM = 'defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Defect');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3806'
+       ,'defect_id'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Repair'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3806'
+                    AND  HNM_MODULE_PARAM = 'defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Repair');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'are_report_id'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Inspection'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100224112703','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'are_report_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Inspection');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'nav_defect_id'
+       ,'N'
+       ,2
+       ,''
+       ,''
+       ,'Defect'
+       ,to_date('20100330174740','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174740','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'nav_defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Defect');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'nav_defect_id'
+       ,'N'
+       ,2
+       ,''
+       ,''
+       ,'Repair'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'nav_defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Repair');
 --
 --
 --
@@ -21062,7 +21090,8 @@ SELECT
 ----------------------------------------------------------------------------------------
 -- HIG_ALERT_RECIPIENT_RULES
 --
--- WARNING - TABLE DOES NOT HAVE A UNIQUE KEY
+-- select * from mai_metadata.hig_alert_recipient_rules
+-- order by harr_id
 --
 ----------------------------------------------------------------------------------------
 
@@ -21083,9 +21112,9 @@ INSERT INTO HIG_ALERT_RECIPIENT_RULES
        ,HARR_MODIFIED_BY
        )
 SELECT 
-        -1
+        -4
        ,'WOR$'
-       ,'WOR_CLOSED_BY_ID'
+       ,'WOR_RECEIVED_BY'
        ,''
        ,'USER_ID'
        ,''
@@ -21093,32 +21122,8 @@ SELECT
        ,'DORSET'
        ,to_date('20100301114315','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES);
---
-INSERT INTO HIG_ALERT_RECIPIENT_RULES
-       (HARR_ID
-       ,HARR_NIT_INV_TYPE
-       ,HARR_ATTRIBUTE_NAME
-       ,HARR_LABEL
-       ,HARR_RECIPIENT_TYPE
-       ,HARR_SQL
-       ,HARR_DATE_CREATED
-       ,HARR_CREATED_BY
-       ,HARR_DATE_MODIFIED
-       ,HARR_MODIFIED_BY
-       )
-SELECT 
-        -2
-       ,'WOR$'
-       ,'WOR_MOD_BY_ID'
-       ,''
-       ,'USER_ID'
-       ,''
-       ,to_date('20100301114315','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100301114315','YYYYMMDDHH24MISS')
-       ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -4);
 --
 INSERT INTO HIG_ALERT_RECIPIENT_RULES
        (HARR_ID
@@ -21143,7 +21148,8 @@ SELECT
        ,'DORSET'
        ,to_date('20100301114315','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -3);
 --
 INSERT INTO HIG_ALERT_RECIPIENT_RULES
        (HARR_ID
@@ -21158,9 +21164,9 @@ INSERT INTO HIG_ALERT_RECIPIENT_RULES
        ,HARR_MODIFIED_BY
        )
 SELECT 
-        -4
+        -2
        ,'WOR$'
-       ,'WOR_RECEIVED_BY'
+       ,'WOR_MOD_BY_ID'
        ,''
        ,'USER_ID'
        ,''
@@ -21168,7 +21174,34 @@ SELECT
        ,'DORSET'
        ,to_date('20100301114315','YYYYMMDDHH24MISS')
        ,'DORSET' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES);
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -2);
+--
+INSERT INTO HIG_ALERT_RECIPIENT_RULES
+       (HARR_ID
+       ,HARR_NIT_INV_TYPE
+       ,HARR_ATTRIBUTE_NAME
+       ,HARR_LABEL
+       ,HARR_RECIPIENT_TYPE
+       ,HARR_SQL
+       ,HARR_DATE_CREATED
+       ,HARR_CREATED_BY
+       ,HARR_DATE_MODIFIED
+       ,HARR_MODIFIED_BY
+       )
+SELECT 
+        -1
+       ,'WOR$'
+       ,'WOR_CLOSED_BY_ID'
+       ,''
+       ,'USER_ID'
+       ,''
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -1);
 --
 --
 --
@@ -21204,16 +21237,153 @@ SELECT
         -1
        ,'WORK_ORDERS'
        ,'WOR_SCHEME_TYPE'
-       ,'WOR_FLAG'
        ,''
        ,''
        ,''
-       ,to_date('20100601115236','YYYYMMDDHH24MISS')
+       ,''
+       ,to_date('20100614105625','YYYYMMDDHH24MISS')
        ,'MAI_METADATA'
-       ,to_date('20100601115236','YYYYMMDDHH24MISS')
+       ,to_date('20100614105625','YYYYMMDDHH24MISS')
        ,'MAI_METADATA' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_FLEX_ATTRIBUTES
                    WHERE HFA_ID = -1);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPE_ROLES
+--
+-- WARNING - TABLE DOES NOT HAVE A UNIQUE KEY
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_type_roles
+SET TERM OFF
+
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'BOQ$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'BOQ$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'DEF$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'DEF$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'ENQ_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOL$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOL$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOR$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOR$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
 --
 --
 --

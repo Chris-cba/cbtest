@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.19   Jun 01 2010 12:03:08   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.20   Jun 14 2010 10:59:06   malexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Jun 01 2010 12:03:08  $
---       Date fetched Out : $Modtime:   Jun 01 2010 11:54:48  $
---       Version          : $Revision:   2.19  $
+--       Date into PVCS   : $Date:   Jun 14 2010 10:59:06  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 10:57:06  $
+--       Version          : $Revision:   2.20  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 01-JUN-2010 11:54
+--       Generation Date  : 14-JUN-2010 10:57
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -2640,6 +2640,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 9807);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9808
+       ,null
+       ,'This data combination already exists.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9808);
 --
 --
 --
@@ -10042,6 +10059,30 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI3820');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI3821'
+       ,'Maintain Flexible Attributes'
+       ,'mai3821'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3821');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
@@ -19342,61 +19383,10 @@ INSERT INTO HIG_STANDARD_FAVOURITES
        )
 SELECT 
         'MAI_LOADERS_INSPECTIONS'
-       ,'MAI2200C'
-       ,'Inspection Loader (Part 1)'
-       ,'M'
-       ,1 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI2200C');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
-       ,'MAI2200D'
-       ,'Inspection Loader (Part 2)'
-       ,'M'
-       ,2 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI2200D');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
-       ,'MAI2200R'
-       ,'Bulk Inspection Load - Stage 2 Report'
-       ,'M'
-       ,3 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI2200R');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
        ,'MAI2220'
        ,'Download Static Ref Data for DCD Inspections'
        ,'M'
-       ,5 FROM DUAL
+       ,60 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI2220');
@@ -19413,7 +19403,7 @@ SELECT
        ,'MAI2222'
        ,'Download Standard Item Data for DCD Inspections'
        ,'M'
-       ,6 FROM DUAL
+       ,70 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI2222');
@@ -19430,7 +19420,7 @@ SELECT
        ,'MAI2224'
        ,'Download Network Data for DCD Inspections'
        ,'M'
-       ,7 FROM DUAL
+       ,80 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI2224');
@@ -19444,27 +19434,10 @@ INSERT INTO HIG_STANDARD_FAVOURITES
        )
 SELECT 
         'MAI_LOADERS_INSPECTIONS'
-       ,'MAI2250'
-       ,'Correct Inspection Load Errors'
-       ,'M'
-       ,4 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI2250');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
        ,'MAI3863'
        ,'Download Inspection by Assets'
        ,'M'
-       ,9 FROM DUAL
+       ,90 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI3863');
@@ -19498,27 +19471,10 @@ SELECT
        ,'MAI4405'
        ,'Maintenance Inspection Error Correction'
        ,'M'
-       ,11 FROM DUAL
+       ,20 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI4405');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
-       ,'MAI5091'
-       ,'Remove Phase 1 Inspection Batches'
-       ,'M'
-       ,8 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI5091');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
