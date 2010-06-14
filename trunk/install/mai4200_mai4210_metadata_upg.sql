@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.10   Jun 14 2010 10:55:30   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.11   Jun 14 2010 12:35:46   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 10:55:30  $
---       Date fetched Out : $Modtime:   Jun 14 2010 10:54:36  $
---       Version          : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Jun 14 2010 12:35:46  $
+--       Date fetched Out : $Modtime:   Jun 14 2010 12:35:04  $
+--       Version          : $Revision:   3.11  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -7366,13 +7366,7 @@ WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
                    AND    itr_hro_role = 'MAI_USER'
                    AND    itr_mode = 'NORMAL');
 
-INSERT INTO NM_INV_TYPE_ROLES
-SELECT 'PRO$','ENQ_USER','NORMAL'
-FROM dual 
-WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
-                   WHERE  itr_inv_type ='PRO$'
-                   AND    itr_hro_role = 'ENQ_USER'
-                   AND    itr_mode = 'NORMAL');
+
 
 ------------------------------------------------------------------
 
