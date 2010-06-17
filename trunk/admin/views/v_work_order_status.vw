@@ -8,11 +8,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.2   Jun 17 2010 15:08:02   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.3   Jun 17 2010 15:40:52   mhuitson  $
 --       Module Name      : $Workfile:   v_work_order_status.vw  $
---       Date into PVCS   : $Date:   Jun 17 2010 15:08:02  $
---       Date fetched Out : $Modtime:   Jun 17 2010 15:03:42  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Jun 17 2010 15:40:52  $
+--       Date fetched Out : $Modtime:   Jun 17 2010 15:39:08  $
+--       Version          : $Revision:   3.3  $
 -------------------------------------------------------------------------
 --
        wor.wor_works_order_no wor_works_order_no
@@ -34,7 +34,8 @@ SELECT
                                                                  AND hsc_allow_feature4 = 'Y'
                                                                  AND hsc_allow_feature9 != 'Y'
                                                                  AND rownum = 1) -- PAID 
-                    WHEN paid > 0                       THEN (SELECT hsc_status_code
+                    WHEN paid > 0
+                      OR part_paid > 0                  THEN (SELECT hsc_status_code
                                                                 FROM hig_status_codes
                                                                WHERE hsc_domain_code = 'WORK_ORDER_LINES'
                                                                  AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
@@ -96,6 +97,7 @@ SELECT
                       ,SUM(DECODE(hsc_allow_feature1,  'Y', DECODE(hsc_allow_feature10, 'Y', 0, 1), 0)) instructed
                       ,SUM(DECODE(hsc_allow_feature2,  'Y', 1, 0)) + SUM(DECODE(hsc_allow_feature3, 'Y', 1, 0)) completed
                       ,SUM(DECODE(hsc_allow_feature4,  'Y', DECODE(hsc_allow_feature9, 'Y', 0, 1), 0)) paid
+                      ,SUM(DECODE(hsc_allow_feature4,  'Y', DECODE(hsc_allow_feature9, 'Y', 1, 0), 0)) part_paid
                       ,SUM(DECODE(hsc_allow_feature5,  'Y', 1, 0)) not_done
                       ,SUM(DECODE(hsc_allow_feature8,  'Y', 1, 0)) + SUM(DECODE(hsc_allow_feature9, 'Y', 1,0)) + SUM(DECODE(hsc_allow_feature6, 'Y', 1,0)) part_complete
                       ,SUM(DECODE(hsc_allow_feature7,  'Y', 1, 0)) actioned
