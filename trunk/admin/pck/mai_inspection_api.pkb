@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.10   Jun 11 2010 11:28:22   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.11   Jun 18 2010 14:10:34   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jun 11 2010 11:28:22  $
---       Date fetched Out : $Modtime:   Jun 11 2010 11:27:32  $
---       PVCS Version     : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Jun 18 2010 14:10:34  $
+--       Date fetched Out : $Modtime:   Jun 18 2010 13:53:44  $
+--       PVCS Version     : $Revision:   3.11  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.11  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -667,7 +667,8 @@ BEGIN
         ,def_x_sect
         ,def_easting
         ,def_northing
-        ,def_response_category) 
+        ,def_response_category
+        ,def_inspection_date) 
  VALUES (lv_defect_id
         ,pi_defect_rec.def_rse_he_id
         ,pi_defect_rec.def_iit_item_id
@@ -716,7 +717,8 @@ BEGIN
         ,pi_defect_rec.def_x_sect
         ,pi_defect_rec.def_easting
         ,pi_defect_rec.def_northing
-        ,pi_defect_rec.def_response_category);
+        ,pi_defect_rec.def_response_category
+        ,pi_defect_rec.def_inspection_date);
   --
   IF SQL%rowcount != 1 THEN
     RAISE insert_error;
@@ -1946,9 +1948,10 @@ BEGIN
   nm_debug.debug('Dates');
   IF lr_defect_rec.def_created_date IS NULL
    THEN
-      lr_defect_rec.def_created_date := TRUNC(pi_are_date_work_done);
-      lr_defect_rec.def_time_hrs     := 0;
-      lr_defect_rec.def_time_mins    := 0;
+      lr_defect_rec.def_created_date    := sysdate;
+      lr_defect_rec.def_time_hrs        := 0;
+      lr_defect_rec.def_time_mins       := 0;
+      lr_defect_rec.def_inspection_date := pi_are_date_work_done;
   END IF;
   /*
   ||Default / Validate Defect Status.
@@ -2822,10 +2825,10 @@ BEGIN
                            FROM nm_nw_ad_types
                           WHERE EXISTS(SELECT 1
                                          FROM nm_elements_all
-		                                    WHERE ne_id = pi_ne_id
-				                                  AND ne_nt_type = nad_nt_type
-					                                AND NVL(ne_gty_group_type,'$$$') = NVL(nad_gty_type,'$$$')
-					                                AND nad_primary_ad = 'Y'))
+                                        WHERE ne_id = pi_ne_id
+                                          AND ne_nt_type = nad_nt_type
+                                          AND NVL(ne_gty_group_type,'$$$') = NVL(nad_gty_type,'$$$')
+                                          AND nad_primary_ad = 'Y'))
      AND UPPER(ita_view_col_name) = 'RSE_LAST_INSPECTED'
        ;
   /*
