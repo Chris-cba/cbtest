@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.7   Jun 10 2010 13:46:20   aedwards  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.8   Jun 18 2010 09:33:18   aedwards  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Jun 10 2010 13:46:20  $
- --       Date fetched Out : $Modtime:   May 13 2010 14:19:44  $
- --       SCCS Version     : $Revision:   2.7  $
+ --       Date into SCCS   : $Date:   Jun 18 2010 09:33:18  $
+ --       Date fetched Out : $Modtime:   Jun 18 2010 09:32:38  $
+ --       SCCS Version     : $Revision:   2.8  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -522,7 +522,6 @@ IS
        AND n.ita_inv_type = i.ita_iit_inv_code
        AND i.ita_iit_inv_code    = t.ity_inv_code
        AND t.ity_sys_flag = ita_ity_sys_flag
-       AND sysflags = ita_ity_sys_flag
        AND INSTR(sysflags,ita_ity_sys_flag)>0
        AND i.ita_end_date IS NULL
        AND ( FAsset IS NULL
