@@ -9,76 +9,62 @@ CREATE OR REPLACE FORCE VIEW imf_mai_bill_of_quantities
   ,standard_item_sub_section_name
   ,repair_category
   ,repair_category_description
-  ,work_category
-  ,work_category_description
   ,date_created
   ,unit_of_measure
   ,estimated_quantity
   ,estimated_rate
-  ,estimated_discount
   ,estimated_cost
   ,estimated_labour
   ,actual_quantity
   ,actual_rate
-  ,actual_discount
   ,actual_cost
   ,actual_labour)
 AS
-SELECT 
--------------------------------------------------------------------------
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.6   Jun 11 2010 18:45:38   mhuitson  $
---       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
---       Date into PVCS   : $Date:   Jun 11 2010 18:45:38  $
---       Date fetched Out : $Modtime:   Jun 11 2010 18:27:26  $
---       Version          : $Revision:   3.6  $
--- Foundation view displaying bill of quantities for a defect
--------------------------------------------------------------------------
--- SM 03042009
--- Added rownum=1 to ICB inline sql to cater for ICBFGAC product option
--------------------------------------------------------------------------   
-       bi.boq_id,
-       bi.boq_parent_id,
-       bi.boq_defect_id,
-       bi.boq_wol_id,
-       bi.boq_sta_item_code,
-       DECODE(bi.boq_parent_id,null,nvl(bi.boq_item_name,si.sta_item_name)
-                                   ,'->'||nvl(bi.boq_item_name,si.sta_item_name))  boq_item_name,
-       si.sta_siss_id,
-       ( SELECT siss.siss_name 
+SELECT -------------------------------------------------------------------------
+       --   PVCS Identifiers :-
+       --
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.7   Jun 28 2010 13:33:18   mhuitson  $
+       --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
+       --       Date into PVCS   : $Date:   Jun 28 2010 13:33:18  $
+       --       Date fetched Out : $Modtime:   Jun 28 2010 10:50:28  $
+       --       Version          : $Revision:   3.7  $
+       -- Foundation view displaying bill of quantities for a defect
+       -------------------------------------------------------------------------
+       -- SM 03042009
+       -- Added rownum=1 to ICB inline sql to cater for ICBFGAC product option
+       -------------------------------------------------------------------------   
+       bi.boq_id                                                                  bill_of_quantities_id
+      ,bi.boq_parent_id                                                           bill_of_quantities_parent_id
+      ,bi.boq_defect_id                                                           defect_id
+      ,bi.boq_wol_id                                                              work_order_line_id
+      ,bi.boq_sta_item_code                                                       standard_item_code
+      ,DECODE(bi.boq_parent_id,null,nvl(bi.boq_item_name,si.sta_item_name)
+                                   ,'->'||nvl(bi.boq_item_name,si.sta_item_name)) standard_item_name
+      ,si.sta_siss_id                                                             standard_item_sub_section_id
+      ,( SELECT siss.siss_name 
            FROM standard_item_sub_sections siss 
-          WHERE siss.siss_id = si.sta_siss_id),
-       bi.boq_rep_action_cat,  
-       ( SELECT hco.hco_meaning
+          WHERE siss.siss_id = si.sta_siss_id)                                    standard_item_sub_section_name
+      ,bi.boq_rep_action_cat                                                      repair_category
+      ,( SELECT hco.hco_meaning
            FROM hig_codes hco
           WHERE hco.hco_domain = 'REPAIR_TYPE'  
-            AND hco.hco_code = bi.boq_rep_action_cat ),
-       bi.boq_icb_work_code,
-       (SELECT icb.icb_work_category_name 
-          FROM item_code_breakdowns icb
-         WHERE icb.icb_work_code = bi.boq_icb_work_code
-           AND rownum = 1),
-       bi.boq_date_created,
-       si.sta_unit, 
-       bi.boq_est_quantity,
-       bi.boq_est_rate,
-       null,
-       bi.boq_est_cost, 
-       bi.boq_est_labour, 
-       bi.boq_act_quantity,
-       bi.boq_act_rate,
-       null,
-       bi.boq_act_cost, 
-       bi.boq_act_labour
-  FROM boq_items bip
-      ,standard_items si
+            AND hco.hco_code = bi.boq_rep_action_cat)                             repair_category_description
+      ,bi.boq_date_created                                                        date_created
+      ,si.sta_unit                                                                unit_of_measure
+      ,bi.boq_est_quantity                                                        estimated_quantity
+      ,bi.boq_est_rate                                                            estimated_rate
+      ,bi.boq_est_cost                                                            estimated_cost
+      ,bi.boq_est_labour                                                          estimated_labour
+      ,bi.boq_act_quantity                                                        actual_quantity
+      ,bi.boq_act_rate                                                            actual_rate
+      ,bi.boq_act_cost                                                            actual_cost
+      ,bi.boq_act_labour                                                          actual_labour
+  FROM standard_items si
       ,boq_items bi
  WHERE bi.boq_sta_item_code = si.sta_item_code(+)
-   AND bi.boq_parent_id = bip.boq_id(+)
  ORDER
-    BY nvl(boq_parent_id,boq_id)
-      ,boq_id
+    BY nvl(bi.boq_parent_id,bi.boq_id)
+      ,bi.boq_id
      ;
 
 COMMENT ON TABLE IMF_MAI_BILL_OF_QUANTITIES IS 'Maintenance Manager foundation view of all Bill of Quantities Items, showing details of estimated and actual quantities and costs. This view can be joined to the defect or work order line foundation views to produce reports showing cost summaries and variances.';
@@ -93,18 +79,14 @@ COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_ID IS 'Th
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_NAME IS 'The Standard Item Sub Section Name associated with the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY IS 'The Action Category of the Repair that the Bill Of Quantities Item is associated with';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY_DESCRIPTION IS 'The Description of the Action Category of the Repair that the Bill Of Quantities Item is associated with';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY IS 'Not Used';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.WORK_CATEGORY_DESCRIPTION IS 'Not Used';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'The date the Bill Of Quantities Item was created';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.UNIT_OF_MEASURE IS 'The Unit Of Measure used by the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_QUANTITY IS 'The Estimated Quantity of the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_RATE IS 'The Rate used to calculate the Estimated Cost of the Bill Of Quantities Item';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_DISCOUNT IS 'Not Used';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_COST IS 'The Estimated Cost of the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ESTIMATED_LABOUR IS 'The Estimated Labour Units associated with the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_QUANTITY IS 'The Actual Quantity of the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_RATE IS 'The Rate used to calculate the Actual Cost of the Bill Of Quantities Item';
-COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_DISCOUNT IS 'Not Used';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_COST IS 'The Actual Cost of the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.ACTUAL_LABOUR IS 'The Actual Labour Units associated with the Bill Of Quantities Item';
 
