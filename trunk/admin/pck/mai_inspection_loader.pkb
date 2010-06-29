@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.9   Jun 07 2010 10:19:16   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.10   Jun 29 2010 10:28:00   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Jun 07 2010 10:19:16  $
---       Date fetched Out : $Modtime:   Jun 03 2010 13:49:52  $
---       PVCS Version     : $Revision:   3.9  $
+--       Date into PVCS   : $Date:   Jun 29 2010 10:28:00  $
+--       Date fetched Out : $Modtime:   Jun 22 2010 14:19:50  $
+--       PVCS Version     : $Revision:   3.10  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -2093,36 +2093,6 @@ nm_debug.debug('File inspdate = '||lv_token);
               END IF;
           END IF;
           /*
-          ||Get The Priority 2 Sub Category.
-          */
-          IF lv_rec_type = 'N'
-           THEN
-              lv_token := get_token_value(pi_tokens   => lt_tokens
-                                         ,pi_position => 3);
-              IF check_number(pi_number => lv_token)
-               THEN
-                  CASE TO_NUMBER(lv_token)
-                    WHEN 1
-                     THEN
-                        lv_priority := '2.1';
-                    WHEN 2
-                     THEN
-                        lv_priority := '2.2';
-                    WHEN 3
-                     THEN
-                        lv_priority := '2.3';
-                    ELSE
-                        lv_priority := '1';
-                  END CASE;
-                  --
-              ELSE
-                 add_error_to_stack(pi_seq_no => lv_seq_no
-                                   ,pi_ner_id => 9276);
-                 RAISE invalid_record;
-              END IF;
-              --
-          END IF;
-          /*
           ||If Not An Enhanced Format File Set The Defect
           ||Priority Based On The Type Of Repair.
           */
@@ -2132,6 +2102,37 @@ nm_debug.debug('File inspdate = '||lv_token);
                THEN
                   lr_def.def_priority := '1';
               ELSE
+                  /*
+                  ||Get The Priority 2 Sub Category.
+                  */
+                  IF lv_rec_type = 'N'
+                   THEN
+                      lv_token := get_token_value(pi_tokens   => lt_tokens
+                                                 ,pi_position => 3);
+                      IF check_number(pi_number => lv_token)
+                       THEN
+                          CASE TO_NUMBER(lv_token)
+                            WHEN 1
+                             THEN
+                                lv_priority := '2.1';
+                            WHEN 2
+                             THEN
+                                lv_priority := '2.2';
+                            WHEN 3
+                             THEN
+                                lv_priority := '2.3';
+                            ELSE
+                                lv_priority := '1';
+                          END CASE;
+                          --
+                      ELSE
+                         add_error_to_stack(pi_seq_no => lv_seq_no
+                                           ,pi_ner_id => 9276);
+                         RAISE invalid_record;
+                      END IF;
+                      --
+                  END IF;
+
                   lr_def.def_priority := lv_priority;
               END IF;
           END IF;
