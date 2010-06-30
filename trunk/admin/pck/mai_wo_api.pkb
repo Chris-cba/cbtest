@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.10   Jun 30 2010 16:49:36   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.11   Jun 30 2010 18:28:40   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 30 2010 16:49:36  $
---       Date fetched Out : $Modtime:   Jun 30 2010 16:35:14  $
---       PVCS Version     : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Jun 30 2010 18:28:40  $
+--       Date fetched Out : $Modtime:   Jun 30 2010 18:25:34  $
+--       PVCS Version     : $Revision:   3.11  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.11  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2175,6 +2175,7 @@ nm_debug.debug('generate WOLs');
         */
         nm_debug.debug('Set BOQ Rate');
         IF lt_repair_boqs(j).sta_rogue_flag != 'Y'
+         OR lt_boq(lv_boq_tab_ind).boq_est_rate IS NULL
          THEN
             lt_boq(lv_boq_tab_ind).boq_est_rate := maiwo.reprice_item(p_item_code => lt_repair_boqs(j).boq_sta_item_code
                                                                      ,p_con_id    => pi_con_id
@@ -2192,6 +2193,7 @@ nm_debug.debug('generate WOLs');
               ||Update The BOQ Estimated Cost.
               */
               lt_boq(lv_boq_tab_ind).boq_est_cost := ROUND(lt_boq(lv_boq_tab_ind).boq_est_rate*lt_repair_boqs(j).boq_est_quantity,2);
+              nm_debug.debug('BOQ Cost = '||lt_boq(lv_boq_tab_ind).boq_est_cost);
               --
               IF NOT lv_wol_null_boq_exists
                THEN
