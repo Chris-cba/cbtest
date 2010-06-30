@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.8   Jun 30 2010 11:44:18   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.9   Jun 30 2010 14:49:14   cbaugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 30 2010 11:44:18  $
---       Date fetched Out : $Modtime:   Jun 25 2010 16:59:02  $
---       PVCS Version     : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jun 30 2010 14:49:14  $
+--       Date fetched Out : $Modtime:   Jun 30 2010 14:46:22  $
+--       PVCS Version     : $Revision:   3.9  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.8  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2790,6 +2790,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                   ,p_commence_by  => lr_wo.wor_commence_by
                                   ,p_descr        => lr_wo.wor_descr);
         --
+        /* clb 30062010 - task 0109900 commented out code, which was creating rec type A data in CIM file
         FOR i IN 1..lt_wols.count LOOP
           --
           lr_ne := nm3get.get_ne(pi_ne_id => lt_wols(i).wol_rse_he_id);
@@ -2803,6 +2804,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                     ,lr_ne.ne_descr);
           --
         END LOOP;
+        */
         --
         interfaces.copy_data_to_interface;
         --
