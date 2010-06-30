@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.3   Jun 07 2010 10:20:22   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.4   Jun 30 2010 11:42:14   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Jun 07 2010 10:20:22  $
---       Date fetched Out : $Modtime:   Jun 07 2010 08:45:10  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Jun 30 2010 11:42:14  $
+--       Date fetched Out : $Modtime:   Jun 23 2010 17:24:04  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -101,6 +101,11 @@ PROCEDURE get_created_work_orders(po_work_orders IN OUT works_order_tab);
 -----------------------------------------------------------------------------
 --
 PROCEDURE clear_created_work_orders_tab;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_wo_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
 --
 -----------------------------------------------------------------------------
 --
