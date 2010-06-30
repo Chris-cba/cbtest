@@ -1,0 +1,256 @@
+CREATE OR REPLACE PACKAGE mai_wo_api AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.4   Jun 30 2010 11:42:14   mhuitson  $
+--       Module Name      : $Workfile:   mai_wo_api.pkh  $
+--       Date into PVCS   : $Date:   Jun 30 2010 11:42:14  $
+--       Date fetched Out : $Modtime:   Jun 23 2010 17:24:04  $
+--       PVCS Version     : $Revision:   3.4  $
+--
+-----------------------------------------------------------------------------
+--      Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--
+--<GLOBVAR>
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+  g_application_owner  VARCHAR2(30);
+  gr_defect_rec        defects%ROWTYPE;
+--</GLOBVAR>
+--
+--<TYPE>
+--
+--
+TYPE boq_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
+----
+TYPE act_boq_rec IS RECORD(boq_id             boq_items.boq_id%TYPE
+                          ,boq_sta_item_code  boq_items.boq_sta_item_code%TYPE
+                          ,boq_act_dim1       boq_items.boq_act_dim1%TYPE
+                          ,boq_act_dim2       boq_items.boq_act_dim2%TYPE
+                          ,boq_act_dim3       boq_items.boq_act_dim3%TYPE
+                          ,add_percent_item   VARCHAR2(1)
+                          ,percent_item_code  boq_items.boq_sta_item_code%TYPE);
+TYPE act_boq_tab IS TABLE OF act_boq_rec INDEX BY BINARY_INTEGER;
+----
+--TYPE sections_list_in_rec IS RECORD(ne_id      nm_elements_all.ne_id%TYPE
+--                                   ,budget_id  budgets.bud_id%TYPE
+--                                   ,boqs       boq_tab);
+--TYPE sections_list_in_tab IS TABLE OF sections_list_in_rec INDEX BY BINARY_INTEGER;
+----
+TYPE def_rep_list_in_tab IS TABLE OF defect_list_temp%ROWTYPE INDEX BY BINARY_INTEGER;
+----
+TYPE def_rep_list_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
+                                     ,rep_action_cat  repairs.rep_action_cat%TYPE);
+TYPE def_rep_list_on_wo_tab IS TABLE OF def_rep_list_on_wo_rec INDEX BY BINARY_INTEGER;
+--
+TYPE def_rep_list_not_on_wo_rec IS RECORD(defect_id       defects.def_defect_id%TYPE
+                                         ,rep_action_cat  repairs.rep_action_cat%TYPE
+                                         ,reason          VARCHAR2(500));
+TYPE def_rep_list_not_on_wo_tab IS TABLE OF def_rep_list_not_on_wo_rec INDEX BY BINARY_INTEGER;
+--
+TYPE flags_rec IS RECORD(feature1  hig_status_codes.hsc_allow_feature1%TYPE
+                        ,feature2  hig_status_codes.hsc_allow_feature2%TYPE
+                        ,feature3  hig_status_codes.hsc_allow_feature3%TYPE
+                        ,feature4  hig_status_codes.hsc_allow_feature4%TYPE
+                        ,feature5  hig_status_codes.hsc_allow_feature5%TYPE
+                        ,feature6  hig_status_codes.hsc_allow_feature6%TYPE
+                        ,feature7  hig_status_codes.hsc_allow_feature7%TYPE
+                        ,feature8  hig_status_codes.hsc_allow_feature8%TYPE
+                        ,feature9  hig_status_codes.hsc_allow_feature9%TYPE);
+--
+TYPE works_order_rec IS RECORD(defect_id      defects.def_defect_id%TYPE
+                              ,works_order_no work_orders.wor_works_order_no%TYPE
+                              ,instructed     VARCHAR2(1)
+                              ,error          nm3type.max_varchar2);
+TYPE works_order_tab IS TABLE OF works_order_rec INDEX BY BINARY_INTEGER;
+gt_work_orders works_order_tab;
+--
+TYPE instruct_wo_rec IS RECORD(works_order_no work_orders.wor_works_order_no%TYPE
+                              ,error_text     nm3type.max_varchar2);
+TYPE instruct_wo_tab IS TABLE OF instruct_wo_rec INDEX BY BINARY_INTEGER;
+--
+TYPE forward_to_user_rec IS RECORD(hus_user_id  hig_users.hus_user_id%TYPE
+                                  ,hus_name     hig_users.hus_name%TYPE);
+TYPE forward_to_user_tab IS TABLE OF forward_to_user_rec INDEX BY BINARY_INTEGER;
+--
+--</TYPE>
+--
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION count_created_work_orders
+  RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE get_created_work_orders(po_work_orders IN OUT works_order_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE clear_created_work_orders_tab;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_wo_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
+                                  ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
+                                  ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
+                                  ,pi_con_id            IN  contracts.con_id%TYPE
+                                  ,pi_interim_payment   IN  work_orders.wor_interim_payment_flag%TYPE
+                                  ,pi_priority          IN  work_orders.wor_priority%TYPE
+                                  ,pi_cost_centre       IN  work_orders.wor_coc_cost_centre%TYPE
+                                  ,pi_road_group_id     IN  nm_elements_all.ne_id%TYPE
+                                  ,pi_tma_register_flag IN  work_orders.wor_register_flag%TYPE
+                                  ,pi_contact           IN  work_orders.wor_contact%TYPE
+                                  ,pi_job_number        IN  work_orders.wor_job_number%TYPE
+                                  ,pi_rechargeable      IN  work_orders.wor_rechargeable%TYPE
+                                  ,pi_date_raised       IN  work_orders.wor_date_raised%TYPE
+                                  ,pi_target_date       IN  work_orders.wor_est_complete%TYPE
+                                  ,pi_defects           IN  def_rep_list_in_tab
+                                  ,pi_defect_boqs       IN  boq_tab
+                                  ,pi_commit            IN  VARCHAR2
+                                  ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
+                                  ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
+                                  ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab);
+
+-----------------------------------------------------------------------------
+--
+PROCEDURE authorise_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
+                              ,pi_commit          IN  VARCHAR2 DEFAULT 'Y'
+                              ,po_error_text      OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE instruct_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
+                             ,pi_date_instructed IN  work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
+                             ,pi_commit          IN  VARCHAR2                            DEFAULT 'Y'
+                             ,po_error_text      OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--                             
+--PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
+--                              ,pi_commit           IN     VARCHAR2                            DEFAULT 'Y'
+--                              ,po_error_flag          OUT VARCHAR2
+--                              ,pio_works_order_tab IN OUT instruct_wo_tab);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE receive_work_order(pi_user_id        IN hig_users.hus_user_id%TYPE
+--                            ,pi_works_order_no IN work_orders.wor_works_order_no%TYPE
+--                            ,pi_date_received  IN work_orders.wor_date_received%TYPE
+--                            ,pi_commit         IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE set_wol_held(pi_user_id       IN hig_users.hus_user_id%TYPE
+--                      ,pi_wol_id        IN work_order_lines.wol_id%TYPE
+--                      ,pi_date_complete IN work_order_lines.wol_date_complete%TYPE
+--                      ,pi_commit        IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE set_wol_not_done(pi_user_id       IN hig_users.hus_user_id%TYPE
+--                          ,pi_wol_id        IN work_order_lines.wol_id%TYPE
+--                          ,pi_commit        IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE create_interim_payment(pi_user_id       IN hig_users.hus_user_id%TYPE
+--                                ,pi_wol_id  IN work_order_lines.wol_id%TYPE
+--                                ,pi_boq_tab IN act_boq_tab
+--                                ,pi_commit  IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE complete_wol(pi_user_id       IN hig_users.hus_user_id%TYPE
+--                      ,pi_wol_id        IN work_order_lines.wol_id%TYPE
+--                      ,pi_date_complete IN work_order_lines.wol_date_complete%TYPE
+--                      ,pi_boq_tab       IN act_boq_tab
+--                      ,pi_commit        IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE complete_wor(pi_user_id       IN hig_users.hus_user_id%TYPE
+--                      ,pi_works_order_no IN work_orders.wor_works_order_no%TYPE
+--                      ,pi_date_complete  IN work_order_lines.wol_date_complete%TYPE
+--                      ,pi_commit         IN VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_gdo_for_mai3801(pi_report_id  IN  activities_report.are_report_id%TYPE
+                                ,pi_defect_id  IN  defects.def_defect_id%TYPE
+                                ,po_session_id OUT gis_data_objects.gdo_session_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
+                             ,pi_rse_he_id       IN  defects.def_rse_he_id%TYPE
+                             ,pi_activity        IN  activities.atv_acty_area_code%TYPE
+                             ,pi_priority        IN  defects.def_priority%TYPE
+                             ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
+                             ,pi_rep_action_cat  IN  VARCHAR2
+                             ,pi_treatment       IN  treatments.tre_treat_code%TYPE
+                             ,pi_rep_date_due    IN  repairs.rep_date_due%TYPE
+                             ,po_rule_id         OUT mai_auto_wo_rules.mawr_id%TYPE
+                             ,po_scheme_type     OUT mai_auto_wo_rules.mawr_scheme_type%TYPE
+                             ,po_bud_id          OUT mai_auto_wo_rules.mawr_bud_id%TYPE
+                             ,po_con_id          OUT mai_auto_wo_rules.mawr_con_id%TYPE
+                             ,po_aggregate       OUT mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
+                             ,po_auto_instruct   OUT mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
+                             ,po_create_wo       OUT VARCHAR2
+                             ,po_error           OUT VARCHAR2
+                             );
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_id%TYPE
+                               ,po_work_order_tab       OUT works_order_tab);
+--
+-----------------------------------------------------------------------------
+--
+--FUNCTION get_wol_target_date(pi_date_raised IN DATE
+--                            ,pi_activity    IN activities.atv_acty_area_code%TYPE
+--                            ,pi_priority    IN defects.def_priority%TYPE
+--                            ,pi_action_cat  IN repairs.rep_action_cat%TYPE
+--                            ,pi_rse_he_id   IN nm_elements_all.ne_id%TYPE)
+--  RETURN DATE;
+--
+-----------------------------------------------------------------------------
+--
+--PROCEDURE create_stp_work_order(pi_scheme_id     IN  stp_schemes.ss_id%TYPE
+--                               ,pi_ne_id         IN  stp_scheme_locations_all.ssl_ne_id%TYPE
+--                               ,po_work_order_no OUT work_orders.wor_works_order_no%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_forward_wo_to_user_lov(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN forward_to_user_tab;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE forward_works_order(pi_works_order_no     IN  work_orders.wor_works_order_no%TYPE
+                             ,pi_forward_to_user_id IN  hig_users.hus_user_id%TYPE
+                             ,pi_commit             IN  VARCHAR2 DEFAULT 'Y' 
+                             ,po_error_text         OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+END mai_wo_api;
+/
