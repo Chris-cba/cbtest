@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.9   Jun 30 2010 14:49:14   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.10   Jun 30 2010 16:49:36   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 30 2010 14:49:14  $
---       Date fetched Out : $Modtime:   Jun 30 2010 14:46:22  $
---       PVCS Version     : $Revision:   3.9  $
+--       Date into PVCS   : $Date:   Jun 30 2010 16:49:36  $
+--       Date fetched Out : $Modtime:   Jun 30 2010 16:35:14  $
+--       PVCS Version     : $Revision:   3.10  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.9  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1117,7 +1117,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   lv_icb_id             item_code_breakdowns.icb_id%TYPE;
   lv_date_raised        work_orders.wor_date_raised%TYPE;
   --
-  lv_wor_est_cost          work_orders.wor_est_cost%TYPE := 0;
+  lv_wor_est_cost          work_orders.wor_est_cost%TYPE := NULL;
   lv_wor_est_labour        work_orders.wor_est_labour%TYPE := 0;
   lv_wor_est_balancing_sum work_orders.wor_est_balancing_sum%TYPE := 0;
   --
@@ -2113,7 +2113,7 @@ nm_debug.debug('generate WOLs');
       lt_wol(i).wol_wor_flag       := 'D';
       lt_wol(i).wol_date_created   := SYSDATE;
       lt_wol(i).wol_bud_id         := lt_selected_repairs(i).bud_id;
-      lt_wol(i).wol_est_cost       := 0;
+      lt_wol(i).wol_est_cost       := NULL;
       lt_wol(i).wol_est_labour     := 0;
       /*
       ||Reset The Null BOQ Cost WOL Level Flag.
@@ -2204,7 +2204,7 @@ nm_debug.debug('generate WOLs');
                   /*
                   ||Update Work Order Line Total.
                   */
-                  lt_wol(i).wol_est_cost := lt_wol(i).wol_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
+                  lt_wol(i).wol_est_cost := NVL(lt_wol(i).wol_est_cost,0) + lt_boq(lv_boq_tab_ind).boq_est_cost;
                   EXCEPTION
                     /*
                     ||Trap The Possibility Of The Value
@@ -2231,7 +2231,7 @@ nm_debug.debug('generate WOLs');
                     /*
                     ||Update Work Order Total.
                     */
-                    lv_wor_est_cost := lv_wor_est_cost + lt_boq(lv_boq_tab_ind).boq_est_cost;
+                    lv_wor_est_cost := NVL(lv_wor_est_cost,0) + lt_boq(lv_boq_tab_ind).boq_est_cost;
                   EXCEPTION
                     /*
                     ||Trap The Possibility Of The Value
@@ -5091,7 +5091,7 @@ nm_debug.debug('lv_con_id = '||lv_con_id);
   END create_work_order;
   
 BEGIN
---nm_debug.debug_on;
+nm_debug.debug_on;
   gt_work_orders.DELETE;
   /*
   ||Build the list of repairs to go on the WO.
@@ -5128,10 +5128,17 @@ BEGIN
             --
             lt_defects_noagg(1) := lt_defects_in(k);
             --
-            create_work_order(pi_defects     => lt_defects_noagg
-                             ,pi_scheme_type => lt_rules(k).scheme_type
-                             ,pi_con_id      => lt_rules(k).con_id
-                             ,pi_instruct    => lt_rules(k).instruct);
+            BEGIN
+              create_work_order(pi_defects     => lt_defects_noagg
+                               ,pi_scheme_type => lt_rules(k).scheme_type
+                               ,pi_con_id      => lt_rules(k).con_id
+                               ,pi_instruct    => lt_rules(k).instruct);
+            EXCEPTION
+              WHEN others
+               THEN
+                  gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
+                  gt_work_orders(lv_tab_ind).error := SQLERRM;
+            END;
             --
           END LOOP;
       END IF;
@@ -5139,7 +5146,7 @@ BEGIN
   --
   po_work_order_tab := gt_work_orders;
   --
---nm_debug.debug_off;
+nm_debug.debug_off;
 EXCEPTION
   WHEN others
    THEN
