@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.7   Jun 18 2010 14:09:42   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.8   Jun 30 2010 11:44:18   mhuitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 18 2010 14:09:42  $
---       Date fetched Out : $Modtime:   Jun 18 2010 13:50:14  $
---       PVCS Version     : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   Jun 30 2010 11:44:18  $
+--       Date fetched Out : $Modtime:   Jun 25 2010 16:59:02  $
+--       PVCS Version     : $Revision:   3.8  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.7  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.8  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -194,6 +194,34 @@ EXCEPTION
    THEN
       RAISE;
 END get_wo;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_wo_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN hig_status_codes.hsc_status_code%TYPE IS
+  --
+  lv_retval  hig_status_codes.hsc_status_code%TYPE;
+  --
+BEGIN
+  /*
+  ||Get The Works Order Status.
+  */
+  SELECT wor_status
+    INTO lv_retval
+    FROM v_work_order_status
+   WHERE wor_works_order_no = pi_works_order_no
+       ;
+  --
+  RETURN lv_retval;
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      raise_application_error(-20068,'Invalid Work Order Number Supplied');
+  WHEN others
+   THEN
+      RAISE;
+END get_wo_status;
 --
 -----------------------------------------------------------------------------
 --
@@ -2737,6 +2765,8 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
     --
   BEGIN
     --
+    nm_debug.debug('update_interfaces C');
+    --
     IF interfaces_used(pi_con_id => lr_wo.wor_con_id)
      THEN
         --
@@ -4110,6 +4140,8 @@ PROCEDURE update_wol_status(pi_user_id       IN hig_users.hus_user_id%TYPE
     --
   BEGIN
     --
+    nm_debug.debug('update_interfaces A');
+    --
     IF interfaces_used(pi_con_id => lr_wo.wor_con_id)
      THEN
         --
@@ -4830,7 +4862,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
   --
   lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
   lv_wo_descr          work_orders.wor_descr%TYPE := 'Auto Work Order For Defect '||TO_CHAR(pi_defect_id)||
-                                                     ' created on '||trunc(sysdate);
+                                                     ' created on '||TO_CHAR(TRUNC(SYSDATE),'DD-MON-YYYY');
   lv_rule_id           mai_auto_wo_rules.mawr_id%TYPE;
   lv_scheme_type       work_orders.wor_scheme_type%TYPE;
   lv_con_id            contracts.con_id%TYPE;
@@ -5112,7 +5144,7 @@ EXCEPTION
       gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
       gt_work_orders(lv_tab_ind).error := SQLERRM;
       po_work_order_tab := gt_work_orders;
-      RAISE;
+      --RAISE;
 END create_auto_defect_wo;
 --
 -----------------------------------------------------------------------------
