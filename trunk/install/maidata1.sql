@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.20   Jun 14 2010 10:59:06   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.21   Jul 01 2010 15:11:36   malexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 10:59:06  $
---       Date fetched Out : $Modtime:   Jun 14 2010 10:57:06  $
---       Version          : $Revision:   2.20  $
+--       Date into PVCS   : $Date:   Jul 01 2010 15:11:36  $
+--       Date fetched Out : $Modtime:   Jul 01 2010 15:05:36  $
+--       Version          : $Revision:   2.21  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 14-JUN-2010 10:57
+--       Generation Date  : 01-JUL-2010 15:05
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -11824,6 +11824,30 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
+        'MAI4406'
+       ,'Defect Superseding Rules'
+       ,'mai4406'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI4406');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
         'MAI5001'
        ,'Inventory Item Details'
        ,'mai5001'
@@ -19968,6 +19992,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_REF_INSPECTIONS'
                     AND  HSTF_CHILD = 'MAI3814');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF_INSPECTIONS'
+       ,'MAI4406'
+       ,'Defect Superseding Rules'
+       ,'M'
+       ,11 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI4406');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT

@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.9   Jun 14 2010 10:59:04   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.10   Jul 01 2010 15:11:36   malexander  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 10:59:04  $
---       Date fetched Out : $Modtime:   Jun 14 2010 10:57:12  $
---       Version          : $Revision:   2.9  $
+--       Date into PVCS   : $Date:   Jul 01 2010 15:11:36  $
+--       Date fetched Out : $Modtime:   Jul 01 2010 15:05:42  $
+--       Version          : $Revision:   2.10  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 14-JUN-2010 10:57
+--       Generation Date  : 01-JUL-2010 15:05
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -4282,6 +4282,32 @@ SELECT
        ,'NORMAL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
                    WHERE HMR_MODULE = 'MAI4405'
+                    AND  HMR_ROLE = 'MAI_USER');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4406'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4406'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4406'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4406'
                     AND  HMR_ROLE = 'MAI_USER');
 --
 INSERT INTO HIG_MODULE_ROLES
