@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.12   Jun 14 2010 14:16:22   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4200_mai4210_metadata_upg.sql-arc   3.13   Jul 01 2010 15:03:54   malexander  $
 --       Module Name      : $Workfile:   mai4200_mai4210_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 14:16:22  $
---       Date fetched Out : $Modtime:   Jun 14 2010 14:12:52  $
---       Version          : $Revision:   3.12  $
+--       Date into PVCS   : $Date:   Jul 01 2010 15:03:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2010 14:59:04  $
+--       Version          : $Revision:   3.13  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -1179,7 +1179,7 @@ Insert into HIG_NAVIGATOR
     HNV_HIER_LABEL_7, HNV_HIER_LABEL_8, HNV_HIER_LABEL_9, HNV_HIER_LABEL_10, HNV_HIERARCHY_SEQ, 
     HNV_DATE_CREATED, HNV_CREATED_BY, HNV_DATE_MODIFIED, HNV_MODIFIED_BY)
  Values
-   ('Works Orders', 'defects', 'To_char(def_defect_id)', 'doc_assocs,docs', 'das_rec_id', 
+   ('Works Orders', 'defects', 'To_char(def_defect_id)', 'docs,doc_assocs', 'das_rec_id', 
     5, 'Enquiry', 'def_defect_id', 'das_doc_id', '-INST', 
     '-DOC', 'enquiry', 'AND das_doc_id = docs.doc_id  
 AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')
@@ -1252,7 +1252,7 @@ Insert into HIG_NAVIGATOR
     HNV_HIER_LABEL_7, HNV_HIER_LABEL_8, HNV_HIER_LABEL_9, HNV_HIER_LABEL_10, HNV_HIERARCHY_SEQ, 
     HNV_DATE_CREATED, HNV_CREATED_BY, HNV_DATE_MODIFIED, HNV_MODIFIED_BY)
  Values
-   ('Defects', 'defects', 'To_Char(def_defect_id)', 'doc_assocs,docs', 'das_rec_id', 
+   ('Defects', 'defects', 'To_Char(def_defect_id)', 'docs,doc_assocs', 'das_rec_id', 
     2, 'Enquiry', 'def_defect_id', 'das_doc_id', '-DEF', 
     '-ENQ', 'enquiry', 'AND das_doc_id = docs.doc_id  
 AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')
@@ -7378,6 +7378,94 @@ WHERE NOT EXISTS  (SELECT 'x' FROM NM_INV_TYPE_ROLES
                    AND    itr_mode = 'NORMAL');
 
 
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Module Defect Superseding Rules
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109286
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (CHRIS BAUGH)
+-- New Module Defect Superseding Rules
+-- 
+------------------------------------------------------------------
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI4406'
+       ,'Defect Superseding Rules'
+       ,'mai4406'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI4406');
+
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF_INSPECTIONS'
+       ,'MAI4406'
+       ,'Defect Superseding Rules'
+       ,'M'
+       ,11 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI4406');
+
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4406'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4406'
+                    AND  HMR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_MODULE_ROLES
+       (HMR_MODULE
+       ,HMR_ROLE
+       ,HMR_MODE
+       )
+SELECT 
+        'MAI4406'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULE_ROLES
+                   WHERE HMR_MODULE = 'MAI4406'
+                    AND  HMR_ROLE = 'MAI_USER');
+--
 
 ------------------------------------------------------------------
 
