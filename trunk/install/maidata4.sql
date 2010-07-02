@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.11   Jul 01 2010 15:11:38   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.12   Jul 02 2010 11:24:02   malexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Jul 01 2010 15:11:38  $
---       Date fetched Out : $Modtime:   Jul 01 2010 15:05:48  $
---       Version          : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Jul 02 2010 11:24:02  $
+--       Date fetched Out : $Modtime:   Jul 02 2010 11:22:42  $
+--       Version          : $Revision:   2.12  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 01-JUL-2010 15:05
+--       Generation Date  : 02-JUL-2010 11:22
 --
 --   Product metadata script
 --   As at Release 4.2.1.0
@@ -21256,7 +21256,9 @@ SELECT
 ----------------------------------------------------------------------------------------
 -- NM_INV_TYPE_ROLES
 --
--- WARNING - TABLE DOES NOT HAVE A UNIQUE KEY
+-- select * from mai_metadata.nm_inv_type_roles
+-- order by itr_inv_type
+--         ,itr_hro_role
 --
 ----------------------------------------------------------------------------------------
 
@@ -21273,7 +21275,9 @@ SELECT
         'BOQ$'
        ,'HIG_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'BOQ$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21284,7 +21288,9 @@ SELECT
         'BOQ$'
        ,'MAI_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'BOQ$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21295,7 +21301,9 @@ SELECT
         'DEF$'
        ,'HIG_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'DEF$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21306,7 +21314,9 @@ SELECT
         'DEF$'
        ,'MAI_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'DEF$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21317,7 +21327,9 @@ SELECT
         'PRO$'
        ,'HIG_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'PRO$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21328,7 +21340,9 @@ SELECT
         'PRO$'
        ,'MAI_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'PRO$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21339,7 +21353,9 @@ SELECT
         'WOL$'
        ,'HIG_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOL$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21350,7 +21366,9 @@ SELECT
         'WOL$'
        ,'MAI_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOL$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21361,7 +21379,9 @@ SELECT
         'WOR$'
        ,'HIG_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOR$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
        (ITR_INV_TYPE
@@ -21372,7 +21392,9 @@ SELECT
         'WOR$'
        ,'MAI_USER'
        ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES);
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOR$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 --
 --
