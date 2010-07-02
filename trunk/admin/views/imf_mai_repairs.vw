@@ -1,87 +1,96 @@
 CREATE OR REPLACE FORCE VIEW imf_mai_repairs
-(
-   network_element_id,
-   defect_id,
-   repair_category,
-   repair_category_description,
-   repair_description,
-   repair_superseded,
-   treatment_code,
-   treatment_description,
-   activity_code,
-   date_repair_loaded,
-   date_repair_due,
-   date_repair_completed,
-   time_repair_completed_hours,
-   time_repair_completed_mins,
-   repair_late,
-   days_before_repair_due,
-   hours_before_repair_due,
-   days_completed_before_due,
-   hours_completed_before_due )
+  (defect_id
+  ,repair_category
+  ,repair_category_description
+  ,network_element_id
+  ,repair_description
+  ,treatment_code
+  ,treatment_description
+  ,activity_code
+  ,activity_description
+  ,superseded
+  ,date_created
+  ,date_due
+  ,date_completed
+  ,time_completed_hours
+  ,time_completed_mins
+  ,repair_late
+  ,days_to_date_due
+  ,hours_to_date_due
+  ,days_completed_before_due
+  ,hours_completed_before_due)
 AS
-SELECT 
--------------------------------------------------------------------------
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_repairs.vw-arc   3.1   Mar 19 2009 17:34:00   drawat  $
---       Module Name      : $Workfile:   imf_mai_repairs.vw  $
---       Date into PVCS   : $Date:   Mar 19 2009 17:34:00  $
---       Date fetched Out : $Modtime:   Mar 19 2009 14:03:42  $
---       Version          : $Revision:   3.1  $
--- Foundation view displaying maintenance repairs
--------------------------------------------------------------------------   
-   rep_rse_he_id,
-   rep_def_defect_id,
-   rep_action_cat,
-   ( SELECT HCO.HCO_MEANING
-       FROM HIG_CODES hco
-      WHERE HCO.HCO_DOMAIN = 'REPAIR_TYPE' 
-        AND HCO.HCO_CODE = rep_action_cat ),
-   rep_descr,
-   rep_superseded_flag,
-   rep_tre_treat_code,
-   ( SELECT tre_descr
-       FROM treatments
-      WHERE tre_treat_code = rep_tre_treat_code ) tre_descr,
-   rep_atv_acty_area_code activity_code,
-   rep_created_date,
-   rep_date_due,
-   rep_date_completed,
-   rep_completed_hrs,
-   rep_completed_mins,
-   CASE WHEN (rep_date_completed IS NULL AND rep_date_due < sysdate)
+SELECT -------------------------------------------------------------------------
+       --   PVCS Identifiers :-
+       --
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_repairs.vw-arc   3.2   Jul 02 2010 17:54:38   mhuitson  $
+       --       Module Name      : $Workfile:   imf_mai_repairs.vw  $
+       --       Date into PVCS   : $Date:   Jul 02 2010 17:54:38  $
+       --       Date fetched Out : $Modtime:   Jul 02 2010 17:19:44  $
+       --       Version          : $Revision:   3.2  $
+       -- Foundation view displaying maintenance repairs
+       -------------------------------------------------------------------------
+       rep_def_defect_id                               defect_id
+      ,rep_action_cat                                  repair_category
+      ,(SELECT hco.hco_meaning
+          FROM hig_codes hco
+         WHERE hco.hco_domain = 'REPAIR_TYPE'
+           AND hco.hco_code = rep_action_cat)          repair_category_description
+      ,rep_rse_he_id                                   network_element_id
+      ,rep_descr                                       repair_description
+      ,rep_tre_treat_code                              treatment_code
+      ,(SELECT tre_descr
+          FROM treatments
+         WHERE tre_treat_code = rep_tre_treat_code)    treatment_description
+      ,rep_atv_acty_area_code                          activity_code
+      ,(SELECT atv_descr
+          FROM activities
+         WHERE atv_acty_area_code = rep_atv_acty_area_code
+           AND atv_dtp_flag = (SELECT def_ity_sys_flag
+                                 FROM defects
+                                WHERE def_defect_id = rep_def_defect_id)) activity_description
+      ,rep_superseded_flag                             superseded
+      ,rep_created_date                                date_created
+      ,rep_date_due                                    date_due
+      ,rep_date_completed                              date_completed
+      ,rep_completed_hrs                               time_completed_hours
+      ,rep_completed_mins                              time_completed_mins
+      ,CASE
+         WHEN (rep_date_completed IS NULL AND rep_date_due < sysdate)
           OR (rep_date_completed IS NOT NULL AND rep_date_due < rep_date_completed)
-        THEN 'Y'
-        ELSE 'N'
-   END repair_late,
-   (TRUNC(rep_date_due) - TRUNC(SYSDATE)) days_before_repair_due,
-   ((rep_date_due - SYSDATE)*24) hours_before_repair_due,
-   (TRUNC(rep_date_due) - TRUNC(rep_date_completed)) days_completed_before_due,
-   ((rep_date_due - rep_date_completed)*24) hours_completed_before_due
-FROM repairs
-WITH READ ONLY
+          THEN
+              'Y'
+          ELSE
+              'N'
+       END                                             repair_late
+      ,TRUNC(rep_date_due) - TRUNC(SYSDATE)            days_to_date_due
+      ,(rep_date_due - SYSDATE)*24                     hours_to_date_due
+      ,TRUNC(rep_date_due) - TRUNC(rep_date_completed) days_completed_before_due
+      ,(rep_date_due - rep_date_completed)*24          hours_completed_before_due
+  FROM repairs
+  WITH READ ONLY
 /
 
-COMMENT ON TABLE IMF_MAI_REPAIRS IS 'Maintenance Manager foundation view of all repairs, showing basic repair details and calculated repair due dates.   This view is useful for producing simple repair statistics and reports.';
+COMMENT ON TABLE imf_mai_repairs IS 'Maintenance Manager foundation view of all Repairs, showing basic Repair details and calculated dates. This view can be used to produce statistical and summary Maintenance Manager reports where Repair details are required.';
 
-COMMENT ON COLUMN IMF_MAI_REPAIRS.network_element_id IS 'Internal id for a network element';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.defect_id IS 'Internal id for defect';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_category IS 'Repair category';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_category_description IS 'repair category description';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_description IS 'Repair description';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_superseded IS 'Flag indicating whether the repair is superseded';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.treatment_code IS 'Treatment code';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.treatment_description IS 'Treatment description';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.activity_code IS 'Activity area code';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_loaded IS 'The date when the repair was loaded';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_due IS 'The date the repair is due';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.date_repair_completed IS 'The date the repair was completed';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.time_repair_completed_hours IS 'The hour upon which the repair was completed';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.time_repair_completed_mins IS 'The minutes upon which the repair was completed';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.repair_late IS 'Indicates whether the repair was late';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.days_before_repair_due IS 'The number of days the repair is due by';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.hours_before_repair_due IS 'The number of hours the repair is due by';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.days_completed_before_due IS 'The number of days the repair was completed before the due date';
-COMMENT ON COLUMN IMF_MAI_REPAIRS.hours_completed_before_due IS 'The number of hours the repair was completed before the due date';
+COMMENT ON COLUMN imf_mai_repairs.defect_id                   IS 'The internal id of the Defect that the Repair is associated with.';
+COMMENT ON COLUMN imf_mai_repairs.repair_category             IS 'The Repair Action Category.';
+COMMENT ON COLUMN imf_mai_repairs.repair_category_description IS 'The Repair Action Category description.';
+COMMENT ON COLUMN imf_mai_repairs.network_element_id          IS 'The internal id of the Network Element that the Repair is associated with.';
+COMMENT ON COLUMN imf_mai_repairs.repair_description          IS 'Repair description';
+COMMENT ON COLUMN imf_mai_repairs.treatment_code              IS 'The Treatment Code associated with the Repair.';
+COMMENT ON COLUMN imf_mai_repairs.treatment_description       IS 'The Treatment description.';
+COMMENT ON COLUMN imf_mai_repairs.activity_code               IS 'The Activity Code associated with the Repair.';
+COMMENT ON COLUMN imf_mai_repairs.activity_description        IS 'The Activity description.';
+COMMENT ON COLUMN imf_mai_repairs.superseded                  IS 'Flag indicating whether the Repair has been superseded. (Y/N)';
+COMMENT ON COLUMN imf_mai_repairs.date_created                IS 'The date the Repair was created within the system.';
+COMMENT ON COLUMN imf_mai_repairs.date_due                    IS 'The date the Repair is due to by completed by.';
+COMMENT ON COLUMN imf_mai_repairs.date_completed              IS 'The date the Repair was completed.';
+COMMENT ON COLUMN imf_mai_repairs.time_completed_hours        IS 'The hour upon which the repair was completed.';
+COMMENT ON COLUMN imf_mai_repairs.time_completed_mins         IS 'The minute upon which the repair was completed.';
+COMMENT ON COLUMN imf_mai_repairs.repair_late                 IS 'Indicates whether the repair was late. (Y/N)';
+COMMENT ON COLUMN imf_mai_repairs.days_to_date_due            IS 'The number of days until the Repair Date Due.';
+COMMENT ON COLUMN imf_mai_repairs.hours_to_date_due           IS 'The number of hours until the Repair Date Due.';
+COMMENT ON COLUMN imf_mai_repairs.days_completed_before_due   IS 'The number of days prior to the Due Date that the repair was completed. (A negative value indicates the number of days late)';
+COMMENT ON COLUMN imf_mai_repairs.hours_completed_before_due  IS 'The number of hours prior to the Due Date that the repair was completed. (A negative value indicates the number of hours late)';
 
