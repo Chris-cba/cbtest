@@ -1,99 +1,108 @@
-CREATE OR REPLACE FORCE VIEW IMF_MAI_BUDGETS 
-(
-   BUDGET_ID,
-   NETWORK_ELEMENT_ID,   
-   NETWORK_ELEMENT_REFERENCE,
-   NETWORK_ELEMENT_DESCRIPTION,
-   NETWORK_SYSTEM_TYPE,
-   ADMIN_UNIT_NAME,
-   ADMIN_UNIT_CODE,
-   JOB_SIZE,      
-   WORK_CATEGORY,
-   WORK_CATEGORY_DESCRIPTION,
-   FINANCIAL_YEAR,
-   FINANCIAL_YEAR_START_DATE,
-   FINANCIAL_YEAR_END_DATE,   
-   BUDGET,
-   COMMITTED,
-   ACTUAL,
-   BALANCE,
-   COMMENTS,
-   COST_CODE
-)
+CREATE OR REPLACE FORCE VIEW imf_mai_budgets
+  (budget_id
+  ,network_element_id
+  ,network_element_reference
+  ,network_element_description
+  ,sys_flag
+  ,sys_flag_description
+  ,admin_unit_agency_code
+  ,admin_unit_name
+  ,admin_unit_code
+  ,job_size
+  ,work_category
+  ,work_category_description
+  ,financial_year
+  ,financial_year_start_date
+  ,financial_year_end_date
+  ,budget
+  ,committed
+  ,actual
+  ,balance
+  ,comments
+  ,cost_code
+  ,contractor_cost_code
+  ,finance_cost_code
+  ,additional_cost_code)
 AS
-SELECT 
--------------------------------------------------------------------------
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.3   Apr 03 2009 15:04:10   smarshall  $
---       Module Name      : $Workfile:   imf_mai_budgets.vw  $
---       Date into PVCS   : $Date:   Apr 03 2009 15:04:10  $
---       Date fetched Out : $Modtime:   Apr 03 2009 15:03:40  $
---       Version          : $Revision:   1.3  $
--- Foundation view displaying budgets
--------------------------------------------------------------------------
--- SM 03042009
--- Added rowid=1 to ICB inline sql to cater for ICBFGAC product option
--- Added FYR_START_DATE and FYR_END_DATE
--------------------------------------------------------------------------     
-     B.BUD_ID,
-     B.BUD_RSE_HE_ID,
-     NE.NE_UNIQUE,
-     NE.NE_DESCR,
-     DECODE (B.BUD_SYS_FLAG, 'D', 'Trunk', 'Local'),
-     NAU.NAU_NAME admin_unit_name,
-     NAU.NAU_ADMIN_UNIT admin_unit_code,
-     ( SELECT JS.JOB_DESCR 
-       FROM   JOB_SIZES JS
-       WHERE  JS.JOB_CODE = B.BUD_JOB_CODE ) job_size,
-     (B.BUD_ICB_ITEM_CODE || B.BUD_ICB_SUB_ITEM_CODE || B.BUD_ICB_SUB_SUB_ITEM_CODE) work_category,
-     ( SELECT ICB.ICB_WORK_CATEGORY_NAME
-       FROM   ITEM_CODE_BREAKDOWNS ICB
-       WHERE  B.BUD_ICB_ITEM_CODE = ICB.ICB_ITEM_CODE
-       AND    B.BUD_ICB_SUB_ITEM_CODE = ICB.ICB_SUB_ITEM_CODE
-       AND    B.BUD_ICB_SUB_SUB_ITEM_CODE = ICB.ICB_SUB_SUB_ITEM_CODE
-       AND    ROWNUM = 1 ) work_category_description,
-     B.BUD_FYR_ID,
-     ( SELECT FYR_START_DATE
-     	 FROM   FINANCIAL_YEARS
-     	 WHERE  FYR_ID = B.BUD_FYR_ID),
-     ( SELECT FYR_END_DATE
-     	 FROM   FINANCIAL_YEARS
-     	 WHERE  FYR_ID = B.BUD_FYR_ID),     
-     DECODE (B.BUD_VALUE, -1, 0, B.BUD_VALUE),
-     NVL (B.BUD_COMMITTED, 0),
-     NVL (B.BUD_ACTUAL, 0),
-     (DECODE (B.BUD_VALUE, -1, 0, B.BUD_VALUE)
-       - (B.BUD_COMMITTED + B.BUD_ACTUAL)),
-     NVL (B.BUD_COMMENT, 'None'),
-     NVL (B.BUD_COST_CODE, 'Not Set') 
-FROM BUDGETS B,
-     NM_ELEMENTS_ALL NE,
-     NM_ADMIN_UNITS NAU
-WHERE   B.BUD_RSE_HE_ID = NE.NE_ID(+)
-AND   B.BUD_AGENCY = NAU.NAU_AUTHORITY_CODE
-WITH READ ONLY
+SELECT -------------------------------------------------------------------------
+       --   PVCS Identifiers :-
+       --
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.4   Jul 02 2010 11:00:48   mhuitson  $
+       --       Module Name      : $Workfile:   imf_mai_budgets.vw  $
+       --       Date into PVCS   : $Date:   Jul 02 2010 11:00:48  $
+       --       Date fetched Out : $Modtime:   Jul 02 2010 11:00:22  $
+       --       Version          : $Revision:   1.4  $
+       -- Foundation view displaying budgets
+       -------------------------------------------------------------------------
+       b.bud_id                                 budget_id
+      ,b.bud_rse_he_id                          network_element_id
+      ,ne.ne_unique                             network_element_reference
+      ,ne.ne_descr                              network_element_description
+      ,b.bud_sys_flag                           sys_flag
+      ,(SELECT hco_meaning
+          FROM hig_codes
+         WHERE hco_domain = 'ROAD_SYS_FLAG'
+           AND hco_code = b.bud_sys_flag)       sys_flag_description
+      ,nau.nau_authority_code                   admin_unit_agency_code
+      ,nau.nau_name                             admin_unit_name
+      ,nau.nau_admin_unit                       admin_unit_code
+      ,(SELECT js.job_descr
+          FROM job_sizes js
+         WHERE js.job_code = b.bud_job_code )   job_size
+      ,b.bud_icb_item_code||b.bud_icb_sub_item_code||b.bud_icb_sub_sub_item_code  work_category
+      ,(SELECT icb.icb_work_category_name
+          FROM item_code_breakdowns icb
+         WHERE icb.icb_dtp_flag = b.bud_sys_flag
+           AND icb.icb_item_code = b.bud_icb_item_code
+           AND icb.icb_sub_item_code = b.bud_icb_sub_item_code
+           AND icb.icb_sub_sub_item_code = b.bud_icb_sub_sub_item_code
+           AND icb_agency_code = b.bud_agency)  work_category_description
+      ,b.bud_fyr_id                             financial_year
+      ,fyr.fyr_start_date                       financial_year_start_date
+      ,fyr.fyr_end_date                         financial_year_end_date
+      ,DECODE(b.bud_value, -1, 0, b.bud_value)  budget
+      ,NVL(b.bud_committed, 0)                  committed
+      ,NVL(b.bud_actual, 0)                     actual
+      ,(DECODE(b.bud_value, -1, 0, b.bud_value)
+         - (b.bud_committed + b.bud_actual))    balance
+      ,NVL(b.bud_comment, 'None')               comments
+      ,NVL(b.bud_cost_code, 'Not Set')          cost_code
+      ,NVL(b.bud_con_cost_code, 'Not Set')      contractor_cost_code
+      ,NVL(b.bud_fin_cost_code, 'Not Set')      finance_cost_code
+      ,NVL(b.bud_add_cost_code, 'Not Set')      additional_cost_code
+  FROM nm_admin_units nau
+      ,nm_elements_all ne
+      ,financial_years fyr
+      ,budgets b
+ WHERE b.bud_fyr_id = fyr.fyr_id
+   AND b.bud_rse_he_id = ne.ne_id(+)
+   AND b.bud_agency = nau.nau_authority_code
+  WITH READ ONLY
 /
 
-COMMENT ON TABLE IMF_MAI_BUDGETS IS 'Maintenance Manager foundation view of budgets, showing details of budget and work costs against the network.';
+COMMENT ON TABLE imf_mai_budgets IS 'Maintenance Manager foundation view of Budgets, showing details of the Budgets and the Cost of work planned and carried out against them.';
 
-COMMENT ON COLUMN IMF_MAI_BUDGETS.BUDGET_ID IS 'Internal Id for a budget';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_ID IS 'Internal id for a network element';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_REFERENCE IS 'The network element reference which in this case is a group code';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_ELEMENT_DESCRIPTION IS 'The network element description which in this case is a group name';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.NETWORK_SYSTEM_TYPE IS 'The network type, L or T';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT_NAME IS 'The admin unit name';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.ADMIN_UNIT_CODE IS 'The admin unit code';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.JOB_SIZE IS 'The job size';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY IS 'The work category';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.WORK_CATEGORY_DESCRIPTION IS 'The work category description';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR IS 'The budget financial year';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR_START_DATE IS 'The date the budget financial year starts';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.FINANCIAL_YEAR_END_DATE IS 'The date the budget financial year ends';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.BUDGET IS 'The available budget';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.COMMITTED IS 'The budget of the work that is committed';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.ACTUAL IS 'The actual cost of the work that was instructed';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.BALANCE IS 'The budget balance';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.COMMENTS IS 'Comments related to the budget';
-COMMENT ON COLUMN IMF_MAI_BUDGETS.COST_CODE IS 'The cost code for the work';
-
+COMMENT ON COLUMN imf_mai_budgets.budget_id IS 'Internal Id of the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.network_element_id IS 'The internal Network Element Id of the Road Group associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.network_element_reference IS 'The Network Element Reference of the Road Group associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.network_element_description IS 'The Network Element Description of the Road Group associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.sys_flag IS 'The Sys Flag the Budget applies to (L/D).';
+COMMENT ON COLUMN imf_mai_budgets.sys_flag_description IS 'Sys Flag description.';
+COMMENT ON COLUMN imf_mai_budgets.admin_unit_agency_code IS 'The Agency Code of the Admin Unit that the Budget is associated with.';
+COMMENT ON COLUMN imf_mai_budgets.admin_unit_name IS 'The Name of the Admin Unit that the Budget is associated with.';
+COMMENT ON COLUMN imf_mai_budgets.admin_unit_code IS 'The Code of the Admin Unit that the Budget is associated with.';
+COMMENT ON COLUMN imf_mai_budgets.job_size IS 'The Job Size associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.work_category IS 'The Work Category associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.work_category_description IS 'The Work Category Description.';
+COMMENT ON COLUMN imf_mai_budgets.financial_year IS 'The Financial Year associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.financial_year_start_date IS 'The Start Date of the associated Financial Year.';
+COMMENT ON COLUMN imf_mai_budgets.financial_year_end_date IS 'The End Date of the associated Financial Year.';
+COMMENT ON COLUMN imf_mai_budgets.budget IS 'The value of the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.committed IS 'The Estimated Cost of work Instructed against the Budget but not Completed.';
+COMMENT ON COLUMN imf_mai_budgets.actual IS 'The Actual Cost of work Completed against the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.balance IS 'The outstanding Balance available to Instruct work against the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.comments IS 'Comments related to the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.cost_code IS 'The Cost Code associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.contractor_cost_code IS 'The Contractor Cost Code associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.finance_cost_code IS 'The Finance Cost Code associated with the Budget.';
+COMMENT ON COLUMN imf_mai_budgets.additional_cost_code IS 'The Additional Cost Code associated with the Budget.';
