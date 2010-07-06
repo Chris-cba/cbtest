@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.12   Jun 29 2010 10:27:24   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.13   Jul 06 2010 14:48:02   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jun 29 2010 10:27:24  $
---       Date fetched Out : $Modtime:   Jun 25 2010 10:30:28  $
---       PVCS Version     : $Revision:   3.12  $
+--       Date into PVCS   : $Date:   Jul 06 2010 14:48:02  $
+--       Date fetched Out : $Modtime:   Jul 06 2010 14:46:24  $
+--       PVCS Version     : $Revision:   3.13  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.12  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1942,17 +1942,27 @@ BEGIN
           raise_application_error(-20001,'Invalid Asset Modification Flag Specified.');
       END IF;
   END IF;
+
   /*
   ||Set The Created Date Fields
   */
   nm_debug.debug('Dates');
+  IF lr_defect_rec.def_time_hrs IS NULL
+  THEN
+      lr_defect_rec.def_time_hrs := 0;
+  END IF;
+  --
+  IF lr_defect_rec.def_time_mins IS NULL
+  THEN
+      lr_defect_rec.def_time_mins := 0;
+  END IF;
+  --
   IF lr_defect_rec.def_created_date IS NULL
    THEN
       lr_defect_rec.def_created_date    := sysdate;
-      lr_defect_rec.def_time_hrs        := 0;
-      lr_defect_rec.def_time_mins       := 0;
-      lr_defect_rec.def_inspection_date := pi_are_date_work_done;
   END IF;
+  --
+  lr_defect_rec.def_inspection_date := pi_are_date_work_done;
   /*
   ||Default / Validate Defect Status.
   */
@@ -2738,7 +2748,8 @@ END usedefchn;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION get_tolerance(pi_admin_unit          IN nm_admin_units.nau_admin_unit%TYPE
+FUNCTION get_tolerance(pi_are_rse_he_id       IN activities_report.are_rse_he_id%TYPE
+                      ,pi_admin_unit          IN nm_admin_units.nau_admin_unit%TYPE
                       ,pi_are_initiation_type IN activities_report.are_initiation_type%TYPE)
   RETURN def_superseding_rules.dsr_tolerance%TYPE IS
   --
@@ -2754,51 +2765,61 @@ FUNCTION get_tolerance(pi_admin_unit          IN nm_admin_units.nau_admin_unit%T
   lv_tolerance   def_superseding_rules.dsr_tolerance%TYPE;
   lv_retval      def_superseding_rules.dsr_tolerance%TYPE := NULL;
   lv_row_found   BOOLEAN;
+  lv_sys_flag    VARCHAR2(1);
   --
 BEGIN
-  /*
-  || Get Admin Unit Hierarchy
-  */
-  SELECT admin_unit
-    BULK COLLECT
-    INTO lt_admin_units
-    FROM (SELECT hag_parent_admin_unit admin_unit, 
-                 hau_level admin_level
-            FROM hig_admin_groups,
-                 hig_admin_units
-           WHERE hag_direct_link='Y'
-             AND hau_admin_unit = hag_parent_admin_unit
-           START WITH hag_child_admin_unit = pi_admin_unit                                                                     
-         CONNECT BY PRIOR hag_parent_admin_unit=hag_child_admin_unit
-             AND hag_direct_link='Y'
-           UNION
-          SELECT hau_admin_unit admin_unit, 
-                 hau_level admin_level
-            FROM hig_admin_units
-           WHERE hau_admin_unit = pi_admin_unit
-           ORDER BY admin_level DESC);
-  --
-  /*
-  || Try and match the Admin Unit and Initiation Type
-  || against the Deffect Tolerance Rules
-  */  
-  nm_debug.debug('Finding tolerance for Admin Unit '||pi_admin_unit||' and '||pi_are_initiation_type);
+  lv_sys_flag := validate_section(pi_rse_he_id => pi_are_rse_he_id).rse_sys_flag;
 
-  FOR i IN 1 .. lt_admin_units.count LOOP
-  --
-   OPEN C_tolerance(pi_hier_admin_unit => lt_admin_units(i));
-   FETCH C_tolerance INTO lv_tolerance;
-   lv_row_found := C_tolerance%FOUND;
-   CLOSE C_tolerance;
-     
-   IF lv_row_found 
-    THEN
-       nm_debug.debug('Tolerance '||lv_tolerance||' found for Admin Unit '||lt_admin_units(i));
-       lv_retval := lv_tolerance;
-       EXIT;
-   END IF;
-     
-  END LOOP;
+  /*
+  || Check USEDEFCHN product options to see if superseding should take place
+  */  
+  IF usedefchn(pi_sys_flag => lv_sys_flag)
+  THEN
+    /*
+    || Get Admin Unit Hierarchy
+    */
+    SELECT admin_unit
+      BULK COLLECT
+      INTO lt_admin_units
+      FROM (SELECT hag_parent_admin_unit admin_unit, 
+                   hau_level admin_level
+              FROM hig_admin_groups,
+                   hig_admin_units
+             WHERE hag_direct_link='Y'
+               AND hau_admin_unit = hag_parent_admin_unit
+             START WITH hag_child_admin_unit = pi_admin_unit                                                                     
+           CONNECT BY PRIOR hag_parent_admin_unit=hag_child_admin_unit
+               AND hag_direct_link='Y'
+             UNION
+            SELECT hau_admin_unit admin_unit, 
+                   hau_level admin_level
+              FROM hig_admin_units
+             WHERE hau_admin_unit = pi_admin_unit
+             ORDER BY admin_level DESC);
+    --
+    /*
+    || Try and match the Admin Unit and Initiation Type
+    || against the Deffect Tolerance Rules
+    */  
+    nm_debug.debug('Finding tolerance for Admin Unit '||pi_admin_unit||' and '||pi_are_initiation_type);
+
+    FOR i IN 1 .. lt_admin_units.count LOOP
+    --
+     OPEN C_tolerance(pi_hier_admin_unit => lt_admin_units(i));
+     FETCH C_tolerance INTO lv_tolerance;
+     lv_row_found := C_tolerance%FOUND;
+     CLOSE C_tolerance;
+       
+     IF lv_row_found 
+      THEN
+         nm_debug.debug('Tolerance '||lv_tolerance||' found for Admin Unit '||lt_admin_units(i));
+         lv_retval := lv_tolerance;
+         EXIT;
+     END IF;
+       
+    END LOOP;
+    
+  END IF;
   --
   RETURN lv_retval;
   --
@@ -3120,7 +3141,8 @@ BEGIN
   */
   lv_admin_unit := nm3net.get_ne(pi_active_rse_he_id).ne_admin_unit;
   --
-  lv_dsr_tolerance := get_tolerance(pi_admin_unit          =>lv_admin_unit
+  lv_dsr_tolerance := get_tolerance(pi_are_rse_he_id       =>pi_active_rse_he_id
+                                   ,pi_admin_unit          =>lv_admin_unit
                                    ,pi_are_initiation_type =>pi_are_initiation_type);
                                 
   IF lv_dsr_tolerance IS NOT NULL
@@ -3289,7 +3311,8 @@ BEGIN
   lv_admin_unit := nm3net.get_ne(pi_are_rse_he_id).ne_admin_unit;
   nm_debug.debug('Admin Unit is '||lv_admin_unit);
   --
-  lv_dsr_tolerance := get_tolerance(pi_admin_unit          =>lv_admin_unit
+  lv_dsr_tolerance := get_tolerance(pi_are_rse_he_id       =>pi_are_rse_he_id
+                                   ,pi_admin_unit          =>lv_admin_unit
                                    ,pi_are_initiation_type =>pi_are_initiation_type);
                                 
   IF lv_dsr_tolerance IS NOT NULL
