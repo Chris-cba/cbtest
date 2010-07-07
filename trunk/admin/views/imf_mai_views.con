@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.3   Jul 01 2010 18:15:28   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.4   Jul 07 2010 15:12:42   mhuitson  $
 --       Module Name      : $Workfile:   imf_mai_views.con  $
---       Date into PVCS   : $Date:   Jul 01 2010 18:15:28  $
---       Date fetched Out : $Modtime:   Jun 18 2010 14:52:52  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Jul 07 2010 15:12:42  $
+--       Date fetched Out : $Modtime:   Jul 07 2010 15:10:44  $
+--       Version          : $Revision:   3.4  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -123,7 +123,7 @@ DISABLE NOVALIDATE
 ALTER VIEW     imf_mai_work_order_lines 
 ADD CONSTRAINT imf_mai_work_order_lines_fk2
 FOREIGN KEY   (work_order_number)
-REFERENCES    imf_mai_work_orders (work_order_number) 
+REFERENCES    imf_mai_work_orders (works_order_number) 
 DISABLE NOVALIDATE
 /
 
