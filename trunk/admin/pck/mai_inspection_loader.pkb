@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.10   Jun 29 2010 10:28:00   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.11   Jul 07 2010 09:49:12   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Jun 29 2010 10:28:00  $
---       Date fetched Out : $Modtime:   Jun 22 2010 14:19:50  $
---       PVCS Version     : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Jul 07 2010 09:49:12  $
+--       Date fetched Out : $Modtime:   Jul 07 2010 09:47:54  $
+--       PVCS Version     : $Revision:   3.11  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.10  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.11  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -2409,7 +2409,8 @@ nm_debug.debug('Def Priority = '||lr_def.def_priority);
       */
       mai_inspection_api.add_das_tab_to_def_tab(pi_das_tab  => lt_das_tab
                                                ,pio_def_tab => lt_defects);
-      lt_repairs.delete;
+      lt_das_tab.delete;
+      
     END LOOP;
     /*
     ||If Recalibration Has Occured Set The Inspection
