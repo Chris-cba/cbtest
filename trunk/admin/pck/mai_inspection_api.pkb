@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.13   Jul 06 2010 14:48:02   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.14   Jul 15 2010 14:20:32   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jul 06 2010 14:48:02  $
---       Date fetched Out : $Modtime:   Jul 06 2010 14:46:24  $
---       PVCS Version     : $Revision:   3.13  $
+--       Date into PVCS   : $Date:   Jul 15 2010 14:20:32  $
+--       Date fetched Out : $Modtime:   Jul 15 2010 11:55:52  $
+--       PVCS Version     : $Revision:   3.14  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1149,7 +1149,7 @@ BEGIN
      AND mia_atv_acty_area_code = pi_activity
      AND mia_sys_flag           = atv_dtp_flag
      AND mia_atv_acty_area_code = atv_acty_area_code
-     AND atv_maint_insp_flag    = pi_maint_insp_flag
+     AND atv_maint_insp_flag    = 'D' --pi_maint_insp_flag /* Safety Inspections Can Contain Any Valid Detailed Activity */
        ;
   --
   RETURN lv_retval;
@@ -1180,7 +1180,7 @@ BEGIN
     INTO lv_dummy
     FROM activities
    WHERE atv_dtp_flag        = pi_sys_flag
-     AND atv_maint_insp_flag = pi_maint_insp_flag
+     AND atv_maint_insp_flag = 'D' --pi_maint_insp_flag /* Safety Inspections Can Contain Any Valid Detailed Activity */
      AND atv_acty_area_code  = pi_activity
      AND pi_effective_date BETWEEN NVL(atv_start_date,pi_effective_date)
                                AND NVL(atv_end_date  ,pi_effective_date)
