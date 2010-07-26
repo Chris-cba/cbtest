@@ -8,11 +8,11 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.3   Jun 17 2010 15:40:52   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.4   Jul 26 2010 17:00:24   cbaugh  $
 --       Module Name      : $Workfile:   v_work_order_status.vw  $
---       Date into PVCS   : $Date:   Jun 17 2010 15:40:52  $
---       Date fetched Out : $Modtime:   Jun 17 2010 15:39:08  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Jul 26 2010 17:00:24  $
+--       Date fetched Out : $Modtime:   Jul 15 2010 08:00:58  $
+--       Version          : $Revision:   3.4  $
 -------------------------------------------------------------------------
 --
        wor.wor_works_order_no wor_works_order_no
@@ -26,7 +26,8 @@ SELECT
                               AND rownum = 1)) wor_status
   FROM work_orders wor
       ,(SELECT wol_works_order_no
-              ,CASE WHEN (paid + not_done) = wols       THEN (SELECT hsc_status_code
+              ,CASE WHEN (paid + not_done) = wols
+                     AND paid >0                   THEN (SELECT hsc_status_code
                                                                 FROM hig_status_codes
                                                                WHERE hsc_domain_code = 'WORK_ORDER_LINES'
                                                                  AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
@@ -43,7 +44,8 @@ SELECT
                                                                  AND hsc_allow_feature4 = 'Y'
                                                                  AND hsc_allow_feature9 = 'Y'
                                                                  AND rownum = 1) --PART PAID 
-                    WHEN (completed + not_done) = wols  THEN (SELECT hsc_status_code
+                    WHEN (completed + not_done) = wols
+                     AND completed > 0                  THEN (SELECT hsc_status_code
                                                                 FROM hig_status_codes
                                                                WHERE hsc_domain_code = 'WORK_ORDER_LINES'
                                                                  AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
@@ -58,7 +60,8 @@ SELECT
                                                                                         AND NVL(hsc_end_date,TRUNC(SYSDATE))
                                                                  AND hsc_allow_feature6 = 'Y'
                                                                  AND rownum = 1)  --PART COMPL 
-                    WHEN (instructed + not_done) = wols THEN (SELECT hsc_status_code
+                    WHEN (instructed + not_done) = wols
+                     AND instructed >0                  THEN (SELECT hsc_status_code
                                                                 FROM hig_status_codes
                                                                WHERE hsc_domain_code = 'WORK_ORDER_LINES'
                                                                  AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
