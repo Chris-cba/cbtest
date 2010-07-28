@@ -4,11 +4,11 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.8   Jun 18 2010 09:33:18   aedwards  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.9   Jul 28 2010 15:00:20   cbaugh  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Jun 18 2010 09:33:18  $
- --       Date fetched Out : $Modtime:   Jun 18 2010 09:32:38  $
- --       SCCS Version     : $Revision:   2.8  $
+ --       Date into SCCS   : $Date:   Jul 28 2010 15:00:20  $
+ --       Date fetched Out : $Modtime:   Jul 28 2010 14:19:28  $
+ --       SCCS Version     : $Revision:   2.9  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
@@ -420,6 +420,7 @@ IS
                                        WHERE  ACG_GROUP_CODE = FActGroup
                                        AND    AGM_GROUP_CODE = ACG_GROUP_CODE ))
     ORDER BY 1;
+--
   CURSOR c7 IS
   -- was afr_ity_sys_flag
     SELECT DISTINCT '7,'||'*'      ||','||
@@ -452,7 +453,9 @@ IS
                             WHERE  grp_param  = 'INVENTORY_ITEM'
                             AND    grp_job_id = job_id))
     AND   INSTR(sysflags,ity_sys_flag)>0
+    AND   ity_end_date IS NULL -- clb 28072010 Task 0109688
     ORDER BY 1;
+ --   
   CURSOR c8 IS
   -- was dtr_sys_flag
   -- was  and  instr(sysflags,dtr_sys_flag)>0
@@ -460,8 +463,11 @@ IS
            dtr_dty_acty_area_code||','||
            dtr_dty_defect_code   ||','||
            RPAD(dtr_tre_treat_code,4) rec
-    FROM   def_treats
-    WHERE  dtr_dty_acty_area_code IN
+    FROM   treatments, -- clb 28072010 Task 0109688
+           def_treats
+    WHERE  dtr_tre_treat_code = tre_treat_code
+      AND  tre_end_date IS NULL
+      AND  dtr_dty_acty_area_code IN
                  (SELECT DECODE(a.atv_maint_insp_flag
                                ,'S',dtr_dty_acty_area_code
                                ,DECODE(grp.grp_value
