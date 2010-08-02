@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.23   May 25 2010 14:02:32   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.24   Aug 02 2010 16:04:42   cbaugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   May 25 2010 14:02:32  $
---       Date fetched Out : $Modtime:   May 25 2010 14:02:12  $
---       SCCS Version     : $Revision:   2.23  $
+--       Date into SCCS   : $Date:   Aug 02 2010 16:04:42  $
+--       Date fetched Out : $Modtime:   Aug 02 2010 15:37:36  $
+--       SCCS Version     : $Revision:   2.24  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.23  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.24  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -576,6 +576,8 @@ FUNCTION file_seq( p_job_id IN number,
              p_contractor_id    IN varchar2
             ,p_seq_no        IN number
             ,p_file_type    IN varchar2) RETURN varchar IS
+
+  PRAGMA AUTONOMOUS_TRANSACTION;-- clb 02082010 Task 0109818
 
   CURSOR irl IS
     SELECT MAX(irl_run_number) + 1
