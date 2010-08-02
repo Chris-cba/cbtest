@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.6   Jan 07 2010 18:45:34   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.7   Aug 02 2010 16:02:34   cbaugh  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Jan 07 2010 18:45:34  $
---       Date fetched Out : $Modtime:   Jan 07 2010 18:15:00  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Aug 02 2010 16:02:34  $
+--       Date fetched Out : $Modtime:   Aug 02 2010 15:37:12  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.6  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.7  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -1910,35 +1910,41 @@ end recalc_percent_item;
   exception
   when contract_is_locked
   then
+    ROLLBACK; -- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 885;
     l_error_appl := 'M_MGR';
     return false;
   when payment_seq_missing
   then
+    ROLLBACK;-- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 83;
     l_error_appl := 'HWAYS';
     return false;
   when no_items_for_payment
   then
+    ROLLBACK;-- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 887;
     l_error_appl := 'M_MGR';
     return false;
   when credit_file_error
   then
+    ROLLBACK;-- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 888; -- other problem
     l_error_appl := 'M_MGR';
     return false;
   when DUP_VAL_ON_INDEX then
+    ROLLBACK;-- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 885;
     l_error_appl := 'M_MGR';
     return false;
   when others
   then
+    ROLLBACK;-- clb 02082010 Task 0109818
     l_cnp_id     := null;
     l_error_code := 888; -- other problem
     l_error_appl := 'M_MGR';
