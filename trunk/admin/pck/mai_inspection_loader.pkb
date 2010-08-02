@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.11   Jul 07 2010 09:49:12   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.12   Aug 02 2010 17:08:08   mhuitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Jul 07 2010 09:49:12  $
---       Date fetched Out : $Modtime:   Jul 07 2010 09:47:54  $
---       PVCS Version     : $Revision:   3.11  $
+--       Date into PVCS   : $Date:   Aug 02 2010 17:08:08  $
+--       Date fetched Out : $Modtime:   Aug 02 2010 16:31:22  $
+--       PVCS Version     : $Revision:   3.12  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.11  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.12  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -4330,7 +4330,7 @@ PROCEDURE initialise IS
 BEGIN
   --
   lv_ok_to_proceed := hig_process_api.do_polling_if_requested(pi_file_type_name          => c_file_type_name
-                                                            , pi_file_mask               => 'DAT'
+                                                            , pi_file_mask               => NULL
                                                             , pi_binary                  => TRUE
                                                             , pi_archive_overwrite       => TRUE
                                                             , pi_remove_failed_arch      => TRUE);
