@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.14   Jul 15 2010 14:20:32   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.15   Aug 06 2010 15:12:54   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jul 15 2010 14:20:32  $
---       Date fetched Out : $Modtime:   Jul 15 2010 11:55:52  $
---       PVCS Version     : $Revision:   3.14  $
+--       Date into PVCS   : $Date:   Aug 06 2010 15:12:54  $
+--       Date fetched Out : $Modtime:   Aug 06 2010 14:58:44  $
+--       PVCS Version     : $Revision:   3.15  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1752,7 +1752,7 @@ PROCEDURE validate_defect_rec(pi_are_report_id       IN     activities_report.ar
           --
       ELSE
           --
-          EXECUTE IMMEDIATE lv_column_assign||pi_value||';';
+          EXECUTE IMMEDIATE lv_column_assign||nm3flx.string(pi_value)||'; END;';
           --
       END IF;
       --
@@ -4143,6 +4143,61 @@ BEGIN
   END IF;
   
 END construct_tree_plsql_table;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_def_att(pi_column IN VARCHAR2
+                         ,pi_value  IN VARCHAR2)
+  RETURN BOOLEAN IS
+  --
+  lv_data_type     all_tab_columns.data_type%TYPE;
+  lv_column_assign VARCHAR2(100) := 'DECLARE g_defect_rec  defects%ROWTYPE; BEGIN g_defect_rec.'||pi_column||' := ';
+  lv_return        BOOLEAN := TRUE;
+  --
+BEGIN
+nm_debug.debug_on;
+  /*
+  ||Get The Datatype Of The Column.
+  */
+  SELECT data_type
+    INTO lv_data_type
+    FROM all_tab_columns
+   WHERE table_name  = 'DEFECTS'
+     AND column_name = pi_column
+     AND owner = hig.get_application_owner
+       ;
+  /*
+  ||Set The Value.
+  */
+  IF lv_data_type = 'NUMBER'
+   THEN
+      --
+      EXECUTE IMMEDIATE lv_column_assign||'TO_NUMBER('||pi_value||'); END;';
+      --
+  ELSIF lv_data_type = 'DATE'
+   THEN
+      --
+      EXECUTE IMMEDIATE lv_column_assign||'TO_DATE('||nm3flx.string(pi_value)
+                                               ||','||nm3flx.string('DD-MON-YYYY')||');';
+      --
+  ELSE
+      --
+      EXECUTE IMMEDIATE lv_column_assign||nm3flx.string(pi_value)||'; END;';
+      --
+  END IF;
+  --
+nm_debug.debug_off;
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+nm_debug.debug(lv_column_assign||nm3flx.string(pi_value)||';');
+nm_debug.debug('-->'||SQLERRM);
+nm_debug.debug_off;
+      RETURN FALSE;
+      
+END validate_def_att;
 
 END mai_inspection_api;
 /
