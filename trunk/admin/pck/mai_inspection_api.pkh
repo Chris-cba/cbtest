@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.7   Jun 07 2010 10:18:10   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.8   Aug 06 2010 15:13:08   cbaugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Jun 07 2010 10:18:10  $
---       Date fetched Out : $Modtime:   May 26 2010 13:38:54  $
---       PVCS Version     : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   Aug 06 2010 15:13:08  $
+--       Date fetched Out : $Modtime:   Aug 05 2010 14:45:24  $
+--       PVCS Version     : $Revision:   3.8  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -269,6 +269,9 @@ PROCEDURE construct_tree_plsql_table
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION validate_def_att(pi_column IN VARCHAR2
+                         ,pi_value  IN VARCHAR2)
+  RETURN BOOLEAN;
 --
 -----------------------------------------------------------------------------
 --
