@@ -2,11 +2,11 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkh.sql-arc   2.6   May 25 2010 09:09:54   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkh.sql-arc   2.7   Aug 10 2010 09:28:38   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   maipkh.sql  $
---       Date into SCCS   : $Date:   May 25 2010 09:09:54  $
---       Date fetched Out : $Modtime:   May 25 2010 09:08:42  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Aug 10 2010 09:28:38  $
+--       Date fetched Out : $Modtime:   Aug 10 2010 09:22:54  $
+--       SCCS Version     : $Revision:   2.7  $
 --       based on SCCS Version     : 1.10
 --
 -----------------------------------------------------------------------------
@@ -191,11 +191,11 @@ from dual
 /
 start '&run_file'
 -----------------------------------------------------------------------------
--- Mai3863 package
+-- pedif package
 -----------------------------------------------------------------------------
 set define on
 select '&exor_base'||'mai'||'&terminator'||'admin'||
-        '&terminator'||'pck'||'&terminator'||'mai3863.pkh' run_file
+        '&terminator'||'pck'||'&terminator'||'pedif.pkh' run_file
 from dual
 /
 start '&run_file'

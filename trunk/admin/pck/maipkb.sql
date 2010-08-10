@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.6   May 25 2010 09:09:54   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.7   Aug 10 2010 09:28:38   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   maipkb.sql  $
---       Date into SCCS   : $Date:   May 25 2010 09:09:54  $
---       Date fetched Out : $Modtime:   May 25 2010 09:09:20  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Aug 10 2010 09:28:38  $
+--       Date fetched Out : $Modtime:   Aug 10 2010 09:23:16  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -181,11 +181,11 @@ from dual
 /
 start '&run_file'
 -----------------------------------------------------------------------------
--- Mai3863 package
+-- pedif package
 -----------------------------------------------------------------------------
 set define on
 select '&exor_base'||'mai'||'&terminator'||'admin'||
-        '&terminator'||'pck'||'&terminator'||'mai3863.pkw' run_file
+        '&terminator'||'pck'||'&terminator'||'pedif.pkw' run_file
 from dual
 /
 start '&run_file'
