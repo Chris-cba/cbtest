@@ -1,12 +1,12 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.sql-arc   3.4   May 06 2010 18:53:48   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.sql-arc   3.5   Aug 13 2010 11:15:46   Mike.Huitson  $
 --       Module Name      : $Workfile:   imf_mai_views.sql  $
---       Date into PVCS   : $Date:   May 06 2010 18:53:48  $
---       Date fetched Out : $Modtime:   May 06 2010 18:52:16  $
---       Version          : $Revision:   3.4  $
---       Based on SCCS version : 
+--       Date into PVCS   : $Date:   Aug 13 2010 11:15:46  $
+--       Date fetched Out : $Modtime:   Aug 13 2010 11:08:14  $
+--       Version          : $Revision:   3.5  $
+--       Based on SCCS version :
 -------------------------------------------------------------------------
 --
 SET echo OFF
@@ -76,6 +76,17 @@ PROMPT view_name
 SET TERM OFF
 SET DEFINE ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'imf_mai_work_orders.vw' run_file
+FROM dual
+/
+START '&run_file'
+--
+-------------------------------------------------------------------------
+--
+SET TERM ON
+PROMPT view_name
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'imf_mai_work_orders_all_attrib.vw' run_file
 FROM dual
 /
 START '&run_file'
