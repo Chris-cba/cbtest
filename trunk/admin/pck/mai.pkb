@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.18   Jun 10 2010 14:36:40   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.19   Aug 13 2010 18:39:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jun 10 2010 14:36:40  $
---       Date fetched Out : $Modtime:   Jun 10 2010 14:31:14  $
---       SCCS Version     : $Revision:   2.18  $
+--       Date into SCCS   : $Date:   Aug 13 2010 18:39:08  $
+--       Date fetched Out : $Modtime:   Aug 05 2010 18:27:40  $
+--       SCCS Version     : $Revision:   2.19  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.18  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.19  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -5070,8 +5070,7 @@ EXCEPTION
     l_wor_rec.wor_date_confirmed := null;
     l_wor_rec.wor_mod_by_id := null;
     l_wor_rec.wor_date_mod := SYSDATE;
-    --l_wor_rec.wor_date_raised := SYSDATE;   -- Task 0107304 The mai3800 do not have time element so cannot query work order with the time element
-    l_wor_rec.wor_date_raised := Trunc(SYSDATE);
+    l_wor_rec.wor_date_raised := SYSDATE;
     l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';
     l_wor_rec.wor_est_balancing_sum := null;
     l_wor_rec.wor_est_complete := null;

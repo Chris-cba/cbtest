@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.11   Jun 30 2010 18:28:40   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.12   Aug 13 2010 18:39:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 30 2010 18:28:40  $
---       Date fetched Out : $Modtime:   Jun 30 2010 18:25:34  $
---       PVCS Version     : $Revision:   3.11  $
+--       Date into PVCS   : $Date:   Aug 13 2010 18:39:08  $
+--       Date fetched Out : $Modtime:   Aug 05 2010 18:44:34  $
+--       PVCS Version     : $Revision:   3.12  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.11  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.12  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1178,14 +1178,14 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
     BEGIN
       IF pi_date_raised IS NOT NULL
        THEN
-          IF pi_date_raised > TRUNC(SYSDATE)
+          IF pi_date_raised > SYSDATE
            THEN
               raise_application_error(-20084,'Date Raised Must Be Less Than Or Equal To Todays Date.');
           ELSE
               lv_date_raised := pi_date_raised;
           END IF;
       ELSE
-          lv_date_raised := TRUNC(SYSDATE);
+          lv_date_raised := SYSDATE;
       END IF;
     END set_date_raised;
     --
@@ -1261,9 +1261,9 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
       --
       lv_con_code contracts.con_code%TYPE;
        --
-     BEGIN
-     nm_debug.debug('con_id = '||pi_con_id);
-     nm_debug.debug('Date Raised = '||TO_CHAR(lv_date_raised));
+    BEGIN
+      nm_debug.debug('con_id = '||pi_con_id);
+      nm_debug.debug('Date Raised = '||TO_CHAR(lv_date_raised));
       SELECT con_code
             ,con_admin_org_id
             ,oun_cng_disc_group
@@ -1273,8 +1273,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM org_units
             ,contracts
        WHERE con_id = pi_con_id
-         AND lv_date_raised BETWEEN NVL(con_start_date, lv_date_raised)
-                                AND NVL(con_end_date  , lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(con_start_date, TRUNC(lv_date_raised))
+                                       AND NVL(con_end_date  , TRUNC(lv_date_raised))
          AND ((con_admin_org_id IN(SELECT hag_child_admin_unit
                                      FROM hig_admin_groups
                                     WHERE hag_parent_admin_unit = lv_user_admin_unit))
@@ -1350,8 +1350,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
             FROM hig_codes
            WHERE hco_domain = 'WOR_PRIORITY'
              AND hco_code   = pi_priority
-             AND lv_date_raised BETWEEN NVL(hco_start_date, lv_date_raised)
-                                    AND NVL(hco_end_date, lv_date_raised)
+             AND TRUNC(lv_date_raised) BETWEEN NVL(hco_start_date,TRUNC(lv_date_raised))
+                                           AND NVL(hco_end_date  ,TRUNC(lv_date_raised))
                ;
       END IF;
       --
@@ -1380,8 +1380,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
            WHERE hag_parent_admin_unit = lv_user_admin_unit
              AND hag_child_admin_unit  = coc_org_id
              AND coc_cost_centre       = pi_cost_centre
-             AND lv_date_raised BETWEEN NVL(coc_start_date, lv_date_raised)
-                                    AND NVL(coc_end_date, lv_date_raised)
+             AND TRUNC(lv_date_raised) BETWEEN NVL(coc_start_date,TRUNC(lv_date_raised))
+                                           AND NVL(coc_end_date  ,TRUNC(lv_date_raised))
                ;
       END IF;
       --
@@ -1511,8 +1511,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'WORK_ORDER_LINES'
          AND hsc_allow_feature5 = 'Y'
-         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
-                                AND NVL(hsc_end_date  ,lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
     EXCEPTION
       WHEN too_many_rows
@@ -1535,8 +1535,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
        WHERE hsc_domain_code = 'WORK_ORDER_LINES'
          AND hsc_allow_feature1 = 'Y'
          AND hsc_allow_feature10 = 'Y'  
-         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
-                                AND NVL(hsc_end_date  ,lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
     EXCEPTION
       WHEN too_many_rows
@@ -1559,8 +1559,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature3 = 'Y'
          AND hsc_allow_feature10 = 'N'  
-         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
-                                AND NVL(hsc_end_date  ,lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
     EXCEPTION
       WHEN too_many_rows
@@ -1583,8 +1583,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature3 = 'Y'
          AND hsc_allow_feature10 = 'Y'  
-         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
-                                AND NVL(hsc_end_date  ,lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
     EXCEPTION
       WHEN too_many_rows
@@ -1606,8 +1606,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature2 = 'Y'
-         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
-                                AND NVL(hsc_end_date  ,lv_date_raised)
+         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
     EXCEPTION
       WHEN too_many_rows
@@ -1786,7 +1786,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
       FROM item_code_breakdowns
           ,budgets
           ,financial_years
-     WHERE TRUNC(fyr_end_date) >= lv_date_raised
+     WHERE TRUNC(fyr_end_date) >= TRUNC(lv_date_raised)
        AND fyr_id = bud_fyr_id
        AND bud_id = pi_budget_id
        AND bud_icb_item_code = icb_item_code
@@ -2509,8 +2509,8 @@ BEGIN
       raise_application_error(-20075,'Users Are Not Allowed To Authorise Work Orders They Have Raised.');
   END IF;
   --
-  IF NOT (lr_wo.wor_date_raised between nvl(lr_user.hus_start_date, lr_wo.wor_date_raised)
-                                    and nvl(lr_user.hus_end_date-1, lr_wo.wor_date_raised))
+  IF NOT (TRUNC(lr_wo.wor_date_raised) BETWEEN NVL(lr_user.hus_start_date, TRUNC(lr_wo.wor_date_raised))
+                                           AND NVL(lr_user.hus_end_date-1, TRUNC(lr_wo.wor_date_raised)))
    THEN
       raise_application_error(-20078,'Work Order Date Raised Is Outside Users Start/End Dates.');
   END IF;
@@ -2850,7 +2850,7 @@ BEGIN
   /*
   ||Check The Date Confirmed Provided.
   */
-  IF pi_date_instructed < lr_wo.wor_date_raised
+  IF pi_date_instructed < TRUNC(lr_wo.wor_date_raised)
    THEN
       raise_application_error(-20085,'Date Confirmed Must Be On Or Later Than The Date Raised ['
                                      ||TO_CHAR(lr_wo.wor_date_raised,'DD-MON-RRRR')||'].');
@@ -3118,8 +3118,8 @@ BEGIN
    FROM hig_status_codes
   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
     AND hsc_status_code = pi_status_code
-    AND (pi_date_raised BETWEEN NVL(hsc_start_date,pi_date_raised)
-                            AND NVL(hsc_end_date, pi_date_raised)
+    AND (TRUNC(pi_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(pi_date_raised))
+                                   AND NVL(hsc_end_date  ,TRUNC(pi_date_raised))
          OR pi_date_raised IS NULL)
       ;
   /*
@@ -3200,8 +3200,8 @@ PROCEDURE update_wol_status(pi_user_id       IN hig_users.hus_user_id%TYPE
         IF pi_date_complete < lr_wo.wor_date_confirmed
          OR lr_wo.wor_date_confirmed IS NULL
          THEN
-            raise_application_error(-20106,'Date Complete Must Be On Or Later Than The Date Raised ['
-                                           ||TO_CHAR(lr_wo.wor_date_raised,'DD-MON-RRRR')||'].');
+            raise_application_error(-20106,'Date Complete Must Be On Or Later Than The Date Instructed ['
+                                           ||TO_CHAR(lr_wo.wor_date_confirmed,'DD-MON-RRRR')||'].');
         END IF;
         --
     END IF;
@@ -5291,14 +5291,14 @@ END get_wol_target_date;
 --    BEGIN
 --      IF pi_date_raised IS NOT NULL
 --       THEN
---          IF pi_date_raised > TRUNC(SYSDATE)
+--          IF pi_date_raised > SYSDATE
 --           THEN
 --              raise_application_error(-20084,'Date Raised Must Be Less Than Or Equal To Todays Date.');
 --          ELSE
 --              lv_date_raised := pi_date_raised;
 --          END IF;
 --      ELSE
---          lv_date_raised := TRUNC(SYSDATE);
+--          lv_date_raised := SYSDATE;
 --      END IF;
 --    END set_date_raised;
 --    --
@@ -5385,8 +5385,8 @@ END get_wol_target_date;
 --        FROM org_units
 --            ,contracts
 --       WHERE con_id = pi_con_id
---         AND lv_date_raised BETWEEN NVL(con_start_date, lv_date_raised)
---                                AND NVL(con_end_date  , lv_date_raised)
+--         AND TRUNC(lv_date_raised) BETWEEN NVL(con_start_date, TRUNC(lv_date_raised))
+--                                       AND NVL(con_end_date  , TRUNC(lv_date_raised))
 --         AND ((con_admin_org_id IN(SELECT hag_child_admin_unit
 --                                     FROM hig_admin_groups
 --                                    WHERE hag_parent_admin_unit = lv_user_admin_unit))
@@ -5460,8 +5460,8 @@ END get_wol_target_date;
 --            FROM hig_codes
 --           WHERE hco_domain = 'WOR_PRIORITY'
 --             AND hco_code   = pi_priority
---             AND lv_date_raised BETWEEN NVL(hco_start_date, lv_date_raised)
---                                    AND NVL(hco_end_date, lv_date_raised)
+--             AND TRUNC(lv_date_raised) BETWEEN NVL(hco_start_date, TRUNC(lv_date_raised))
+--                                           AND NVL(hco_end_date, TRUNC(lv_date_raised))
 --               ;
 --      END IF;
 --      --
@@ -5490,8 +5490,8 @@ END get_wol_target_date;
 --           WHERE hag_parent_admin_unit = lv_user_admin_unit
 --             AND hag_child_admin_unit  = coc_org_id
 --             AND coc_cost_centre       = pi_cost_centre
---             AND lv_date_raised BETWEEN NVL(coc_start_date, lv_date_raised)
---                                    AND NVL(coc_end_date, lv_date_raised)
+--             AND TRUNC(lv_date_raised) BETWEEN NVL(coc_start_date, TRUNC(lv_date_raised))
+--                                           AND NVL(coc_end_date, TRUNC(lv_date_raised))
 --               ;
 --      END IF;
 --      --
@@ -5603,8 +5603,8 @@ END get_wol_target_date;
 --        FROM hig_status_codes
 --       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
 --         AND hsc_allow_feature5 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
+--         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+--                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
 --           ;
 --    EXCEPTION
 --      WHEN too_many_rows
@@ -5626,8 +5626,8 @@ END get_wol_target_date;
 --        FROM hig_status_codes
 --       WHERE hsc_domain_code = 'WORK_ORDER_LINES'
 --         AND hsc_allow_feature1 = 'Y'
---         AND lv_date_raised BETWEEN NVL(hsc_start_date,lv_date_raised)
---                                AND NVL(hsc_end_date  ,lv_date_raised)
+--         AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
+--                                       AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
 --           ;
 --    EXCEPTION
 --      WHEN too_many_rows
@@ -5802,7 +5802,7 @@ END get_wol_target_date;
 --              FROM road_sections
 --                  ,budgets b
 --                  ,financial_years fy
---             WHERE TRUNC(fyr_end_date) >= lv_date_raised 
+--             WHERE TRUNC(fyr_end_date) >= TRUNC(lv_date_raised) 
 --               AND fy.fyr_id = b.bud_fyr_id
 --               AND bud_id = pi_budget_id
 --               AND b.bud_sys_flag = rse_sys_flag
