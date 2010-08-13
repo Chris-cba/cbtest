@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.4   Jul 07 2010 15:12:42   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.5   Aug 13 2010 11:24:26   Mike.Huitson  $
 --       Module Name      : $Workfile:   imf_mai_views.con  $
---       Date into PVCS   : $Date:   Jul 07 2010 15:12:42  $
---       Date fetched Out : $Modtime:   Jul 07 2010 15:10:44  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Aug 13 2010 11:24:26  $
+--       Date fetched Out : $Modtime:   Aug 13 2010 11:22:48  $
+--       Version          : $Revision:   3.5  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -39,6 +39,10 @@ ADD CONSTRAINT imf_mai_inspections_pk UNIQUE (inspection_id) DISABLE NOVALIDATE
 
 ALTER VIEW imf_mai_work_orders
 ADD CONSTRAINT imf_mai_work_orders_pk UNIQUE (works_order_number) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_work_orders_all_attrib
+ADD CONSTRAINT imf_mai_work_orders_all_att_pk UNIQUE (works_order_number) DISABLE NOVALIDATE
 /
 
 ALTER VIEW imf_mai_wo_instruct
@@ -110,6 +114,13 @@ ALTER VIEW     imf_mai_work_orders
 ADD CONSTRAINT imf_mai_work_orders_fk1
 FOREIGN KEY   (network_element_id)
 REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_work_orders_all_attrib
+ADD CONSTRAINT imf_mai_work_orders_all_at_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network(network_element_id) 
 DISABLE NOVALIDATE
 /
 
