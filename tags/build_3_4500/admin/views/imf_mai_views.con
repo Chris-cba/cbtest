@@ -1,0 +1,146 @@
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.5   Aug 13 2010 11:24:26   Mike.Huitson  $
+--       Module Name      : $Workfile:   imf_mai_views.con  $
+--       Date into PVCS   : $Date:   Aug 13 2010 11:24:26  $
+--       Date fetched Out : $Modtime:   Aug 13 2010 11:22:48  $
+--       Version          : $Revision:   3.5  $
+--       Based on SCCS version : 
+-------------------------------------------------------------------------
+--
+SET echo OFF
+SET term OFF
+--
+
+---------------------------
+-- Primary Key Constraints
+---------------------------
+
+ALTER VIEW imf_mai_bill_of_quantities
+ADD CONSTRAINT imf_mai_bill_of_quantities_pk UNIQUE (bill_of_quantities_id) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_defects
+ADD CONSTRAINT imf_mai_defects_pk UNIQUE (defect_id) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_repairs
+ADD CONSTRAINT imf_mai_repairs_pk UNIQUE (defect_id, repair_category) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_defect_repairs
+ADD CONSTRAINT imf_mai_defect_repairs_pk UNIQUE (inspection_id, defect_id, repair_category) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_inspections
+ADD CONSTRAINT imf_mai_inspections_pk UNIQUE (inspection_id) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_work_orders
+ADD CONSTRAINT imf_mai_work_orders_pk UNIQUE (works_order_number) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_work_orders_all_attrib
+ADD CONSTRAINT imf_mai_work_orders_all_att_pk UNIQUE (works_order_number) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_wo_instruct
+ADD CONSTRAINT imf_mai_wo_instruct_pk UNIQUE (works_order_number) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_work_order_lines
+ADD CONSTRAINT imf_mai_work_order_lines_pk UNIQUE (work_order_line_id) DISABLE NOVALIDATE
+/
+
+ALTER VIEW imf_mai_budgets
+ADD CONSTRAINT imf_mai_budgets_pk UNIQUE (budget_id) DISABLE NOVALIDATE
+/
+
+---------------------------
+-- Foreign Key Constraints
+---------------------------
+
+ALTER VIEW     imf_mai_bill_of_quantities 
+ADD CONSTRAINT imf_mai_bill_of_quantities_fk1 
+FOREIGN KEY   (defect_id)
+REFERENCES    imf_mai_defects (defect_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_bill_of_quantities 
+ADD CONSTRAINT imf_mai_bill_of_quantities_fk2 
+FOREIGN KEY   (work_order_line_id)
+REFERENCES    imf_mai_work_order_lines (work_order_line_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_defects 
+ADD CONSTRAINT imf_mai_defects_fk2
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_repairs 
+ADD CONSTRAINT imf_mai_repairs_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_repairs 
+ADD CONSTRAINT imf_mai_repairs_fk2
+FOREIGN KEY   (defect_id)
+REFERENCES    imf_mai_defects (defect_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_defect_repairs 
+ADD CONSTRAINT imf_mai_defects_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_inspections 
+ADD CONSTRAINT imf_mai_inspections_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_work_orders
+ADD CONSTRAINT imf_mai_work_orders_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_work_orders_all_attrib
+ADD CONSTRAINT imf_mai_work_orders_all_at_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network(network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_work_order_lines 
+ADD CONSTRAINT imf_mai_work_order_lines_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_work_order_lines 
+ADD CONSTRAINT imf_mai_work_order_lines_fk2
+FOREIGN KEY   (work_order_number)
+REFERENCES    imf_mai_work_orders (works_order_number) 
+DISABLE NOVALIDATE
+/
+
+ALTER VIEW     imf_mai_budgets 
+ADD CONSTRAINT imf_mai_budgets_fk1
+FOREIGN KEY   (network_element_id)
+REFERENCES    imf_net_network (network_element_id) 
+DISABLE NOVALIDATE
+/
