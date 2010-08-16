@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4210_fix1.sql-arc   3.0   Aug 04 2010 11:31:10   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4210_fix1.sql-arc   3.1   Aug 16 2010 10:06:38   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4210_fix1.sql  $
---       Date into PVCS   : $Date:   Aug 04 2010 11:31:10  $
---       Date fetched Out : $Modtime:   Aug 04 2010 11:30:34  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Aug 16 2010 10:06:38  $
+--       Date fetched Out : $Modtime:   Aug 16 2010 10:06:36  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2010
@@ -123,6 +123,13 @@ PROMPT v_work_order_status.vw
 --
 SET FEEDBACK ON
 start v_work_order_status.vw
+SET FEEDBACK OFF
+--
+SET TERM ON 
+PROMPT imf_mai_work_orders_all_attribs.vw
+--
+SET FEEDBACK ON
+start imf_mai_work_orders_all_attribs.vw
 SET FEEDBACK OFF
 --
 --------------------------------------------------------------------------------
