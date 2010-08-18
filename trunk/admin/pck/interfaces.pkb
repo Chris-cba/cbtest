@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.24   Aug 02 2010 16:04:42   cbaugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.25   Aug 18 2010 11:48:42   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 02 2010 16:04:42  $
---       Date fetched Out : $Modtime:   Aug 02 2010 15:37:36  $
---       SCCS Version     : $Revision:   2.24  $
+--       Date into SCCS   : $Date:   Aug 18 2010 11:48:42  $
+--       Date fetched Out : $Modtime:   Aug 18 2010 11:46:28  $
+--       SCCS Version     : $Revision:   2.25  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.24  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.25  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -873,6 +873,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
   --
 BEGIN
   --
+  nm3ctx.set_context('CIM_ERROR_TEXT',Null);
   IF l_seq_no = -1
    THEN
       RAISE g_file_exists;
@@ -1028,6 +1029,7 @@ EXCEPTION
    THEN
       DBMS_OUTPUT.ENABLE(300);
       DBMS_OUTPUT.PUT_LINE(l_file_not_found);
+      nm3ctx.set_context('CIM_ERROR_TEXT','Error: Unable to create WO File. The path for the Oracle Directory CIM_DIR is invalid or not specified.');
       --
       IF interfaces.g_job_id IS NOT NULL THEN
         higgrirp.write_gri_spool(interfaces.g_job_id,l_file_not_found);
@@ -1039,6 +1041,7 @@ EXCEPTION
    THEN
       DBMS_OUTPUT.ENABLE(300);
       DBMS_OUTPUT.PUT_LINE(g_file_exists_err);
+      nm3ctx.set_context('CIM_ERROR_TEXT',g_file_exists_err);
       --
       IF interfaces.g_job_id IS NOT NULL THEN
         higgrirp.write_gri_spool(interfaces.g_job_id,g_file_exists_err);
@@ -1050,6 +1053,7 @@ EXCEPTION
    THEN
       DBMS_OUTPUT.ENABLE(300);
       DBMS_OUTPUT.PUT_LINE(l_file_not_written);
+      nm3ctx.set_context('CIM_ERROR_TEXT','Error: There was an error writing the WO File in Oracle Directory CIM_DIR.');
       --
       IF interfaces.g_job_id IS NOT NULL THEN
         higgrirp.write_gri_spool(interfaces.g_job_id,l_file_not_written);
@@ -1059,7 +1063,7 @@ EXCEPTION
       --
   WHEN others
    THEN
-      RAISE_APPLICATION_ERROR(-20001, SQLERRM);
+      RAISE_APPLICATION_ERROR(-20001, SQLERRM);      
 END write_wor_file;
 --
 -------------------------------------------------------------------------------
