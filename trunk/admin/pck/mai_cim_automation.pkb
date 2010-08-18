@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.2   Jun 14 2010 12:34:08   lsorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.3   Aug 18 2010 11:48:46   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Jun 14 2010 12:34:08  $
---       Date fetched Out : $Modtime:   Jun 14 2010 12:21:54  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Aug 18 2010 11:48:46  $
+--       Date fetched Out : $Modtime:   Aug 18 2010 11:09:00  $
+--       Version          : $Revision:   3.3  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.2  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.3  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -194,6 +194,17 @@ IS
                             ,pi_message      => l_msg
                             ,pi_summary_flag => 'Y' );
       nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+      IF l_error IS NOT NULL
+      THEN
+          l_failed    := 'Y' ;
+          hig_process_api.log_it(pi_process_id   => l_process_id
+                                ,pi_message      => 'Following error occurred while archiving the WC file '||pi_file_name||' '||l_error
+                                ,pi_message_type => 'E'
+                                ,pi_summary_flag => 'Y' );                                     
+      ELSE
+          hig_process_api.log_it(pi_process_id => l_process_id
+                                ,pi_message    => 'WC file '||pi_file_name||' archived');
+      END IF ;
 
    --
    END run_comp_file;
@@ -293,6 +304,17 @@ IS
                             ,pi_message      => l_msg
                             ,pi_summary_flag => 'Y' ); 
       nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+      IF l_error IS NOT NULL
+      THEN
+          l_failed    := 'Y' ;
+          hig_process_api.log_it(pi_process_id   => l_process_id
+                                ,pi_message      => 'Following error occurred while archiving the WI file '||pi_file_name||' '||l_error
+                                ,pi_message_type => 'E'
+                                ,pi_summary_flag => 'Y' );                                     
+      ELSE
+          hig_process_api.log_it(pi_process_id => l_process_id
+                                ,pi_message    => 'WI file '||pi_file_name||' archived');
+      END IF ;
    --
    END run_claim_file ;
 --
@@ -334,18 +356,28 @@ BEGIN
                   BEGIN
                      --                       
                      l_file_name := interfaces.write_wor_file(oun.oun_contractor_id,Null,Null);
-                     l_continue  := True ;
-                     hig_process_api.log_it(pi_process_id => l_process_id
-                                           ,pi_message    => 'Work Order Extract file '||l_file_name||' created  for Contractor '||oun.oun_contractor_id);
+                     IF l_file_name is NULL
+                     THEN 
+                         l_continue := False;
+                         l_failed := 'Y' ;
+                         hig_process_api.log_it(pi_process_id   => l_process_id
+                                               ,pi_message      => sys_context('NM3SQL','CIM_ERROR_TEXT')
+                                               ,pi_message_type => 'E');
+                     ELSE                         
+                         l_continue  := True ;
+                         hig_process_api.log_it(pi_process_id => l_process_id
+                                               ,pi_message    => 'Work Order Extract file '||l_file_name||' created  for Contractor '||oun.oun_contractor_id);
+                     END IF ; 
                   --
                   Exception 
                       WHEN OTHERS THEN
                           l_continue  := False ;
-                          hig_process_api.log_it(pi_process_id => l_process_id
-                                                ,pi_message    => 'Error while generating WO file for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                          hig_process_api.log_it(pi_process_id   => l_process_id
+                                                ,pi_message      => 'Error while generating WO file for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                ,pi_message_type => 'E'
                                                 ,pi_summary_flag => 'Y' );    
                   END ;
-                  -- Check for FTP setp 
+                  -- Check for FTP setp            
                   FOR ftp IN (SELECT ftp.* 
                               FROM   hig_process_conns_by_area ,hig_ftp_connections ftp
                               WHERE  hptc_process_type_id = l_hp_rec.hp_process_type_id 
@@ -367,8 +399,10 @@ BEGIN
                             EXCEPTION
                                 WHEN OTHERS THEN
                                     l_continue  := False ;
+                                    l_failed    := 'Y' ; 
                                     hig_process_api.log_it(pi_process_id   => l_process_id
                                                           ,pi_message      => 'Error while connecting to the FTP server for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                          ,pi_message_type => 'E'
                                                           ,pi_summary_flag => 'Y' );
                             END ;
                             IF l_continue 
@@ -382,23 +416,37 @@ BEGIN
                                 EXCEPTION
                                     WHEN OTHERS THEN
                                         l_continue  := False ; 
-                                        hig_process_api.log_it(pi_process_id => l_process_id
-                                                              ,pi_message    => 'Following error occurred while copying the WO file to the FTP location for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                        l_failed    := 'Y' ;
+                                        hig_process_api.log_it(pi_process_id   => l_process_id
+                                                              ,pi_message      => 'Following error occurred while copying the WO file to the FTP location for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                              ,pi_message_type => 'E'
                                                               ,pi_summary_flag => 'Y' ); 
                                 END  ;            
                                 IF l_continue 
                                 THEN
                                     BEGIN
-                                       --
+                                       --                                       
                                        nm3file.move_file(l_file_name,'CIM_DIR',l_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
-                                       hig_process_api.log_it(pi_process_id => l_process_id
-                                                             ,pi_message    => 'Work Order Extract file '||l_file_name||' archived');
+                                       IF l_error IS NOT NULL
+                                       THEN
+                                            l_failed    := 'Y' ;
+                                            hig_process_api.log_it(pi_process_id   => l_process_id
+                                                                  ,pi_message      => 'Following error occurred while archiving the WO file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||l_error
+                                                                  ,pi_message_type => 'E'
+                                                                  ,pi_summary_flag => 'Y' );                                     
+                                       ELSE
+                                           hig_process_api.log_it(pi_process_id => l_process_id
+                                                                 ,pi_message    => 'Work Order Extract file '||l_file_name||' archived');
+                                       END IF ;
                                        nm3ftp.logout(l_conn);
                                        --
                                      EXCEPTION
                                         WHEN OTHERS THEN
-                                            hig_process_api.log_it(pi_process_id => l_process_id
-                                                                  ,pi_message    => 'Following error occurred while archiving the WO file for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                            l_failed := 'Y' ;
+                                            nm3ftp.logout(l_conn);
+                                            hig_process_api.log_it(pi_process_id   => l_process_id
+                                                                  ,pi_message      => 'Following error occurred while archiving the WO file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                                  ,pi_message_type => 'E'
                                                                   ,pi_summary_flag => 'Y' ); 
                                     END ;
                                 END IF ;
@@ -407,7 +455,7 @@ BEGIN
                          EXCEPTION
                          WHEN OTHERS
                          THEN
-                             nm3ftp.logout(l_conn);
+                             nm3ftp.logout(l_conn);                             
                              Raise_Application_Error(-20001,'Error '||Sqlerrm);
                          END ;
                       END IF ;
