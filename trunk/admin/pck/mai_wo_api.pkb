@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.12   Aug 13 2010 18:39:08   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.13   Sep 01 2010 16:33:20   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Aug 13 2010 18:39:08  $
---       Date fetched Out : $Modtime:   Aug 05 2010 18:44:34  $
---       PVCS Version     : $Revision:   3.12  $
+--       Date into PVCS   : $Date:   Sep 01 2010 16:33:20  $
+--       Date fetched Out : $Modtime:   Sep 01 2010 13:28:58  $
+--       PVCS Version     : $Revision:   3.13  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.12  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -70,7 +70,7 @@ END;
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE clear_created_work_orders_tab IS 
+PROCEDURE clear_created_work_orders_tab IS
   --
   empty_tab works_order_tab;
   --
@@ -340,6 +340,138 @@ EXCEPTION
    THEN
       RAISE;
 END interfaces_used;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION works_order_complete(pi_works_order_no      work_orders.wor_works_order_no%TYPE
+                             ,pi_exclude_wol_id_tab  nm3type.tab_number)
+  RETURN BOOLEAN IS
+  --
+  lv_sql     nm3type.max_varchar2;
+  lv_result  PLS_INTEGER;
+  lv_retval  BOOLEAN := TRUE;
+  --
+  FUNCTION build_not_in_clause(pi_exclude_wol_id_tab  nm3type.tab_number)
+    RETURN VARCHAR2 IS
+    --
+    lv_where  nm3type.max_varchar2;
+    lv_list   nm3type.max_varchar2;
+    --
+    PROCEDURE add_list_to_where
+      IS
+    BEGIN
+      /*
+      ||If this is not the first list of wol_ids
+      ||to be added this list needs added with an AND
+      */
+      IF lv_where IS NOT NULL
+       THEN
+          lv_where := lv_where||' AND';
+      END IF;
+      /*
+      ||Add the NOT IN clause to the Where Clause.
+      ||(the substr removes the trailing comma from the list).
+      */
+      lv_where := lv_where||' wol_id NOT IN('||SUBSTR(lv_list,1,LENGTH(lv_list)-1)||')';
+      /*
+      ||Initialise the list.
+      */
+      lv_list := NULL;
+      --
+    END add_list_to_where;
+    --
+  BEGIN
+    /*
+    ||Build up a NOT IN clause of wol_ids
+    */
+    FOR i IN 1..pi_exclude_wol_id_tab.count LOOP
+      /*
+      ||Only allowed upto 1000 entries
+      ||for an IN clause so start a new
+      ||one every 1000 records.
+      */
+      IF MOD(i,1000) = 0
+       THEN
+          add_list_to_where;
+      END IF;
+      /*
+      ||Add the current defect_id to the list.
+      */
+      lv_list := lv_list||TO_CHAR(pi_exclude_wol_id_tab(i))||',';
+      --
+    END LOOP;
+    /*
+    ||Mop up any defect_ids that haven't yet
+    ||been added into the where clause.
+    */
+    IF lv_list IS NOT NULL
+     THEN
+        --
+        add_list_to_where;
+        --
+    END IF;
+    --
+    IF lv_where IS NOT NULL
+     THEN
+        lv_where := ' AND ('||lv_where||')';
+    END IF;
+    --
+    RETURN lv_where;
+    --
+  END build_not_in_clause;
+  --
+BEGIN
+  /*
+  ||Build The SELECT Statement To Find Any Incomplete WOLs For The Given Works Order Number.
+  ||
+  ||A List Of WOL_IDs To Be Excluded From The Statement Can Be Passed Into This Function
+  ||To Allow For The Calling Code Having Made And Checked WOL Status Changes (Or Deleted WOLs)
+  ||That Have Not Yet Been Committed To The Database.
+  */
+  lv_sql := 'SELECT 1'
+           ||' FROM dual'
+          ||' WHERE EXISTS(SELECT 1'
+                         ||' FROM work_order_lines'
+                        ||' WHERE wol_works_order_no = '||nm3flx.string(pi_works_order_no)
+                          ||' AND wol_status_code NOT IN(SELECT hsc_status_code'
+                                                       ||' FROM hig_status_codes'
+                                                      ||' WHERE hsc_domain_code = ''WORK_ORDER_LINES'''
+                                                        ||' AND (hsc_allow_feature2 = ''Y'''           -- HELD
+                                                             ||' OR hsc_allow_feature3 = ''Y'''        -- COMPLETED
+                                                             ||' OR (hsc_allow_feature4 = ''Y'''
+                                                                 ||' AND hsc_allow_feature9 != ''Y'')' -- PAID (not PART PAID)
+                                                             ||' OR hsc_allow_feature5 = ''Y''))'      -- NOT DONE
+                          ||build_not_in_clause(pi_exclude_wol_id_tab => pi_exclude_wol_id_tab)
+                          ||')'
+       ;
+  /*
+  ||Execute The Statement.
+  */
+  EXECUTE IMMEDIATE lv_sql
+     INTO lv_result;
+  /*
+  ||If Any Lines Were Found The Works Order Is Not Complete.
+  */
+  IF lv_result = 1
+   THEN
+      lv_retval := FALSE;
+  END IF;
+  /*
+  ||Return The Result.
+  */
+  RETURN lv_retval;
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      /*
+      ||No Lines Found So The Works Order Is Complete.
+      */
+      RETURN TRUE;
+  WHEN others
+   THEN
+      RAISE;
+END works_order_complete;
 --
 -----------------------------------------------------------------------------
 --
@@ -1534,7 +1666,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'WORK_ORDER_LINES'
          AND hsc_allow_feature1 = 'Y'
-         AND hsc_allow_feature10 = 'Y'  
+         AND hsc_allow_feature10 = 'Y'
          AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
                                        AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
@@ -1558,7 +1690,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature3 = 'Y'
-         AND hsc_allow_feature10 = 'N'  
+         AND hsc_allow_feature10 = 'N'
          AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
                                        AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
@@ -1582,7 +1714,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
         FROM hig_status_codes
        WHERE hsc_domain_code = 'DEFECTS'
          AND hsc_allow_feature3 = 'Y'
-         AND hsc_allow_feature10 = 'Y'  
+         AND hsc_allow_feature10 = 'Y'
          AND TRUNC(lv_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(lv_date_raised))
                                        AND NVL(hsc_end_date  ,TRUNC(lv_date_raised))
            ;
@@ -2483,7 +2615,7 @@ END create_defect_work_order;
 PROCEDURE authorise_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                               ,pi_works_order_no  IN work_orders.wor_works_order_no%TYPE
                               ,pi_commit          IN VARCHAR2)
-                             
+
   IS
   --
   lv_auth_own hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
@@ -2858,7 +2990,7 @@ BEGIN
   /*
   ||Check The Date Confirmed Provided.
   */
-  IF pi_date_instructed > sysdate 
+  IF pi_date_instructed > sysdate
    THEN
       raise_application_error(-20085,'Date Confirmed must not be later than today''s date.');
   END IF;
@@ -2961,7 +3093,7 @@ EXCEPTION
 END instruct_work_order;
 --
 -----------------------------------------------------------------------------
---                             
+--
 PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
                               ,pi_commit           IN     VARCHAR2                            DEFAULT 'Y'
                               ,po_error_flag          OUT VARCHAR2
@@ -2989,7 +3121,7 @@ PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_c
     --
     SELECT DISTINCT column_value
           ,NULL
-      BULK COLLECT 
+      BULK COLLECT
       INTO lt_tmp_wo
       FROM TABLE(lo_tmp_wo_no)
          ;
@@ -4721,10 +4853,10 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ,po_auto_instruct   OUT mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
                              ,po_create_wo       OUT VARCHAR2
                              ,po_error           OUT VARCHAR2
-                             ) 
+                             )
   IS
   --
-  TYPE wo_criteria_rec IS RECORD 
+  TYPE wo_criteria_rec IS RECORD
      (mawr_id                 mai_auto_wo_rules.mawr_id%TYPE
      ,mawr_scheme_type        mai_auto_wo_rules.mawr_scheme_type%TYPE
      ,mawr_bud_id             mai_auto_wo_rules.mawr_bud_id%TYPE
@@ -4732,7 +4864,7 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
      ,mawr_aggregate_repairs  mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
      ,mawc_auto_instruct      mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE);
   TYPE wo_criteria_tab IS TABLE OF wo_criteria_rec INDEX BY BINARY_INTEGER;
-  -- 
+  --
   lt_criteria       wo_criteria_tab;
   --
   lv_admin_unit         hig_admin_units.hau_admin_unit%TYPE;
@@ -4745,7 +4877,7 @@ BEGIN
   */
   nm_debug.debug('Looking up Admin Unit');
   lv_admin_unit := nm3net.get_ne(pi_rse_he_id).ne_admin_unit;
-  
+
   nm_debug.debug('Checking rules for Admin Unit = '||lv_admin_unit||
                  ' Road Id = '||pi_rse_he_id);
   nm_debug.debug('Activity = '||pi_activity);
@@ -4753,7 +4885,7 @@ BEGIN
   nm_debug.debug('Defect Code = '||pi_defect_code);
   nm_debug.debug('Action Cat = '||pi_rep_action_cat);
   nm_debug.debug('Treatment = '||pi_treatment);
-  
+
   /*
   ||Check for matching rules.
   */
@@ -4769,18 +4901,18 @@ BEGIN
     FROM mai_auto_wo_rule_criteria,
          mai_auto_wo_rules
    WHERE mawc_mawr_id = mawr_id
-     AND mawr_admin_unit IN 
+     AND mawr_admin_unit IN
                      (SELECT hag_parent_admin_unit
                         FROM hig_admin_groups,
                              hig_admin_units
                        WHERE hag_direct_link='Y'
                          AND hau_admin_unit = hag_parent_admin_unit
-                       START WITH hag_child_admin_unit = lv_admin_unit                                                                     
-                     CONNECT BY 
+                       START WITH hag_child_admin_unit = lv_admin_unit
+                     CONNECT BY
                        PRIOR hag_parent_admin_unit=hag_child_admin_unit
                          AND hag_direct_link='Y'
                        UNION
-                      SELECT lv_admin_unit 
+                      SELECT lv_admin_unit
                         FROM dual)
      AND (pi_rse_he_id IN (SELECT nm_ne_id_of
                    FROM nm_members
@@ -4800,45 +4932,45 @@ BEGIN
      AND pi_rep_action_cat IN (DECODE(mawc_include_temp_repair, 'Y', 'T', '@'),
                                DECODE(mawc_include_perm_repair, 'Y', 'P', '@'))
      AND NVL(mawc_tre_treat_code, NVL(pi_treatment, '@')) = NVL(pi_treatment, '@');
-         
-     IF lt_criteria.count = 0 
+
+     IF lt_criteria.count = 0
        THEN
          --po_error:= 'No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id;
          nm_debug.debug('No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id);
          po_create_wo := 'N';
      ELSE
          FOR i IN 1 .. lt_criteria.count LOOP
-     
+
             /*
             || If mawr_id does not match previous non-null value, got
             || multiple matching rules
             */
-            IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id 
+            IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id
               THEN
                lv_multiple_criteria := TRUE;
                EXIT;
             END IF;
-                  
+
             /*
             || Check if any auto instruct = 'Y' for any matching criteria
             */
             IF lt_criteria(i).mawc_auto_instruct = 'Y'
               THEN
                po_auto_instruct := 'Y';
-                     
+
             END IF;
-                  
+
             po_rule_id      := lt_criteria(i).mawr_id;
             po_scheme_type  := lt_criteria(i).mawr_scheme_type;
             po_bud_id       := lt_criteria(i).mawr_bud_id;
             po_con_id       := lt_criteria(i).mawr_con_id;
             po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
-              
+
             lv_mawr_id := lt_criteria(i).mawr_id;
-              
+
          END LOOP;
          --
-         IF lv_multiple_criteria 
+         IF lv_multiple_criteria
           THEN
              po_rule_id     := NULL;
              po_scheme_type := NULL;
@@ -4851,7 +4983,7 @@ BEGIN
          ELSE
              po_create_wo := 'Y';
          END IF;
-           
+
       END IF;
          --
   END;
@@ -4951,7 +5083,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
     END get_repairs;
   BEGIN
     --
-  
+
     nm_debug.debug('Attempting Auto WO creation for Defect = '||pi_defect_id);
     --
     get_repairs;
@@ -4975,7 +5107,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                          ,po_auto_instruct   => lv_instruct
                          ,po_create_wo       => lv_required
                          ,po_error           => lv_error);
-                         
+
       IF lv_required = 'Y'
        THEN
           lv_create_work_order := TRUE;
@@ -4995,7 +5127,7 @@ nm_debug.debug('lv_con_id = '||lv_con_id);
          gt_work_orders(lv_tab_ind).defect_id := pi_defect_id;
          gt_work_orders(lv_tab_ind).error     := lv_error;
       END IF;
-      
+
       IF lv_required = 'Y'
        THEN
           lt_defects_in(lt_defects_in.count+1).dlt_defect_id    := pi_defect_id;
@@ -5034,7 +5166,7 @@ nm_debug.debug('lv_con_id = '||lv_con_id);
         --
   nm_debug.debug('Creating WO');
         lv_tab_ind := gt_work_orders.count+1;
-        
+
         create_defect_work_order(pi_user_id           => lv_user_id
                                 ,pi_wo_descr          => lv_wo_descr
                                 ,pi_scheme_type       => pi_scheme_type
@@ -5091,7 +5223,7 @@ nm_debug.debug('lv_con_id = '||lv_con_id);
         --
     END IF;
   END create_work_order;
-  
+
 BEGIN
 nm_debug.debug_on;
   gt_work_orders.DELETE;
@@ -5099,7 +5231,7 @@ nm_debug.debug_on;
   ||Build the list of repairs to go on the WO.
   */
   build_def_rep_list(pi_defect_id => pi_defect_id);
-  
+
   /*
   ||Check if auto create criteria matched
   */
@@ -5558,7 +5690,7 @@ END get_wol_target_date;
 --            SELECT rse_sys_flag
 --              INTO lv_sys_flag
 --              FROM road_sections
---             WHERE rse_he_id = pi_ne_id 
+--             WHERE rse_he_id = pi_ne_id
 --                 ;
 --          EXCEPTION
 --           WHEN others
@@ -5802,7 +5934,7 @@ END get_wol_target_date;
 --              FROM road_sections
 --                  ,budgets b
 --                  ,financial_years fy
---             WHERE TRUNC(fyr_end_date) >= TRUNC(lv_date_raised) 
+--             WHERE TRUNC(fyr_end_date) >= TRUNC(lv_date_raised)
 --               AND fy.fyr_id = b.bud_fyr_id
 --               AND bud_id = pi_budget_id
 --               AND b.bud_sys_flag = rse_sys_flag
@@ -6368,7 +6500,7 @@ END get_wol_target_date;
 --            FROM stp_scheme_locations_all
 --           WHERE ssl_ss_id = pi_scheme_id
 --             AND ssl_ne_id = pi_ne_id
---               ;      
+--               ;
 --      END IF;
 --    END get_sections;
 --    --
@@ -6381,7 +6513,7 @@ END get_wol_target_date;
 --          SELECT *
 --            INTO lr_wo_job
 --            FROM stp_scheme_jobs_all
---           WHERE ssj_ss_id = pi_scheme_id 
+--           WHERE ssj_ss_id = pi_scheme_id
 --             AND ssj_nmo_operation = 'WORKS'
 --               ;
 --          /*
@@ -6392,7 +6524,7 @@ END get_wol_target_date;
 --          SELECT *
 --            INTO lr_wo_job
 --            FROM stp_scheme_jobs_all
---           WHERE ssj_ss_id = pi_scheme_id 
+--           WHERE ssj_ss_id = pi_scheme_id
 --             AND ssj_nmo_operation = 'WORKS'
 --             AND ssj_ssl_id = pi_ssl_id
 --               ;
@@ -6536,7 +6668,7 @@ END get_wol_target_date;
 --                 ,ssjd_ssj_id
 --                 ,ssjd_nmo_operation
 --                 ,ssjd_data_item
---                 ,ssjd_value) 
+--                 ,ssjd_value)
 --           VALUES(stp_ssjd_id_seq.nextval
 --                 ,lt_job_id(i)
 --                 ,'WORKS'
@@ -6544,7 +6676,7 @@ END get_wol_target_date;
 --                 ,po_work_order_no)
 --      ;
 --    END LOOP;
---    COMMIT;    
+--    COMMIT;
 --  END update_jobs;
 --BEGIN
 --nm_debug.debug_on;
@@ -6685,7 +6817,7 @@ END get_forward_wo_to_user_lov;
 --
 PROCEDURE forward_works_order(pi_works_order_no     IN     work_orders.wor_works_order_no%TYPE
                              ,pi_forward_to_user_id IN     hig_users.hus_user_id%TYPE
-                             ,pi_commit             IN     VARCHAR2 DEFAULT 'Y' 
+                             ,pi_commit             IN     VARCHAR2 DEFAULT 'Y'
                              ,po_error_text            OUT VARCHAR2)
   IS
   --

@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.4   Jun 30 2010 11:42:14   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.5   Sep 01 2010 16:33:20   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Jun 30 2010 11:42:14  $
---       Date fetched Out : $Modtime:   Jun 23 2010 17:24:04  $
---       PVCS Version     : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Sep 01 2010 16:33:20  $
+--       Date fetched Out : $Modtime:   Sep 01 2010 13:30:42  $
+--       PVCS Version     : $Revision:   3.5  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -109,6 +109,12 @@ FUNCTION get_wo_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION works_order_complete(pi_works_order_no      work_orders.wor_works_order_no%TYPE
+                             ,pi_exclude_wol_id_tab  nm3type.tab_number)
+  RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_id%TYPE
                                   ,pi_wo_descr          IN  work_orders.wor_descr%TYPE
                                   ,pi_scheme_type       IN  work_orders.wor_scheme_type%TYPE
@@ -144,7 +150,7 @@ PROCEDURE instruct_work_order(pi_works_order_no  IN  work_orders.wor_works_order
                              ,po_error_text      OUT VARCHAR2);
 --
 -----------------------------------------------------------------------------
---                             
+--
 --PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_confirmed%TYPE DEFAULT SYSDATE
 --                              ,pi_commit           IN     VARCHAR2                            DEFAULT 'Y'
 --                              ,po_error_flag          OUT VARCHAR2
@@ -247,7 +253,7 @@ FUNCTION get_forward_wo_to_user_lov(pi_works_order_no IN work_orders.wor_works_o
 --
 PROCEDURE forward_works_order(pi_works_order_no     IN  work_orders.wor_works_order_no%TYPE
                              ,pi_forward_to_user_id IN  hig_users.hus_user_id%TYPE
-                             ,pi_commit             IN  VARCHAR2 DEFAULT 'Y' 
+                             ,pi_commit             IN  VARCHAR2 DEFAULT 'Y'
                              ,po_error_text         OUT VARCHAR2);
 --
 -----------------------------------------------------------------------------
