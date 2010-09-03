@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.6   May 27 2010 19:07:08   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.7   Sep 03 2010 18:23:26   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   May 27 2010 19:07:08  $
---       Date fetched Out : $Modtime:   May 27 2010 19:05:52  $
---       PVCS Version     : $Revision:   2.6  $
+--       Date into PVCS   : $Date:   Sep 03 2010 18:23:26  $
+--       Date fetched Out : $Modtime:   Sep 03 2010 18:07:46  $
+--       PVCS Version     : $Revision:   2.7  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Thu May 27  19:02:48 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri Sep 03  17:00:55 2010 by Server Generator 10.1.2.9.28
   
 
 PROMPT Creating Index 'ATV_INDEX_P1'
@@ -641,7 +641,7 @@ CREATE UNIQUE INDEX SCHI_INDEX_P1 ON SCHEDULE_ITEMS
 /
 
 PROMPT Creating Index 'SCHR_INDEX_P1'
-CREATE UNIQUE INDEX SCHR_INDEX_P1 ON SCHEDULE_ROADS
+CREATE INDEX SCHR_INDEX_P1 ON SCHEDULE_ROADS
  (SCHR_SCHD_ID
  ,SCHR_STA_ITEM_CODE
  ,SCHR_RSE_HE_ID)
