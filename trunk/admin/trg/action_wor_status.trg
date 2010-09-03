@@ -1,89 +1,103 @@
 CREATE OR REPLACE TRIGGER action_wor_status
-AFTER UPDATE
-OF    wol_status_code
-ON    work_order_lines
-FOR EACH ROW
+  AFTER UPDATE OF wol_status_code
+  ON work_order_lines
+  FOR EACH ROW
 DECLARE
------------------------------------------------------------------------------
---
---   PVCS Identifiers :-
---
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.0   Nov 05 2009 11:18:52   gjohnson  $
---       Module Name      : $Workfile:   action_wor_status.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:52  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:16:38  $
---       Version          : $Revision:   3.0  $
---
---
------------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
-
-  l_doc_id docs.doc_id%type;
-  l_num number;
-  l_status work_order_lines.wol_status_code%type;
---
-  cursor get_cur_wor_docs is
-    select doc_id
-    from   doc_assocs, docs, doc_types
- -- where  das_rec_id = :new.def_defect_id  -- siftikhar log 702699 01/02/2006
-    where  das_rec_id = to_char(:new.wol_works_order_no)
-      and  das_table_name = 'WORK_ORDERS'
-      and  das_doc_id = doc_id
-      and  doc_dtp_code = dtp_code
-      and  dtp_allow_complaints = 'Y';
---
-  cursor get_open_wol_docs is
-    select 1
-    from   doc_assocs
---  where  das_rec_id = rep_def_defect_id   --siftikhar log 702699 01/02/2006
---    and  das_rec_id = :new.def_defect_id
-    where  das_rec_id = to_char(:new.wol_works_order_no)
-      and  das_table_name = 'WORK_ORDERS'
-      and  das_doc_id = l_doc_id
-      and  not exists (select 'exists'
-                       from hig_status_codes
-                       where hsc_domain_code = 'WORK_ORDER_LINES'
-                       and :NEW.wol_status_code = hsc_status_code
-                       and hsc_allow_feature7 = 'Y'
-                       and sysdate between nvl(hsc_start_date, sysdate)
-                       and nvl(hsc_end_date, sysdate));
---
-  cursor get_doc_status is
-    select hsc_status_code
-    from   hig_status_codes
-    where  hsc_domain_code = 'COMPLAINTS'
-      and  hsc_allow_feature5 = 'Y'
-      and  hsc_allow_feature6 = 'N'
-      and  sysdate between nvl(hsc_start_date, sysdate)
-                       and nvl(hsc_end_date, sysdate);
---
+  -----------------------------------------------------------------------------
+  --
+  --   PVCS Identifiers :-
+  --
+  --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.1   Sep 03 2010 17:36:54   Mike.Huitson  $
+  --       Module Name      : $Workfile:   action_wor_status.trg  $
+  --       Date into PVCS   : $Date:   Sep 03 2010 17:36:54  $
+  --       Date fetched Out : $Modtime:   Sep 03 2010 12:33:54  $
+  --       Version          : $Revision:   3.1  $
+  --
+  --
+  -----------------------------------------------------------------------------
+  --    Copyright (c) exor corporation ltd, 2009
+  -----------------------------------------------------------------------------
+  l_doc_id  docs.doc_id%TYPE;
+  l_num     NUMBER;
+  l_status  work_order_lines.wol_status_code%TYPE;
+  --
+  CURSOR get_cur_wor_docs(cp_works_order_no  work_order_lines.wol_works_order_no%TYPE)
+      IS
+  SELECT doc_id
+    FROM doc_assocs
+        ,docs
+        ,doc_types
+   WHERE das_rec_id = cp_works_order_no
+     AND das_table_name = 'WORK_ORDERS'
+     AND das_doc_id = doc_id
+     AND doc_dtp_code = dtp_code
+     AND dtp_allow_complaints = 'Y'
+       ;
+  --
+  CURSOR get_open_wol_docs(cp_works_order_no   work_order_lines.wol_works_order_no%TYPE
+                          ,cp_wol_status_code  work_order_lines.wol_status_code%TYPE)
+      IS
+  SELECT 1
+    FROM doc_assocs
+   WHERE das_rec_id = cp_works_order_no
+     AND das_table_name = 'WORK_ORDERS'
+     AND das_doc_id = l_doc_id
+     AND NOT EXISTS(SELECT 'exists'
+                      FROM hig_status_codes
+                     WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+                       AND hsc_status_code = cp_wol_status_code
+                       AND hsc_allow_feature7 = 'Y'
+                       AND SYSDATE BETWEEN NVL(hsc_start_date, SYSDATE)
+                                       AND NVL(hsc_end_date, SYSDATE))
+       ;
+  --
+  CURSOR get_doc_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'COMPLAINTS'
+     AND hsc_allow_feature5 = 'Y'
+     AND hsc_allow_feature6 = 'N'
+     AND SYSDATE BETWEEN NVL(hsc_start_date, SYSDATE)
+                     AND NVL(hsc_end_date, SYSDATE)
+       ;
+  --
 BEGIN
-
-  if :new.wol_status_code is not null then
-     for get_cur_wor_docs_rec in get_cur_wor_docs LOOP
-         l_doc_id := get_cur_wor_docs_rec.doc_id;
-         open get_open_wol_docs;
-         fetch get_open_wol_docs into l_num;
-         if get_open_wol_docs%notfound then
-            close get_open_wol_docs;
-            open get_doc_status;
-            fetch get_doc_status into l_status;
-            if get_doc_status%found then
-               close get_doc_status;
-               update docs
-               set doc_status_code = l_status,
-                   doc_reason = 'Works Order actioned',
-              doc_compl_complete = sysdate
-               where doc_id = l_doc_id;
-            else
-               close get_doc_status;
-            end if;
-         else
-            close get_open_wol_docs;
-         end if;
-     end LOOP;
-  end if;
-
+  IF :new.wol_status_code IS NOT NULL
+   THEN
+      FOR get_cur_wor_docs_rec IN get_cur_wor_docs(:new.wol_works_order_no) LOOP
+        --
+        l_doc_id := get_cur_wor_docs_rec.doc_id;
+        --
+        OPEN  get_open_wol_docs(:new.wol_works_order_no
+                               ,:new.wol_status_code);
+        FETCH get_open_wol_docs
+         INTO l_num;
+        IF get_open_wol_docs%NOTFOUND
+         THEN
+            CLOSE get_open_wol_docs;
+            --
+            OPEN  get_doc_status;
+            FETCH get_doc_status
+             INTO l_status;
+            IF get_doc_status%FOUND
+             THEN
+                CLOSE get_doc_status;
+                --
+                UPDATE docs
+                   SET doc_status_code = l_status
+                      ,doc_reason = 'Works Order actioned'
+                      ,doc_compl_complete = SYSDATE
+                 WHERE doc_id = l_doc_id
+                   AND doc_compl_complete IS NULL
+                     ;
+            ELSE
+                CLOSE get_doc_status;
+            END IF;
+        ELSE
+            CLOSE get_open_wol_docs;
+        END IF;
+      END LOOP;
+  END IF;
 END;
 /
