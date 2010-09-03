@@ -6,11 +6,11 @@ CREATE OR REPLACE PACKAGE interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.1   Sep 03 2009 12:53:50   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.2   Sep 03 2010 09:16:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkh  $
---       Date into SCCS   : $Date:   Sep 03 2009 12:53:50  $
---       Date fetched Out : $Modtime:   Sep 02 2009 13:04:08  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Sep 03 2010 09:16:56  $
+--       Date fetched Out : $Modtime:   Sep 02 2010 15:05:56  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.16
 ----
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE interfaces IS
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.1  $"';
+    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.2  $"';
     g_file_handle             utl_file.file_type ;
     extract_filename 		varchar2(2000);
 --</GLOBVAR>
@@ -183,6 +183,14 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 	     ,p_con_id	   IN OUT interface_claims_wor.icwor_con_id%TYPE
 	     ,p_record     IN     varchar2
 	     ,p_error	   IN OUT varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="validate_overbudget">
+    PROCEDURE validate_overbudget
+    (p_ih_id   IN interface_claims_wol.icwol_ih_id%TYPE
+    ,p_wol_id IN interface_claims_wol.icwol_wol_id%TYPE);
 --</PROC>
 --
 -----------------------------------------------------------------------------
