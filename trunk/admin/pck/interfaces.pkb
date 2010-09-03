@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.25   Aug 18 2010 11:48:42   Linesh.Sorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.26   Sep 03 2010 09:17:26   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 18 2010 11:48:42  $
---       Date fetched Out : $Modtime:   Aug 18 2010 11:46:28  $
---       SCCS Version     : $Revision:   2.25  $
+--       Date into SCCS   : $Date:   Sep 03 2010 09:17:26  $
+--       Date fetched Out : $Modtime:   Sep 03 2010 09:13:58  $
+--       SCCS Version     : $Revision:   2.26  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.25  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.26  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2553,6 +2553,37 @@ BEGIN
   END IF ;
 END;
 
+---------------------------------------------------------------------
+-- reject files where a WOL would cause an over-budget
+-- 
+PROCEDURE validate_overbudget
+(p_ih_id   IN interface_claims_wol.icwol_ih_id%TYPE
+,p_wol_id IN interface_claims_wol.icwol_wol_id%TYPE) IS
+
+ PRAGMA AUTONOMOUS_TRANSACTION;
+ 
+BEGIN
+      UPDATE interface_headers
+      SET    ih_error = 'A Works Order line has been rejected.  '
+            ,ih_status = 'R'
+      WHERE  ih_id = p_ih_id
+        AND  ih_status != 'R';
+
+      UPDATE interface_claims_wor
+      SET    icwor_error ='A Works Order line has been rejected.'
+            ,icwor_status = 'R'
+      WHERE  icwor_ih_id = p_ih_id
+        AND  icwor_status != 'R';
+       
+      UPDATE interface_claims_wol
+      SET    icwol_error = 'Cannot complete operation. Budget limit exceeded.'
+            ,icwol_status = 'R'
+      WHERE  icwol_ih_id = p_ih_id
+        AND  icwol_wol_id = p_wol_id
+        AND  icwol_status != 'R';
+       
+      COMMIT;
+END;
 ---------------------------------------------------------------------
 -- Populates interface tables with data read in from a Completion file.
 -- Called from the completion_file_ph1 procedure and from the claims
