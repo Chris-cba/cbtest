@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.4   May 21 2010 18:12:56   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.5   Sep 07 2010 17:21:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   maisplit.pkb  $
---       Date into SCCS   : $Date:   May 21 2010 18:12:56  $
---       Date fetched Out : $Modtime:   May 21 2010 17:58:28  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Sep 07 2010 17:21:08  $
+--       Date fetched Out : $Modtime:   Sep 07 2010 17:15:02  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based onSCCS Version     : 1.7
 --
 -- This package contains procedures and functions which are required by
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.5  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maisplit';
@@ -52,194 +52,192 @@ END get_body_version;
 --**** SPLIT PROCEDURES *****
 -----------------------------------------------------------------------------
 
-  procedure check_data (p_id        in     number,
-                        p_chain     in     number,
-                        p_effective in     date,
-                        p_errors    in out number,
-                        p_err_text  in out varchar2) is
+PROCEDURE check_data(p_id        IN     NUMBER
+                    ,p_chain     IN     NUMBER
+                    ,p_effective IN     DATE
+                    ,p_errors    IN OUT NUMBER
+                    ,p_err_text  IN OUT VARCHAR2)
+  IS
   --
   -- Before a section is split, associated Maint. Manager data is checked here.
   -- Associated data for other products is checked in separate procedures
   -- eg. Structures data is checked in the STRSPLIT.CHECK_DATA procedure.
   --
-
-    l_rse_sys_flag        road_segs.rse_sys_flag%type;
-    l_rse_agency          road_segs.rse_agency%type;
-    l_rse_linkcode        road_segs.rse_linkcode%type;
-    l_rse_sect_no         road_segs.rse_sect_no%type;
-    l_rse_length          road_segs.rse_length%type;
-    l_rse_start_date      road_segs.rse_start_date%type;
-
-    l_message      varchar2(80);
-
-    cursor c1 is
-      select rse_sys_flag,
-             rse_agency,
-             rse_linkcode,
-             rtrim(rse_sect_no),
-             rse_length,
-             rse_start_date
-      from   road_segs
-      where  rse_he_id = p_id;
-
---    cursor c2 is
---      select 'ERROR : Inventory created or made historical after Effective Date'
---      from   inv_items_all
---      where  iit_rse_he_id = p_id
---      and    p_effective < greatest(trunc(iit_cre_date),
---             nvl(trunc(iit_end_date), p_effective));
-
-    cursor c3 is
-      select 'ERROR : Inspection or work completed after Effective Date'
-      from   activities_report
-      where  are_rse_he_id = p_id
-      and    p_effective < nvl(trunc(are_date_work_done), p_effective+1);
-
-    cursor c4 is
-      select 'ERROR : Defects completed after Effective Date'
-      from   defects
-      where  def_rse_he_id = p_id
-      and    nvl(trunc(def_date_compl), p_effective) > p_effective;
---
--- SM 09022006 - Removed the check for the wor_date_closed is null so that the edit can be done regardless of
--- open works orders.
---
-    cursor c5 is
-      select 'ERROR : Work Orders open or completed after Effective Date'
-      from   work_orders,
-             work_order_lines
-      where  wor_works_order_no = wol_works_order_no
-      and    wol_rse_he_id = p_id
-      and   (/*wor_date_closed is null
-      or     */p_effective < trunc(wor_date_closed));
-
-    cursor c6 is
-      select 'ERROR : Ext Activity Road Usages open or closed after Effective Date'
-      from   ext_act_road_usage
-      where  exu_rse_he_id = p_id
-      and    (exu_sign_off_date is null
-       or     trunc(exu_sign_off_date) > p_effective);
-
-    cursor c7 is
-      select 'ERROR : Incomplete Inventory (Stage1) Load'
-      from   hhinv_load_1
-      where  rec_type = 'B'
-      and    substr(full_value,1,10) = upper( l_rse_agency||l_rse_linkcode)
-      and   (decode(l_rse_sys_flag,'D',SUBSTR(full_value,12,2)
-                                ,SUBSTR(full_value,12,5)))=upper(l_rse_sect_no);
+  l_rse_sys_flag    road_segs.rse_sys_flag%TYPE;
+  l_rse_agency      road_segs.rse_agency%TYPE;
+  l_rse_linkcode    road_segs.rse_linkcode%TYPE;
+  l_rse_sect_no     road_segs.rse_sect_no%TYPE;
+  l_rse_length      road_segs.rse_length%TYPE;
+  l_rse_start_date  road_segs.rse_start_date%TYPE;
+  l_message         VARCHAR2(80);
+  --
+  CURSOR c1(cp_id nm_elements_all.ne_id%TYPE)
+      IS
+  SELECT rse_sys_flag
+        ,rse_agency
+        ,rse_linkcode
+        ,RTRIM(rse_sect_no)
+        ,rse_length
+        ,rse_start_date
+    FROM road_segs
+   WHERE rse_he_id = cp_id
+       ;
+  --
+  CURSOR c3(cp_id         nm_elements_all.ne_id%TYPE
+           ,cp_effective  DATE)
+      IS
+  SELECT 'ERROR : Inspection or work completed after Effective Date'
+    FROM activities_report
+   WHERE are_rse_he_id = cp_id
+     AND cp_effective < NVL(TRUNC(are_date_work_done),cp_effective+1)
+       ;
+  --
+  CURSOR c4(cp_id         nm_elements_all.ne_id%TYPE
+           ,cp_effective  DATE)
+      IS
+  SELECT 'ERROR : Defects completed after Effective Date'
+    FROM defects
+   WHERE def_rse_he_id = cp_id
+     AND NVL(TRUNC(def_date_compl),cp_effective) > cp_effective
+       ;
+  --
+  -- SM 09022006 - Removed the check for the wor_date_closed is null so that the edit can be done regardless of
+  -- open works orders.
+  --
+  CURSOR c5(cp_id         nm_elements_all.ne_id%TYPE
+           ,cp_effective  DATE)
+      IS
+  SELECT 'ERROR : Work Orders open or completed after Effective Date'
+    FROM work_orders
+        ,work_order_lines
+   WHERE wor_works_order_no = wol_works_order_no
+     AND wol_rse_he_id = cp_id
+     AND (cp_effective < TRUNC(wor_date_closed))
+       ;
+  --
+  CURSOR c6(cp_id         nm_elements_all.ne_id%TYPE
+           ,cp_effective  DATE)
+      IS
+  SELECT 'ERROR : Ext Activity Road Usages open or closed after Effective Date'
+    FROM ext_act_road_usage
+   WHERE exu_rse_he_id = cp_id
+     AND (exu_sign_off_date IS NULL
+          OR TRUNC(exu_sign_off_date) > cp_effective)
+       ;
+  --
+  CURSOR c7(cp_rse_agency    road_segs.rse_agency%TYPE
+           ,cp_rse_linkcode  road_segs.rse_linkcode%TYPE
+           ,cp_rse_sys_flag  road_segs.rse_sys_flag%TYPE
+           ,cp_rse_sect_no   road_segs.rse_sect_no%TYPE)
+      IS
+  SELECT 'ERROR : Incomplete Inventory (Stage1) Load'
+    FROM hhinv_load_1
+   WHERE rec_type = 'B'
+     AND SUBSTR(full_value,1,10) = UPPER(cp_rse_agency||cp_rse_linkcode)
+     AND (DECODE(cp_rse_sys_flag,'D',SUBSTR(full_value,12,2)
+                                    ,SUBSTR(full_value,12,5))) = UPPER(cp_rse_sect_no)
+       ;
   --
   -- if Stage1 suceeds, then subsequent stages might fail for various reasons
   -- including Inventory having been loaded for a Section which has not yet
   -- been created; so test not only RSE_HE_ID but also Agency, Link, Section
   -- NOTE: this test will identify any stage after Stage1 which is incomplete
   --
-    cursor c8 is
-      select 'ERROR : Incomplete Inventory (non-Stage1) load'
-      from   hhinv_sect_log HSL
-      where ((HSL.linkcode = upper(l_rse_agency||l_rse_linkcode) and
-              HSL.section_code = upper(l_rse_sect_no))
-       or    (HSL.linkcode = upper(l_rse_linkcode) and
-              HSL.section_code = upper(l_rse_sect_no))
-       or    (HSL.he_id = p_id)
-             )
-      and    (HSL.error_msg IS NOT NULL OR
-              HSL.error_level IS NOT NULL);
-
-    cursor c9 is
-      select 'ERROR : Incomplete Inspection load'
-      from   hh_load_recs HLR
-      where  upper( HLR.record_type) = 'G'
-      and    RTRIM(SUBSTR( HLR.record_text,1,INSTR( HLR.record_text,',')),',')||
-             LTRIM(SUBSTR( HLR.record_text,INSTR( HLR.record_text,','),
-            (INSTR( HLR.record_text,',',1,2)-INSTR( HLR.record_text,','))),', 0') =
-             upper(l_rse_agency||l_rse_linkcode||LTRIM(l_rse_sect_no,'0 '));
-
-    begin
-
-    open c1;
-    fetch c1 into l_rse_sys_flag,
-             l_rse_agency,
-             l_rse_linkcode,
-             l_rse_sect_no,
-             l_rse_length,
-             l_rse_start_date;
-    close c1;
-
---    open c2;
---    fetch c2 into l_message;
---    if c2%found then
---      p_errors := p_errors + 1;
---      dbms_output.put_line(l_message);
---      p_err_text := l_message;
---    end if;
---    close c2;
-
-    open c3;
-    fetch c3 into l_message;
-    if c3%found then
+  CURSOR c8(cp_id            nm_elements_all.ne_id%TYPE
+           ,cp_rse_agency    road_segs.rse_agency%TYPE
+           ,cp_rse_linkcode  road_segs.rse_linkcode%TYPE
+           ,cp_rse_sect_no   road_segs.rse_sect_no%TYPE)
+      IS
+  SELECT 'ERROR : Incomplete Inventory (non-Stage1) load'
+    FROM hhinv_sect_log hsl
+   WHERE ((hsl.linkcode = UPPER(cp_rse_agency||cp_rse_linkcode)
+           AND hsl.section_code = UPPER(cp_rse_sect_no))
+          OR (hsl.linkcode = UPPER(cp_rse_linkcode)
+              AND hsl.section_code = UPPER(cp_rse_sect_no))
+          OR (hsl.he_id = cp_id))
+     AND (hsl.error_msg IS NOT NULL
+          OR hsl.error_level IS NOT NULL)
+       ;
+  --
+BEGIN
+  --
+  OPEN  c1(p_id);
+  FETCH c1
+  INTO l_rse_sys_flag
+      ,l_rse_agency
+      ,l_rse_linkcode
+      ,l_rse_sect_no
+      ,l_rse_length
+      ,l_rse_start_date;
+  CLOSE c1;
+  --
+  OPEN  c3(p_id,p_effective);
+  FETCH c3
+   INTO l_message;
+  IF c3%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c3;
-
-    open c4;
-    fetch c4 into l_message;
-    if c4%found then
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c3;
+  --
+  OPEN  c4(p_id,p_effective);
+  FETCH c4
+   INTO l_message;
+  IF c4%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c4;
-
-    open c5;
-    fetch c5 into l_message;
-    if c5%found then
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c4;
+  --
+  OPEN  c5(p_id,p_effective);
+  FETCH c5
+   INTO l_message;
+  IF c5%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c5;
-
-    open c6;
-    fetch c6 into l_message;
-    if c6%found then
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c5;
+  --
+  OPEN  c6(p_id,p_effective);
+  FETCH c6
+   INTO l_message;
+  IF c6%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c6;
-
-    open c7;
-    fetch c7 into l_message;
-    if c7%found then
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c6;
+  --
+  OPEN  c7(l_rse_agency
+          ,l_rse_linkcode
+          ,l_rse_sys_flag
+          ,l_rse_sect_no);
+  FETCH c7
+   INTO l_message;
+  IF c7%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c7;
-
-    open c8;
-    fetch c8 into l_message;
-    if c8%found then
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c7;
+  --
+  OPEN  c8(p_id
+          ,l_rse_agency
+          ,l_rse_linkcode
+          ,l_rse_sect_no);
+  FETCH c8
+   INTO l_message;
+  IF c8%FOUND
+   THEN
       p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c8;
-
-    open c9;
-    fetch c9 into l_message;
-    if c9%found then
-      p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_err_text := p_err_text||chr(13)||l_message;
-    end if;
-    close c9;
-
-    end check_data;
-
------------------------------------------------------------------------------
+      p_err_text := p_err_text||CHR(13)||l_message;
+  END IF;
+  CLOSE c8;
+  --
+END check_data;-----------------------------------------------------------------------------
   procedure create_new_insp (p_old_insp in number
                             ,p_new_insp in number
                             ,p_road     in number
@@ -507,15 +505,7 @@ END get_body_version;
       and    def_superseded_flag = 'N'
       and    def_are_report_id   = l_insp;
 
---    cursor c7 is
---      select iit_item_id      old_item
---      ,      iit_primary_key  iit_primary_key
---      ,      min(iih_new_item_id)  new_item
---      from   inv_items_all
---      ,      inv_item_history
---      where  iit_item_id = iih_item_id
---      and    iih_new_rse_he_id in (p_id1, p_id2)
---      group by iit_item_id, iit_primary_key;
+
 
   begin
 
