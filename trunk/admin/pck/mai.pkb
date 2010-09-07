@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.19   Aug 13 2010 18:39:08   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.20   Sep 07 2010 11:51:14   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Aug 13 2010 18:39:08  $
---       Date fetched Out : $Modtime:   Aug 05 2010 18:27:40  $
---       SCCS Version     : $Revision:   2.19  $
+--       Date into SCCS   : $Date:   Sep 07 2010 11:51:14  $
+--       Date fetched Out : $Modtime:   Sep 07 2010 11:48:24  $
+--       SCCS Version     : $Revision:   2.20  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.19  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.20  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -201,52 +201,43 @@ EXCEPTION
   WHEN OTHERS
    THEN
       RETURN('NOT PARSED');
-END;
-  -----------------------------------------------------------------------------
-  -- Function to set the Context. SM-07102004
-  PROCEDURE set_context (pi_namespace IN varchar2
-                        ,pi_attribute IN varchar2
-                        ,pi_value     IN varchar2
-                        ) IS
-  BEGIN
+END parse_inv_condition;
+--
+-----------------------------------------------------------------------------
+-- Function to retrieve Context. SM-07102004
+FUNCTION get_context(pi_namespace IN varchar2
+                    ,pi_attribute IN varchar2)
+  RETURN varchar2 IS
   --
-      dbms_session.set_context(namespace => pi_namespace
-                              ,ATTRIBUTE => pi_attribute
-                              ,VALUE     => pi_value
-                              );
+BEGIN
   --
-  END set_context;
+  RETURN SYS_CONTEXT(pi_namespace,pi_attribute);
   --
-  -----------------------------------------------------------------------------
-  -- Function to retrieve Context. SM-07102004
-  FUNCTION get_context (pi_namespace IN varchar2
-                       ,pi_attribute IN varchar2
-                       ) RETURN varchar2 IS
+END get_context;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION wol_id_nextseq
+  RETURN NUMBER IS
   --
-  BEGIN
+  cursor c1
+      is
+  select wol_id_seq.nextval
+    from sys.dual
+       ;
   --
-     RETURN sys_context(pi_namespace, pi_attribute);
+  l_wol_id work_order_lines.wol_id%TYPE;
   --
-  END get_context;
+BEGIN
   --
-  -----------------------------------------------------------------------------
-  FUNCTION wol_id_nextseq
-           RETURN number
-           IS
-
-    cursor c1 is
-    select wol_id_seq.nextval
-    from   sys.dual;
-
-    l_wol_id work_order_lines.wol_id%TYPE;
-
-  BEGIN
-    open c1;
-    fetch c1 into l_wol_id;
-    close c1;
-
-    return l_wol_id;
-  END wol_id_nextseq;
+  OPEN  c1;
+  FETCH c1
+   INTO l_wol_id;
+  CLOSE c1;
+  --
+  RETURN l_wol_id;
+  --
+END wol_id_nextseq;
 -----------------------------------------------------------------------------
 FUNCTION boq_id_nextseq RETURN number IS
   --
@@ -1662,7 +1653,7 @@ FUNCTION create_defect(p_rse_he_id         IN defects.def_rse_he_id%TYPE
                       ,p_x_sect            IN defects.def_x_sect%TYPE
                       ,p_easting           IN defects.def_easting%TYPE
                       ,p_northing          IN defects.def_northing%TYPE
-                      ,p_response_category IN defects.def_response_category%TYPE) 
+                      ,p_response_category IN defects.def_response_category%TYPE)
   RETURN NUMBER IS
   --
   l_defect_id   defects.def_defect_id%TYPE;
@@ -3318,12 +3309,16 @@ END;
 -- Start WAG changes.
 ------------------------------------------------------------------------------------------
 --
-FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN, lc_agency VARCHAR2) RETURN VARCHAR2 IS
---
+FUNCTION GET_ICB_FGAC_CONTEXT(Top       BOOLEAN
+                             ,lc_agency VARCHAR2)
+  RETURN VARCHAR2 IS
+  --
   CURSOR C2
       IS
   SELECT hau_authority_code
-    FROM hig_admin_groups, hig_admin_units, hig_users
+    FROM hig_admin_groups
+        ,hig_admin_units
+        ,hig_users
    WHERE hau_level = 2
      AND hag_parent_admin_unit = hau_admin_unit
      AND hag_child_admin_unit = hus_admin_unit
@@ -3337,15 +3332,14 @@ FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN, lc_agency VARCHAR2) RETURN VARCHAR2 I
    WHERE hau_admin_unit = 1
        ;
   --
-  l_dummy VARCHAR2(1);
-  --
-  l_default_agency VARCHAR2(4);
+  l_dummy           VARCHAR2(1);
+  l_default_agency  VARCHAR2(4);
   --
 BEGIN
   --
-  OPEN C3;
+  OPEN  C3;
   FETCH C3
-  INTO l_default_agency;
+   INTO l_default_agency;
   CLOSE C3;
   --
   IF NOT top
@@ -3370,7 +3364,6 @@ BEGIN
           IF hig.get_sysopt('ICBFGAC') = 'Y'
            AND lc_agency IS NOT NULL
            THEN
-              --
               l_default_agency := lc_agency;
           ELSE
               l_default_agency := NULL;
@@ -3389,12 +3382,17 @@ FUNCTION GET_ICB_FGAC_CONTEXT(Top BOOLEAN) RETURN VARCHAR2 IS
   --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
   --
 BEGIN
-  IF hig.get_sysopt('ICBFGAC') = 'Y' THEN
-    set_context(g_context, 'Agency', get_icb_fgac_context(Top,''));
-    --DBMS_SESSION.SET_CONTEXT (c_context, 'Agency', get_icb_fgac_context(Top,''));
+  --
+  IF hig.get_sysopt('ICBFGAC') = 'Y'
+   THEN
+      --
+      nm3ctx.set_context(g_ctx_agency_attr,get_icb_fgac_context(Top,NULL));  
+      --set_context(g_context, 'Agency', get_icb_fgac_context(Top,''));
+      --DBMS_SESSION.SET_CONTEXT (c_context, 'Agency', get_icb_fgac_context(Top,''));
   END IF;
   --
-  RETURN MAI.GET_ICB_FGAC_CONTEXT(Top,NULL);
+  RETURN mai.get_icb_fgac_context(Top,NULL);
+  --
 END;
 
 FUNCTION GET_ICB_FGAC_CONTEXT(lc_agency VARCHAR2) RETURN VARCHAR2 IS
@@ -3402,74 +3400,79 @@ FUNCTION GET_ICB_FGAC_CONTEXT(lc_agency VARCHAR2) RETURN VARCHAR2 IS
   --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
   --
 BEGIN
-  IF hig.get_sysopt('ICBFGAC') = 'Y' THEN
-    set_context(g_context, 'Agency', lc_agency);
-    --DBMS_SESSION.SET_CONTEXT (c_context, 'Agency', lc_agency);
+  --
+  IF hig.get_sysopt('ICBFGAC') = 'Y'
+   THEN
+      --
+      nm3ctx.set_context(g_ctx_agency_attr,lc_agency);
+      --set_context(g_context, 'Agency', lc_agency);
+      --DBMS_SESSION.SET_CONTEXT (c_context, 'Agency', lc_agency);
   END IF;
   --
-  RETURN MAI.GET_ICB_FGAC_CONTEXT(FALSE, lc_agency);
+  RETURN mai.get_icb_fgac_context(FALSE,lc_agency);
+  --
 END;
 --
 ------------------------------------------------------------------------------------------
 --
-FUNCTION ICB_FGAC_PREDICATE(schema_in VARCHAR2,
-                            name_in   VARCHAR2)
-                             RETURN VARCHAR2 IS
-  --
-  --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
+FUNCTION ICB_FGAC_PREDICATE(schema_in VARCHAR2
+                           ,name_in   VARCHAR2)
+  RETURN VARCHAR2 IS
   --
   lc_dummy HIG_USERS.HUS_AGENT_CODE%TYPE;
   --
 BEGIN
-      --IF SYS_CONTEXT(c_context,'AGENCY') IS NULL THEN
-      IF get_context(g_context,'AGENCY') IS NULL THEN
-        lc_dummy := get_icb_fgac_context(FALSE);
-      END IF;
-      --
-      RETURN 'icb_agency_code = NVL(SYS_CONTEXT('''||g_context||''',''AGENCY''),icb_agency_code)';
+  --
+  IF get_context(g_context,g_ctx_agency_attr) IS NULL
+   THEN
+      lc_dummy := get_icb_fgac_context(FALSE);
+  END IF;
+  --
+  RETURN 'icb_agency_code = NVL(SYS_CONTEXT('''||g_context||''','''||g_ctx_agency_attr||'''),icb_agency_code)';
+  --
 END;
 --
 ------------------------------------------------------------------------------------------
 --
-FUNCTION ICB_BUDGET_FGAC_PREDICATE(schema_in VARCHAR2,
-                                   name_in   VARCHAR2)
-                                   RETURN VARCHAR2 IS
-  --
-  --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
+FUNCTION ICB_BUDGET_FGAC_PREDICATE(schema_in VARCHAR2
+                                  ,name_in   VARCHAR2)
+  RETURN VARCHAR2 IS
   --
   lc_dummy HIG_USERS.HUS_AGENT_CODE%TYPE;
   --
 BEGIN
-      --IF SYS_CONTEXT(c_context,'AGENCY') IS NULL THEN
-      IF get_context(g_context,'AGENCY') IS NULL THEN
-        lc_dummy := get_icb_fgac_context(FALSE);
-      END IF;
-      --
-      RETURN 'bud_agency = NVL(SYS_CONTEXT('''||g_context||''',''AGENCY''),bud_agency)';
+  --
+  IF get_context(g_context,g_ctx_agency_attr) IS NULL
+   THEN
+      lc_dummy := get_icb_fgac_context(FALSE);
+  END IF;
+  --
+  RETURN 'bud_agency = NVL(SYS_CONTEXT('''||g_context||''','''||g_ctx_agency_attr||'''),bud_agency)';
+  --
 END;
 --
 ------------------------------------------------------------------------------------------
 --
-FUNCTION ICB_WO_FGAC_PREDICATE(schema_in VARCHAR2,
-                               name_in   VARCHAR2)
-                               RETURN VARCHAR2 IS
-  --
-  --c_context CONSTANT VARCHAR2(30) := 'Item_Code_Breakdown_'||HIG.GET_OWNER('HIG_PRODUCTS');
+FUNCTION ICB_WO_FGAC_PREDICATE(schema_in VARCHAR2
+                              ,name_in   VARCHAR2)
+  RETURN VARCHAR2 IS
   --
   lc_dummy HIG_USERS.HUS_AGENT_CODE%TYPE;
   --
 BEGIN
-      --
-      --IF SYS_CONTEXT(c_context,'AGENCY') IS NULL THEN
-      IF get_context(g_context,'AGENCY') IS NULL THEN
-        lc_dummy := get_icb_fgac_context(FALSE);
-      END IF;
-      --
-      IF get_icb_fgac_context(FALSE) IS NULL THEN
-        RETURN '1 = 1';
-      ELSE
-        RETURN 'wor_agency = SYS_CONTEXT('''||g_context||''',''AGENCY'')';
-      END IF;
+  --
+  IF get_context(g_context,g_ctx_agency_attr) IS NULL
+   THEN
+      lc_dummy := get_icb_fgac_context(FALSE);
+  END IF;
+  --
+  IF get_icb_fgac_context(FALSE) IS NULL
+   THEN
+      RETURN '1 = 1';
+  ELSE
+      RETURN 'wor_agency = SYS_CONTEXT('''||g_context||''','''||g_ctx_agency_attr||''')';
+  END IF;
+  --
 END;
 ------------------------------------------------------------------------------------------
 --
@@ -3480,93 +3483,79 @@ END;
 -- Auto Defect Prioritisation Changes
 -- A.E. March 2003
 -----------------------------------------------------------------------------------
-FUNCTION GET_AUTO_DEF_PRIORITY(p_rse_he_id     IN NUMBER,
-                               p_network_type  IN VARCHAR2,
-                               p_activity_code IN VARCHAR2,
-                               p_defect_code   IN VARCHAR2
-) RETURN VARCHAR2 IS
-
-
-   TYPE adsp_rowid        IS TABLE OF ROWID           INDEX BY binary_integer;
-   TYPE adsp_attrib       IS TABLE OF varchar2(500)   INDEX BY binary_integer;
-   TYPE adsp_cntrl_value  IS TABLE OF varchar2(500)   INDEX BY binary_integer;
-
-   l_adsp_rowid       adsp_rowid;
-   l_adsp_attrib      adsp_attrib;
-   l_adsp_cntrl_value     adsp_cntrl_value;
-
-   cur_string         VARCHAR2(30000) := NULL;
-   cur_string_x       VARCHAR2(30000) := NULL;
-   v_priority         defect_priorities.dpr_priority%TYPE;
-
-   l_count pls_integer;
-
+FUNCTION get_auto_def_priority(p_rse_he_id     IN NUMBER
+                              ,p_network_type  IN VARCHAR2
+                              ,p_activity_code IN VARCHAR2
+                              ,p_defect_code   IN VARCHAR2)
+  RETURN VARCHAR2
+IS
+  TYPE adsp_rowid IS TABLE OF ROWID
+                       INDEX BY BINARY_INTEGER;
+  TYPE adsp_attrib IS TABLE OF VARCHAR2(500)
+                        INDEX BY BINARY_INTEGER;
+  TYPE adsp_cntrl_value IS TABLE OF VARCHAR2(500)
+                             INDEX BY BINARY_INTEGER;
+  l_adsp_rowid        adsp_rowid;
+  l_adsp_attrib       adsp_attrib;
+  l_adsp_cntrl_value  adsp_cntrl_value;
+  cur_string          VARCHAR2(30000) := NULL;
+  cur_string_x        VARCHAR2(30000) := NULL;
+  v_priority          defect_priorities.dpr_priority%TYPE;
+  l_count             PLS_INTEGER;
 BEGIN
-
-  cur_string := 'select adsp_priority'||chr(10);
-  cur_string := cur_string||' from auto_defect_selection_priority, road_segs'||chr(10);
-  cur_string := cur_string||' where adsp_dtp_flag = :p_network_type'||chr(10);
-  cur_string := cur_string||' and adsp_atv_acty_area_code = :p_activity_code'||chr(10);
-  cur_string := cur_string||' and adsp_defect_code = :p_defect_code'||chr(10);
-  cur_string := cur_string||' and rse_he_id = :p_rse_he_id';
-
-  SELECT
-     adsp.ROWID,
-   hco.hco_meaning,
-   adsp.adsp_cntrl_value
-  BULK COLLECT INTO
-     l_adsp_rowid,
-   l_adsp_attrib,
-   l_adsp_cntrl_value
-  FROM
-     hig_codes hco,
-   auto_defect_selection_priority adsp
-  WHERE
-     hco.hco_domain = 'ADSP_RSE_ATTS'
-  AND
-     hco.hco_code = adsp.adsp_flex_attrib
-  AND
-     adsp.adsp_atv_acty_area_code = p_activity_code
-  AND
-     adsp.adsp_defect_code = p_defect_code
-  AND
-     adsp.adsp_dtp_flag = p_network_type
-  AND
-     adsp.adsp_priority_rank in (select min(adsp.adsp_priority_rank)
-                             from auto_defect_selection_priority adsp
-          where adsp.adsp_atv_acty_area_code = p_activity_code
-                                    and adsp.adsp_defect_code = p_defect_code
-            and adsp.adsp_dtp_flag = p_network_type)
-                   ;
-
+  cur_string := 'select adsp_priority' || CHR(10);
+  cur_string :=
+    cur_string || ' from auto_defect_selection_priority, road_segs' || CHR(10);
+  cur_string :=
+    cur_string || ' where adsp_dtp_flag = :p_network_type' || CHR(10);
+  cur_string :=
+    cur_string || ' and adsp_atv_acty_area_code = :p_activity_code' || CHR(10);
+  cur_string :=
+    cur_string || ' and adsp_defect_code = :p_defect_code' || CHR(10);
+  cur_string := cur_string || ' and rse_he_id = :p_rse_he_id';
+  SELECT adsp.ROWID
+        ,hco.hco_meaning
+        ,adsp.adsp_cntrl_value
+    BULK COLLECT INTO l_adsp_rowid
+        ,l_adsp_attrib
+        ,l_adsp_cntrl_value
+    FROM hig_codes hco
+        ,auto_defect_selection_priority adsp
+   WHERE hco.hco_domain = 'ADSP_RSE_ATTS'
+     AND hco.hco_code = adsp.adsp_flex_attrib
+     AND adsp.adsp_atv_acty_area_code = p_activity_code
+     AND adsp.adsp_defect_code = p_defect_code
+     AND adsp.adsp_dtp_flag = p_network_type
+     AND adsp.adsp_priority_rank IN
+           (SELECT MIN(adsp.adsp_priority_rank)
+              FROM auto_defect_selection_priority adsp
+             WHERE adsp.adsp_atv_acty_area_code = p_activity_code
+               AND adsp.adsp_defect_code = p_defect_code
+               AND adsp.adsp_dtp_flag = p_network_type);
   l_count := l_adsp_rowid.COUNT;
-
-
   IF l_count > 0
-     THEN
-       -- Will never loop since entered ranking.. but it works OK
-       FOR l_i IN 1..l_count
-       LOOP
-         -- Add rse attrib to sql statement
-           cur_string_x := cur_string||chr(10)||' and '||l_adsp_attrib(l_i)||' = adsp_cntrl_value';
-
-       -- Get priority for current attrib
-         EXECUTE IMMEDIATE cur_string_x INTO v_priority
-               USING p_network_type
-                    ,p_activity_code
-                    ,p_defect_code
-          ,p_rse_he_id;
-
-
-     END LOOP;
+  THEN
+    -- Will never loop since entered ranking.. but it works OK
+    FOR l_i IN 1 .. l_count LOOP
+      -- Add rse attrib to sql statement
+      cur_string_x :=
+           cur_string
+        || CHR(10)
+        || ' and '
+        || l_adsp_attrib(l_i)
+        || ' = adsp_cntrl_value';
+      -- Get priority for current attrib
+      EXECUTE IMMEDIATE cur_string_x
+        INTO v_priority
+        USING p_network_type
+             ,p_activity_code
+             ,p_defect_code
+             ,p_rse_he_id;
+    END LOOP;
   END IF;
-
-
--- RETURN to_char(v_date_due);
- RETURN (v_priority);
-
+  -- RETURN to_char(v_date_due);
+  RETURN (v_priority);
 END;
-
 -----------------------------------------------------------------------------------
 -- END of Auto Defect Prioritisation Changes
 -----------------------------------------------------------------------------------
@@ -4849,7 +4838,7 @@ END check_wo_can_be_copied;
         OPEN  get_initial_status;
         FETCH get_initial_status
          INTO l_status_code;
-        CLOSE get_initial_status;     
+        CLOSE get_initial_status;
      END IF;
 
       IF pi_zeroize THEN
