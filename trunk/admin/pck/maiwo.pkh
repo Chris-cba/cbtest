@@ -4,11 +4,11 @@ CREATE OR REPLACE package maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.1   Oct 05 2009 13:50:26   lsorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.2   Sep 10 2010 16:43:40   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiwo.pkh  $
---       Date into SCCS   : $Date:   Oct 05 2009 13:50:26  $
---       Date fetched Out : $Modtime:   Oct 05 2009 13:38:56  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Sep 10 2010 16:43:40  $
+--       Date fetched Out : $Modtime:   Sep 10 2010 16:05:48  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.5
 --
 -----------------------------------------------------------------------------
@@ -19,7 +19,7 @@ CREATE OR REPLACE package maiwo is
 --</PACKAGE>
 --<GLOBVAR>
     --g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
-    g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   2.1  $';
+    g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   2.2  $';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -193,11 +193,6 @@ FUNCTION get_body_version RETURN varchar2;
                                     ,p_cnp_id in claim_payments.cp_payment_id%type) return number;
 --</PROC>
 -------------------------------------------------------------------------------
---<PROC NAME="boq_paid_prior_to_payment_run">
---
-  function boq_paid_prior_to_payment_run(p_boq_id in boq_items.boq_id%type) return number;
---</PROC>
--------------------------------------------------------------------------------
 --<PROC NAME="claimed_prior_to_payment_run">
 --
   function claimed_prior_to_payment_run(p_wol_id in work_order_lines.wol_id%type
@@ -206,7 +201,9 @@ FUNCTION get_body_version RETURN varchar2;
 -------------------------------------------------------------------------------
 --<PROC NAME="boq_claimed_prior_payment_run">
 --
-  function boq_claimed_prior_payment_run(p_boq_id in boq_items.boq_id%type) return number;
+FUNCTION boq_claimed_prior_payment_run(pi_boq_id IN boq_items.boq_id%TYPE
+                                      ,pi_cnp_id IN contract_payments.cnp_id%TYPE)
+  RETURN wol_interim_payments.wip_amount%TYPE;
 --</PROC>
 -------------------------------------------------------------------------------
 --<PROC NAME="complete_status">
