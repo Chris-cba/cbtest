@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.7   Aug 02 2010 16:02:34   cbaugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.8   Sep 10 2010 16:43:40   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Aug 02 2010 16:02:34  $
---       Date fetched Out : $Modtime:   Aug 02 2010 15:37:12  $
---       SCCS Version     : $Revision:   2.7  $
+--       Date into SCCS   : $Date:   Sep 10 2010 16:43:40  $
+--       Date fetched Out : $Modtime:   Sep 10 2010 16:05:18  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.7  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.8  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -1295,12 +1295,15 @@ end recalc_percent_item;
       return l_retval;
     end if;
   end;
-
-  -- The following four functions paid_prior_to_payment_run and boq_paid_prior_to_payment_run
-  -- are used within the payment run reports to retrieve the amount paid or claimed for a WOL or BOQ
-  -- before the last payment run. Outside of the payment run reports the functions
-  -- paid_so_far and boq_paid_so_Far should be used
-
+--
+---------------------------------------------------------------------
+--
+-- The following three functions paid_prior_to_payment_run, claimed_prior_to_payment_run and
+-- boq_claimed_prior_payment_run are used within the payment run reports to retrieve the amount
+-- paid or claimed for a WOL or BOQ before the last payment run.
+-- Outside of the payment run reports the functions paid_so_far and boq_paid_so_Far
+-- should be used
+--
   function paid_prior_to_payment_run(p_wol_id in work_order_lines.wol_id%type
                                     ,p_cnp_id in claim_payments.cp_payment_id%type)
   return number is
@@ -1328,54 +1331,9 @@ end recalc_percent_item;
     end if;
 
   end;
-
-  function boq_paid_prior_to_payment_run(p_boq_id in boq_items.boq_id%type)
-  return number is
-
-  cursor get_last_payment is
-  select wip_amount
-  from   wol_interim_payments
-  where  wip_boq_id = p_boq_id
-  and    wip_status = 'P'
-  order by wip_int_id desc;
-
-  cursor get_discount is
-  select
-  trunc (nvl(decode (nvl(wor_Act_cost,0), 0, 0, wor_act_balancing_Sum / wor_act_cost),5),0) discount
-  from  work_orders
-       ,work_order_lines
-       ,boq_items
-  where wor_works_order_no = wol_works_order_no
-  and   wol_id = boq_wol_id
-  and   boq_id = p_boq_id;
-
-  l_retval   wol_interim_payments.wip_amount%type;
-  l_discount boq_items.boq_act_cost%type;
-  begin
-    open get_last_payment;
--- first fetch gets last paid amount
-    fetch get_last_payment into l_retval;
-    if get_last_payment%notfound then
-      close get_last_payment;
-      return 0;
-    else
-    -- second fetch gets amount paid prior to payment run
-      fetch get_last_payment into l_retval;
-      if get_last_payment%notfound then
-        close get_last_payment;
-        return 0;
-      else
-        close get_last_payment;
-        -- now apply discount
-        open get_discount;
-        fetch get_discount into l_discount;
-        close get_discount;
-        l_retval := round(l_retval + (l_discount * l_retval),2);
-        return l_retval;
-      end if;
-    end if;
-  end;
-
+--
+---------------------------------------------------------------------
+--
   function claimed_prior_to_payment_run(p_wol_id in work_order_lines.wol_id%type
                                        ,p_cnp_id in claim_payments.cp_payment_id%type)
   return number is
@@ -1403,39 +1361,101 @@ end recalc_percent_item;
     end if;
 
   end;
-
-  function boq_claimed_prior_payment_run(p_boq_id in boq_items.boq_id%type)
-  return number is
-
-  cursor get_last_payment is
-  select wip_amount
-  from   wol_interim_payments
-  where  wip_boq_id = p_boq_id
-  and    wip_status = 'P'
-  order by wip_int_id desc;
-
-  l_retval wol_interim_payments.wip_amount%type;
-
-  begin
-    open get_last_payment;
--- first fetch gets last paid amount
-    fetch get_last_payment into l_retval;
-    if get_last_payment%notfound then
-      close get_last_payment;
-      return 0;
-    else
-    -- second fetch gets amount paid prior to payment run
-      fetch get_last_payment into l_retval;
-      if get_last_payment%notfound then
-        close get_last_payment;
-        return 0;
-      else
-        close get_last_payment;
-        return l_retval;
-      end if;
-    end if;
-  end;
-
+--
+---------------------------------------------------------------------
+--
+FUNCTION boq_claimed_prior_payment_run(pi_boq_id IN boq_items.boq_id%TYPE
+                                      ,pi_cnp_id IN contract_payments.cnp_id%TYPE)
+  RETURN wol_interim_payments.wip_amount%TYPE IS
+  --
+  lt_payments    nm3type.tab_number;
+  lv_claim_type  work_order_claims.woc_claim_type%TYPE;
+  lv_interim_no  PLS_INTEGER;
+  lv_retval      wol_interim_payments.wip_amount%TYPE := 0;
+  --
+  PROCEDURE get_claim_details
+    IS
+  BEGIN
+    SELECT woc_claim_type
+          ,NVL(woc_interim_no,9999)
+      INTO lv_claim_type
+          ,lv_interim_no
+      FROM work_order_claims
+          ,claim_payments
+          ,boq_items
+     WHERE boq_id = pi_boq_id
+       AND boq_wol_id = cp_wol_id
+       AND cp_payment_id = pi_cnp_id
+       AND cp_woc_claim_ref = woc_claim_ref
+       AND cp_woc_con_id = woc_con_id
+         ;
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END get_claim_details;  
+  --
+  PROCEDURE get_payment_recs
+    IS
+  BEGIN
+    SELECT wip_amount
+      BULK COLLECT
+      INTO lt_payments
+      FROM wol_interim_payments
+     WHERE wip_boq_id = pi_boq_id
+       AND wip_status = 'P'
+       AND wip_int_id <= lv_interim_no
+     ORDER
+        BY wip_int_id DESC
+         ;
+  END get_payment_recs;
+  --
+BEGIN
+  /*
+  ||Get the claim type for the current claim.
+  */
+  get_claim_details;
+  /*
+  ||Get The Interim Payment Records.
+  */
+  get_payment_recs;
+  --
+  IF lt_payments.count > 0
+   THEN
+      --
+      IF lv_claim_type = 'F'
+       THEN
+          /*
+          ||If the current claim is Final then there will be
+          ||no record for the current claim so return the first
+          ||record in the table.
+          */
+          lv_retval := lt_payments(1);
+          --
+      ELSE
+          /*
+          ||If the current claim is an Interim the first record
+          ||in the table will be for the current claim so return
+          ||the second record if there is one, otherwise the 
+          ||previous claim value is zero.
+          */
+          IF lt_payments.count > 1
+           THEN
+              lv_retval := lt_payments(2);
+          END IF;
+          --
+      END IF;
+  END IF;
+  --
+  RETURN lv_retval;
+  --
+END;
+--
+---------------------------------------------------------------------
+--
   function complete_status(p_status in hig_status_codes.hsc_status_code%type)
   return boolean is
   cursor is_complete is
@@ -1485,473 +1505,570 @@ end recalc_percent_item;
     return FALSE;
 
   end;
-
-  function process_payment_run(p_con_id     in contracts.con_id%type
-                              ,p_apply_vat in varchar2
-                              ,l_oun_ord_id in org_units.oun_org_id%type
-                              ,l_NO_FC_FILE in varchar2
-                              ,l_cnp_id     out work_order_lines.wol_cnp_id%type
-                              ,l_error_code out hig_errors.her_no%type
-                              ,l_error_appl out hig_errors.her_appl%type
-                              )
-  return boolean is
-   contract_is_locked exception;
-   pragma exception_init ( contract_is_locked,-0054 );
-   payment_seq_missing exception;
-   pragma exception_init ( payment_seq_missing,-2289);
-   no_items_for_payment exception;
-   credit_file_error exception;
-
-   v_apply_vat          char(1):=substr(p_apply_vat,0,1);
-   v_rechar             org_units.oun_org_id%type;
-   v_payment_code       work_order_lines.wol_payment_code%type;
-   v_cost_code          contracts.con_cost_code%type;
-   v_total_value        contract_payments.cnp_total_value%type:=0;
-   v_cnp_id             contract_payments.cnp_id%type:=0;
-   v_payment_no         contract_payments.cnp_first_payment_no%type:=0;
-   v_first_payment      contract_payments.cnp_first_payment_no%type:=0;
-   v_retention_rate     contracts.con_retention_rate%type:=0;
-   v_retention_amount   contracts.con_retention_to_date%type:=0;
-   v_vat_rate           vat_rates.vat_rate%type:=0;
-   v_vat_amount         contract_payments.cnp_vat_amount%type:=0;
-   v_cnp_amount         contract_payments.cnp_amount%type:=0;
-   v_last_run_date      date;
-   v_retention_to_date  contracts.con_retention_to_date%type:=0;
-   v_max_retention      contracts.con_max_retention%type:=0;
-   v_use_interfaces     org_units.oun_electronic_orders_flag%type;
-   v_functional_act     char(1);
-   v_payment_value      number(11,2);
-   l_previous_payment   claim_payments.cp_claim_value%type := 0;
-   l_file               varchar2(255);
-   v_same_year          char(1);
-   l_inv_status         work_order_lines.wol_invoice_status%type;
-   l_paid_status        work_order_lines.wol_status_code%type;
-   l_part_paid_status   work_order_lines.wol_status_code%type;
-   l_claim_paid_status  hig_status_codes.hsc_status_code%type;
-   dummy                number;
-
-   cursor c_wol(v_con_id contracts.con_id%type) is
-      select wol_id
-            ,wor_coc_cost_centre
-            ,wol_schd_id
-            ,wol_def_defect_id
-            ,wol_siss_id
-            ,wor_job_number
-            ,rse_linkcode
-            ,cp_woc_claim_ref
-            ,cp_claim_value
-            ,woc_claim_type
-            ,wol_status_code
-            ,nvl(wor_act_cost,0) wor_act_cost
-            ,nvl(wor_act_balancing_sum,0) wor_act_balancing_sum
-      from   work_orders
-            ,work_order_lines
-            ,claim_payments
-            ,work_order_claims
-            ,road_segments_all
-            ,contracts
-            ,hig_status_codes
-      where  wor_con_id = con_id
-      and    con_id = v_con_id
-      and    wor_works_order_no = wol_works_order_no
-      and    hsc_domain_code    = 'WORK_ORDER_LINES'
-      and    (hsc_allow_feature3 = 'Y' or (hsc_allow_feature9 = 'Y' and hsc_allow_feature4 = 'N'))
-      and    wol_status_code    = hsc_status_code
-      and    sysdate between nvl(hsc_start_date, sysdate) and nvl(hsc_end_date, sysdate)
-      and    wol_id = cp_wol_id
-      and    cp_payment_id is null
-      and    exists (select 1
-                     from hig_status_codes hsc
-                     where hsc.hsc_domain_code = 'CLAIM STATUS'
-                     and hsc.hsc_allow_feature1 = 'Y'
-                     and cp_status = hsc.hsc_status_code)
-      and    cp_woc_claim_ref = woc_claim_ref
-      and    cp_woc_con_id = woc_con_id
-      and    rse_he_id = wol_rse_he_id;
-
-   wol_rec             c_wol%rowtype;
-
-   cursor c_elec_interface (v_con_id contracts.con_id%type) is
-      select oun_electronic_orders_flag
-      from   contracts, org_units
-      where  con_id = v_con_id
-      and    con_contr_org_id = oun_org_id;
-
-   cursor c_next_payment is
-      select cnp_id_seq.nextval
-      from   dual;
-
-   cursor c_last_payment_details (v_con_id contracts.con_id%type) is
-      select nvl(con_last_payment_no,0)
-            ,nvl(con_retention_rate,0)
-            ,nvl(con_cost_code,' ')
-      from    contracts
-      where   con_id = v_con_id;
-
-   cursor c_first_payment_details(v_con_id contracts.con_id%type) is
-     select min(cnp_first_payment_no)
-     from   contract_payments
-     where  cnp_con_id = v_con_id;
-
-   cursor c_get_rechar (v_defect defects.def_defect_id%type) is
-      select def_rechar_org_id
-      from   defects
-      where  def_defect_id = v_defect;
-
-   cursor c_retention_to_date (v_con_id contracts.con_id%type) is
-      select con_retention_to_date, con_max_retention
-      from   contracts
-      where  con_id = v_con_id;
-
-   cursor c_vat_rate is
-      select vat_rate
-      from   vat_rates
-      where  vat_effective_date = (select max(vat_effective_date)
-                                   from vat_rates
-                                   where vat_effective_date <= sysdate)
-      and    vat_effective_date <= sysdate;
-
-   cursor c_last_run_date (v_con_id contracts.con_id%type) is
-      select max(cnp_run_date)
-      from   contract_payments
-      where  cnp_con_id = v_con_id;
-
-   cursor c_run_this_year(v_last_run_date date) is
-      select 'Y'
-      from   financial_years
-      where  v_last_run_date > fyr_start_date
-      and    v_last_run_date < fyr_end_date
-      and    sysdate > fyr_start_date
-      and    sysdate < fyr_end_date;
-
-   cursor wol_paid_status is
-      select hsc_status_code
-      from   hig_status_codes
-      where  hsc_domain_code = 'WORK_ORDER_LINES'
-      and    hsc_allow_feature4 = 'Y' and hsc_allow_feature9 = 'N';
-
-   cursor wol_part_paid_status is
-      select hsc_status_code
-      from   hig_status_codes
-      where  hsc_domain_code = 'WORK_ORDER_LINES'
-      and    hsc_allow_feature4 = 'Y'
-      and    hsc_allow_feature9 = 'Y';
-
-   cursor is_complete(c_code in hig_status_codes.hsc_status_code%type) is
-      select 1
-      from   hig_status_codes
-      where  hsc_allow_feature3 = 'Y'
-      and    hsc_domain_code = 'WORK_ORDER_LINES'
-      and    hsc_status_code = c_code;
-
-   cursor claim_paid_status is
-      select hsc_status_code
-      from   hig_status_codes
-      where  hsc_domain_code = 'CLAIM STATUS'
-      and    hsc_allow_feature3 = 'Y';
-
-
-  begin
-
-   --
-   dbms_output.put_line('PRE_RUN_SQL entry, Obtaining Contract Id');
-   --
-   -- Procedure log entry conrols the locking of the contract
-   --
-   dbms_output.put_line('Obtaining items for payment');
-   --
-
-   open c_elec_interface(p_con_id);
-   fetch c_elec_interface into v_use_interfaces;
-   close c_elec_interface;
-
-   dbms_output.put_line('Contract locked');
-   --
-   -- do not close the cursor we want to keep the lock on the contract right through the procedure!
-   --
-   dbms_output.put_line('Obtaining new payment id from sequence');
-   --
-   open c_next_payment;
-   fetch c_next_payment into v_cnp_id;
-   close c_next_payment;
-
-   dbms_output.put_line('Got next payment id');
-   --
-   dbms_output.put_line('CNP    : '||to_char(v_cnp_id)||' Con: '||to_char(p_con_id));
-   --
-   open c_last_payment_details (p_con_id);
-   fetch c_last_payment_details into v_payment_no, v_retention_rate, v_cost_code;
-   close c_last_payment_details;
-
-   open c_first_payment_details(p_con_id);
-   fetch c_first_payment_details into v_first_payment;
-   close c_first_payment_details;
-
-   if v_first_payment is null then
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION process_payment_run(p_con_id     IN     contracts.con_id%TYPE
+                            ,p_apply_vat  IN     VARCHAR2
+                            ,l_oun_ord_id IN     org_units.oun_org_id%TYPE
+                            ,l_no_fc_file IN     VARCHAR2
+                            ,l_cnp_id        OUT work_order_lines.wol_cnp_id%TYPE
+                            ,l_error_code    OUT hig_errors.her_no%TYPE
+                            ,l_error_appl    OUT hig_errors.her_appl%TYPE)
+  RETURN BOOLEAN IS
+  --
+  contract_is_locked    EXCEPTION;
+  PRAGMA EXCEPTION_INIT(contract_is_locked, -0054);
+  payment_seq_missing   EXCEPTION;
+  PRAGMA EXCEPTION_INIT(payment_seq_missing, -2289);
+  no_items_for_payment  EXCEPTION;
+  credit_file_error     EXCEPTION;
+  --
+  v_apply_vat           CHAR(1) := SUBSTR(p_apply_vat,0,1);
+  v_rechar              org_units.oun_org_id%TYPE;
+  v_payment_code        work_order_lines.wol_payment_code%TYPE;
+  v_cost_code           contracts.con_cost_code%TYPE;
+  v_total_value         contract_payments.cnp_total_value%TYPE := 0;
+  v_cnp_id              contract_payments.cnp_id%TYPE := 0;
+  v_payment_no          contract_payments.cnp_first_payment_no%TYPE := 0;
+  v_first_payment       contract_payments.cnp_first_payment_no%TYPE := 0;
+  v_retention_rate      contracts.con_retention_rate%TYPE := 0;
+  v_retention_amount    contracts.con_retention_to_date%TYPE := 0;
+  v_vat_rate            vat_rates.vat_rate%TYPE := 0;
+  v_vat_amount          contract_payments.cnp_vat_amount%TYPE := 0;
+  v_cnp_amount          contract_payments.cnp_amount%TYPE := 0;
+  v_last_run_date       DATE;
+  v_retention_to_date   contracts.con_retention_to_date%TYPE := 0;
+  v_max_retention       contracts.con_max_retention%TYPE := 0;
+  v_use_interfaces      org_units.oun_electronic_orders_flag%TYPE;
+  v_functional_act      CHAR(1);
+  v_payment_value       NUMBER(11, 2);
+  l_previous_payment    claim_payments.cp_claim_value%TYPE := 0;
+  l_file                VARCHAR2(255);
+  v_same_year           CHAR(1);
+  l_inv_status          work_order_lines.wol_invoice_status%TYPE;
+  l_paid_status         work_order_lines.wol_status_code%TYPE;
+  l_part_paid_status    work_order_lines.wol_status_code%TYPE;
+  l_claim_paid_status   hig_status_codes.hsc_status_code%TYPE;
+  dummy                 NUMBER;
+  --
+  CURSOR c_wol(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT wol_id
+        ,wor_coc_cost_centre
+        ,wol_schd_id
+        ,wol_def_defect_id
+        ,wol_siss_id
+        ,wor_job_number
+        ,(SELECT rse_linkcode
+            FROM road_segments_all
+           WHERE rse_he_id = wol_rse_he_id) rse_linkcode
+        ,cp_woc_claim_ref
+        ,cp_claim_value
+        ,woc_claim_type
+        ,wol_status_code
+        ,NVL(wol_act_cost,0) wol_act_cost
+        ,NVL(wor_act_cost,0) wor_act_cost
+        ,NVL(wor_act_balancing_sum,0) wor_act_balancing_sum
+    FROM work_order_claims
+        ,claim_payments
+        ,hig_status_codes
+        ,work_order_lines
+        ,work_orders
+        ,contracts
+   WHERE con_id = cp_con_id
+     AND con_id = wor_con_id
+     AND wor_works_order_no = wol_works_order_no
+     AND wol_status_code = hsc_status_code
+     AND hsc_domain_code = 'WORK_ORDER_LINES'
+     AND (hsc_allow_feature3 = 'Y'
+          OR (hsc_allow_feature9 = 'Y' AND hsc_allow_feature4 = 'N'))
+     AND SYSDATE BETWEEN NVL(hsc_start_date, SYSDATE)
+                     AND NVL(hsc_end_date, SYSDATE)
+     AND wol_id = cp_wol_id
+     AND cp_payment_id IS NULL
+     AND EXISTS(SELECT 1
+                  FROM hig_status_codes hsc
+                 WHERE hsc.hsc_domain_code = 'CLAIM STATUS'
+                   AND hsc.hsc_allow_feature1 = 'Y'
+                   AND hsc.hsc_status_code = cp_status)
+     AND cp_woc_claim_ref = woc_claim_ref
+     AND cp_woc_con_id = woc_con_id
+       ;
+  --
+  --wol_rec  c_wol%ROWTYPE;
+  --
+  CURSOR c_elec_interface(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT oun_electronic_orders_flag
+    FROM contracts
+        ,org_units
+   WHERE con_id = cp_con_id
+     AND con_contr_org_id = oun_org_id
+       ;
+  --
+  CURSOR c_next_payment
+      IS
+  SELECT cnp_id_seq.NEXTVAL
+    FROM DUAL
+       ;
+  --
+  CURSOR c_last_payment_details(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT NVL(con_last_payment_no,0)
+        ,NVL(con_retention_rate,0)
+        ,NVL(con_cost_code,' ')
+    FROM contracts
+   WHERE con_id = cp_con_id
+       ;
+  --
+  CURSOR c_first_payment_details(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT MIN(cnp_first_payment_no)
+    FROM contract_payments
+   WHERE cnp_con_id = cp_con_id
+       ;
+  --
+  CURSOR c_get_rechar(cp_defect_id defects.def_defect_id%TYPE)
+      IS
+  SELECT def_rechar_org_id
+    FROM defects
+   WHERE def_defect_id = cp_defect_id
+       ;
+  CURSOR c_retention_to_date(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT con_retention_to_date
+        ,con_max_retention
+    FROM contracts
+   WHERE con_id = cp_con_id
+       ;
+  --
+  CURSOR c_vat_rate
+      IS
+  SELECT vat_rate
+    FROM vat_rates
+   WHERE vat_effective_date = (SELECT MAX(vat_effective_date)
+                                 FROM vat_rates
+                                WHERE vat_effective_date <= SYSDATE)
+     AND vat_effective_date <= SYSDATE
+       ;
+  --
+  CURSOR c_last_run_date(cp_con_id contracts.con_id%TYPE)
+      IS
+  SELECT MAX(cnp_run_date)
+    FROM contract_payments
+   WHERE cnp_con_id = cp_con_id
+       ;
+  --
+  CURSOR c_run_this_year(cp_last_run_date DATE)
+      IS
+  SELECT 'Y'
+    FROM financial_years
+   WHERE cp_last_run_date > fyr_start_date
+     AND cp_last_run_date < fyr_end_date
+     AND SYSDATE > fyr_start_date
+     AND SYSDATE < fyr_end_date
+       ;
+  --
+  CURSOR wol_paid_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+     AND hsc_allow_feature4 = 'Y'
+     AND hsc_allow_feature9 = 'N'
+       ;
+  --
+  CURSOR wol_part_paid_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+     AND hsc_allow_feature4 = 'Y'
+     AND hsc_allow_feature9 = 'Y'
+       ;
+  --
+  CURSOR is_complete(cp_code hig_status_codes.hsc_status_code%TYPE)
+      IS
+  SELECT 1
+    FROM hig_status_codes
+   WHERE hsc_allow_feature3 = 'Y'
+     AND hsc_domain_code = 'WORK_ORDER_LINES'
+     AND hsc_status_code = cp_code
+       ;
+  --
+  CURSOR claim_paid_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'CLAIM STATUS'
+     AND hsc_allow_feature3 = 'Y'
+       ;
+  --
+BEGIN
+  --
+  --nm_debug.debug_on;
+  --nm_debug.debug('PRE_RUN_SQL entry, Obtaining Contract Id');
+  --
+  -- Procedure log entry conrols the locking of the contract
+  --
+  --nm_debug.debug('Obtaining items for payment');
+  --
+  OPEN  c_elec_interface(p_con_id);
+  FETCH c_elec_interface
+   INTO v_use_interfaces;
+  CLOSE c_elec_interface;
+  --nm_debug.debug('Contract locked');
+  --
+  -- do not close the cursor we want to keep the lock on the contract right through the procedure!
+  --
+  --nm_debug.debug('Obtaining new payment id from sequence');
+  --
+  OPEN  c_next_payment;
+  FETCH c_next_payment
+   INTO v_cnp_id;
+  CLOSE c_next_payment;
+  --nm_debug.debug('Got next payment id');
+  --
+  --nm_debug.debug('CNP    : ' || TO_CHAR(v_cnp_id) || ' Con: ' || TO_CHAR(p_con_id));
+  --
+  OPEN  c_last_payment_details(p_con_id);
+  FETCH c_last_payment_details
+   INTO v_payment_no
+       ,v_retention_rate
+       ,v_cost_code;
+  CLOSE c_last_payment_details;
+  --
+  OPEN  c_first_payment_details(p_con_id);
+  FETCH c_first_payment_details
+   INTO v_first_payment;
+  CLOSE c_first_payment_details;
+  IF v_first_payment IS NULL
+   THEN
       v_first_payment := v_cnp_id;
-   end if;
-
-   dbms_output.put_line('Obtaining work order lines for contract : '||to_char(p_con_id));
-
-   open wol_paid_status;
-   fetch wol_paid_status into l_paid_status;
-   close wol_paid_status;
-
-   open wol_part_paid_status;
-   fetch wol_part_paid_status into l_part_paid_status;
-   close wol_part_paid_status;
-
-   open claim_paid_status;
-   fetch claim_paid_status into l_claim_paid_status;
-   close claim_paid_status;
-
-   dbms_output.put_line('Setting Work Order lines to PAID');
-   dbms_output.put_line('Updating Work Order Lines');
-   --
-   for wol_rec in c_wol(p_con_id) loop
-
-     if wol_rec.woc_claim_type in ('I', 'F') and
-        maiwo.final_already_paid(wol_rec.wol_id) = 'TRUE' then
-
-          null; -- don't process an Interim or Final invoice
-                  -- if a final has already been paid
-
-     else
-
-      if wol_rec.wol_def_defect_id is not null then
-         open c_get_rechar (wol_rec.wol_def_defect_id);
-         fetch c_get_rechar into v_rechar;
-         close c_get_rechar;
-      end if;
-
-      if v_rechar is null then
-         v_functional_act := '3';
-      else
-         v_functional_act := '4';
-      end if;
-      v_rechar := null;
-
-      v_payment_code := rpad(nvl(wol_rec.wor_coc_cost_centre,' '),3)||
-                        v_functional_act||
-                        rpad(nvl(wol_rec.wol_siss_id,' '),3)||
-                        rpad(v_cost_code,4)||
-                        rpad(nvl(wol_rec.wor_job_number,' '),5)||
-                        rpad(substr(nvl(wol_rec.rse_linkcode,' '),1,1),1);
-
--- do not need this call as it is the extra to pay that is
--- sent to claim_payments and not the total cost.
-
---      if wol_rec.woc_claim_type != 'P' then
---        l_previous_payment := maiwo.previous_payment(wol_rec.wol_id, wol_rec.cp_woc_claim_ref);
---      end if;
-
-      update work_order_lines
-      set    wol_payment_code = v_payment_code,
-             wol_cnp_id = v_cnp_id
-      where  wol_id = wol_rec.wol_id;
-
-      select decode(wol_rec.woc_claim_type, l_claim_paid_status,
-             wol_rec.cp_claim_value,
-             cp_claim_value - l_previous_payment)
-      into   v_payment_value
-      from   claim_payments
-      where  cp_wol_id = wol_rec.wol_id
-      and    cp_woc_claim_ref = wol_rec.cp_woc_claim_ref
-      and    cp_woc_con_id = p_con_id;
-
-      -- apply discount if there is one
-      if (wol_rec.wor_act_balancing_sum != 0 and wol_rec.wor_act_cost != 0) then
-        v_payment_value := v_payment_value + v_payment_value * (wol_rec.wor_act_balancing_sum / wol_rec.wor_act_cost);
-      end if;
-
-      update claim_payments
-      set    cp_payment_date = sysdate
-            ,cp_payment_id = v_cnp_id
-            ,cp_status = l_claim_paid_status
-            ,cp_payment_value = v_payment_value
-      where  cp_wol_id = wol_rec.wol_id
-      and    cp_woc_claim_ref = wol_rec.cp_woc_claim_ref
-      and    cp_woc_con_id = p_con_id;
-
-      -- update the interim_payments table in case the wol has interim payments
-      update wol_interim_payments
-      set    wip_status = 'P'
-            ,wip_date   = sysdate
-      where  wip_wol_id = wol_rec.wol_id;
-
-      v_total_value := v_total_value + nvl(v_payment_value, 0);
-
-      l_inv_status := maiwo.wol_invoice_status(wol_rec.wol_id);
-
-      open is_complete(wol_rec.wol_status_code);
-      fetch is_complete into dummy;
-      if is_complete%found then
-
-        close is_complete;
-        update work_order_lines
-        set    wol_invoice_status = l_inv_status,
-               wol_status_code = l_paid_status,
-               wol_date_paid = sysdate
-        where  wol_id =  wol_rec.wol_id;
-      else
-        close is_complete;
-        update work_order_lines
-        set    wol_invoice_status = l_inv_status,
-               wol_status_code = l_part_paid_status
-        where  wol_id =  wol_rec.wol_id;
-      end if;
-
-    end if;
-
-   end loop;
-   --
-   dbms_output.put_line('Work Order Lines Updated');
-   --
-   v_retention_amount := round((v_total_value * v_retention_rate / 100),2);
-   --
-   dbms_output.put_line('Obtaining Contract Extentions');
-   --
-   open c_retention_to_date(p_con_id);
-   fetch c_retention_to_date into v_retention_to_date, v_max_retention;
-   close c_retention_to_date;
-   --
-   dbms_output.put_line('Contract Retentions Obtained');
-   --
-   if v_retention_amount + v_retention_to_date >= v_max_retention then
-      dbms_output.put_line('Recalculating retention rate');
-      v_retention_rate :=
-      round (((v_max_retention - v_retention_to_date)/nvl(v_total_value,1))*100,2);
-      v_retention_amount := round((v_total_value * v_retention_rate / 100),2);
-   end if;
-
-   if v_apply_vat = 'Y' then
-      dbms_output.put_line('Obtaining VAT rate');
-      open c_vat_rate;
-      fetch c_vat_rate into v_vat_rate;
-      close c_vat_rate;
-
-      v_vat_amount := round(((v_total_value - v_retention_amount) * v_vat_rate / 100),2);
-   else
+  END IF;
+  --
+  --nm_debug.debug('Obtaining work order lines for contract : ' || TO_CHAR(p_con_id));
+  --
+  OPEN  wol_paid_status;
+  FETCH wol_paid_status
+   INTO l_paid_status;
+  CLOSE wol_paid_status;
+  --
+  OPEN  wol_part_paid_status;
+  FETCH wol_part_paid_status
+   INTO l_part_paid_status;
+  CLOSE wol_part_paid_status;
+  --
+  OPEN  claim_paid_status;
+  FETCH claim_paid_status
+   INTO l_claim_paid_status;
+  CLOSE claim_paid_status;
+  --
+  --nm_debug.debug('Setting Work Order lines to PAID');
+  --nm_debug.debug('Updating Work Order Lines');
+  --
+  FOR wol_rec IN c_wol(p_con_id) LOOP
+    --
+    IF wol_rec.woc_claim_type IN('I','F')
+     AND maiwo.final_already_paid(wol_rec.wol_id) = 'TRUE'
+     THEN
+        NULL; -- don't process an Interim or Final invoice
+              -- if a final has already been paid
+    ELSE
+        --
+        IF wol_rec.wol_def_defect_id IS NOT NULL
+         THEN
+            OPEN  c_get_rechar(wol_rec.wol_def_defect_id);
+            FETCH c_get_rechar
+             INTO v_rechar;
+            CLOSE c_get_rechar;
+        END IF;
+        --
+        IF v_rechar IS NULL
+         THEN
+            v_functional_act := '3';
+        ELSE
+            v_functional_act := '4';
+        END IF;
+        --
+        v_rechar := NULL;
+        v_payment_code := RPAD(NVL(wol_rec.wor_coc_cost_centre,' '),3)
+                        ||v_functional_act
+                        ||RPAD(NVL(wol_rec.wol_siss_id,' '),3)
+                        ||RPAD(v_cost_code,4)
+                        ||RPAD(NVL(wol_rec.wor_job_number,' '),5)
+                        ||RPAD(SUBSTR(NVL(wol_rec.rse_linkcode,' '),1,1),1);
+        --
+        --do not need this call as it is the extra to pay that is
+        --sent to claim_payments and not the total cost.
+        --if wol_rec.woc_claim_type != 'P'
+        -- then
+        --    l_previous_payment := maiwo.previous_payment(wol_rec.wol_id, wol_rec.cp_woc_claim_ref);
+        --end if;
+        --
+        UPDATE work_order_lines
+           SET wol_payment_code = v_payment_code
+              ,wol_cnp_id = v_cnp_id
+         WHERE wol_id = wol_rec.wol_id
+             ;
+        --
+        SELECT DECODE(wol_rec.woc_claim_type,l_claim_paid_status,wol_rec.cp_claim_value
+                                                                ,cp_claim_value - l_previous_payment)
+          INTO v_payment_value
+          FROM claim_payments
+         WHERE cp_wol_id = wol_rec.wol_id
+           AND cp_woc_claim_ref = wol_rec.cp_woc_claim_ref
+           AND cp_woc_con_id = p_con_id
+             ;
+        --
+        -- apply discount if there is one
+        --
+        IF wol_rec.wor_act_balancing_sum != 0
+         AND wol_rec.wor_act_cost != 0
+         THEN
+            /*
+            ||Apply the Discount to the whole cost of
+            ||the WOL then take away any previous payments.
+            ||This is done in case the total cost of the WO
+            ||has moved into a different Discount Band
+            ||since the last payment.
+            */
+            v_payment_value := wol_rec.wol_act_cost
+                             + (wol_rec.wol_act_cost * (wol_rec.wor_act_balancing_sum/wol_rec.wor_act_cost))
+                             - paid_so_far(p_wol_id => wol_rec.wol_id);
+            --
+            --nm_debug.debug('Amount to be paid after discount = '||v_payment_value);
+            --
+        END IF;
+        --
+        UPDATE claim_payments
+           SET cp_payment_date = SYSDATE
+              ,cp_payment_id = v_cnp_id
+              ,cp_status = l_claim_paid_status
+              ,cp_payment_value = v_payment_value
+         WHERE cp_wol_id = wol_rec.wol_id
+           AND cp_woc_claim_ref = wol_rec.cp_woc_claim_ref
+           AND cp_woc_con_id = p_con_id
+             ;
+        --
+        --update the interim_payments table in case the wol has interim payments
+        --
+        UPDATE wol_interim_payments
+           SET wip_status = 'P'
+              ,wip_date = SYSDATE
+         WHERE wip_wol_id = wol_rec.wol_id
+             ;
+        --
+        v_total_value := v_total_value + NVL(v_payment_value, 0);
+        l_inv_status := maiwo.wol_invoice_status(wol_rec.wol_id);
+        OPEN  is_complete(wol_rec.wol_status_code);
+        FETCH is_complete
+         INTO dummy;
+        IF is_complete%FOUND
+         THEN
+            CLOSE is_complete;
+            UPDATE work_order_lines
+               SET wol_invoice_status = l_inv_status
+                  ,wol_status_code = l_paid_status
+                  ,wol_date_paid = SYSDATE
+             WHERE wol_id = wol_rec.wol_id
+                 ;
+        ELSE
+            CLOSE is_complete;
+            UPDATE work_order_lines
+               SET wol_invoice_status = l_inv_status
+                  ,wol_status_code = l_part_paid_status
+             WHERE wol_id = wol_rec.wol_id
+                 ;
+        END IF;
+    END IF;
+  END LOOP;
+  --
+  --nm_debug.debug('Work Order Lines Updated');
+  --
+  v_retention_amount := ROUND((v_total_value * v_retention_rate / 100),2);
+  --
+  --nm_debug.debug('Obtaining Contract Extentions');
+  --
+  OPEN  c_retention_to_date(p_con_id);
+  FETCH c_retention_to_date
+   INTO v_retention_to_date
+       ,v_max_retention;
+  CLOSE c_retention_to_date;
+  --
+  --nm_debug.debug('Contract Retentions Obtained');
+  --
+  IF v_retention_amount + v_retention_to_date >= v_max_retention
+   THEN
+      --nm_debug.debug('Recalculating retention rate');
+      v_retention_rate := ROUND(((v_max_retention - v_retention_to_date) / NVL(v_total_value,1)) * 100,2);
+      v_retention_amount := ROUND((v_total_value * v_retention_rate / 100),2);
+  END IF;
+  --
+  IF v_apply_vat = 'Y'
+   THEN
+      --nm_debug.debug('Obtaining VAT rate');
+      OPEN  c_vat_rate;
+      FETCH c_vat_rate
+       INTO v_vat_rate;
+      CLOSE c_vat_rate;
+      --
+      v_vat_amount := ROUND(((v_total_value - v_retention_amount) * v_vat_rate / 100),2);
+      --
+  ELSE
       v_vat_amount := 0.00;
-   end if;
-   v_cnp_amount := (v_total_value - v_retention_amount + v_vat_amount);
-   --
-   dbms_output.put_line('Inserting into Contract Payments'||to_char(v_total_value)||' total ');
-   --
-
-   insert into contract_payments
-      (cnp_id, cnp_con_id, cnp_run_date, cnp_username,
-       cnp_first_payment_no, cnp_last_payment_no, cnp_total_value,
-       cnp_retention_amount, cnp_vat_amount, cnp_amount)
-      values
-      (v_cnp_id, p_con_id, sysdate, user,
-       v_first_payment, v_payment_no, v_total_value,
-       v_retention_amount, v_vat_amount, v_cnp_amount);
-
-   if v_use_interfaces = 'Y' and l_NO_FC_FILE = 'Y' then
-
-     begin
-       interfaces.financial_credit_file(v_cnp_id, l_file, l_oun_ord_id);
-     exception
-       when others then
-         raise credit_file_error;
-     end;
-
-   end if;
-
-   open c_last_run_date(p_con_id);
-   fetch c_last_run_date into v_last_run_date;
-   close c_last_run_date;
-
-
-   if v_last_run_date is not null then
-
-      open c_run_this_year(v_last_run_date);
-      fetch c_run_this_year into v_same_year;
-      close c_run_this_year;
-
-   end if;
-
--- from post
-   dbms_output.put_line('Updating contract');
-
-   if v_same_year = 'Y' then
-      update contracts
-      set con_spend_to_date = nvl(con_spend_to_date,0) + v_total_value,
-          con_spend_ytd = nvl(con_spend_ytd,0) + v_total_value,
-          con_last_payment_no = v_cnp_id
-      where con_id = p_con_id;
-   else
-      update contracts
-      set con_spend_to_date = nvl(con_spend_to_date,0) + v_total_value,
-          con_spend_ytd = v_total_value,
-          con_last_payment_no = v_cnp_id
-      where con_id = p_con_id;
-   end if;
-
-  if v_retention_amount + v_retention_to_date >= v_max_retention then
-    update contracts
-    set    con_retention_to_date = nvl(v_max_retention,0)
-    where  con_id = p_con_id;
-  else
-    update contracts
-    set    con_retention_to_date = nvl(v_retention_to_date,0) + nvl(v_retention_amount,0)
-    where  con_id = p_con_id;
-  end if;
-
-   dbms_output.put_line('Transaction Completed and Committed');
-
--- got to here O.K return cnp_id for reports and TRUE
-   l_cnp_id     := v_cnp_id;
-   l_error_code := null;
-   l_error_appl := null;
-   return TRUE;
-
-  exception
-  when contract_is_locked
-  then
-    ROLLBACK; -- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 885;
-    l_error_appl := 'M_MGR';
-    return false;
-  when payment_seq_missing
-  then
-    ROLLBACK;-- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 83;
-    l_error_appl := 'HWAYS';
-    return false;
-  when no_items_for_payment
-  then
-    ROLLBACK;-- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 887;
-    l_error_appl := 'M_MGR';
-    return false;
-  when credit_file_error
-  then
-    ROLLBACK;-- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 888; -- other problem
-    l_error_appl := 'M_MGR';
-    return false;
-  when DUP_VAL_ON_INDEX then
-    ROLLBACK;-- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 885;
-    l_error_appl := 'M_MGR';
-    return false;
-  when others
-  then
-    ROLLBACK;-- clb 02082010 Task 0109818
-    l_cnp_id     := null;
-    l_error_code := 888; -- other problem
-    l_error_appl := 'M_MGR';
-    return false;
-  end;
-
-   -- get the minimum value that the current user can authorise in mai3848.fmt
+  END IF;
+  --
+  v_cnp_amount := (v_total_value - v_retention_amount + v_vat_amount);
+  --
+  --nm_debug.debug('Inserting into Contract Payments'||TO_CHAR(v_total_value)||' total ');
+  --
+  INSERT
+    INTO contract_payments
+        (cnp_id
+        ,cnp_con_id
+        ,cnp_run_date
+        ,cnp_username
+        ,cnp_first_payment_no
+        ,cnp_last_payment_no
+        ,cnp_total_value
+        ,cnp_retention_amount
+        ,cnp_vat_amount
+        ,cnp_amount)
+  VALUES(v_cnp_id
+        ,p_con_id
+        ,SYSDATE
+        ,USER
+        ,v_first_payment
+        ,v_payment_no
+        ,v_total_value
+        ,v_retention_amount
+        ,v_vat_amount
+        ,v_cnp_amount);
+  --
+  IF v_use_interfaces = 'Y'
+   AND l_no_fc_file = 'Y'
+   THEN
+      BEGIN
+          interfaces.financial_credit_file(v_cnp_id
+                                          ,l_file
+                                          ,l_oun_ord_id);
+      EXCEPTION
+        WHEN OTHERS
+         THEN
+            RAISE credit_file_error;
+      END;
+  END IF;
+  --
+  OPEN  c_last_run_date(p_con_id);
+  FETCH c_last_run_date
+   INTO v_last_run_date;
+  CLOSE c_last_run_date;
+  --
+  IF v_last_run_date IS NOT NULL
+   THEN
+      OPEN  c_run_this_year(v_last_run_date);
+      FETCH c_run_this_year
+       INTO v_same_year;
+      CLOSE c_run_this_year;
+  END IF;
+  -- from post
+  --nm_debug.debug('Updating contract');
+  --
+  IF v_same_year = 'Y'
+   THEN
+      UPDATE contracts
+         SET con_spend_to_date = NVL(con_spend_to_date,0) + v_total_value
+            ,con_spend_ytd = NVL(con_spend_ytd,0) + v_total_value
+            ,con_last_payment_no = v_cnp_id
+       WHERE con_id = p_con_id
+           ;
+  ELSE
+      UPDATE contracts
+         SET con_spend_to_date = NVL(con_spend_to_date,0) + v_total_value
+            ,con_spend_ytd = v_total_value
+            ,con_last_payment_no = v_cnp_id
+       WHERE con_id = p_con_id
+           ;
+  END IF;
+  --
+  IF v_retention_amount + v_retention_to_date >= v_max_retention
+   THEN
+      UPDATE contracts
+         SET con_retention_to_date = NVL(v_max_retention,0)
+       WHERE con_id = p_con_id
+           ;
+  ELSE
+      UPDATE contracts
+         SET con_retention_to_date = NVL(v_retention_to_date,0) + NVL(v_retention_amount,0)
+       WHERE con_id = p_con_id
+           ;
+  END IF;
+  --
+  --nm_debug.debug('Transaction Completed and Committed');
+  -- got to here O.K return cnp_id for reports and TRUE
+  l_cnp_id := v_cnp_id;
+  l_error_code := NULL;
+  l_error_appl := NULL;
+  --
+  --nm_debug.debug_off;
+  --
+  RETURN TRUE;
+  --
+EXCEPTION
+  WHEN contract_is_locked
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 885;
+      l_error_appl := 'M_MGR';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+  WHEN payment_seq_missing
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 83;
+      l_error_appl := 'HWAYS';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+  WHEN no_items_for_payment
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 887;
+      l_error_appl := 'M_MGR';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+  WHEN credit_file_error
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 888;                                      -- other problem
+      l_error_appl := 'M_MGR';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+  WHEN DUP_VAL_ON_INDEX
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 885;
+      l_error_appl := 'M_MGR';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+  WHEN OTHERS
+   THEN
+      ROLLBACK;                                     -- clb 02082010 Task 0109818
+      l_cnp_id := NULL;
+      l_error_code := 888;                                      -- other problem
+      l_error_appl := 'M_MGR';
+      --nm_debug.debug_off;
+      RETURN FALSE;
+END process_payment_run;
+--
+-----------------------------------------------------------------------------
+-- get the minimum value that the current user can authorise in mai3848.fmt
    function get_user_authorise_min return number
    IS
    rtrn hig_users.hus_wor_aur_min%TYPE := -1;
