@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.20   Sep 07 2010 11:51:14   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.21   Sep 13 2010 11:16:56   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 07 2010 11:51:14  $
---       Date fetched Out : $Modtime:   Sep 07 2010 11:48:24  $
---       SCCS Version     : $Revision:   2.20  $
+--       Date into SCCS   : $Date:   Sep 13 2010 11:16:56  $
+--       Date fetched Out : $Modtime:   Sep 13 2010 10:58:00  $
+--       SCCS Version     : $Revision:   2.21  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.20  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.21  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -30,6 +30,8 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 
    g_swr_licenced      BOOLEAN;
    g_tma_licenced      BOOLEAN;
+--
+   insert_error  EXCEPTION;
 --
 -----------------------------------------------------------------------------
 --
@@ -2026,33 +2028,173 @@ END create_defect;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION ins_defect(pi_defect_rec defects%ROWTYPE)
+  RETURN defects.def_defect_id%TYPE IS
+  --
+  lv_defect_id   defects.def_defect_id%TYPE;
+  --
+BEGIN
+  /*
+  ||Check The Defect Id (Primary Key).
+  */
+  IF pi_defect_rec.def_defect_id IS NULL
+   THEN
+      lv_defect_id := mai_inspection_api.get_next_id('def_defect_id_seq');
+  ELSE
+      lv_defect_id := pi_defect_rec.def_defect_id;
+  END IF;
+  /*
+  ||Insert The Defect.
+  */
+  INSERT
+    INTO defects
+        (def_defect_id
+        ,def_rse_he_id
+        ,def_iit_item_id
+        ,def_st_chain
+        ,def_are_report_id
+        ,def_atv_acty_area_code
+        ,def_siss_id
+        ,def_works_order_no
+        ,def_created_date
+        ,def_defect_code
+        ,def_last_updated_date
+        ,def_orig_priority
+        ,def_priority
+        ,def_status_code
+        ,def_superseded_flag
+        ,def_area
+        ,def_are_id_not_found
+        ,def_coord_flag
+        ,def_date_compl
+        ,def_date_not_found
+        ,def_defect_class
+        ,def_defect_descr
+        ,def_defect_type_descr
+        ,def_diagram_no
+        ,def_height
+        ,def_ident_code
+        ,def_ity_inv_code
+        ,def_ity_sys_flag
+        ,def_length
+        ,def_locn_descr
+        ,def_maint_wo
+        ,def_mand_adv
+        ,def_notify_org_id
+        ,def_number
+        ,def_per_cent
+        ,def_per_cent_orig
+        ,def_per_cent_rem
+        ,def_rechar_org_id
+        ,def_serial_no
+        ,def_skid_coeff
+        ,def_special_instr
+        ,def_superseded_id
+        ,def_time_hrs
+        ,def_time_mins
+        ,def_update_inv
+        ,def_x_sect
+        ,def_easting
+        ,def_northing
+        ,def_response_category
+        ,def_inspection_date)
+ VALUES (lv_defect_id
+        ,pi_defect_rec.def_rse_he_id
+        ,pi_defect_rec.def_iit_item_id
+        ,pi_defect_rec.def_st_chain
+        ,pi_defect_rec.def_are_report_id
+        ,pi_defect_rec.def_atv_acty_area_code
+        ,pi_defect_rec.def_siss_id
+        ,pi_defect_rec.def_works_order_no
+        ,pi_defect_rec.def_created_date
+        ,pi_defect_rec.def_defect_code
+        ,sysdate
+        ,pi_defect_rec.def_orig_priority
+        ,pi_defect_rec.def_priority
+        ,pi_defect_rec.def_status_code
+        ,NVL(pi_defect_rec.def_superseded_flag,'N')
+        ,pi_defect_rec.def_area
+        ,pi_defect_rec.def_are_id_not_found
+        ,pi_defect_rec.def_coord_flag
+        ,pi_defect_rec.def_date_compl
+        ,pi_defect_rec.def_date_not_found
+        ,pi_defect_rec.def_defect_class
+        ,pi_defect_rec.def_defect_descr
+        ,pi_defect_rec.def_defect_type_descr
+        ,pi_defect_rec.def_diagram_no
+        ,pi_defect_rec.def_height
+        ,pi_defect_rec.def_ident_code
+        ,pi_defect_rec.def_ity_inv_code
+        ,pi_defect_rec.def_ity_sys_flag
+        ,pi_defect_rec.def_length
+        ,pi_defect_rec.def_locn_descr
+        ,pi_defect_rec.def_maint_wo
+        ,pi_defect_rec.def_mand_adv
+        ,pi_defect_rec.def_notify_org_id
+        ,pi_defect_rec.def_number
+        ,pi_defect_rec.def_per_cent
+        ,pi_defect_rec.def_per_cent_orig
+        ,pi_defect_rec.def_per_cent_rem
+        ,pi_defect_rec.def_rechar_org_id
+        ,pi_defect_rec.def_serial_no
+        ,pi_defect_rec.def_skid_coeff
+        ,pi_defect_rec.def_special_instr
+        ,pi_defect_rec.def_superseded_id
+        ,pi_defect_rec.def_time_hrs
+        ,pi_defect_rec.def_time_mins
+        ,pi_defect_rec.def_update_inv
+        ,pi_defect_rec.def_x_sect
+        ,pi_defect_rec.def_easting
+        ,pi_defect_rec.def_northing
+        ,pi_defect_rec.def_response_category
+        ,pi_defect_rec.def_inspection_date);
+  --
+  IF SQL%rowcount != 1 THEN
+    RAISE insert_error;
+  END IF;
+  --
+  RETURN lv_defect_id;
+  --
+EXCEPTION
+  WHEN insert_error
+   THEN
+      raise_application_error(-20040, 'Error occured while creating Activities Report.');
+  WHEN others
+   THEN
+      RAISE;
+END ins_defect;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION create_defect(pi_insp_rec   IN activities_report%ROWTYPE
                       ,pi_defect_rec IN defects%ROWTYPE
                       ,pi_repair_tab IN rep_tab
                       ,pi_boq_tab    IN boq_tab)
   RETURN NUMBER IS
   --
-  lv_repsetperd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
-  lv_usedefchnd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHND');
-  lv_usetremodd     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
-  lv_repsetperl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERL');
-  lv_usedefchnl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHNL');
-  lv_usetremodl     hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
-  lv_tremodlev      hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
-  lv_insp_init      hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_INIT'),'DUM');
-  lv_insp_sdf       hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_SDF'),'D');
-  lv_siss           hig_options.hop_value%TYPE := NVL(hig.get_sysopt('DEF_SISS'),'ALL');
-  lv_locdefboqs     hig_options.hop_value%TYPE := hig.get_user_or_sys_opt('LOCDEFBOQS');
-  lv_insp_id        activities_report.are_report_id%TYPE;
-  lv_defect_id      defects.def_defect_id%TYPE;
-  lv_action_cat     repairs.rep_action_cat%TYPE;
-  lv_entity_type    VARCHAR2(10);
-  lv_date_due       repairs.rep_date_due%TYPE;
-  lv_sys_flag       road_segs.rse_sys_flag%TYPE;
-  lv_admin_unit     hig_admin_units.hau_admin_unit%TYPE;
-  lv_def_status     hig_status_codes.hsc_status_code%type;
-  lv_boqs_created   NUMBER;
-  lv_dummy          NUMBER;
+  lv_repsetperd       hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
+  lv_usedefchnd       hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHND');
+  lv_usetremodd       hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODD');
+  lv_repsetperl       hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERL');
+  lv_usedefchnl       hig_options.hop_value%TYPE := hig.GET_SYSOPT('USEDEFCHNL');
+  lv_usetremodl       hig_options.hop_value%TYPE := hig.GET_SYSOPT('USETREMODL');
+  lv_tremodlev        hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
+  lv_insp_init        hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_INIT'),'DUM');
+  lv_insp_sdf         hig_options.hop_value%TYPE := NVL(hig.get_sysopt('INSP_SDF'),'D');
+  lv_siss             hig_options.hop_value%TYPE := NVL(hig.get_sysopt('DEF_SISS'),'ALL');
+  lv_locdefboqs       hig_options.hop_value%TYPE := hig.get_user_or_sys_opt('LOCDEFBOQS');
+  lv_insp_id          activities_report.are_report_id%TYPE;
+  lv_defect_id        defects.def_defect_id%TYPE;
+  lv_action_cat       repairs.rep_action_cat%TYPE;
+  lv_entity_type      VARCHAR2(10);
+  lv_date_due         repairs.rep_date_due%TYPE;
+  lv_sys_flag         road_segs.rse_sys_flag%TYPE;
+  lv_admin_unit       hig_admin_units.hau_admin_unit%TYPE;
+  lv_compl_rep_count  PLS_INTEGER := 0;
+  lv_def_date_compl   DATE;
+  lv_def_status       hig_status_codes.hsc_status_code%type;
+  lv_boqs_created     NUMBER;
+  lv_dummy            NUMBER;
   --
   lr_defect_rec     defects%ROWTYPE;
   lr_repair_rec     repairs%ROWTYPE;
@@ -2136,15 +2278,48 @@ BEGIN
   --
   lr_defect_rec := pi_defect_rec;
   lr_defect_rec.def_are_report_id := lv_insp_id;
-  --
-  OPEN  get_initial_status;
-  FETCH get_initial_status
-   INTO lv_def_status;
-  IF get_initial_status%NOTFOUND
+  /*
+  ||If All The Repairs Passed In Are Complete Then
+  ||The Defect Should Be Created With The Complete
+  ||Status And The Defect Completion Date Should
+  ||Be Populated.
+  */
+  FOR i IN 1..pi_repair_tab.count LOOP
+    --
+    IF pi_repair_tab(i).rep_date_completed IS NOT NULL
+     THEN
+        lv_compl_rep_count := lv_compl_rep_count+1;
+        IF lv_def_date_compl IS NULL
+         OR pi_repair_tab(i).rep_date_completed > lv_def_date_compl
+         THEN
+            IF pi_repair_tab(i).rep_completed_hrs IS NOT NULL
+             AND pi_repair_tab(i).rep_completed_mins IS NOT NULL
+             THEN
+                lv_def_date_compl := TO_DATE(TO_CHAR(pi_repair_tab(i).rep_date_completed,'DD-MON-RRRR')
+                                              ||pi_repair_tab(i).rep_completed_hrs
+                                              ||':'||pi_repair_tab(i).rep_completed_mins
+                                            ,'DD-MON-RRRRHH24:MI');
+            ELSE
+                lv_def_date_compl := pi_repair_tab(i).rep_date_completed;
+            END IF;
+        END IF;
+    END IF;
+    --
+  END LOOP;
+  /*
+  ||If all repairs are complete then create the Defect as completed.
+  */
+  IF lv_compl_rep_count = pi_repair_tab.count
    THEN
-      RAISE_APPLICATION_ERROR(-20002,'Cannot Find Initial Defect Status');
+      lr_defect_rec.def_date_compl := lv_def_date_compl;
   END IF;
-  CLOSE get_initial_status;
+  --
+  IF lr_defect_rec.def_date_compl IS NULL
+   THEN
+      lv_def_status := mai_inspection_api.get_initial_defect_status(pi_effective_date => pi_insp_rec.are_date_work_done);
+  ELSE
+      lv_def_status := mai_inspection_api.get_complete_defect_status(pi_effective_date => pi_insp_rec.are_date_work_done);
+  END IF;
   --
   lr_defect_rec.def_status_code := lv_def_status;
   --
@@ -2155,7 +2330,7 @@ BEGIN
   /*
   ||Create The Defect.
   */
-  lv_defect_id := mai.create_defect(lr_defect_rec);
+  lv_defect_id := ins_defect(pi_defect_rec => lr_defect_rec);
   --
   lr_defect_rec.def_defect_id := lv_defect_id;
   --
@@ -2196,6 +2371,16 @@ BEGIN
         ELSE
             hig.raise_ner(nm3type.c_mai,906); --Cannot Find Due Date From Interval
         END IF;
+    END IF;
+    --
+    IF lr_repair_rec.rep_date_completed IS NOT NULL
+     AND (lr_repair_rec.rep_completed_hrs IS NOT NULL
+          AND lr_repair_rec.rep_completed_mins IS NOT NULL)
+     THEN
+        lr_repair_rec.rep_date_completed := TO_DATE(TO_CHAR(lr_repair_rec.rep_date_completed,'DD-MON-RRRR')
+                                                      ||lr_repair_rec.rep_completed_hrs
+                                                      ||':'||lr_repair_rec.rep_completed_mins
+                                                   ,'DD-MON-RRRRHH24:MI');
     END IF;
     /*
     ||Local Copy Of mai.create_repair That Populates
@@ -3386,7 +3571,7 @@ BEGIN
   IF hig.get_sysopt('ICBFGAC') = 'Y'
    THEN
       --
-      nm3ctx.set_context(g_ctx_agency_attr,get_icb_fgac_context(Top,NULL));  
+      nm3ctx.set_context(g_ctx_agency_attr,get_icb_fgac_context(Top,NULL));
       --set_context(g_context, 'Agency', get_icb_fgac_context(Top,''));
       --DBMS_SESSION.SET_CONTEXT (c_context, 'Agency', get_icb_fgac_context(Top,''));
   END IF;
