@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.15   Aug 06 2010 15:12:54   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.16   Sep 14 2010 14:29:28   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Aug 06 2010 15:12:54  $
---       Date fetched Out : $Modtime:   Aug 06 2010 14:58:44  $
---       PVCS Version     : $Revision:   3.15  $
+--       Date into PVCS   : $Date:   Sep 14 2010 14:29:28  $
+--       Date fetched Out : $Modtime:   Sep 14 2010 14:02:54  $
+--       PVCS Version     : $Revision:   3.16  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.16  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -683,12 +683,12 @@ BEGIN
         ,pi_defect_rec.def_orig_priority
         ,pi_defect_rec.def_priority
         ,pi_defect_rec.def_status_code
-        ,'N'
+        ,NVL(pi_defect_rec.def_superseded_flag,'N')
         ,pi_defect_rec.def_area
         ,pi_defect_rec.def_are_id_not_found
         ,pi_defect_rec.def_coord_flag
-        ,NULL
-        ,NULL
+        ,pi_defect_rec.def_date_compl
+        ,pi_defect_rec.def_date_not_found
         ,pi_defect_rec.def_defect_class
         ,pi_defect_rec.def_defect_descr
         ,pi_defect_rec.def_defect_type_descr
@@ -710,7 +710,7 @@ BEGIN
         ,pi_defect_rec.def_serial_no
         ,pi_defect_rec.def_skid_coeff
         ,pi_defect_rec.def_special_instr
-        ,NULL
+        ,pi_defect_rec.def_superseded_id
         ,pi_defect_rec.def_time_hrs
         ,pi_defect_rec.def_time_mins
         ,pi_defect_rec.def_update_inv
@@ -718,7 +718,8 @@ BEGIN
         ,pi_defect_rec.def_easting
         ,pi_defect_rec.def_northing
         ,pi_defect_rec.def_response_category
-        ,pi_defect_rec.def_inspection_date);
+        ,pi_defect_rec.def_inspection_date)
+       ;
   --
   IF SQL%rowcount != 1 THEN
     RAISE insert_error;
@@ -1075,8 +1076,10 @@ BEGIN
   ||Defects Can Be Created With Either
   ||The Initial Or Completed Status Code.
   */
-  IF pi_defect_rec.def_status_code = get_initial_defect_status(pi_effective_date => pi_effective_date)
-   OR pi_defect_rec.def_status_code = get_complete_defect_status(pi_effective_date => pi_effective_date)
+  IF (pi_defect_rec.def_status_code = get_initial_defect_status(pi_effective_date => pi_effective_date)
+      AND pi_defect_rec.def_date_compl IS NULL)
+   OR (pi_defect_rec.def_status_code = get_complete_defect_status(pi_effective_date => pi_effective_date)
+       AND pi_defect_rec.def_date_compl IS NOT NULL)
    THEN
       lv_retval := TRUE;
   END IF;
@@ -1968,6 +1971,7 @@ BEGIN
   */
   nm_debug.debug('Status');
   IF lr_defect_rec.def_status_code IS NULL
+   OR lr_defect_rec.def_date_compl IS NOT NULL
    THEN
       /*
       ||If A Completion Date Has Been Supplied
@@ -3536,13 +3540,15 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
                            ,po_error_flag    OUT VARCHAR2)
   IS
   --
-  lv_insp_id        activities_report.are_report_id%TYPE;
-  lv_defect_id      defects.def_defect_id%TYPE;
-  lv_action_cat     repairs.rep_action_cat%TYPE;
-  lv_admin_unit     hig_admin_units.hau_admin_unit%TYPE;
-  lv_asset_type     defects.def_ity_inv_code%TYPE;
-  lv_insp_sys_flag  VARCHAR2(1);
-  lv_error_flag     VARCHAR2(1);
+  lv_insp_id          activities_report.are_report_id%TYPE;
+  lv_defect_id        defects.def_defect_id%TYPE;
+  lv_compl_rep_count  PLS_INTEGER := 0;
+  lv_def_date_compl   DATE;
+  lv_action_cat       repairs.rep_action_cat%TYPE;
+  lv_admin_unit       hig_admin_units.hau_admin_unit%TYPE;
+  lv_asset_type       defects.def_ity_inv_code%TYPE;
+  lv_insp_sys_flag    VARCHAR2(1);
+  lv_error_flag       VARCHAR2(1);
   --
   lv_entity_type   VARCHAR2(10);
   lv_boqs_created  NUMBER;
@@ -3689,6 +3695,41 @@ BEGIN
         --    lr_defect_rec.def_ity_inv_code := NULL;
         END IF;
         /*
+        ||If All The Repairs Passed In Are Complete Then
+        ||The Defect Completion Date Should Be Populated.
+        ||This will lead to the Defect Status Being Set
+        ||To Completed By validate_defect_rec.
+        */
+        FOR i IN 1..lt_repairs.count LOOP
+          --
+          IF lt_repairs(i).rep_record.rep_date_completed IS NOT NULL
+           THEN
+              lv_compl_rep_count := lv_compl_rep_count+1;
+              IF lv_def_date_compl IS NULL
+               OR lt_repairs(i).rep_record.rep_date_completed > lv_def_date_compl
+               THEN
+                  IF lt_repairs(i).rep_record.rep_completed_hrs IS NOT NULL
+                   AND lt_repairs(i).rep_record.rep_completed_mins IS NOT NULL
+                   THEN
+                      lv_def_date_compl := TO_DATE(TO_CHAR(lt_repairs(i).rep_record.rep_date_completed,'DD-MON-RRRR')
+                                                    ||lt_repairs(i).rep_record.rep_completed_hrs
+                                                    ||':'||lt_repairs(i).rep_record.rep_completed_mins
+                                                  ,'DD-MON-RRRRHH24:MI');
+                  ELSE
+                      lv_def_date_compl := lt_repairs(i).rep_record.rep_date_completed;
+                  END IF;
+              END IF;
+          END IF;
+          --
+        END LOOP;
+        /*
+        ||If all repairs are complete then create the Defect as completed.
+        */
+        IF lv_compl_rep_count = lt_repairs.count
+         THEN
+            lr_defect_rec.def_date_compl := lv_def_date_compl;
+        END IF;
+        /*
         ||Validate The Defect.
         */
         nm_debug.debug('Validating Defect.');
@@ -3702,7 +3743,6 @@ BEGIN
         ||Process The Defect.
         */
         lr_defect_rec.def_are_report_id := lr_insp_rec.are_report_id;
-        --
         /*
         || Create The Defect.
         */
@@ -4155,48 +4195,47 @@ FUNCTION validate_def_att(pi_column IN VARCHAR2
   lv_return        BOOLEAN := TRUE;
   --
 BEGIN
-nm_debug.debug_on;
-  /*
-  ||Get The Datatype Of The Column.
-  */
-  SELECT data_type
-    INTO lv_data_type
-    FROM all_tab_columns
-   WHERE table_name  = 'DEFECTS'
-     AND column_name = pi_column
-     AND owner = hig.get_application_owner
-       ;
-  /*
-  ||Set The Value.
-  */
-  IF lv_data_type = 'NUMBER'
+  --
+  IF pi_value IS NOT NULL
    THEN
-      --
-      EXECUTE IMMEDIATE lv_column_assign||'TO_NUMBER('||pi_value||'); END;';
-      --
-  ELSIF lv_data_type = 'DATE'
-   THEN
-      --
-      EXECUTE IMMEDIATE lv_column_assign||'TO_DATE('||nm3flx.string(pi_value)
-                                               ||','||nm3flx.string('DD-MON-YYYY')||');';
-      --
-  ELSE
-      --
-      EXECUTE IMMEDIATE lv_column_assign||nm3flx.string(pi_value)||'; END;';
+      /*
+      ||Get The Datatype Of The Column.
+      */
+      SELECT data_type
+        INTO lv_data_type
+        FROM all_tab_columns
+       WHERE table_name  = 'DEFECTS'
+         AND column_name = pi_column
+         AND owner = hig.get_application_owner
+           ;
+      /*
+      ||Set The Value.
+      */
+      IF lv_data_type = 'NUMBER'
+       THEN
+          --
+          EXECUTE IMMEDIATE lv_column_assign||'TO_NUMBER('||pi_value||'); END;';
+          --
+      ELSIF lv_data_type = 'DATE'
+       THEN
+          --
+          EXECUTE IMMEDIATE lv_column_assign||'TO_DATE('||nm3flx.string(pi_value)
+                                                   ||','||nm3flx.string('DD-MON-YYYY')||');';
+          --
+      ELSE
+          --
+          EXECUTE IMMEDIATE lv_column_assign||nm3flx.string(pi_value)||'; END;';
+          --
+      END IF;
       --
   END IF;
   --
-nm_debug.debug_off;
   RETURN TRUE;
   --
 EXCEPTION
   WHEN others
    THEN
-nm_debug.debug(lv_column_assign||nm3flx.string(pi_value)||';');
-nm_debug.debug('-->'||SQLERRM);
-nm_debug.debug_off;
-      RETURN FALSE;
-      
+      RETURN FALSE;  
 END validate_def_att;
 
 END mai_inspection_api;

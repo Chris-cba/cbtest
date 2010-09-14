@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.8   Aug 06 2010 15:13:08   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.9   Sep 14 2010 14:29:28   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Aug 06 2010 15:13:08  $
---       Date fetched Out : $Modtime:   Aug 05 2010 14:45:24  $
---       PVCS Version     : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Sep 14 2010 14:29:28  $
+--       Date fetched Out : $Modtime:   Sep 10 2010 18:17:12  $
+--       PVCS Version     : $Revision:   3.9  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.9  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -175,6 +175,16 @@ PROCEDURE add_boq_to_boq_tab(pi_boq_rec  IN     boq_items%ROWTYPE
 --
 FUNCTION get_insp(pi_are_report_id IN activities_report.are_report_id%TYPE)
   RETURN activities_report%ROWTYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_initial_defect_status(pi_effective_date IN DATE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_complete_defect_status(pi_effective_date IN DATE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
 --
 -----------------------------------------------------------------------------
 -- This procedure validates the given activity_reports record and defaults
