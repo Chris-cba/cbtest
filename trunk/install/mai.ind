@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.7   Sep 03 2010 18:23:26   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.8   Sep 16 2010 11:09:18   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   Sep 03 2010 18:23:26  $
---       Date fetched Out : $Modtime:   Sep 03 2010 18:07:46  $
---       PVCS Version     : $Revision:   2.7  $
+--       Date into PVCS   : $Date:   Sep 16 2010 11:09:18  $
+--       Date fetched Out : $Modtime:   Sep 16 2010 11:07:18  $
+--       PVCS Version     : $Revision:   2.8  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Sep 03  17:00:55 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu Sep 16  09:29:15 2010 by Server Generator 10.1.2.9.28
   
 
 PROMPT Creating Index 'ATV_INDEX_P1'
@@ -367,12 +367,6 @@ CREATE INDEX HHINV_SECT_IND2 ON HHINV_SECT_LOG
 PROMPT Creating Index 'HHINV_SECT_IND3'
 CREATE INDEX HHINV_SECT_IND3 ON HHINV_SECT_LOG
  (RE_SUB_FLG)
-/
-
-PROMPT Creating Index 'HLR_ID_SEQ_IND'
-CREATE INDEX HLR_ID_SEQ_IND ON HH_LOAD_RECS
- (BATCH_ID
- ,SEQUENCE_NO)
 /
 
 PROMPT Creating Index 'ISS_PRIME'
