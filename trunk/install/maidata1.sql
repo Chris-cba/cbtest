@@ -2,16 +2,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.21   Jul 01 2010 15:11:36   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.22   Sep 17 2010 10:16:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Jul 01 2010 15:11:36  $
---       Date fetched Out : $Modtime:   Jul 01 2010 15:05:36  $
---       Version          : $Revision:   2.21  $
+--       Date into PVCS   : $Date:   Sep 17 2010 10:16:08  $
+--       Date fetched Out : $Modtime:   Sep 16 2010 17:34:00  $
+--       Version          : $Revision:   2.22  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 01-JUL-2010 15:05
+--       Generation Date  : 16-SEP-2010 17:33
 --
 --   Product metadata script
---   As at Release 4.2.1.0
+--   As at Release 4.3.0.0
 --
 --   Copyright (c) exor corporation ltd, 2010
 --
@@ -1052,6 +1052,40 @@ INSERT INTO NM_ERRORS
        )
 SELECT 
         'MAI'
+       ,9209
+       ,null
+       ,'Error : The Secondary inspector cannot be located. : Correct the Secondary inspectors initials in the G record.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9209);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9211
+       ,null
+       ,'Error : Invalid Road Surface condition code. : Correct the Road Surface condition code.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9211);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
        ,9212
        ,null
        ,'Error : Invalid Weather condition code. : Correct the weathher condition code.'
@@ -1207,7 +1241,7 @@ SELECT
         'MAI'
        ,9221
        ,null
-       ,'Error : Invalid activity area code on H type record for this section. : Correct the defect location time hhmm'
+       ,'Error : Invalid activity area code on H type record for this section.'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -1953,6 +1987,57 @@ INSERT INTO NM_ERRORS
        )
 SELECT 
         'MAI'
+       ,9510
+       ,null
+       ,'Error : Invalid action completion date. : Ensure that the action completion date is correct.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9510);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9511
+       ,null
+       ,'Error : Invalid action completion time. : Ensure that the action completion time is correct.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9511);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9512
+       ,null
+       ,'Error : Job item location error. : Ensure that the job item is correct.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9512);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
        ,9516
        ,null
        ,'Error : Unable to locate INTERVAL record. : Ensure there is an INTERVAL record present.'
@@ -2232,6 +2317,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 9534);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9535
+       ,null
+       ,'Invalid Record Type Found'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9535);
 --
 INSERT INTO NM_ERRORS
        (NER_APPL
@@ -8104,54 +8206,6 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
-        'MAI2200C'
-       ,'Inspection Loader (Part 1)'
-       ,'mai2200c'
-       ,'SVR'
-       ,''
-       ,'N'
-       ,'Y'
-       ,'MAI'
-       ,'FORM' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
-                   WHERE HMO_MODULE = 'MAI2200C');
---
-INSERT INTO HIG_MODULES
-       (HMO_MODULE
-       ,HMO_TITLE
-       ,HMO_FILENAME
-       ,HMO_MODULE_TYPE
-       ,HMO_FASTPATH_OPTS
-       ,HMO_FASTPATH_INVALID
-       ,HMO_USE_GRI
-       ,HMO_APPLICATION
-       ,HMO_MENU
-       )
-SELECT 
-        'MAI2200D'
-       ,'Inspection Loader (Part 2)'
-       ,'mai2200d'
-       ,'SVR'
-       ,''
-       ,'N'
-       ,'Y'
-       ,'MAI'
-       ,'FORM' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
-                   WHERE HMO_MODULE = 'MAI2200D');
---
-INSERT INTO HIG_MODULES
-       (HMO_MODULE
-       ,HMO_TITLE
-       ,HMO_FILENAME
-       ,HMO_MODULE_TYPE
-       ,HMO_FASTPATH_OPTS
-       ,HMO_FASTPATH_INVALID
-       ,HMO_USE_GRI
-       ,HMO_APPLICATION
-       ,HMO_MENU
-       )
-SELECT 
         'MAI2200E'
        ,'Load Bulk Inspection Data - Phase 1 + 2'
        ,'mai2200e'
@@ -8177,7 +8231,7 @@ INSERT INTO HIG_MODULES
        )
 SELECT 
         'MAI2200R'
-       ,'Bulk Inspection Load - Stage 2 Report'
+       ,'Maintenance Inspection Loader Report'
        ,'mai2200r'
        ,'R25'
        ,''
@@ -8283,30 +8337,6 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI2224');
---
-INSERT INTO HIG_MODULES
-       (HMO_MODULE
-       ,HMO_TITLE
-       ,HMO_FILENAME
-       ,HMO_MODULE_TYPE
-       ,HMO_FASTPATH_OPTS
-       ,HMO_FASTPATH_INVALID
-       ,HMO_USE_GRI
-       ,HMO_APPLICATION
-       ,HMO_MENU
-       )
-SELECT 
-        'MAI2250'
-       ,'Correct Inspection Load Errors'
-       ,'mai2250'
-       ,'FMX'
-       ,''
-       ,'N'
-       ,'N'
-       ,'MAI'
-       ,'FORM' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
-                   WHERE HMO_MODULE = 'MAI2250');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
@@ -10025,7 +10055,7 @@ INSERT INTO HIG_MODULES
        )
 SELECT 
         'MAI3819'
-       ,'Composite Flexible Attributes'
+       ,'Application Attributes'
        ,'mai3819.fmx'
        ,'FMX'
        ,''
@@ -12507,30 +12537,6 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI5090');
---
-INSERT INTO HIG_MODULES
-       (HMO_MODULE
-       ,HMO_TITLE
-       ,HMO_FILENAME
-       ,HMO_MODULE_TYPE
-       ,HMO_FASTPATH_OPTS
-       ,HMO_FASTPATH_INVALID
-       ,HMO_USE_GRI
-       ,HMO_APPLICATION
-       ,HMO_MENU
-       )
-SELECT 
-        'MAI5091'
-       ,'Remove Phase 1 Inspection Batches'
-       ,'mai5091'
-       ,'R25'
-       ,''
-       ,'N'
-       ,'Y'
-       ,'MAI'
-       ,'FORM' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
-                   WHERE HMO_MODULE = 'MAI5091');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
@@ -19397,6 +19403,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS'
                     AND  HSTF_CHILD = 'MAI_LOADERS_INVENTORY');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_LOADERS_INSPECTIONS'
+       ,'MAI2200R'
+       ,'Maintenance Inspection Loader Report'
+       ,'M'
+       ,30 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI2200R');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT

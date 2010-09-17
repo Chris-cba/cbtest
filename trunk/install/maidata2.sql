@@ -2,16 +2,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.11   Jun 14 2010 10:59:06   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.12   Sep 17 2010 10:16:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Jun 14 2010 10:59:06  $
---       Date fetched Out : $Modtime:   Jun 14 2010 10:57:10  $
---       Version          : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Sep 17 2010 10:16:08  $
+--       Date fetched Out : $Modtime:   Sep 16 2010 17:34:02  $
+--       Version          : $Revision:   2.12  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 14-JUN-2010 10:57
+--       Generation Date  : 16-SEP-2010 17:34
 --
 --   Product metadata script
---   As at Release 4.2.1.0
+--   As at Release 4.3.0.0
 --
 --   Copyright (c) exor corporation ltd, 2010
 --
@@ -243,62 +243,6 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
                    WHERE GRM_MODULE = 'MAI2115');
---
-INSERT INTO GRI_MODULES
-       (GRM_MODULE
-       ,GRM_MODULE_TYPE
-       ,GRM_MODULE_PATH
-       ,GRM_FILE_TYPE
-       ,GRM_TAG_FLAG
-       ,GRM_TAG_TABLE
-       ,GRM_TAG_COLUMN
-       ,GRM_TAG_WHERE
-       ,GRM_LINESIZE
-       ,GRM_PAGESIZE
-       ,GRM_PRE_PROCESS
-       )
-SELECT 
-        'MAI2200C'
-       ,'SVR'
-       ,'$PROD_HOME/bin'
-       ,'lis'
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,132
-       ,66
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
-                   WHERE GRM_MODULE = 'MAI2200C');
---
-INSERT INTO GRI_MODULES
-       (GRM_MODULE
-       ,GRM_MODULE_TYPE
-       ,GRM_MODULE_PATH
-       ,GRM_FILE_TYPE
-       ,GRM_TAG_FLAG
-       ,GRM_TAG_TABLE
-       ,GRM_TAG_COLUMN
-       ,GRM_TAG_WHERE
-       ,GRM_LINESIZE
-       ,GRM_PAGESIZE
-       ,GRM_PRE_PROCESS
-       )
-SELECT 
-        'MAI2200D'
-       ,'SVR'
-       ,'$PROD_HOME/bin'
-       ,'lis'
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,132
-       ,66
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
-                   WHERE GRM_MODULE = 'MAI2200D');
 --
 INSERT INTO GRI_MODULES
        (GRM_MODULE
@@ -3267,34 +3211,6 @@ SELECT
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
                    WHERE GRM_MODULE = 'MAI5090');
---
-INSERT INTO GRI_MODULES
-       (GRM_MODULE
-       ,GRM_MODULE_TYPE
-       ,GRM_MODULE_PATH
-       ,GRM_FILE_TYPE
-       ,GRM_TAG_FLAG
-       ,GRM_TAG_TABLE
-       ,GRM_TAG_COLUMN
-       ,GRM_TAG_WHERE
-       ,GRM_LINESIZE
-       ,GRM_PAGESIZE
-       ,GRM_PRE_PROCESS
-       )
-SELECT 
-        'MAI5091'
-       ,'R25'
-       ,'$PROD_HOME/bin'
-       ,'lis'
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,80
-       ,66
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULES
-                   WHERE GRM_MODULE = 'MAI5091');
 --
 INSERT INTO GRI_MODULES
        (GRM_MODULE
@@ -6648,108 +6564,6 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
                    WHERE GMP_MODULE = 'MAI2115'
                     AND  GMP_PARAM = 'ROAD_ID');
---
-INSERT INTO GRI_MODULE_PARAMS
-       (GMP_MODULE
-       ,GMP_PARAM
-       ,GMP_SEQ
-       ,GMP_PARAM_DESCR
-       ,GMP_MANDATORY
-       ,GMP_NO_ALLOWED
-       ,GMP_WHERE
-       ,GMP_TAG_RESTRICTION
-       ,GMP_TAG_WHERE
-       ,GMP_DEFAULT_TABLE
-       ,GMP_DEFAULT_COLUMN
-       ,GMP_DEFAULT_WHERE
-       ,GMP_VISIBLE
-       ,GMP_GAZETTEER
-       ,GMP_LOV
-       ,GMP_VAL_GLOBAL
-       ,GMP_WILDCARD
-       ,GMP_HINT_TEXT
-       ,GMP_OPERATOR
-       ,GMP_BASE_TABLE
-       ,GMP_BASE_TABLE_COLUMN
-       ,GMP_ALLOW_PARTIAL
-       )
-SELECT 
-        'MAI2200C'
-       ,'LOADER_FILE'
-       ,1
-       ,'Load File Path'
-       ,'Y'
-       ,1
-       ,''
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,'Y'
-       ,'N'
-       ,'N'
-       ,'N'
-       ,'N'
-       ,'Enter pathname of load file'
-       ,''
-       ,''
-       ,''
-       ,'N' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
-                   WHERE GMP_MODULE = 'MAI2200C'
-                    AND  GMP_PARAM = 'LOADER_FILE');
---
-INSERT INTO GRI_MODULE_PARAMS
-       (GMP_MODULE
-       ,GMP_PARAM
-       ,GMP_SEQ
-       ,GMP_PARAM_DESCR
-       ,GMP_MANDATORY
-       ,GMP_NO_ALLOWED
-       ,GMP_WHERE
-       ,GMP_TAG_RESTRICTION
-       ,GMP_TAG_WHERE
-       ,GMP_DEFAULT_TABLE
-       ,GMP_DEFAULT_COLUMN
-       ,GMP_DEFAULT_WHERE
-       ,GMP_VISIBLE
-       ,GMP_GAZETTEER
-       ,GMP_LOV
-       ,GMP_VAL_GLOBAL
-       ,GMP_WILDCARD
-       ,GMP_HINT_TEXT
-       ,GMP_OPERATOR
-       ,GMP_BASE_TABLE
-       ,GMP_BASE_TABLE_COLUMN
-       ,GMP_ALLOW_PARTIAL
-       )
-SELECT 
-        'MAI2200D'
-       ,'SVR_HH_LOAD_BATCH'
-       ,1
-       ,'Load Batch Id'
-       ,'Y'
-       ,1
-       ,'B.SEQUENCE_NO = (SELECT MIN(A.SEQUENCE_NO) FROM HH_LOAD_RECS A WHERE A.BATCH_ID = B.BATCH_ID )'
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,'Y'
-       ,'N'
-       ,'Y'
-       ,'N'
-       ,'N'
-       ,'Enter the number of the batch to be loaded'
-       ,''
-       ,''
-       ,''
-       ,'N' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
-                   WHERE GMP_MODULE = 'MAI2200D'
-                    AND  GMP_PARAM = 'SVR_HH_LOAD_BATCH');
 --
 INSERT INTO GRI_MODULE_PARAMS
        (GMP_MODULE
@@ -14279,7 +14093,7 @@ SELECT
        ,'Inspection Batch Id'
        ,'N'
        ,1
-       ,'ARE_REPORT_ID IN (SELECT MAX( ARE1.ARE_REPORT_ID ) FROM ACTIVITIES_REPORT ARE1'||CHR(10)||'WHERE ARE1.ARE_BATCH_ID = NVL( :BATCH_ID, ARE1.ARE_BATCH_ID ) GROUP BY ARE1.ARE_BATCH_ID ) ORDER BY TO_NUMBER(ARE_BATCH_ID)'
+       ,'ARE_REPORT_ID IN ('||CHR(10)||'SELECT DISTINCT (SELECT Max(are_report_id) FROM  activities_report A WHERE A.are_batch_id = b.ARE_BATCH_ID ) are_id'||CHR(10)||'FROM activities_report b WHERE are_batch_id IS NOT NULL AND ARE_BATCH_ID = Nvl( :BATCH_ID, ARE_BATCH_ID)'||CHR(10)||') ORDER BY To_Number(ARE_BATCH_ID)'
        ,'N'
        ,''
        ,''
@@ -29726,108 +29540,6 @@ INSERT INTO GRI_MODULE_PARAMS
        ,GMP_ALLOW_PARTIAL
        )
 SELECT 
-        'MAI5091'
-       ,'INSP_BATCH'
-       ,1
-       ,'Inventory Batch Id'
-       ,'N'
-       ,1
-       ,'not exists ( select 1 from hh_load_recs hlb where hlb.batch_id = hh_load_batches.batch_id and hlb.error_no is not null )'
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,'Y'
-       ,'N'
-       ,'Y'
-       ,''
-       ,'N'
-       ,'Enter [NULL] for All batch removal or a specific batch number.'
-       ,''
-       ,''
-       ,''
-       ,'N' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
-                   WHERE GMP_MODULE = 'MAI5091'
-                    AND  GMP_PARAM = 'INSP_BATCH');
---
-INSERT INTO GRI_MODULE_PARAMS
-       (GMP_MODULE
-       ,GMP_PARAM
-       ,GMP_SEQ
-       ,GMP_PARAM_DESCR
-       ,GMP_MANDATORY
-       ,GMP_NO_ALLOWED
-       ,GMP_WHERE
-       ,GMP_TAG_RESTRICTION
-       ,GMP_TAG_WHERE
-       ,GMP_DEFAULT_TABLE
-       ,GMP_DEFAULT_COLUMN
-       ,GMP_DEFAULT_WHERE
-       ,GMP_VISIBLE
-       ,GMP_GAZETTEER
-       ,GMP_LOV
-       ,GMP_VAL_GLOBAL
-       ,GMP_WILDCARD
-       ,GMP_HINT_TEXT
-       ,GMP_OPERATOR
-       ,GMP_BASE_TABLE
-       ,GMP_BASE_TABLE_COLUMN
-       ,GMP_ALLOW_PARTIAL
-       )
-SELECT 
-        'MAI5091'
-       ,'MAI_P_DEL_REV'
-       ,2
-       ,'Review or delete batch'
-       ,'Y'
-       ,1
-       ,'GPL_PARAM=''MAI_P_DEL_REV'''
-       ,'N'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,'Y'
-       ,'N'
-       ,'Y'
-       ,''
-       ,'Y'
-       ,'Review the batch headers or review and delete them '
-       ,''
-       ,''
-       ,''
-       ,'N' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
-                   WHERE GMP_MODULE = 'MAI5091'
-                    AND  GMP_PARAM = 'MAI_P_DEL_REV');
---
-INSERT INTO GRI_MODULE_PARAMS
-       (GMP_MODULE
-       ,GMP_PARAM
-       ,GMP_SEQ
-       ,GMP_PARAM_DESCR
-       ,GMP_MANDATORY
-       ,GMP_NO_ALLOWED
-       ,GMP_WHERE
-       ,GMP_TAG_RESTRICTION
-       ,GMP_TAG_WHERE
-       ,GMP_DEFAULT_TABLE
-       ,GMP_DEFAULT_COLUMN
-       ,GMP_DEFAULT_WHERE
-       ,GMP_VISIBLE
-       ,GMP_GAZETTEER
-       ,GMP_LOV
-       ,GMP_VAL_GLOBAL
-       ,GMP_WILDCARD
-       ,GMP_HINT_TEXT
-       ,GMP_OPERATOR
-       ,GMP_BASE_TABLE
-       ,GMP_BASE_TABLE_COLUMN
-       ,GMP_ALLOW_PARTIAL
-       )
-SELECT 
         'MAI5100'
        ,'ACTIVITY'
        ,6
@@ -31927,7 +31639,7 @@ SELECT
        ,1
        ,'((:FROM_DATE <= :TO_DATE AND :FROM_DATE <= SYSDATE) OR (:TO_DATE IS NULL AND :FROM_DATE <= SYSDATE))'
        ,'Y'
-       ,'WOR_DATE_RAISED >= :FROM_DATE'
+       ,'TRUNC(WOR_DATE_RAISED) >= :FROM_DATE'
        ,''
        ,''
        ,''
@@ -32182,7 +31894,7 @@ SELECT
        ,1
        ,'((:FROM_DATE <= :TO_DATE AND :TO_DATE <= SYSDATE) OR '||CHR(10)||' (:FROM_DATE IS NULL AND :TO_DATE <= SYSDATE))'
        ,'Y'
-       ,'WOR_DATE_RAISED <=:TO_DATE'
+       ,'TRUNC(WOR_DATE_RAISED) <=:TO_DATE'
        ,''
        ,''
        ,''
