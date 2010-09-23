@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.13   Sep 01 2010 16:33:20   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.14   Sep 23 2010 10:14:16   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Sep 01 2010 16:33:20  $
---       Date fetched Out : $Modtime:   Sep 01 2010 13:28:58  $
---       PVCS Version     : $Revision:   3.13  $
+--       Date into PVCS   : $Date:   Sep 23 2010 10:14:16  $
+--       Date fetched Out : $Modtime:   Sep 22 2010 16:32:20  $
+--       PVCS Version     : $Revision:   3.14  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2914,7 +2914,8 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                   ,p_originator   => lv_originator
                                   ,p_confirmed    => pi_date_instructed
                                   ,p_est_complete => lr_wo.wor_est_complete
-                                  ,p_cost         => lr_wo.wor_est_cost
+                                  ,p_est_cost     => lr_wo.wor_est_cost
+								  ,p_act_cost     => lr_wo.wor_act_cost
                                   ,p_labour       => lr_wo.wor_est_labour
                                   ,p_ip_flag      => lr_wo.wor_interim_payment_flag
                                   ,p_ra_flag      => lr_wo.wor_risk_assessment_flag
@@ -4293,7 +4294,8 @@ PROCEDURE update_wol_status(pi_user_id       IN hig_users.hus_user_id%TYPE
                                   ,p_originator   => lv_originator
                                   ,p_confirmed    => lr_wo.wor_date_confirmed
                                   ,p_est_complete => lr_wo.wor_est_complete
-                                  ,p_cost         => NVL(lv_wor_act_cost,lv_wor_est_cost)
+                                  ,p_est_cost     => lv_wor_act_cost
+								  ,p_act_cost	  => lv_wor_est_cost
                                   ,p_labour       => lr_wo.wor_est_labour
                                   ,p_ip_flag      => lr_wo.wor_interim_payment_flag
                                   ,p_ra_flag      => lr_wo.wor_risk_assessment_flag
