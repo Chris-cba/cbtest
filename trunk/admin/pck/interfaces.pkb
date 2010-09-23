@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.26   Sep 03 2010 09:17:26   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.27   Sep 23 2010 10:41:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 03 2010 09:17:26  $
---       Date fetched Out : $Modtime:   Sep 03 2010 09:13:58  $
---       SCCS Version     : $Revision:   2.26  $
+--       Date into SCCS   : $Date:   Sep 23 2010 10:41:54  $
+--       Date fetched Out : $Modtime:   Sep 22 2010 16:27:30  $
+--       SCCS Version     : $Revision:   2.27  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.26  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.27  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -373,7 +373,7 @@ end get_fyr_id;
     CURSOR wols IS
       SELECT wol_id
             ,wol_def_defect_id
-        ,wol_schd_id
+            ,wol_schd_id
             ,wol_rse_he_id
             ,wol_icb_work_code
             ,rse_unique
@@ -383,25 +383,27 @@ end get_fyr_id;
       WHERE  wol_rse_he_id = rse_he_id
     AND    wol_works_order_no = p_wor_no;
 
-    CURSOR boq (c_wol_id work_order_lines.wol_id%TYPE) IS
+    CURSOR boq (c_wol_id     work_order_lines.wol_id%TYPE
+	           ,p_cimallest  hig_option_values.hov_value%TYPE) IS
       SELECT boq_sta_item_code
-            ,NVL(boq_act_dim1, boq_est_dim1) dim1
-            ,NVL(boq_act_dim2, boq_est_dim2) dim2
-            ,NVL(boq_act_dim3, boq_est_dim3) dim3
-            ,NVL(boq_act_quantity, boq_est_quantity) quantity
-            ,NVL(boq_act_rate, boq_est_rate) rate
-            ,NVL(boq_act_cost, boq_est_cost) COST
+            ,DECODE(p_cimallest, 'Y', boq_est_dim1, NVL(boq_act_dim1, boq_est_dim1)) dim1 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_dim2, NVL(boq_act_dim2, boq_est_dim2)) dim2 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_dim3, NVL(boq_act_dim3, boq_est_dim3)) dim3 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_quantity, NVL(boq_act_quantity, boq_est_quantity)) quantity --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_rate, NVL(boq_act_rate, boq_est_rate)) rate --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_cost, NVL(boq_act_cost, boq_est_cost)) COST --Task 0109080
       FROM   boq_items
       WHERE  boq_wol_id = c_wol_id;
 
-    CURSOR boq2 (c_wol_id work_order_lines.wol_id%TYPE) IS
+    CURSOR boq2 (c_wol_id work_order_lines.wol_id%TYPE
+	            ,p_cimallest  hig_option_values.hov_value%TYPE) IS
       SELECT boq_sta_item_code
-            ,NVL(boq_act_dim1, boq_est_dim1) dim1
-            ,NVL(boq_act_dim2, boq_est_dim2) dim2
-            ,NVL(boq_act_dim3, boq_est_dim3) dim3
-            ,NVL(boq_act_quantity, boq_est_quantity) quantity
-            ,NVL(boq_act_rate, boq_est_rate) rate
-            ,NVL(boq_act_cost, boq_est_cost) COST
+            ,DECODE(p_cimallest, 'Y', boq_est_dim1, NVL(boq_act_dim1, boq_est_dim1)) dim1 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_dim2, NVL(boq_act_dim2, boq_est_dim2)) dim2 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_dim3, NVL(boq_act_dim3, boq_est_dim3)) dim3 --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_quantity, NVL(boq_act_quantity, boq_est_quantity)) quantity
+            ,DECODE(p_cimallest, 'Y', boq_est_rate, NVL(boq_act_rate, boq_est_rate)) rate --Task 0109080
+            ,DECODE(p_cimallest, 'Y', boq_est_cost, NVL(boq_act_cost, boq_est_cost)) COST --Task 0109080 COST
             ,boq_id
             ,boq_parent_id
             ,boq_item_name
@@ -422,7 +424,8 @@ end get_fyr_id;
       WHERE  def_defect_id = c_defect_id;
 
   l_def_rec        def%ROWTYPE;
-  l_cost_code    budgets.bud_cost_code%TYPE;
+  l_cost_code      budgets.bud_cost_code%TYPE;
+  l_cimallest      hig_option_values.hov_value%TYPE := hig.get_sysopt('CIMALLEST');
 
   BEGIN
 
@@ -490,7 +493,8 @@ end get_fyr_id;
             ,l_cost_code);
 
       IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0') THEN
-      FOR boq_rec IN boq(l_wol_rec.wol_id) LOOP
+      FOR boq_rec IN boq(l_wol_rec.wol_id,
+	                     l_cimallest) LOOP
 
         INSERT INTO interface_boq (
          iboq_transaction_id
@@ -519,7 +523,8 @@ end get_fyr_id;
 
       END LOOP;
       ELSE
-      FOR boq_rec IN boq2(l_wol_rec.wol_id) LOOP
+      FOR boq_rec IN boq2(l_wol_rec.wol_id,
+	                      l_cimallest) LOOP
 
         INSERT INTO interface_boq (
          iboq_transaction_id
@@ -7870,28 +7875,28 @@ END;
 PROCEDURE pop_wol_and_boq_tabs(p_wol_rec  IN wol_rec
                     ,p_trans_id    IN interface_wor.iwor_transaction_id%TYPE) IS
   --
-  CURSOR boq
+  CURSOR boq (p_cimallest  hig_option_values.hov_value%TYPE)
       IS
   SELECT boq_sta_item_code
-        ,NVL(boq_act_dim1, boq_est_dim1) dim1
-        ,NVL(boq_act_dim2, boq_est_dim2) dim2
-        ,NVL(boq_act_dim3, boq_est_dim3) dim3
-        ,NVL(boq_act_quantity, boq_est_quantity) quantity
-        ,NVL(boq_act_rate, boq_est_rate) rate
-        ,NVL(boq_act_cost, boq_est_cost) COST
+        ,DECODE(p_cimallest, 'Y', boq_est_dim1, NVL(boq_act_dim1, boq_est_dim1)) dim1 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_dim2, NVL(boq_act_dim2, boq_est_dim2)) dim2 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_dim3, NVL(boq_act_dim3, boq_est_dim3)) dim3 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_quantity, NVL(boq_act_quantity, boq_est_quantity)) quantity -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_rate, NVL(boq_act_rate, boq_est_rate)) rate -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_cost, NVL(boq_act_cost, boq_est_cost)) COST -- Task 0109080
     FROM boq_items
    WHERE boq_wol_id = p_wol_rec.r_wol_id
        ;
   --
-  CURSOR boq2
+  CURSOR boq2 (p_cimallest  hig_option_values.hov_value%TYPE)
       IS
   SELECT boq_sta_item_code
-        ,NVL(boq_act_dim1, boq_est_dim1) dim1
-        ,NVL(boq_act_dim2, boq_est_dim2) dim2
-        ,NVL(boq_act_dim3, boq_est_dim3) dim3
-        ,NVL(boq_act_quantity, boq_est_quantity) quantity
-        ,NVL(boq_act_rate, boq_est_rate) rate
-        ,NVL(boq_act_cost, boq_est_cost) COST
+        ,DECODE(p_cimallest, 'Y', boq_est_dim1, NVL(boq_act_dim1, boq_est_dim1)) dim1 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_dim2, NVL(boq_act_dim2, boq_est_dim2)) dim2 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_dim3, NVL(boq_act_dim3, boq_est_dim3)) dim3 -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_quantity, NVL(boq_act_quantity, boq_est_quantity)) quantity -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_rate, NVL(boq_act_rate, boq_est_rate)) rate -- Task 0109080
+        ,DECODE(p_cimallest, 'Y', boq_est_cost, NVL(boq_act_cost, boq_est_cost)) COST -- Task 0109080
         ,boq_id
         ,boq_parent_id
         ,boq_item_name
@@ -7915,7 +7920,8 @@ PROCEDURE pop_wol_and_boq_tabs(p_wol_rec  IN wol_rec
        ;
   --
   l_def_rec        def%ROWTYPE;
-  l_cost_code    budgets.bud_cost_code%TYPE;
+  l_cost_code      budgets.bud_cost_code%TYPE;
+  l_cimallest      hig_option_values.hov_value%TYPE := hig.get_sysopt('CIMALLEST');
   --
 BEGIN
   --
@@ -7976,7 +7982,7 @@ BEGIN
   --
   IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0')
    THEN
-      FOR boq_rec IN boq LOOP
+      FOR boq_rec IN boq (l_cimallest) LOOP
         --
         INSERT
           INTO interface_boq
@@ -8005,7 +8011,7 @@ BEGIN
         --
       END LOOP;
   ELSE
-      FOR boq_rec IN boq2 LOOP
+      FOR boq_rec IN boq2 (l_cimallest) LOOP
         --
         INSERT
           INTO interface_boq
@@ -8052,22 +8058,23 @@ END;
 -- interface tables by the copy_data_to_interface procedure.
 --
 PROCEDURE add_wor_to_list(p_trans_type    IN interface_wor.iwor_transaction_type%TYPE
-                 ,p_wor_no        IN interface_wor.iwor_works_order_no%TYPE
-                 ,p_wor_flag    IN interface_wor.iwor_flag%TYPE
+                 ,p_wor_no         IN interface_wor.iwor_works_order_no%TYPE
+                 ,p_wor_flag       IN interface_wor.iwor_flag%TYPE
                  ,p_scheme_type    IN interface_wor.iwor_scheme_type%TYPE
-                 ,p_con_code    IN interface_wor.iwor_con_code%TYPE
-                 ,p_originator    IN interface_wor.iwor_originator%TYPE
-                 ,p_confirmed    IN interface_wor.iwor_date_confirmed%TYPE
-                 ,p_est_complete    IN interface_wor.iwor_est_complete%TYPE
-                 ,p_cost        IN interface_wor.iwor_cost%TYPE
-                 ,p_labour        IN interface_wor.iwor_est_labour%TYPE
+                 ,p_con_code       IN interface_wor.iwor_con_code%TYPE
+                 ,p_originator     IN interface_wor.iwor_originator%TYPE
+                 ,p_confirmed      IN interface_wor.iwor_date_confirmed%TYPE
+                 ,p_est_complete   IN interface_wor.iwor_est_complete%TYPE
+                 ,p_est_cost       IN interface_wor.iwor_cost%TYPE
+				 ,p_act_cost       IN interface_wor.iwor_cost%TYPE
+                 ,p_labour         IN interface_wor.iwor_est_labour%TYPE
                  ,p_ip_flag        IN interface_wor.iwor_interim_payment_flag%TYPE
                  ,p_ra_flag        IN interface_wor.iwor_risk_assessment_flag%TYPE
                  ,p_ms_flag        IN interface_wor.iwor_method_statement_flag%TYPE
                  ,p_wp_flag        IN interface_wor.iwor_works_programme_flag%TYPE
                  ,p_as_flag        IN interface_wor.iwor_additional_safety_flag%TYPE
                  ,p_commence_by    IN interface_wor.iwor_commence_by%TYPE
-                 ,p_descr        IN interface_wor.iwor_descr%TYPE) IS
+                 ,p_descr          IN interface_wor.iwor_descr%TYPE) IS
 
   l_index integer;
 
@@ -8134,7 +8141,12 @@ BEGIN
   g_wor_tab(l_index).iwor_originator := p_originator;
   g_wor_tab(l_index).iwor_date_confirmed := p_confirmed;
   g_wor_tab(l_index).iwor_est_complete := p_est_complete;
-  g_wor_tab(l_index).iwor_cost := p_cost;
+  if hig.get_sysopt('CIMALLEST') = 'Y' 
+  then
+     g_wor_tab(l_index).iwor_cost := p_est_cost;
+  else
+	 g_wor_tab(l_index).iwor_cost := NVL(p_act_cost, p_est_cost);
+  end if;
   g_wor_tab(l_index).iwor_est_labour := p_labour;
   g_wor_tab(l_index).iwor_interim_payment_flag := p_ip_flag;
   g_wor_tab(l_index).iwor_risk_assessment_flag := p_ra_flag;
@@ -8353,7 +8365,7 @@ PROCEDURE copy_data_to_interface IS
         ,hus_name
         ,wor_date_confirmed
         ,wor_est_complete
-        ,NVL(wor_act_cost, wor_est_cost)
+        ,DECODE(hig.get_sysopt('CIMALLEST'), 'Y', wor_est_cost, NVL(wor_act_cost, wor_est_cost)) -- Task 0109080
         ,wor_est_labour
         ,wor_interim_payment_flag
         ,wor_risk_assessment_flag
