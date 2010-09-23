@@ -6,11 +6,11 @@ CREATE OR REPLACE PACKAGE interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.2   Sep 03 2010 09:16:56   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.3   Sep 23 2010 10:40:08   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkh  $
---       Date into SCCS   : $Date:   Sep 03 2010 09:16:56  $
---       Date fetched Out : $Modtime:   Sep 02 2010 15:05:56  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 23 2010 10:40:08  $
+--       Date fetched Out : $Modtime:   Sep 22 2010 15:30:54  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.16
 ----
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE interfaces IS
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.2  $"';
+    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.3  $"';
     g_file_handle             utl_file.file_type ;
     extract_filename 		varchar2(2000);
 --</GLOBVAR>
@@ -347,7 +347,8 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 			     ,p_originator   IN interface_wor.iwor_originator%TYPE
 			     ,p_confirmed    IN interface_wor.iwor_date_confirmed%TYPE
 			     ,p_est_complete IN interface_wor.iwor_est_complete%TYPE
-			     ,p_cost	     IN interface_wor.iwor_cost%TYPE
+			     ,p_est_cost	 IN interface_wor.iwor_cost%TYPE
+			     ,p_act_cost	 IN interface_wor.iwor_cost%TYPE
 			     ,p_labour	     IN interface_wor.iwor_est_labour%TYPE
 			     ,p_ip_flag	     IN interface_wor.iwor_interim_payment_flag%TYPE
 			     ,p_ra_flag	     IN interface_wor.iwor_risk_assessment_flag%TYPE
