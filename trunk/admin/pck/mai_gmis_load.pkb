@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.1   Sep 29 2010 15:15:04   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_gmis_load.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Sep 29 2010 15:15:04  $
+--       Date fetched Out : $Modtime:   Sep 29 2010 14:40:06  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.20
 --
 --
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.0  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_gmis_load';
@@ -802,7 +802,7 @@ l_today date := sysdate;
 BEGIN
   g_repair.rep_tre_treat_code               := mai_gmis_validate.treatment_is_valid(get_a_field(p_line, 2));
   g_repair.rep_descr                        := nm3flx.left(get_a_field(p_line, 3),240);
-  g_defect.def_update_inv                   := mai_gmis_validate.hco_is_valid('Y_OR_N', get_a_field(p_line, 4));
+  g_defect.def_update_inv                   := mai_gmis_validate.hco_is_valid('ASSET_MODIFICATION', get_a_field(p_line, 4));
 
   -- other repair items
   g_repair.rep_def_defect_id                := g_defect.def_defect_id;
