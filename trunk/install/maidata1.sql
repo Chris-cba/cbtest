@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.22   Sep 17 2010 10:16:08   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.23   Sep 29 2010 15:17:22   Mike.Huitson  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Sep 17 2010 10:16:08  $
---       Date fetched Out : $Modtime:   Sep 16 2010 17:34:00  $
---       Version          : $Revision:   2.22  $
+--       Date into PVCS   : $Date:   Sep 29 2010 15:17:22  $
+--       Date fetched Out : $Modtime:   Sep 29 2010 14:25:18  $
+--       Version          : $Revision:   2.23  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 16-SEP-2010 17:33
+--       Generation Date  : 29-SEP-2010 14:25
 --
 --   Product metadata script
 --   As at Release 4.3.0.0
@@ -3688,6 +3688,27 @@ INSERT INTO HIG_CODES
        )
 SELECT 
         'ASSET_MODIFICATION'
+       ,'N'
+       ,'No'
+       ,'Y'
+       ,6
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'ASSET_MODIFICATION'
+                    AND  HCO_CODE = 'N');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'ASSET_MODIFICATION'
        ,'R'
        ,'Replace'
        ,'Y'
@@ -3718,6 +3739,27 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
                    WHERE HCO_DOMAIN = 'ASSET_MODIFICATION'
                     AND  HCO_CODE = 'U');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'ASSET_MODIFICATION'
+       ,'Y'
+       ,'Yes'
+       ,'Y'
+       ,5
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'ASSET_MODIFICATION'
+                    AND  HCO_CODE = 'Y');
 --
 INSERT INTO HIG_CODES
        (HCO_DOMAIN
