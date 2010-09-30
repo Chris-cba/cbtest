@@ -44,11 +44,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defects.vw-arc   3.2   Jul 07 2010 01:54:22   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defects.vw-arc   3.3   Sep 30 2010 16:27:36   Mike.Huitson  $
        --       Module Name      : $Workfile:   imf_mai_defects.vw  $
-       --       Date into PVCS   : $Date:   Jul 07 2010 01:54:22  $
-       --       Date fetched Out : $Modtime:   Jul 07 2010 01:18:38  $
-       --       Version          : $Revision:   3.2  $
+       --       Date into PVCS   : $Date:   Sep 30 2010 16:27:36  $
+       --       Date fetched Out : $Modtime:   Sep 30 2010 15:48:46  $
+       --       Version          : $Revision:   3.3  $
        -- Foundation view displaying maintenance defects
        -------------------------------------------------------------------------   
        def_defect_id                                     defect_id
@@ -115,9 +115,10 @@ SELECT -------------------------------------------------------------------------
          WHERE oun_org_id = def_rechar_org_id)           recharge_organisation_name
       ,def_superseded_flag                               superseded
       ,def_superseded_id                                 superseded_by_defect_id
-      ,TO_DATE(TO_CHAR(def_inspection_date,'DD-MON-RRRR')
-               ||' '||LPAD(NVL(def_time_hrs,'00'),2,'0')
-               ||':'||LPAD(NVL(def_time_mins,'00'),2,'0')
+      ,TO_DATE(DECODE(def_inspection_date,NULL,NULL
+                                              ,TO_CHAR(def_inspection_date,'DD-MON-RRRR')
+                                                ||' '||LPAD(NVL(def_time_hrs,'00'),2,'0')
+                                                ||':'||LPAD(NVL(def_time_mins,'00'),2,'0'))
               ,'DD-MON-RRRR HH24:MI')                    date_inspected
       ,def_created_date                                  date_recorded
       ,def_date_not_found                                date_not_found
