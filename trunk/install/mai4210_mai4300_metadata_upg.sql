@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_metadata_upg.sql-arc   3.0   Sep 27 2010 10:54:14   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_metadata_upg.sql-arc   3.1   Oct 04 2010 09:35:34   mike.alexander  $
 --       Module Name      : $Workfile:   mai4210_mai4300_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Sep 27 2010 10:54:14  $
---       Date fetched Out : $Modtime:   Sep 27 2010 10:52:06  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Oct 04 2010 09:35:34  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 09:33:28  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -106,7 +106,7 @@ SET TERM OFF
 -- 107374
 -- 
 -- TASK DETAILS
--- No details supplied
+-- Inspection Loader - When an invalid Activity was encountered on the H record the old Inspection Loader raised a misleading error message referring to the Defect Time. The old inspection Loader has been replaced (see the New Functionality section of this document) and the new Loader has been coded to raise a more informative error message.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (CHRIS BAUGH)
@@ -340,7 +340,7 @@ SET TERM OFF
 -- 108904
 -- 
 -- TASK DETAILS
--- No details supplied
+-- Works Orders (MAI3800) - A Time element has been added to the Date Raised to allow for accurate calculation of the Target Date when Works Order Priorities and Intervals are in use.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (MIKE HUITSON)
@@ -391,7 +391,7 @@ SET TERM OFF
 -- 110115
 -- 
 -- TASK DETAILS
--- No details supplied
+-- N/A
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (LINESH SORATHIA)
@@ -435,7 +435,7 @@ SET TERM OFF
 -- 110126
 -- 
 -- TASK DETAILS
--- No details supplied
+-- N/A
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (LINESH SORATHIA)
@@ -462,7 +462,7 @@ SET TERM OFF
 -- 109665
 -- 
 -- TASK DETAILS
--- No details supplied
+-- The C modules (mai2200d and mai2200c) previously used to load Inspection data have been replaced by a single module running under the new Process Management Framework. See the New Functionality section of this document or the MAI User Guide for further details of the new Inspection Loader.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (MIKE HUITSON)
@@ -548,7 +548,7 @@ SET TERM OFF
 -- 109080
 -- 
 -- TASK DETAILS
--- No details supplied
+-- New Product Option CIMALLEST which, when set to 'Y', will ensure only estimated costs are included in the CIM interface WO file.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (CHRIS BAUGH)
@@ -587,6 +587,142 @@ select 'CIMALLEST'
                      from hig_option_values
                     where hov_id = 'CIMALLEST')
 /
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Additional Values for the ASSET_MODIFICATION domain.
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109859
+-- 
+-- TASK DETAILS
+-- All modules that refer to the "inventory change" flag have been changed to use the ASSET_MODIFICATION domain, bringing them in line with the "Create Defect From Locator" form (MAI3807).
+-- All labels in forms and reports have been changed to "Asset Modification".
+-- 
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Additional Values Y and N for the ASSET_MODIFICATION domain.
+-- 
+------------------------------------------------------------------
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'ASSET_MODIFICATION'
+       ,'Y'
+       ,'Yes'
+       ,'Y'
+       ,5
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'ASSET_MODIFICATION'
+                    AND  HCO_CODE = 'Y');
+                    
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'ASSET_MODIFICATION'
+       ,'N'
+       ,'No'
+       ,'Y'
+       ,6
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'ASSET_MODIFICATION'
+                    AND  HCO_CODE = 'N');
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Added GRI parameter ANSWER2 for MAI3900
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED PROBLEM MANAGER LOG#
+-- 725423  W.S. Atkins- Area 6
+-- 
+-- ASSOCIATED DEVELOPMENT TASK
+-- 109351
+-- 
+-- TASK DETAILS
+-- Parameter 'End Dated Sections (Y/N)' has been added to the Print Inspections Report (MAI3900) parameter list, allowing for the reporting of Inspection Details for End Dated sections
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (CHRIS BAUGH)
+-- Added GRI parameter ANSWER2 for MAI3900
+-- 
+------------------------------------------------------------------
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3900'
+       ,'ANSWER2'
+       ,10
+       ,'End Dated Sections (Y/N)'
+       ,'Y'
+       ,1
+       ,'GPL_PARAM=''ANSWER2'''
+       ,'N'
+       ,''
+       ,'GRI_PARAM_LOOKUP'
+       ,'GPL_VALUE'
+       ,'GPL_VALUE=''N'' AND GPL_PARAM=''ANSWER2'''
+       ,'Y'
+       ,'N'
+       ,'Y'
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3900'
+                    AND  GMP_PARAM = 'ANSWER2');
 ------------------------------------------------------------------
 
 
