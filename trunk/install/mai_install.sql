@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.13   Sep 24 2010 16:18:36   mike.alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.14   Oct 04 2010 10:12:04   mike.alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Sep 24 2010 16:18:36  $
---       Date fetched Out : $Modtime:   Sep 24 2010 16:18:36  $
---       PVCS Version     : $Revision:   2.13  $
+--       Date into PVCS   : $Date:   Oct 04 2010 10:12:04  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 10:11:40  $
+--       PVCS Version     : $Revision:   2.14  $
 --
 --------------------------------------------------------------------------------
 --
@@ -148,20 +148,6 @@ start &&run_file
 SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
---                        ****************   INDEXES  *******************
-SET TERM ON
-PROMPT Indexes...
-SET TERM OFF
-SET DEFINE ON
-select '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mai.ind' run_file
-from dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
----------------------------------------------------------------------------------------------------
 --                        ****************   CONSTRAINTS  *******************
 SET TERM ON
 Prompt Constraints...
@@ -169,6 +155,20 @@ SET TERM OFF
 set define on
 select '&exor_base'||'mai'||'&terminator'||'install'||
         '&terminator'||'mai.con' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   INDEXES  *******************
+SET TERM ON
+PROMPT Indexes...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai.ind' run_file
 from dual
 /
 SET FEEDBACK ON
