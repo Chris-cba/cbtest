@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_ddl_upg.sql-arc   3.0   Sep 27 2010 10:54:16   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_ddl_upg.sql-arc   3.1   Oct 04 2010 09:35:32   mike.alexander  $
 --       Module Name      : $Workfile:   mai4210_mai4300_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Sep 27 2010 10:54:16  $
---       Date fetched Out : $Modtime:   Sep 27 2010 10:52:06  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Oct 04 2010 09:35:32  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 09:33:26  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -43,7 +43,20 @@ SET TERM OFF
 -- 108076
 -- 
 -- TASK DETAILS
--- No details supplied
+-- A review of the flexible attribute columns that can be assigned to a Defect Type has been performed and the following changes have been made to the size of data that can be stored in these columns:-
+-- 
+-- DEF_AREA        from NUMBER(8,1) to NUMBER
+-- DEF_COORD_FLAG  from VARCHAR2(1) to VARCHAR2(240) 
+-- DEF_DIAGRAM_NO  from VARCHAR2(7) to VARCHAR2(240) 
+-- DEF_HEIGHT      from NUMBER(6,1) to NUMBER
+-- DEF_IDENT_CODE  from VARCHAR2(8) to VARCHAR2(240) 
+-- DEF_LENGTH      from NUMBER(6,1) to NUMBER
+-- DEF_NUMBER      from NUMBER(5,1) to NUMBER
+-- DEF_PER_CENT    from NUMBER(5,1) to NUMBER
+-- DEF_SERIAL_NO   from VARCHAR2(6) to VARCHAR2(240)
+-- DEF_SKID_COEFF  from NUMBER(4,1) to NUMBER
+-- 
+-- 
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (CHRIS BAUGH)
@@ -130,7 +143,9 @@ SET TERM OFF
 -- 108594
 -- 
 -- TASK DETAILS
--- No details supplied
+-- Problem when calculating quantities in the "Cyclic Maintenance Schedules" form (MAI3860).
+-- An error message ('hig1069 database constraint violated schr_index_p1') was being displayed when the "Schedule By Asset" flag is set to 'Y'.
+-- A change has been made to the index schr_index_p1 to resolve this problem.
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (MIKE HUITSON)
