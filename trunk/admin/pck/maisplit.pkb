@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.5   Sep 07 2010 17:21:08   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.6   Oct 04 2010 12:12:12   Mike.Huitson  $
 --       Module Name      : $Workfile:   maisplit.pkb  $
---       Date into SCCS   : $Date:   Sep 07 2010 17:21:08  $
---       Date fetched Out : $Modtime:   Sep 07 2010 17:15:02  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Oct 04 2010 12:12:12  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 12:11:16  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based onSCCS Version     : 1.7
 --
 -- This package contains procedures and functions which are required by
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY maisplit AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.5  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.6  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maisplit';
@@ -1195,17 +1195,7 @@ END check_data;-----------------------------------------------------------------
       and   (HSL.error_msg IS NOT NULL
              or HSL.error_level IS NOT NULL
             );
-
-    cursor c11 is
-      select 'Error : Incomplete Inspection load'
-      from   hh_load_recs HLR
-      where  upper( HLR.record_type) = 'G'
-      and   (RTRIM(SUBSTR( HLR.record_text,1,INSTR( HLR.record_text,',')),',')||
-             LTRIM(SUBSTR( HLR.record_text,INSTR( HLR.record_text,','),
-            (INSTR( HLR.record_text,',',1,2)-INSTR( HLR.record_text,','))),', 0') =
-             upper( l_agency||l_linkcode||LTRIM( l_sect_no,'0 '))
-            );
-
+  --
   begin
 
     open c1;
@@ -1301,16 +1291,7 @@ END check_data;-----------------------------------------------------------------
       p_error_string:=p_error_string||l_message||chr(13);
     end if;
     close c10;
-
-    open c11;
-    fetch c11 into l_message;
-    if c11%found then
-      p_errors := p_errors + 1;
-      dbms_output.put_line(l_message);
-      p_error_string := p_error_string||l_message||chr(13);
-    end if;
-    close c11;
-
+    --
   end data_check;
 
 -----------------------------------------------------------------------------
