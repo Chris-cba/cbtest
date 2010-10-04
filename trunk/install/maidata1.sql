@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.23   Sep 29 2010 15:17:22   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.24   Oct 04 2010 10:09:14   mike.alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Sep 29 2010 15:17:22  $
---       Date fetched Out : $Modtime:   Sep 29 2010 14:25:18  $
---       Version          : $Revision:   2.23  $
+--       Date into PVCS   : $Date:   Oct 04 2010 10:09:14  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 10:06:32  $
+--       Version          : $Revision:   2.24  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 29-SEP-2010 14:25
+--       Generation Date  : 04-OCT-2010 10:06
 --
 --   Product metadata script
 --   As at Release 4.3.0.0
@@ -13448,6 +13448,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'CIMALLEST'
+       ,'MAI'
+       ,'Use Estimated Cost for WO file'
+       ,'If set to Y, WO file will always contain estimated cost values for Work Order and BOQ costs '
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'CIMALLEST');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'CLAIMDEF'
        ,'MAI'
        ,'Default status for new claims'
@@ -15619,6 +15641,16 @@ SELECT
        ,'1' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'BUD_SELECT');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'CIMALLEST'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'CIMALLEST');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
@@ -19445,23 +19477,6 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS'
                     AND  HSTF_CHILD = 'MAI_LOADERS_INVENTORY');
---
-INSERT INTO HIG_STANDARD_FAVOURITES
-       (HSTF_PARENT
-       ,HSTF_CHILD
-       ,HSTF_DESCR
-       ,HSTF_TYPE
-       ,HSTF_ORDER
-       )
-SELECT 
-        'MAI_LOADERS_INSPECTIONS'
-       ,'MAI2200R'
-       ,'Maintenance Inspection Loader Report'
-       ,'M'
-       ,30 FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
-                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
-                    AND  HSTF_CHILD = 'MAI2200R');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
