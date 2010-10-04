@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.12   Sep 17 2010 10:16:08   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.13   Oct 04 2010 10:09:16   mike.alexander  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Sep 17 2010 10:16:08  $
---       Date fetched Out : $Modtime:   Sep 16 2010 17:34:02  $
---       Version          : $Revision:   2.12  $
+--       Date into PVCS   : $Date:   Oct 04 2010 10:09:16  $
+--       Date fetched Out : $Modtime:   Oct 04 2010 10:06:36  $
+--       Version          : $Revision:   2.13  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 16-SEP-2010 17:34
+--       Generation Date  : 04-OCT-2010 10:06
 --
 --   Product metadata script
 --   As at Release 4.3.0.0
@@ -14061,6 +14061,57 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
                    WHERE GMP_MODULE = 'MAI3900'
                     AND  GMP_PARAM = 'ANSWER');
+--
+INSERT INTO GRI_MODULE_PARAMS
+       (GMP_MODULE
+       ,GMP_PARAM
+       ,GMP_SEQ
+       ,GMP_PARAM_DESCR
+       ,GMP_MANDATORY
+       ,GMP_NO_ALLOWED
+       ,GMP_WHERE
+       ,GMP_TAG_RESTRICTION
+       ,GMP_TAG_WHERE
+       ,GMP_DEFAULT_TABLE
+       ,GMP_DEFAULT_COLUMN
+       ,GMP_DEFAULT_WHERE
+       ,GMP_VISIBLE
+       ,GMP_GAZETTEER
+       ,GMP_LOV
+       ,GMP_VAL_GLOBAL
+       ,GMP_WILDCARD
+       ,GMP_HINT_TEXT
+       ,GMP_OPERATOR
+       ,GMP_BASE_TABLE
+       ,GMP_BASE_TABLE_COLUMN
+       ,GMP_ALLOW_PARTIAL
+       )
+SELECT 
+        'MAI3900'
+       ,'ANSWER2'
+       ,10
+       ,'End Dated Sections (Y/N)'
+       ,'Y'
+       ,1
+       ,'GPL_PARAM=''ANSWER2'''
+       ,'N'
+       ,''
+       ,'GRI_PARAM_LOOKUP'
+       ,'GPL_VALUE'
+       ,'GPL_VALUE=''N'' AND GPL_PARAM=''ANSWER2'''
+       ,'Y'
+       ,'N'
+       ,'Y'
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
+                   WHERE GMP_MODULE = 'MAI3900'
+                    AND  GMP_PARAM = 'ANSWER2');
 --
 INSERT INTO GRI_MODULE_PARAMS
        (GMP_MODULE
