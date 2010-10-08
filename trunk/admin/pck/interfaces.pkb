@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.27   Sep 23 2010 10:41:54   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.28   Oct 08 2010 10:57:42   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 23 2010 10:41:54  $
---       Date fetched Out : $Modtime:   Sep 22 2010 16:27:30  $
---       SCCS Version     : $Revision:   2.27  $
+--       Date into SCCS   : $Date:   Oct 08 2010 10:57:42  $
+--       Date fetched Out : $Modtime:   Oct 08 2010 10:37:22  $
+--       SCCS Version     : $Revision:   2.28  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.27  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.28  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -732,9 +732,10 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
       IS
   SELECT '10,'||TO_CHAR(iwol_id)||','||TO_CHAR(iwol_def_defect_id)||
            ','||TO_CHAR(iwol_schd_id)||
-           ','||iwol_road_id||','||REPLACE(iwol_road_descr,',',':')||
-           ','||REPLACE(iwol_def_locn_descr,',',':')||
-           ','||iwol_def_defect_descr||','||iwol_def_special_instr||
+           ','||iwol_road_id||','||Replace(Replace(Replace(REPLACE(iwol_road_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||
+           ','||Replace(Replace(Replace(REPLACE(iwol_def_locn_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||
+           ','||Replace(Replace(Replace(REPLACE(iwol_def_defect_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||
+           ','||Replace(Replace(Replace(REPLACE(iwol_def_special_instr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||
            ','||iwol_def_priority||','||iwol_def_defect_code||
            ','||TO_CHAR(iwol_def_st_chain)||','||iwol_def_x_sect||
            ','||TO_CHAR(iwol_percent_adjust)||
@@ -759,7 +760,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
                                              ,DECODE(TO_CHAR(are_date_work_done, g_date_format),NVL(TO_CHAR(are_date_work_done, g_date_format),1)
                                                                                                ,TO_CHAR(are_date_work_done, g_date_format)||' '||NVL(TO_CHAR(TO_DATE(TO_CHAR(def_time_hrs,'00')||TO_CHAR(def_time_mins,'00'), g_time_format), g_time_format), '00:00:01'))
                                              ,DECODE(TO_CHAR(are_date_work_done, g_date_format),NVL(TO_CHAR(are_date_work_done, g_date_format),1),TO_CHAR(are_date_work_done, g_date_format)))||
-         ','||rep_action_cat||','||REPLACE(rep_descr,',','~')||','||rep_tre_treat_code||
+         ','||rep_action_cat||','||Replace(Replace(Replace(REPLACE(rep_descr,',','~'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||','||rep_tre_treat_code||
          ','||DECODE(hig.get_sysopt('XTRIFLDS'),'2-1-3',TO_CHAR(rep_date_due, g_date_format)||' '||NVL(TO_CHAR(rep_date_due, g_time_format),'00:00:01')
                                                ,'2-4-0',TO_CHAR(rep_date_due, g_date_format)||' '||NVL(TO_CHAR(rep_date_due, g_time_format),'00:00:01')
                                                        ,TO_CHAR(rep_date_due, g_date_format))
@@ -807,9 +808,9 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
   SELECT '10,'||TO_CHAR(iwol_id)||','||TO_CHAR(iwol_def_defect_id)||
            ','||TO_CHAR(iwol_schd_id)||
            ','||iwol_road_id||','||REPLACE(iwol_road_descr,',',':')||
-           ','||REPLACE(iwol_def_locn_descr,',',':')||
-           ','||DECODE(hig.get_sysopt('CPAFORMAT'), '1',SUBSTR(iwol_def_defect_descr||' : '||REPLACE(rep_descr,',','~')||' : '||iwol_def_special_instr,1,254),iwol_def_defect_descr)||
-           ','||DECODE(hig.get_sysopt('CPAFORMAT'), '1',NULL,iwol_def_special_instr)||
+           ','||Replace(Replace(Replace(REPLACE(iwol_def_locn_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||
+           ','||Replace(Replace(Replace(Replace(DECODE(hig.get_sysopt('CPAFORMAT'), '1',SUBSTR(iwol_def_defect_descr||' : '||REPLACE(rep_descr,',','~')||' : '||iwol_def_special_instr,1,254),iwol_def_defect_descr),Chr(10),' '),Chr(13),' '),Chr(1),' '),',','~')||
+           ','||Replace(Replace(Replace(Replace(DECODE(hig.get_sysopt('CPAFORMAT'), '1',NULL,iwol_def_special_instr),Chr(10),' '),Chr(13),' '),Chr(1),' '),',','~')||
            ','||iwol_def_priority||','||iwol_def_defect_code||
            ','||TO_CHAR(iwol_def_st_chain)||','||iwol_def_x_sect||
            ','||TO_CHAR(iwol_percent_adjust)||
@@ -825,7 +826,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
 ,TO_CHAR(are_date_work_done, g_date_format)||' '||NVL(TO_CHAR(TO_DATE(TO_CHAR(def_time_hrs,'00')||TO_CHAR(def_time_mins,'00'), g_time_format), g_time_format), '00:00:01'))
                                              ,DECODE(TO_CHAR(are_date_work_done, g_date_format),NVL(TO_CHAR(are_date_work_done, g_date_format),1),TO_CHAR(are_date_work_done, g_date_format)))||
          
-         ','||rep_action_cat||','||REPLACE(rep_descr,',','~')||','||rep_tre_treat_code||
+         ','||rep_action_cat||','||Replace(Replace(Replace(REPLACE(rep_descr,',','~'),Chr(10),' '),Chr(13),' '),Chr(1),' ')||','||rep_tre_treat_code||
          ','||DECODE(hig.get_sysopt('XTRIFLDS'), '2-1-3'
                                              , TO_CHAR(rep_date_due, g_date_format)||' '||NVL(TO_CHAR(rep_date_due, g_time_format),'00:00:01')
 --                                             , TO_CHAR(rep_date_due, g_date_format)
@@ -858,7 +859,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
            ','||TO_CHAR(iboq_parent_boq_id)||
            ','||iboq_percent_band_comp||
            ','||iboq_rogue_item||
-           ','||Replace(Replace(iboq_rogue_item_desc,Chr(10),' '),Chr(13),' ') boq_record
+           ','||Replace(Replace(Replace(Replace(iboq_rogue_item_desc,Chr(10),' '),Chr(13),' '),Chr(1),' '),',','~') boq_record
     FROM interface_boq
    WHERE iboq_transaction_id = c_transaction_id
      AND iboq_wol_id = c_wol_id
