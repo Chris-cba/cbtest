@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.1   Feb 12 2009 17:26:00   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.2   Oct 11 2010 20:27:42   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkh  $
---       Date into SCCS   : $Date:   Feb 12 2009 17:26:00  $
---       Date fetched Out : $Modtime:   Feb 12 2009 15:41:08  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Oct 11 2010 20:27:42  $
+--       Date fetched Out : $Modtime:   Oct 11 2010 20:10:22  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.7
 --
 --   Author : A. Edwards
@@ -19,18 +19,20 @@ IS
 --
    g_sccsid   CONSTANT VARCHAR2 (80) := '@(#)mai_sdo_util.pkh	1.7 05/08/07';
 --
-   g_table_name       CONSTANT user_tables.table_name%TYPE       := 'DEFECTS';
-   g_wol_table_name   CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES';
-   g_view_name        CONSTANT user_tables.table_name%TYPE       := 'V_MAI_DEFECTS';
-   g_wol_view_name    CONSTANT user_tables.table_name%TYPE       := 'V_WORK_ORDER_LINES';
-   g_sdo_pk           CONSTANT user_tables.table_name%TYPE       := 'DEFECT_ID';
-   g_wol_sdo_pk       CONSTANT user_tables.table_name%TYPE       := 'WOL_ID';
-   g_pk_column        CONSTANT user_tab_columns.column_name%TYPE := 'DEF_DEFECT_ID';
-   g_wol_pk_column    CONSTANT user_tab_columns.column_name%TYPE := 'WOL_ID';
-   g_feature_tab_xy   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_XY_SDO';
-   g_feature_tab_lr   CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_LR_SDO';
-   g_wol_feature_tab  CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES_SDO';
-   g_shape_col        CONSTANT user_tab_columns.column_name%TYPE := 'GEOLOC';
+   g_table_name         CONSTANT user_tables.table_name%TYPE       := 'DEFECTS';
+   g_wol_table_name     CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES';
+   g_view_name          CONSTANT user_tables.table_name%TYPE       := 'V_MAI_DEFECTS';
+   g_view_ne_id_col     CONSTANT user_tab_columns.column_name%TYPE := 'DEFECT_ROAD_ID';
+   g_view_st_chain_col  CONSTANT user_tab_columns.column_name%TYPE := 'DEFECT_START_CHAIN';
+   g_wol_view_name      CONSTANT user_tables.table_name%TYPE       := 'V_WORK_ORDER_LINES';
+   g_sdo_pk             CONSTANT user_tables.table_name%TYPE       := 'DEFECT_ID';
+   g_wol_sdo_pk         CONSTANT user_tables.table_name%TYPE       := 'WOL_ID';
+   g_pk_column          CONSTANT user_tab_columns.column_name%TYPE := 'DEF_DEFECT_ID';
+   g_wol_pk_column      CONSTANT user_tab_columns.column_name%TYPE := 'WOL_ID';
+   g_feature_tab_xy     CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_XY_SDO';
+   g_feature_tab_lr     CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_LR_SDO';
+   g_wol_feature_tab    CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES_SDO';
+   g_shape_col          CONSTANT user_tab_columns.column_name%TYPE := 'GEOLOC';
 --
 -----------------------------------------------------------------------------
 --
