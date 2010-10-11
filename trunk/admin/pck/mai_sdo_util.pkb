@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.5   Dec 02 2009 17:14:20   aedwards  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.6   Oct 11 2010 20:27:28   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Dec 02 2009 17:14:20  $
---       Date fetched Out : $Modtime:   Dec 02 2009 17:13:20  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Oct 11 2010 20:27:28  $
+--       Date fetched Out : $Modtime:   Oct 11 2010 20:22:28  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.5  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.6  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -446,10 +446,10 @@ BEGIN
                                        ,pi_pnt_or_cont  => 'P'
                                        ,pi_use_xy       => 'Y'
                                        ,pi_x_column     => NULL--pi_x_column
-                                       ,pi_y_column     => NULL-- pi_y_column
-                                       ,pi_lr_ne_column => NULL-- pi_lr_ne_column
-                                       ,pi_lr_st_chain  => NULL-- pi_lr_st_chain
-                                       ,pi_lr_end_chain => NULL
+                                       ,pi_y_column     => NULL--pi_y_column
+                                       ,pi_lr_ne_column => g_view_ne_id_col
+                                       ,pi_lr_st_chain  => g_view_st_chain_col
+                                       ,pi_lr_end_chain => g_view_st_chain_col
                                        ,pi_attrib_ltrim => 7);
   END IF;
   --
@@ -641,9 +641,11 @@ BEGIN
     l_mai_sdo_view_sql := ' CREATE OR REPLACE FORCE VIEW '
                           ||l_rec_nth_v.nth_feature_table||nl||
                           ' AS '||nl||
+
                           '  (SELECT '||nl||
                           nm3ddl.get_sccs_comments(pi_sccs_id => g_body_sccsid)||nl||
                           '          a.* '||nl||
+
                           '        , b.geoloc, b.objectid '||nl||
                           '     FROM '||g_view_name||' a '||nl||
                           '        , '||l_rec_nth.nth_feature_table||' b '||nl||
@@ -652,7 +654,6 @@ BEGIN
     --
     BEGIN
       EXECUTE IMMEDIATE l_mai_sdo_view_sql;
-      --nm3ddl.create_synonym_for_object(l_rec_nth_v.nth_feature_table); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
       nm3ddl.create_views_for_object(l_rec_nth_v.nth_feature_table); 
     EXCEPTION
       WHEN OTHERS
@@ -1382,121 +1383,60 @@ END make_base_wol_sdo_layer;
 -----------------------------------------------------------------------------
 --
 PROCEDURE make_defect_secure_view
-IS
-  nl                           VARCHAR2(10)               := CHR(10);
+  IS
+  --
+  nl      VARCHAR2(10) := CHR(10);
+  lv_str  nm3type.max_varchar2;
+  --
 BEGIN
   --------------------------------------------------------------
   -- Create an admin unit restricted view to base the theme on
   --------------------------------------------------------------
-  EXECUTE IMMEDIATE
-  --       nm3ddl.get_sccs_comments( pi_sccs_id => g_body_sccsid)||nl||
-       'CREATE OR REPLACE FORCE VIEW '||g_view_name||nl||
-       ' AS '||nl||
-       '  SELECT /*+ FIRST_ROWS */ '||nl||
-       '         def.def_defect_id            defect_id '||nl||
-       '       , def.def_rse_he_id            defect_road_id '||nl||
-       '       , ne.ne_unique                 defect_road_name '||nl||
-       '       , ne.ne_descr                  defect_road_description '||nl||
-       '       , def.def_st_chain             defect_start_chain '||nl||
-       '       , def.def_are_report_id        defect_are_report_id '||nl||
-       '       , def.def_siss_id              defect_siss_id '||nl||
-       '       , def.def_works_order_no       defect_works_order_no '||nl||
-       '       , trunc(def.def_created_date)  defect_created_date '||nl||
-       '       , are.are_date_work_done       defect_inspected_date '||nl||
-       '       , def.def_time_hrs||'':''||'||nl||
-       '         def.def_time_mins            defect_inspected_time '||nl||
-       '       , def.def_defect_code          defect_code '||nl||
-       '       , def.def_priority             defect_priority '||nl||
-       '       , def.def_status_code          defect_status_code '||nl||
-       '       , def.def_atv_acty_area_code   defect_activity '||nl||
-       '       , def.def_locn_descr           defect_location '||nl||
-       '       , def.def_defect_descr         defect_description '||nl||
-       '       , def.def_ity_inv_code         defect_asset_type '||nl||
-       '       , def.def_iit_item_id          defect_asset_id '||nl||
-       '       , are.are_initiation_type      defect_initiation_type '||nl||
-       --'       , upper(hus.hus_name)          defect_inspector '||nl||   -- Task 0108097 Passing Hus_initials instead of his_name as this column has domain attached in asset metamodel 
-       '       , upper(hus.hus_initials)          defect_inspector '||nl||
-       '       , def.def_x_sect               defect_x_section '||nl||
-       '       , org1.oun_name                defect_notify_org '||nl||
-       '       , org2.oun_name                defect_recharge_org '||nl||
-       '    FROM defects def '||nl||
-       '       , activities_report are '||nl||
-       '       , nm_elements_all ne '||nl||
-       '       , hig_users hus '||nl||
-       '       , org_units org1 '||nl||
-       '       , org_units org2 '||nl||
-       '   WHERE def.def_rse_he_id              = ne.ne_id '||nl||
-       '     AND def.def_are_report_id          = are.are_report_id '||nl||
-       '     AND are.are_peo_person_id_actioned = hus.hus_user_id '||nl||
-       '     AND def.def_notify_org_id          = org1.oun_org_id(+) '||nl||
-       '     AND def.def_rechar_org_id          = org2.oun_org_id(+)';
-
---       ' (DEF_DEFECT_ID, STATUS, ADMIN_UNIT, ADMIN_UNIT_ID, ROAD_HE_ID, '||nl||
---       '  ROAD_ID, ROAD_NAME, MAINTENANCE_CATEGORY, INSPECTION_FREQUENCY, LOCATION,'||nl||
---       '  DESCRIPTION, XSP, OFFSET, EASTING, NORTHING, '||nl||
---       '  INSPECTION_ID, PRIORITY, ACTIVITY_TYPE, DEFECT_TYPE, ACTION_TYPE, '||nl||
---       '  ACTION, ACTION_DESCRIPTION, DATE_INSPECTED, DUE_DATE, DATE_REPAIRED, '||nl||
---       '  LATE, WO_NUMBER, ESTIMATED_COST, ACTUAL_COST) '||nl||
---       ' AS '||nl||
---       ' SELECT '||nl||
---       '   def_defect_id DEF_DEFECT_ID '||nl||
---       '  ,def_status_code STATUS '||nl||
---       '  ,SUBSTR(mai_sdo_util.get_admin_unit_descr(rse_admin_unit),1,40) ADMIN_UNIT '||nl||
---       '  ,rse_admin_unit ADMIN_UNIT_ID '||nl||
---       '  ,rse_he_id ROAD_HE_ID '||nl||
---       '  ,rse_unique ROAD_ID '||nl||
---       '  ,rse_descr ROAD_NAME '||nl||
---       '  ,SUBSTR(mai_sdo_util.get_hco_meaning('||nm3flx.string('MAINTENANCE_CATEGORY')
---              ||',rse_maint_category),1,52) MAINTENANCE_CATEGORY '||nl||
---       '  ,SUBSTR(mai_sdo_util.get_interval_desc(rse_int_code),1,40) INSPECTION_FREQUENCY '||nl||
---       '  ,def_locn_descr LOCATION '||nl||
---       '  ,def_defect_descr DESCRIPTION '||nl||
---       '  ,SUBSTR(mai_sdo_util.get_hco_meaning('||nm3flx.string('XSP_VALUES')
---              ||',def_x_sect),1,52) XSP '||nl||
---       '  ,def_st_chain OFFSET '||nl||
---       '  ,def_easting EASTING '||nl||
---       '  ,def_northing NORTHING '||nl||
---       '  ,def_are_report_id INSPECTION_ID '||nl||
---       '  ,SUBSTR(mai_sdo_util.get_hco_meaning('||nm3flx.string('DEFECT_PRIORITIES')
---              ||',def_x_sect),1,52) PRIORITY '||nl||
---       '  ,atv_descr ACTIVITY_TYPE '||nl||
---       '  ,dty_descr1 DEFECT_TYPE '||nl||
---       '  ,DECODE(rep_action_cat,'||nm3flx.string('I')
---                             ||','||nm3flx.string('Immediate')
---                             ||','||nm3flx.string('T')
---                             ||','||nm3flx.string('Temporary')
---                             ||','||nm3flx.string('Permanent')||') ACTION_TYPE '||nl||
---      '   ,SUBSTR(mai_sdo_util.get_treatment_descr(rep_tre_treat_code),1,40) ACTION '||nl||
---      '   ,rep_descr ACTION_DESCRIPTION '||nl||
---      '   ,def_created_date DATE_INSPECTED '||nl||
---      '   ,rep_date_due DUE_DATE '||nl||
---      '   ,rep_date_completed DATE_REPAIRED '||nl||
---      '   ,DECODE(SIGN(rep_date_due-rep_date_completed),-1,'||nm3flx.string('Y')
---                             ||','||nm3flx.string('N')||') LATE '||nl||
---      '   ,def_works_order_no WO_NUMBER '||nl||
---      '   ,mai_sdo_util.get_estimated_cost_of_defect(def_defect_Id,rep_action_cat) ESTIMATED_COST '||nl||
---      '   ,mai_sdo_util.get_actual_cost_of_defect(def_defect_Id,rep_action_cat) ACTUAL_COST '||nl||
---      '   FROM  (SELECT def.* '||nl||
---      '         ,dty.dty_dtp_flag '||nl||
---      '         ,dty.dty_descr1 '||nl||
---      '         ,rep.* '||nl||
---      '   FROM  DEFECTS   def '||nl||
---      '        ,DEF_TYPES dty '||nl||
---      '        ,REPAIRS   rep '||nl||
---      '  WHERE  def_defect_code        = dty_defect_code '||nl||
---      '    AND   def_atv_acty_area_code = dty_atv_acty_area_code '||nl||
---      '    AND   def_defect_id          = rep_def_defect_id '||nl||
---      '  ) '||nl||
---      ' ,road_sections '||nl||
---      ' ,ACTIVITIES '||nl||
---      ' WHERE  atv_acty_area_code     = def_atv_acty_area_code ' ||nl||
---      '   AND   atv_dtp_flag           = rse_sys_flag '||nl||
---      '   AND   dty_dtp_flag           = rse_sys_flag '||nl||
---      '   AND   def_rse_he_id          = rse_he_id ';
-   --
-   --nm3ddl.create_synonym_for_object(g_view_name); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
-   nm3ddl.create_views_for_object(g_view_name);  
-   --
+  lv_str := 'CREATE OR REPLACE FORCE VIEW '||g_view_name||nl||
+            '    AS '||nl||
+            'SELECT /*+ FIRST_ROWS */ '||nl||
+            '       def.def_defect_id            defect_id '||nl||
+            '      ,def.def_rse_he_id            '||g_view_ne_id_col||' '||nl||
+            '      ,ne.ne_unique                 defect_road_name '||nl||
+            '      ,ne.ne_descr                  defect_road_description '||nl||
+            '      ,def.def_st_chain             '||g_view_st_chain_col||' '||nl||
+            '      ,def.def_are_report_id        defect_are_report_id '||nl||
+            '      ,def.def_siss_id              defect_siss_id '||nl||
+            '      ,def.def_works_order_no       defect_works_order_no '||nl||
+            '      ,trunc(def.def_created_date)  defect_created_date '||nl||
+            '      ,are.are_date_work_done       defect_inspected_date '||nl||
+            '      ,def.def_time_hrs||'':''||'||nl||
+            '         def.def_time_mins            defect_inspected_time '||nl||
+            '      ,def.def_defect_code          defect_code '||nl||
+            '      ,def.def_priority             defect_priority '||nl||
+            '      ,def.def_status_code          defect_status_code '||nl||
+            '      ,def.def_atv_acty_area_code   defect_activity '||nl||
+            '      ,def.def_locn_descr           defect_location '||nl||
+            '      ,def.def_defect_descr         defect_description '||nl||
+            '      ,def.def_ity_inv_code         defect_asset_type '||nl||
+            '      ,def.def_iit_item_id          defect_asset_id '||nl||
+            '      ,are.are_initiation_type      defect_initiation_type '||nl||
+            '      ,upper(hus.hus_initials)          defect_inspector '||nl||
+            '      ,def.def_x_sect               defect_x_section '||nl||
+            '      ,org1.oun_name                defect_notify_org '||nl||
+            '      ,org2.oun_name                defect_recharge_org '||nl||
+            '   FROM defects def '||nl||
+            '       ,activities_report are '||nl||
+            '       ,nm_elements_all ne '||nl||
+            '       ,hig_users hus '||nl||
+            '       ,org_units org1 '||nl||
+            '       ,org_units org2 '||nl||
+            '  WHERE def.def_rse_he_id              = ne.ne_id '||nl||
+            '    AND def.def_are_report_id          = are.are_report_id '||nl||
+            '    AND are.are_peo_person_id_actioned = hus.hus_user_id '||nl||
+            '    AND def.def_notify_org_id          = org1.oun_org_id(+) '||nl||
+            '    AND def.def_rechar_org_id          = org2.oun_org_id(+) '
+           ;
+  --
+  EXECUTE IMMEDIATE lv_str;
+  --                     
+  nm3ddl.create_views_for_object(g_view_name);  
+  --
 END make_defect_secure_view;
 --
 -----------------------------------------------------------------------------
@@ -1550,7 +1490,6 @@ BEGIN
               ||nl||'   AND rep.rep_def_defect_id  = def.def_defect_id(+)'
                   ;
   --
-  --nm3ddl.create_synonym_for_object(g_wol_view_name); -- Task 0108325 Creating SDO views for subordinate user instead of Private/Public Synonym
   nm3ddl.create_views_for_object(g_wol_view_name);
   --
 END make_wol_secure_view;
