@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.5   Sep 01 2010 16:33:20   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.6   Oct 12 2010 09:52:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Sep 01 2010 16:33:20  $
---       Date fetched Out : $Modtime:   Sep 01 2010 13:30:42  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Oct 12 2010 09:52:02  $
+--       Date fetched Out : $Modtime:   Oct 08 2010 14:53:52  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -222,6 +222,22 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ,po_auto_instruct   OUT mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
                              ,po_create_wo       OUT VARCHAR2
                              ,po_error           OUT VARCHAR2
+                             );
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.mawc_id%TYPE
+                             ,pi_admin_unit      IN  mai_auto_wo_rules.mawr_admin_unit%TYPE
+                             ,pi_road_group_id   IN  mai_auto_wo_rules.mawr_road_group_id%TYPE
+                             ,pi_activity        IN  mai_auto_wo_rule_criteria.mawc_atv_acty_area_code%TYPE
+                             ,pi_priority        IN  mai_auto_wo_rule_criteria.mawc_priority%TYPE
+                             ,pi_defect_code     IN  mai_auto_wo_rule_criteria.mawc_dty_defect_code%TYPE
+                             ,pi_treatment       IN  mai_auto_wo_rule_criteria.mawc_tre_treat_code%TYPE
+                             ,pi_include_temp    IN  mai_auto_wo_rule_criteria.mawc_include_temp_repair%TYPE
+                             ,pi_include_perm    IN  mai_auto_wo_rule_criteria.mawc_include_perm_repair%TYPE
+                             ,pi_start_date      IN  mai_auto_wo_rules.mawr_start_date%TYPE
+                             ,pi_end_date        IN  mai_auto_wo_rules.mawr_end_date%TYPE
+                             ,po_mawr_name       OUT mai_auto_wo_rules.mawr_name%TYPE
                              );
 --
 -----------------------------------------------------------------------------
