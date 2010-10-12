@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.14   Sep 23 2010 10:14:16   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.15   Oct 12 2010 09:52:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Sep 23 2010 10:14:16  $
---       Date fetched Out : $Modtime:   Sep 22 2010 16:32:20  $
---       PVCS Version     : $Revision:   3.14  $
+--       Date into PVCS   : $Date:   Oct 12 2010 09:52:40  $
+--       Date fetched Out : $Modtime:   Oct 08 2010 14:54:20  $
+--       PVCS Version     : $Revision:   3.15  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -4836,6 +4836,68 @@ BEGIN
   po_session_id := lv_session_id;
   --
 END create_gdo_for_mai3801;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.mawc_id%TYPE
+                             ,pi_admin_unit      IN  mai_auto_wo_rules.mawr_admin_unit%TYPE
+                             ,pi_road_group_id   IN  mai_auto_wo_rules.mawr_road_group_id%TYPE
+                             ,pi_activity        IN  mai_auto_wo_rule_criteria.mawc_atv_acty_area_code%TYPE
+                             ,pi_priority        IN  mai_auto_wo_rule_criteria.mawc_priority%TYPE
+                             ,pi_defect_code     IN  mai_auto_wo_rule_criteria.mawc_dty_defect_code%TYPE
+                             ,pi_treatment       IN  mai_auto_wo_rule_criteria.mawc_tre_treat_code%TYPE
+                             ,pi_include_temp    IN  mai_auto_wo_rule_criteria.mawc_include_temp_repair%TYPE
+                             ,pi_include_perm    IN  mai_auto_wo_rule_criteria.mawc_include_perm_repair%TYPE
+                             ,pi_start_date      IN  mai_auto_wo_rules.mawr_start_date%TYPE
+                             ,pi_end_date        IN  mai_auto_wo_rules.mawr_end_date%TYPE
+                             ,po_mawr_name       OUT mai_auto_wo_rules.mawr_name%TYPE
+                             )
+  IS
+    CURSOR C_validate IS
+    SELECT mawr_name
+    FROM mai_auto_wo_rule_criteria,
+         mai_auto_wo_rules
+   WHERE mawc_mawr_id = mawr_id
+     AND mawr_admin_unit IN
+                     (SELECT hag_parent_admin_unit
+                        FROM hig_admin_groups,
+                             hig_admin_units
+                       WHERE hag_direct_link='Y'
+                         AND hau_admin_unit = hag_parent_admin_unit
+                       START WITH hag_child_admin_unit = pi_admin_unit
+                     CONNECT BY
+                       PRIOR hag_parent_admin_unit=hag_child_admin_unit
+                         AND hag_direct_link='Y'
+                       UNION
+                      SELECT pi_admin_unit
+                        FROM dual)
+     AND (pi_road_group_id IN (SELECT nm_ne_id_of
+                   FROM nm_members
+                  WHERE nm_type = 'G'
+                CONNECT BY
+                  PRIOR nm_ne_id_of = nm_ne_id_in
+                  START
+                   WITH nm_ne_id_in = mawr_road_group_id)
+               OR pi_road_group_id = NVL(mawr_road_group_id,pi_road_group_id))
+     AND mawr_enabled = 'Y'
+     AND mawc_enabled = 'Y'
+     AND (pi_start_date BETWEEN mawr_start_date AND mawr_end_date OR
+          pi_end_date   BETWEEN mawr_start_date AND mawr_end_date)
+     AND mawc_atv_acty_area_code = pi_activity
+     AND NVL(mawc_priority, '@') = NVL(pi_priority, '@')
+     AND NVL(mawc_dty_defect_code, '@') = NVL(pi_defect_code, '@')
+     AND NVL(mawc_tre_treat_code, '@') = NVL(pi_treatment, '@')
+     AND (NVL(mawc_include_temp_repair, '@') = NVL(pi_include_temp, '@') OR
+          NVL(mawc_include_perm_repair, '@') = NVL(pi_include_perm, '@'))
+     AND mawc_id != pi_mawc_id;
+
+BEGIN
+
+   OPEN C_validate;
+   FETCH C_validate INTO po_mawr_name;
+   CLOSE C_validate;
+   
+END check_rules_overlap;
 --
 -----------------------------------------------------------------------------
 --
