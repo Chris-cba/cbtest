@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.6   Oct 11 2010 20:27:28   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.7   Oct 12 2010 13:48:34   mike.huitson  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Oct 11 2010 20:27:28  $
---       Date fetched Out : $Modtime:   Oct 11 2010 20:22:28  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Oct 12 2010 13:48:34  $
+--       Date fetched Out : $Modtime:   Oct 12 2010 13:45:28  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.6  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.7  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -366,6 +366,10 @@ BEGIN
   g_theme_functions(3).ntf_parameter     := 'GIS_SESSION_ID';
   g_theme_functions(3).ntf_menu_option   := 'Place Defect onto Work Order';
   --
+  -- Locator
+  g_theme_functions(4).ntf_hmo_module    := 'NM0572';
+  g_theme_functions(4).ntf_parameter     := 'GIS_SESSION_ID';
+  g_theme_functions(4).ntf_menu_option   := 'Locator';
 END set_theme_functions;
 --
 -----------------------------------------------------------------------------
