@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.12   Aug 02 2010 17:08:08   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.13   Oct 12 2010 09:33:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Aug 02 2010 17:08:08  $
---       Date fetched Out : $Modtime:   Aug 02 2010 16:31:22  $
---       PVCS Version     : $Revision:   3.12  $
+--       Date into PVCS   : $Date:   Oct 12 2010 09:33:22  $
+--       Date fetched Out : $Modtime:   Oct 11 2010 10:54:26  $
+--       PVCS Version     : $Revision:   3.13  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.12  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -3697,7 +3697,6 @@ BEGIN
      hig_process_api.log_it('ERRORS FOUND DURING LOAD PROCESS.');
      hig_process_api.log_it('Use Maintenance Inspection Error Correction module to check and correct the errors.');
      hig_process_api.log_it('Load NOT successful.');
-     hig_process_api.process_execution_end(pi_success_flag => 'N');
      nm_debug.debug('Errors found');
   ELSE
      hig_process_api.log_it('Batch '||pi_insp_batch_id||' processed successfuly.');
