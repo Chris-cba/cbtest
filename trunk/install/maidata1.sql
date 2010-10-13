@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.24   Oct 04 2010 10:09:14   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.25   Oct 13 2010 16:31:36   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Oct 04 2010 10:09:14  $
---       Date fetched Out : $Modtime:   Oct 04 2010 10:06:32  $
---       Version          : $Revision:   2.24  $
+--       Date into PVCS   : $Date:   Oct 13 2010 16:31:36  $
+--       Date fetched Out : $Modtime:   Oct 13 2010 16:25:32  $
+--       Version          : $Revision:   2.25  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 04-OCT-2010 10:06
+--       Generation Date  : 13-OCT-2010 16:25
 --
 --   Product metadata script
 --   As at Release 4.3.0.0
@@ -19477,6 +19477,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_LOADERS'
                     AND  HSTF_CHILD = 'MAI_LOADERS_INVENTORY');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_LOADERS_INSPECTIONS'
+       ,'MAI2200R'
+       ,'Maintenance Inspection Loader Report'
+       ,'M'
+       ,30 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_LOADERS_INSPECTIONS'
+                    AND  HSTF_CHILD = 'MAI2200R');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
