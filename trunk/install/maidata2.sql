@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.13   Oct 04 2010 10:09:16   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.14   Oct 13 2010 16:31:34   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Oct 04 2010 10:09:16  $
---       Date fetched Out : $Modtime:   Oct 04 2010 10:06:36  $
---       Version          : $Revision:   2.13  $
+--       Date into PVCS   : $Date:   Oct 13 2010 16:31:34  $
+--       Date fetched Out : $Modtime:   Oct 13 2010 16:25:34  $
+--       Version          : $Revision:   2.14  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 04-OCT-2010 10:06
+--       Generation Date  : 13-OCT-2010 16:25
 --
 --   Product metadata script
 --   As at Release 4.3.0.0
@@ -37672,24 +37672,6 @@ SET TERM ON
 PROMPT nm_au_types
 SET TERM OFF
 
-INSERT INTO NM_AU_TYPES
-       (NAT_ADMIN_TYPE
-       ,NAT_DESCR
-       ,NAT_DATE_CREATED
-       ,NAT_DATE_MODIFIED
-       ,NAT_MODIFIED_BY
-       ,NAT_CREATED_BY
-       )
-SELECT 
-        'EXT$'
-       ,'Admin Type for Navigator, Audit and Alert Meta Models'
-       ,to_date('20100505174954','YYYYMMDDHH24MISS')
-       ,to_date('20100505174954','YYYYMMDDHH24MISS')
-       ,'MAI_METADATA'
-       ,'MAI_METADATA' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_AU_TYPES
-                   WHERE NAT_ADMIN_TYPE = 'EXT$');
---
 --
 --
 ----------------------------------------------------------------------------------------
