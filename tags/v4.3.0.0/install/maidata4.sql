@@ -1,0 +1,20354 @@
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.14   Oct 13 2010 16:31:38   Mike.Alexander  $
+--       Module Name      : $Workfile:   maidata4.sql  $
+--       Date into PVCS   : $Date:   Oct 13 2010 16:31:38  $
+--       Date fetched Out : $Modtime:   Oct 13 2010 16:25:46  $
+--       Version          : $Revision:   2.14  $
+--       Table Owner      : MAI_METADATA
+--       Generation Date  : 13-OCT-2010 16:25
+--
+--   Product metadata script
+--   As at Release 4.3.0.0
+--
+--   Copyright (c) exor corporation ltd, 2010
+--
+--   TABLES PROCESSED
+--   ================
+--   COLOUR_LAYER_MAP
+--   NM_INV_DOMAINS_ALL
+--   NM_INV_TYPES_ALL
+--   NM_INV_ATTRI_LOOKUP_ALL
+--   NM_INV_TYPE_ATTRIBS_ALL
+--   INV_TYPE_TRANSLATIONS
+--   HIG_NAVIGATOR
+--   HIG_NAVIGATOR_MODULES
+--   HIG_DIRECTORIES
+--   HIG_DIRECTORY_ROLES
+--   HIG_ALERT_RECIPIENT_RULES
+--   HIG_FLEX_ATTRIBUTES
+--   NM_INV_TYPE_ROLES
+--
+-----------------------------------------------------------------------------
+
+
+set define off;
+set feedback off;
+
+--------------------
+-- PRE-PROCESSING --
+--------------------
+set define on
+
+
+---------------------------------
+-- START OF GENERATED METADATA --
+---------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- COLOUR_LAYER_MAP
+--
+-- select * from mai_metadata.colour_layer_map
+-- order by com_colour
+--         ,com_layer
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT colour_layer_map
+SET TERM OFF
+
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Blue'
+       ,6 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Blue'
+                    AND  COM_LAYER = 6);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Brown'
+       ,4 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Brown'
+                    AND  COM_LAYER = 4);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Cyan'
+       ,9 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Cyan'
+                    AND  COM_LAYER = 9);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Dark Blue'
+       ,2 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Dark Blue'
+                    AND  COM_LAYER = 2);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Dark Cyan'
+       ,3 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Dark Cyan'
+                    AND  COM_LAYER = 3);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Dark Grey'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Dark Grey'
+                    AND  COM_LAYER = 1);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Dark Red'
+       ,5 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Dark Red'
+                    AND  COM_LAYER = 5);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Green'
+       ,8 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Green'
+                    AND  COM_LAYER = 8);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Red'
+       ,7 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Red'
+                    AND  COM_LAYER = 7);
+--
+INSERT INTO COLOUR_LAYER_MAP
+       (COM_COLOUR
+       ,COM_LAYER
+       )
+SELECT 
+        'Yellow'
+       ,10 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM COLOUR_LAYER_MAP
+                   WHERE COM_COLOUR = 'Yellow'
+                    AND  COM_LAYER = 10);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_DOMAINS_ALL
+--
+-- select * from mai_metadata.nm_inv_domains_all
+-- order by id_domain
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_domains_all
+SET TERM OFF
+
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPES_ALL
+--
+-- select * from mai_metadata.nm_inv_types_all
+-- order by nit_inv_type
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_types_all
+SET TERM OFF
+
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'BOQ$'
+       ,'P'
+       ,'N'
+       ,'C'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'A'
+       ,'BOQ Items'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,'V_NM_LBOQ'
+       ,to_date('19010101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,'BOQ_ITEMS'
+       ,''
+       ,''
+       ,''
+       ,'EXT$'
+       ,''
+       ,'N'
+       ,'BOQ_ID'
+       ,'Y'
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'BOQ$');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'DEF$'
+       ,'P'
+       ,'N'
+       ,'C'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'A'
+       ,'Defects'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,'V_NM_LDEF'
+       ,to_date('19010101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,'DEFECTS'
+       ,''
+       ,''
+       ,''
+       ,'EXT$'
+       ,''
+       ,'N'
+       ,'DEF_DEFECT_ID'
+       ,'Y'
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'DEF$');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_DF'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'Deflectograph'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,70
+       ,'BPR_DDF'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112245','YYYYMMDDHH24MISS')
+       ,to_date('20031028112245','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_DF');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_DS'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'Deflectograph Summary'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,71
+       ,'BPR_DDS'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_DS');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_HL'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'HRM Longitudinal'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,64
+       ,'BPR_DHL'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_HL');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_HR'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'HRM Rutting Depth'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,65
+       ,'BPR_DHR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_HR');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_HT'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'HRM Macrotexture'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,67
+       ,'BPR_DHT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_HT');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_MI'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'HRM Macrotexture Interval'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,68
+       ,'BPR_DMI'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_MI');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_RC'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'N'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'Road Construction'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,75
+       ,'BPR_DRC'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_RC');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_RI'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'HRM Rutting Depth Interval'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,66
+       ,'BPR_DRI'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_RI');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'D_SR'
+       ,'C'
+       ,'Y'
+       ,'R'
+       ,'Y'
+       ,'Y'
+       ,'N'
+       ,'I'
+       ,'Skid'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,69
+       ,'BPR_DSR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'&1'
+       ,''
+       ,'N'
+       ,''
+       ,'Y'
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,to_date('20031028112246','YYYYMMDDHH24MISS')
+       ,'MAIDATA31'
+       ,'MAIDATA31'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'D_SR');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'WOL$'
+       ,'P'
+       ,'N'
+       ,'C'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'A'
+       ,'Works Order Lines'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,'V_NM_LWOL'
+       ,to_date('19010101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,'WORK_ORDER_LINES'
+       ,''
+       ,''
+       ,''
+       ,'EXT$'
+       ,''
+       ,'N'
+       ,'WOL_ID'
+       ,'Y'
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'WOL$');
+--
+INSERT INTO NM_INV_TYPES_ALL
+       (NIT_INV_TYPE
+       ,NIT_PNT_OR_CONT
+       ,NIT_X_SECT_ALLOW_FLAG
+       ,NIT_ELEC_DRAIN_CARR
+       ,NIT_CONTIGUOUS
+       ,NIT_REPLACEABLE
+       ,NIT_EXCLUSIVE
+       ,NIT_CATEGORY
+       ,NIT_DESCR
+       ,NIT_LINEAR
+       ,NIT_USE_XY
+       ,NIT_MULTIPLE_ALLOWED
+       ,NIT_END_LOC_ONLY
+       ,NIT_SCREEN_SEQ
+       ,NIT_VIEW_NAME
+       ,NIT_START_DATE
+       ,NIT_END_DATE
+       ,NIT_SHORT_DESCR
+       ,NIT_FLEX_ITEM_FLAG
+       ,NIT_TABLE_NAME
+       ,NIT_LR_NE_COLUMN_NAME
+       ,NIT_LR_ST_CHAIN
+       ,NIT_LR_END_CHAIN
+       ,NIT_ADMIN_TYPE
+       ,NIT_ICON_NAME
+       ,NIT_TOP
+       ,NIT_FOREIGN_PK_COLUMN
+       ,NIT_UPDATE_ALLOWED
+       ,NIT_DATE_CREATED
+       ,NIT_DATE_MODIFIED
+       ,NIT_MODIFIED_BY
+       ,NIT_CREATED_BY
+       ,NIT_NOTES
+       )
+SELECT 
+        'WOR$'
+       ,'P'
+       ,'N'
+       ,'C'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'A'
+       ,'Works Orders'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,'N'
+       ,null
+       ,'V_NM_LWOR'
+       ,to_date('19010101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,''
+       ,'N'
+       ,'WORK_ORDERS'
+       ,''
+       ,''
+       ,''
+       ,'EXT$'
+       ,''
+       ,'N'
+       ,'WOR_WORKS_ORDER_NO'
+       ,'Y'
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,to_date('20100505174954','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPES_ALL
+                   WHERE NIT_INV_TYPE = 'WOR$');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_ATTRI_LOOKUP_ALL
+--
+-- select * from mai_metadata.nm_inv_attri_lookup_all
+-- order by ial_domain
+--         ,ial_value
+--         ,ial_start_date
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_attri_lookup_all
+SET TERM OFF
+
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPE_ATTRIBS_ALL
+--
+-- select * from mai_metadata.nm_inv_type_attribs_all
+-- order by ita_inv_type
+--         ,ita_attrib_name
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_type_attribs_all
+SET TERM OFF
+
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_COST'
+       ,'N'
+       ,21
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Cost'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_COST'
+       ,'BOQ_ACT_COST'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_DIM1'
+       ,'N'
+       ,17
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Dim 1'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_DIM1'
+       ,'BOQ_ACT_DIM1'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_DIM1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_DIM2'
+       ,'N'
+       ,18
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Dim 2'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_DIM2'
+       ,'BOQ_ACT_DIM2'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_DIM2');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_DIM3'
+       ,'N'
+       ,19
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Dim 3'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_DIM3'
+       ,'BOQ_ACT_DIM3'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_DIM3');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_DISCOUNT'
+       ,'N'
+       ,24
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,3
+       ,'Actual Discount'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_DISCOUNT'
+       ,'BOQ_ACT_DISCOUNT'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_DISCOUNT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_LABOUR'
+       ,'N'
+       ,22
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,2
+       ,'Actual Labour Units'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_LABOUR'
+       ,'BOQ_ACT_LABOUR'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_LABOUR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_QUANTITY'
+       ,'N'
+       ,20
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Quantity'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_QUANTITY'
+       ,'BOQ_ACT_QUANTITY'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_QUANTITY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ACT_RATE'
+       ,'N'
+       ,23
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Rate'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ACT_RATE'
+       ,'BOQ_ACT_RATE'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ACT_RATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_DEFECT_ID'
+       ,'N'
+       ,2
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Defect Id'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_DEFECT_ID'
+       ,'BOQ_DEFECT_ID'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_DEFECT_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_COST'
+       ,'N'
+       ,15
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Cost'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_COST'
+       ,'BOQ_EST_COST'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_DIM1'
+       ,'N'
+       ,9
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Dim 1'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_DIM1'
+       ,'BOQ_EST_DIM1'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_DIM1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_DIM2'
+       ,'N'
+       ,10
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Dim 2'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_DIM2'
+       ,'BOQ_EST_DIM2'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_DIM2');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_DIM3'
+       ,'N'
+       ,11
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Dim 3'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_DIM3'
+       ,'BOQ_EST_DIM3'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_DIM3');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_DISCOUNT'
+       ,'N'
+       ,14
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,3
+       ,'Estimated Discount'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_DISCOUNT'
+       ,'BOQ_EST_DISCOUNT'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_DISCOUNT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_LABOUR'
+       ,'N'
+       ,16
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,2
+       ,'Estimated Labour Units'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_LABOUR'
+       ,'BOQ_EST_LABOUR'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_LABOUR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_QUANTITY'
+       ,'N'
+       ,12
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Quantity'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_QUANTITY'
+       ,'BOQ_EST_QUANTITY'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_QUANTITY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_EST_RATE'
+       ,'N'
+       ,13
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimated Rate'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_EST_RATE'
+       ,'BOQ_EST_RATE'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_EST_RATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ID'
+       ,'N'
+       ,25
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,3
+       ,'BOQ ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ID'
+       ,'BOQ_ID'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,to_date('20101004095104','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_ITEM_NAME'
+       ,'N'
+       ,6
+       ,'N'
+       ,'VARCHAR2'
+       ,254
+       ,0
+       ,'Item Name'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_ITEM_NAME'
+       ,'BOQ_ITEM_NAME'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,254
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_ITEM_NAME');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_STA_ITEM_CODE'
+       ,'N'
+       ,5
+       ,'N'
+       ,'VARCHAR2'
+       ,10
+       ,0
+       ,'Item Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_STA_ITEM_CODE'
+       ,'BOQ_STA_ITEM_CODE'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101013162413','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'SELECT DISTINCT cni_sta_item_code sta_item_code        ,sis_name              ,cni_sta_item_code FROM standard_item_sections sis          ,standard_item_sub_sections sts     ,standard_items         ,contract_items     ,contracts WHERE  To_Date(Trunc(Sysdate)) BETWEEN Nvl(con_start_date,To_Date(Trunc(Sysdate)))                    AND Nvl(con_end_date,To_Date(Trunc(Sysdate))) AND con_id = cni_con_id AND cni_sta_item_code = sta_item_code AND sta_siss_id = sts.siss_id AND sts.siss_sis_id = sis.sis_id '
+       ,'Y'
+       ,10
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_STA_ITEM_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'BOQ$'
+       ,'BOQ_WOL_ID'
+       ,'N'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'WOL Id'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'BOQ_WOL_ID'
+       ,'BOQ_WOL_ID'
+       ,to_date('20100319000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,to_date('20101004095103','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'BOQ$'
+                    AND  ITA_ATTRIB_NAME = 'BOQ_WOL_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_AREA'
+       ,'N'
+       ,16
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,1
+       ,'Defect Area'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_AREA'
+       ,'DEF_AREA'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_AREA');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_ARE_REPORT_ID'
+       ,'N'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Inspection Id'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_ARE_REPORT_ID'
+       ,'DEF_ARE_REPORT_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_ARE_REPORT_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_ATV_ACTY_AREA_CODE'
+       ,'N'
+       ,6
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Activity Area Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_ATV_ACTY_AREA_CODE'
+       ,'DEF_ATV_ACTY_AREA_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select atv_acty_area_code, atv_descr,atv_acty_area_code from activities '||CHR(10)||'where atv_maint_insp_flag = ''D'' '
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_ATV_ACTY_AREA_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_COORD_FLAG'
+       ,'N'
+       ,18
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Coord Flag'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_COORD_FLAG'
+       ,'DEF_COORD_FLAG'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_COORD_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_CREATED_DATE'
+       ,'N'
+       ,9
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Created'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_CREATED_DATE'
+       ,'DEF_CREATED_DATE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_CREATED_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DATE_COMPL'
+       ,'N'
+       ,19
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Completed'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DATE_COMPL'
+       ,'DEF_DATE_COMPL'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DATE_COMPL');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DATE_NOT_FOUND'
+       ,'N'
+       ,20
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Not Refound Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DATE_NOT_FOUND'
+       ,'DEF_DATE_NOT_FOUND'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DATE_NOT_FOUND');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DEFECT_CODE'
+       ,'N'
+       ,10
+       ,'N'
+       ,'VARCHAR2'
+       ,4
+       ,0
+       ,'Defect Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DEFECT_CODE'
+       ,'DEF_DEFECT_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select distinct dty_defect_code,dty_descr1,dty_defect_code from def_types order by 1'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DEFECT_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DEFECT_DESCR'
+       ,'N'
+       ,22
+       ,'N'
+       ,'VARCHAR2'
+       ,240
+       ,0
+       ,'Defect Description'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DEFECT_DESCR'
+       ,'DEF_DEFECT_DESCR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,240
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DEFECT_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DEFECT_ID'
+       ,'N'
+       ,1
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Defect Id'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DEFECT_ID'
+       ,'DEF_DEFECT_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DEFECT_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DEFECT_TYPE_DESCR'
+       ,'N'
+       ,23
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Defect Type Description'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DEFECT_TYPE_DESCR'
+       ,'DEF_DEFECT_TYPE_DESCR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DEFECT_TYPE_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_DIAGRAM_NO'
+       ,'N'
+       ,24
+       ,'N'
+       ,'VARCHAR2'
+       ,7
+       ,0
+       ,'Diagram Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_DIAGRAM_NO'
+       ,'DEF_DIAGRAM_NO'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_DIAGRAM_NO');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_EASTING'
+       ,'N'
+       ,47
+       ,'N'
+       ,'NUMBER'
+       ,22
+       ,0
+       ,'Easting'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_EASTING'
+       ,'DEF_EASTING'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,22
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_EASTING');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_HEIGHT'
+       ,'N'
+       ,25
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,1
+       ,'Height'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_HEIGHT'
+       ,'DEF_HEIGHT'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_HEIGHT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_IDENT_CODE'
+       ,'N'
+       ,26
+       ,'N'
+       ,'VARCHAR2'
+       ,8
+       ,0
+       ,'Ident Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_IDENT_CODE'
+       ,'DEF_IDENT_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_IDENT_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_IIT_ITEM_ID'
+       ,'N'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Asset Id'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_IIT_ITEM_ID'
+       ,'DEF_IIT_ITEM_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_IIT_ITEM_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_ITY_INV_CODE'
+       ,'N'
+       ,27
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Inventory Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_ITY_INV_CODE'
+       ,'DEF_ITY_INV_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select ity_inv_code, ity_descr, ity_sys_flag from inv_item_types'||CHR(10)||'order by ity_inv_code'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_ITY_INV_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_LAST_UPDATED_DATE'
+       ,'N'
+       ,11
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Last Updated Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_LAST_UPDATED_DATE'
+       ,'DEF_LAST_UPDATED_DATE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_LAST_UPDATED_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_LENGTH'
+       ,'N'
+       ,29
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,1
+       ,'Length'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_LENGTH'
+       ,'DEF_LENGTH'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_LENGTH');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_LOCN_DESCR'
+       ,'N'
+       ,30
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Location'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_LOCN_DESCR'
+       ,'DEF_LOCN_DESCR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_LOCN_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_MAND_ADV'
+       ,'N'
+       ,32
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Roadstud Type'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_MAND_ADV'
+       ,'DEF_MAND_ADV'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_MAND_ADV');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_NORTHING'
+       ,'N'
+       ,48
+       ,'N'
+       ,'NUMBER'
+       ,22
+       ,0
+       ,'Northing'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_NORTHING'
+       ,'DEF_NORTHING'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,22
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_NORTHING');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_NOTIFY_ORG_ID'
+       ,'N'
+       ,33
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Notifyable Org'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_NOTIFY_ORG_ID'
+       ,'DEF_NOTIFY_ORG_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select oun_org_id ,oun_name ,oun_org_id  from org_units'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_NOTIFY_ORG_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_NUMBER'
+       ,'N'
+       ,34
+       ,'N'
+       ,'NUMBER'
+       ,5
+       ,1
+       ,'Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_NUMBER'
+       ,'DEF_NUMBER'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,to_date('20101004095100','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,5
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_NUMBER');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_ORIG_PRIORITY'
+       ,'N'
+       ,12
+       ,'N'
+       ,'VARCHAR2'
+       ,4
+       ,0
+       ,'Original Priority'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_ORIG_PRIORITY'
+       ,'DEF_ORIG_PRIORITY'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''DEFECT_PRIORITIES'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_ORIG_PRIORITY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_PER_CENT'
+       ,'N'
+       ,35
+       ,'N'
+       ,'NUMBER'
+       ,5
+       ,1
+       ,'Percent'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_PER_CENT'
+       ,'DEF_PER_CENT'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,5
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_PER_CENT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_PRIORITY'
+       ,'N'
+       ,13
+       ,'N'
+       ,'VARCHAR2'
+       ,4
+       ,0
+       ,'Priority'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_PRIORITY'
+       ,'DEF_PRIORITY'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''DEFECT_PRIORITIES'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_PRIORITY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_RECHAR_ORG_ID'
+       ,'N'
+       ,38
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Rechargeable Organisation'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_RECHAR_ORG_ID'
+       ,'DEF_RECHAR_ORG_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select oun_org_id ,oun_name ,oun_org_id  from org_units'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_RECHAR_ORG_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_RSE_HE_ID'
+       ,'N'
+       ,2
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Road Name'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_RSE_HE_ID'
+       ,'DEF_RSE_HE_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_nt_TYPE IN  (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM = ''Y'')'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_RSE_HE_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SERIAL_NO'
+       ,'N'
+       ,39
+       ,'N'
+       ,'VARCHAR2'
+       ,6
+       ,0
+       ,'Serial Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SERIAL_NO'
+       ,'DEF_SERIAL_NO'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SERIAL_NO');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SISS_ID'
+       ,'N'
+       ,7
+       ,'N'
+       ,'VARCHAR2'
+       ,3
+       ,0
+       ,'SISS'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SISS_ID'
+       ,'DEF_SISS_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select siss_id,siss_name,siss_id from standard_item_sub_sections'||CHR(10)||'order by  siss_name'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SISS_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SKID_COEFF'
+       ,'N'
+       ,40
+       ,'N'
+       ,'NUMBER'
+       ,4
+       ,1
+       ,'Volume'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SKID_COEFF'
+       ,'DEF_SKID_COEFF'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,4
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SKID_COEFF');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SPECIAL_INSTR'
+       ,'N'
+       ,41
+       ,'N'
+       ,'VARCHAR2'
+       ,254
+       ,0
+       ,'Special Instructions'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SPECIAL_INSTR'
+       ,'DEF_SPECIAL_INSTR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,254
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SPECIAL_INSTR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_STATUS_CODE'
+       ,'N'
+       ,14
+       ,'N'
+       ,'VARCHAR2'
+       ,10
+       ,0
+       ,'Status Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_STATUS_CODE'
+       ,'DEF_STATUS_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'SELECT HSC_STATUS_CODE,HSC_STATUS_NAME,HSC_STATUS_CODE FROM HIG_STATUS_CODES'||CHR(10)||'WHERE HSC_DOMAIN_CODE = ''DEFECTS'''||CHR(10)||'ORDER BY HSC_STATUS_NAME'
+       ,'Y'
+       ,10
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_STATUS_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_ST_CHAIN'
+       ,'N'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,0
+       ,'Start Chain'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_ST_CHAIN'
+       ,'DEF_ST_CHAIN'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_ST_CHAIN');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SUPERSEDED_FLAG'
+       ,'N'
+       ,15
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Superseded Flag'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SUPERSEDED_FLAG'
+       ,'DEF_SUPERSEDED_FLAG'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SUPERSEDED_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_SUPERSEDED_ID'
+       ,'N'
+       ,42
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Superseded By'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_SUPERSEDED_ID'
+       ,'DEF_SUPERSEDED_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,to_date('20101004095101','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_SUPERSEDED_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_TIME_HRS'
+       ,'N'
+       ,43
+       ,'N'
+       ,'NUMBER'
+       ,2
+       ,0
+       ,'Defect Hours'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_TIME_HRS'
+       ,'DEF_TIME_HRS'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_TIME_HRS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_TIME_MINS'
+       ,'N'
+       ,44
+       ,'N'
+       ,'NUMBER'
+       ,2
+       ,0
+       ,'Defect Minutes'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_TIME_MINS'
+       ,'DEF_TIME_MINS'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_TIME_MINS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_UPDATE_INV'
+       ,'N'
+       ,45
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Update Inv Flag'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_UPDATE_INV'
+       ,'DEF_UPDATE_INV'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_UPDATE_INV');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_WORKS_ORDER_NO'
+       ,'N'
+       ,8
+       ,'N'
+       ,'VARCHAR2'
+       ,16
+       ,0
+       ,'Work Order Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_WORKS_ORDER_NO'
+       ,'DEF_WORKS_ORDER_NO'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,to_date('20101004095059','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,16
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_WORKS_ORDER_NO');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'DEF$'
+       ,'DEF_X_SECT'
+       ,'N'
+       ,46
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'XSP'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_X_SECT'
+       ,'DEF_X_SECT'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,to_date('20101004095102','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'DEF$'
+                    AND  ITA_ATTRIB_NAME = 'DEF_X_SECT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DF'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113727','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DF'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DF'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113733','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DF'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DF'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113353','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DF'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DS'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Band A'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_BAND_A'
+       ,'DEF_BAND_A'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113750','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DS'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DS'
+       ,'IIT_HEIGHT'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Band B'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_BAND_B'
+       ,'DEF_BAND_B'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DS'
+                    AND  ITA_ATTRIB_NAME = 'IIT_HEIGHT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DS'
+       ,'IIT_WIDTH'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Band C'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEF_BAND_C'
+       ,'DEF_BAND_C'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113801','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DS'
+                    AND  ITA_ATTRIB_NAME = 'IIT_WIDTH');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_DS'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Year'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113740','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_DS'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HL'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HL'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HL'
+       ,'IIT_GAP'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Lower Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LOWER_LIMIT'
+       ,'LOWER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HL'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HL'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HL'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HR'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HR'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HR'
+       ,'IIT_GAP'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Lower Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LOWER_LIMIT'
+       ,'LOWER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HR'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HR'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_GAP'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Lower Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LOWER_LIMIT'
+       ,'LOWER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_HT'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_HT'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_GAP'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Lower Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LOWER_LIMIT'
+       ,'LOWER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_MI'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_MI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_CLASS'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Accuracy'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'ACCURACY'
+       ,'ACCURACY'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_CLASS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_LENGTH'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,0
+       ,'Depth'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'DEPTH'
+       ,'DEPTH'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_LENGTH');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_MATERIAL_TXT'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,8
+       ,0
+       ,'Material'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'MATERIAL'
+       ,'MATERIAL'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_MATERIAL_TXT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_NO_OF_UNITS'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'NUMBER'
+       ,3
+       ,0
+       ,'Layer'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LAYER'
+       ,'LAYER'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_NO_OF_UNITS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RC'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,5
+       ,'Y'
+       ,'DATE'
+       ,11
+       ,0
+       ,'Material Age'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'MATERIAL_AGE'
+       ,'MATERIAL_AGE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RC'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RI'
+       ,'IIT_ANGLE'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Upper Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'UPPER_LIMIT'
+       ,'UPPER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028114309','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_ANGLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RI'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING'
+       ,'READING'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RI'
+       ,'IIT_GAP'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Lower Limit'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'LOWER_LIMIT'
+       ,'LOWER_LIMIT'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RI'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_RI'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113918','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_RI'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_DISTANCE'
+       ,'Y'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading 1'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING_1'
+       ,'READING_1'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_DISTANCE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_GAP'
+       ,'Y'
+       ,6
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Average'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'SKID_AVERAGE'
+       ,'SKID_AVERAGE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_GAP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_HEIGHT'
+       ,'Y'
+       ,4
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading 2'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING_2'
+       ,'READING_2'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_HEIGHT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_HEIGHT_2'
+       ,'Y'
+       ,7
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Investigate Level'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'INVESTIGATE'
+       ,'INVESTIGATE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_HEIGHT_2');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_OPTIONS'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Direction'
+       ,''
+       ,'Y'
+       ,''
+       ,null
+       ,null
+       ,'DIRECTION_CODE'
+       ,'DIRECTION_CODE'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_OPTIONS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_WIDTH'
+       ,'Y'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,2
+       ,'Reading 3'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'READING_3'
+       ,'READING_3'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_WIDTH');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'D_SR'
+       ,'IIT_XTRA_DATE_1'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Survey Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'YEAR'
+       ,'YEAR'
+       ,to_date('19000101000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'N'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20031028113920','YYYYMMDDHH24MISS')
+       ,to_date('20100505172128','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAIDATA31'
+       ,''
+       ,'Y'
+       ,1
+       ,'Y'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'D_SR'
+                    AND  ITA_ATTRIB_NAME = 'IIT_XTRA_DATE_1');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_ACT_AREA_CODE'
+       ,'N'
+       ,10
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Activity Area Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_ACT_AREA_CODE'
+       ,'WOL_ACT_AREA_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_ACT_AREA_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_ACT_COST'
+       ,'N'
+       ,11
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Actual Cost'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_ACT_COST'
+       ,'WOL_ACT_COST'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_ACT_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_BUD_ID'
+       ,'N'
+       ,45
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Budget ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_BUD_ID'
+       ,'WOL_BUD_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select BUD_ICB_ITEM_CODE , bud_cost_code descr,bud_id '||CHR(10)||'from budgets'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_BUD_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_CODE'
+       ,'N'
+       ,16
+       ,'N'
+       ,'VARCHAR2'
+       ,4
+       ,0
+       ,'QI Check Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_CODE'
+       ,'WOL_CHECK_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,4
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_COMMENTS'
+       ,'N'
+       ,17
+       ,'N'
+       ,'VARCHAR2'
+       ,254
+       ,0
+       ,'QI Check Comments'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_COMMENTS'
+       ,'WOL_CHECK_COMMENTS'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,254
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_COMMENTS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_DATE'
+       ,'N'
+       ,18
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'QI Check date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_DATE'
+       ,'WOL_CHECK_DATE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_ID'
+       ,'N'
+       ,19
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'QI Check Batch'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_ID'
+       ,'WOL_CHECK_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_PEO_ID'
+       ,'N'
+       ,20
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'QI Check By'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_PEO_ID'
+       ,'WOL_CHECK_PEO_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_PEO_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_CHECK_RESULT'
+       ,'N'
+       ,21
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'QI Check result'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_CHECK_RESULT'
+       ,'WOL_CHECK_RESULT'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_CHECK_RESULT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DATE_COMPLETE'
+       ,'N'
+       ,22
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Completed'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DATE_COMPLETE'
+       ,'WOL_DATE_COMPLETE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DATE_COMPLETE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DATE_CREATED'
+       ,'N'
+       ,23
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Created'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DATE_CREATED'
+       ,'WOL_DATE_CREATED'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DATE_CREATED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DATE_PAID'
+       ,'N'
+       ,24
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Paid'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DATE_PAID'
+       ,'WOL_DATE_PAID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DATE_PAID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DATE_REPAIRED'
+       ,'N'
+       ,43
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Repaired Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DATE_REPAIRED'
+       ,'WOL_DATE_REPAIRED'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DATE_REPAIRED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DEF_DEFECT_ID'
+       ,'N'
+       ,6
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Defect ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DEF_DEFECT_ID'
+       ,'WOL_DEF_DEFECT_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DEF_DEFECT_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_DESCR'
+       ,'N'
+       ,25
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Remarks'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_DESCR'
+       ,'WOL_DESCR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_EST_COST'
+       ,'N'
+       ,27
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Estimate Cost'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_EST_COST'
+       ,'WOL_EST_COST'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_EST_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_EST_LABOUR'
+       ,'N'
+       ,28
+       ,'N'
+       ,'NUMBER'
+       ,10
+       ,2
+       ,'Labour Units'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_EST_LABOUR'
+       ,'WOL_EST_LABOUR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_EST_LABOUR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_GANG'
+       ,'N'
+       ,48
+       ,'N'
+       ,'NUMBER'
+       ,22
+       ,0
+       ,'Gang'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_GANG'
+       ,'WOL_GANG'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''GANG'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,22
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_GANG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_ICB_WORK_CODE'
+       ,'N'
+       ,5
+       ,'N'
+       ,'VARCHAR2'
+       ,10
+       ,0
+       ,'Work Category'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_ICB_WORK_CODE'
+       ,'WOL_ICB_WORK_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_ICB_WORK_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_ID'
+       ,'N'
+       ,1
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'WOL ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_ID'
+       ,'WOL_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_INVOICE_STATUS'
+       ,'N'
+       ,44
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Invoice Status'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_INVOICE_STATUS'
+       ,'WOL_INVOICE_STATUS'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_INVOICE_STATUS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_LOCN_DESCR'
+       ,'N'
+       ,51
+       ,'N'
+       ,'VARCHAR2'
+       ,120
+       ,0
+       ,'Location description'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_LOCN_DESCR'
+       ,'WOL_LOCN_DESCR'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,120
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_LOCN_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_REGISTER_FLAG'
+       ,'N'
+       ,50
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Registerable'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_REGISTER_FLAG'
+       ,'WOL_REGISTER_FLAG'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,to_date('20101004095058','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_REGISTER_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_REP_ACTION_CAT'
+       ,'N'
+       ,7
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Repair Category'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_REP_ACTION_CAT'
+       ,'WOL_REP_ACTION_CAT'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_REP_ACTION_CAT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_RSE_HE_ID'
+       ,'N'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Road ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_RSE_HE_ID'
+       ,'WOL_RSE_HE_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_nt_TYPE IN  (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM = ''Y'')'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_RSE_HE_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_SCHD_ID'
+       ,'N'
+       ,8
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Schedule'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_SCHD_ID'
+       ,'WOL_SCHD_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_SCHD_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_SISS_ID'
+       ,'N'
+       ,4
+       ,'N'
+       ,'VARCHAR2'
+       ,3
+       ,0
+       ,'SISS'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_SISS_ID'
+       ,'WOL_SISS_ID'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,3
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_SISS_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_STATUS_CODE'
+       ,'N'
+       ,37
+       ,'N'
+       ,'VARCHAR2'
+       ,10
+       ,0
+       ,'Status'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_STATUS_CODE'
+       ,'WOL_STATUS_CODE'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,to_date('20101004095057','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hsc_status_code,hsc_status_name,hsc_status_code FROM HIG_status_CODES'||CHR(10)||'WHERE hsc_domain_code = ''WORK_ORDER_LINES'' '||CHR(10)||'order by hsc_status_name'
+       ,'Y'
+       ,10
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_STATUS_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOL$'
+       ,'WOL_WORKS_ORDER_NO'
+       ,'N'
+       ,2
+       ,'N'
+       ,'VARCHAR2'
+       ,16
+       ,0
+       ,'Work Order Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOL_WORKS_ORDER_NO'
+       ,'WOL_WORKS_ORDER_NO'
+       ,to_date('20100304000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,to_date('20101004095056','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,16
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOL$'
+                    AND  ITA_ATTRIB_NAME = 'WOL_WORKS_ORDER_NO');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ACT_BALANCING_SUM'
+       ,'N'
+       ,7
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Actual Balancing Sum'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ACT_BALANCING_SUM'
+       ,'WOR_ACT_BALANCING_SUM'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ACT_BALANCING_SUM');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ACT_COMMENCE_BY'
+       ,'N'
+       ,55
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Actual Start'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ACT_COMMENCE_BY'
+       ,'WOR_ACT_COMMENCE_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ACT_COMMENCE_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ACT_COST'
+       ,'N'
+       ,8
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Actual Sub Total'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ACT_COST'
+       ,'WOR_ACT_COST'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ACT_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ACT_DURATION'
+       ,'N'
+       ,70
+       ,'N'
+       ,'NUMBER'
+       ,5
+       ,0
+       ,'Actual Duration'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ACT_DURATION'
+       ,'WOR_ACT_DURATION'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,5
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ACT_DURATION');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ADDITIONAL_SAFETY_FLAG'
+       ,'N'
+       ,48
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Additional Safety'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ADDITIONAL_SAFETY_FLAG'
+       ,'WOR_ADDITIONAL_SAFETY_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ADDITIONAL_SAFETY_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_AGREED_BY'
+       ,'N'
+       ,73
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Agreed By Date (Client)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_AGREED_BY'
+       ,'WOR_AGREED_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_AGREED_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_AGREED_BY_DATE'
+       ,'N'
+       ,74
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Agreed By (Client)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_AGREED_BY_DATE'
+       ,'WOR_AGREED_BY_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_AGREED_BY_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CERT_COMPLETE'
+       ,'N'
+       ,71
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Cert Complete (Client)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CERT_COMPLETE'
+       ,'WOR_CERT_COMPLETE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CERT_COMPLETE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CLOSED_BY_ID'
+       ,'N'
+       ,13
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Closed By ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CLOSED_BY_ID'
+       ,'WOR_CLOSED_BY_ID'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CLOSED_BY_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_COC_COST_CENTRE'
+       ,'N'
+       ,14
+       ,'N'
+       ,'VARCHAR2'
+       ,3
+       ,0
+       ,'Cost Centre'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_COC_COST_CENTRE'
+       ,'WOR_COC_COST_CENTRE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,3
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_COC_COST_CENTRE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_COMMENCE_BY'
+       ,'N'
+       ,54
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Planned Start'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_COMMENCE_BY'
+       ,'WOR_COMMENCE_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_COMMENCE_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CONTACT'
+       ,'N'
+       ,60
+       ,'N'
+       ,'VARCHAR2'
+       ,80
+       ,0
+       ,'Contact'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CONTACT'
+       ,'WOR_CONTACT'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,80
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CONTACT');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CON_AGREED_BY'
+       ,'N'
+       ,75
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Agreed By (Contractor)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CON_AGREED_BY'
+       ,'WOR_CON_AGREED_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CON_AGREED_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CON_AGREED_BY_DATE'
+       ,'N'
+       ,76
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Agreed By Date (Contractor)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CON_AGREED_BY_DATE'
+       ,'WOR_CON_AGREED_BY_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CON_AGREED_BY_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CON_CERT_COMPLETE'
+       ,'N'
+       ,72
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Cert Complete (Contractor)'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CON_CERT_COMPLETE'
+       ,'WOR_CON_CERT_COMPLETE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CON_CERT_COMPLETE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CON_ID'
+       ,'N'
+       ,5
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Contract ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CON_ID'
+       ,'WOR_CON_ID'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select con_code ,con_name ,con_id  from contracts'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CON_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_CORR_EXTENSION_TIME'
+       ,'N'
+       ,51
+       ,'N'
+       ,'NUMBER'
+       ,2
+       ,0
+       ,'Defect Correction Period'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_CORR_EXTENSION_TIME'
+       ,'WOR_CORR_EXTENSION_TIME'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_CORR_EXTENSION_TIME');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_COST_RECHARG'
+       ,'N'
+       ,15
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Cost Recharged'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_COST_RECHARG'
+       ,'WOR_COST_RECHARG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_COST_RECHARG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DATE_CLOSED'
+       ,'N'
+       ,16
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Completed'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DATE_CLOSED'
+       ,'WOR_DATE_CLOSED'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DATE_CLOSED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DATE_CONFIRMED'
+       ,'N'
+       ,17
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Instructed'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DATE_CONFIRMED'
+       ,'WOR_DATE_CONFIRMED'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DATE_CONFIRMED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DATE_MOD'
+       ,'N'
+       ,18
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Modified'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DATE_MOD'
+       ,'WOR_DATE_MOD'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DATE_MOD');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DATE_RAISED'
+       ,'N'
+       ,19
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Raised'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DATE_RAISED'
+       ,'WOR_DATE_RAISED'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DATE_RAISED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DATE_RECEIVED'
+       ,'N'
+       ,61
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Date Received'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DATE_RECEIVED'
+       ,'WOR_DATE_RECEIVED'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DATE_RECEIVED');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DEF_CORRECTION'
+       ,'N'
+       ,49
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Defect Correction'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DEF_CORRECTION'
+       ,'WOR_DEF_CORRECTION'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DEF_CORRECTION');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DEF_CORRECTION_ACCEPTABLE'
+       ,'N'
+       ,50
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Quality Acceptable?'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DEF_CORRECTION_ACCEPTABLE'
+       ,'WOR_DEF_CORRECTION_ACCEPTABLE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DEF_CORRECTION_ACCEPTABLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DEF_CORRECTION_PERIOD'
+       ,'N'
+       ,56
+       ,'N'
+       ,'NUMBER'
+       ,2
+       ,0
+       ,'Extension of Time'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DEF_CORRECTION_PERIOD'
+       ,'WOR_DEF_CORRECTION_PERIOD'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DEF_CORRECTION_PERIOD');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_DESCR'
+       ,'N'
+       ,20
+       ,'N'
+       ,'VARCHAR2'
+       ,100
+       ,0
+       ,'Wor Description'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_DESCR'
+       ,'WOR_DESCR'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,100
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_DESCR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EARLIEST_START_DATE'
+       ,'N'
+       ,65
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Earliest Start'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EARLIEST_START_DATE'
+       ,'WOR_EARLIEST_START_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EARLIEST_START_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EST_BALANCING_SUM'
+       ,'N'
+       ,23
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Estimate Balancing Sum'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EST_BALANCING_SUM'
+       ,'WOR_EST_BALANCING_SUM'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EST_BALANCING_SUM');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EST_COMPLETE'
+       ,'N'
+       ,24
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Target Complete'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EST_COMPLETE'
+       ,'WOR_EST_COMPLETE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,to_date('20101004095050','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EST_COMPLETE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EST_COST'
+       ,'N'
+       ,25
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Estimate Sub Total'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EST_COST'
+       ,'WOR_EST_COST'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EST_COST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EST_DURATION'
+       ,'N'
+       ,69
+       ,'N'
+       ,'NUMBER'
+       ,5
+       ,0
+       ,'Planned Duration'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EST_DURATION'
+       ,'WOR_EST_DURATION'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,5
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EST_DURATION');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_EST_LABOUR'
+       ,'N'
+       ,26
+       ,'N'
+       ,'NUMBER'
+       ,11
+       ,2
+       ,'Labour Units'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_EST_LABOUR'
+       ,'WOR_EST_LABOUR'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,11
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_EST_LABOUR');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ICB_ITEM_CODE'
+       ,'N'
+       ,27
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Work Order Item Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ICB_ITEM_CODE'
+       ,'WOR_ICB_ITEM_CODE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ICB_ITEM_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ICB_SUB_ITEM_CODE'
+       ,'N'
+       ,28
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Work Order Sub Item Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ICB_SUB_ITEM_CODE'
+       ,'WOR_ICB_SUB_ITEM_CODE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ICB_SUB_ITEM_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_ICB_SUB_SUB_ITEM_CODE'
+       ,'N'
+       ,29
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Work Order Sub Sub Item Code'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_ICB_SUB_SUB_ITEM_CODE'
+       ,'WOR_ICB_SUB_SUB_ITEM_CODE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_ICB_SUB_SUB_ITEM_CODE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_INTERIM_PAYMENT_FLAG'
+       ,'N'
+       ,44
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Interim Payment?'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_INTERIM_PAYMENT_FLAG'
+       ,'WOR_INTERIM_PAYMENT_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_INTERIM_PAYMENT_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_JOB_NUMBER'
+       ,'N'
+       ,30
+       ,'N'
+       ,'VARCHAR2'
+       ,5
+       ,0
+       ,'Job Number'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_JOB_NUMBER'
+       ,'WOR_JOB_NUMBER'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,5
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_JOB_NUMBER');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LAST_PRINT_DATE'
+       ,'N'
+       ,31
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Last Printed'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LAST_PRINT_DATE'
+       ,'WOR_LAST_PRINT_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LAST_PRINT_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LATEST_COMP_DATE'
+       ,'N'
+       ,67
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Latest Completion'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LATEST_COMP_DATE'
+       ,'WOR_LATEST_COMP_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LATEST_COMP_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LATE_COSTS'
+       ,'N'
+       ,77
+       ,'N'
+       ,'NUMBER'
+       ,12
+       ,2
+       ,'Late Costs'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LATE_COSTS'
+       ,'WOR_LATE_COSTS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,12
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LATE_COSTS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LATE_COST_CERTIFIED_BY'
+       ,'N'
+       ,78
+       ,'N'
+       ,'VARCHAR2'
+       ,40
+       ,0
+       ,'Late Cost Certified'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LATE_COST_CERTIFIED_BY'
+       ,'WOR_LATE_COST_CERTIFIED_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,40
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LATE_COST_CERTIFIED_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LATE_COST_CERTIFIED_DATE'
+       ,'N'
+       ,79
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Late Cost Certified Date'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LATE_COST_CERTIFIED_DATE'
+       ,'WOR_LATE_COST_CERTIFIED_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LATE_COST_CERTIFIED_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_LOCATION_PLAN'
+       ,'N'
+       ,80
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Location Plan?'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_LOCATION_PLAN'
+       ,'WOR_LOCATION_PLAN'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_LOCATION_PLAN');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_METHOD_STATEMENT_FLAG'
+       ,'N'
+       ,46
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Method Statement'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_METHOD_STATEMENT_FLAG'
+       ,'WOR_METHOD_STATEMENT_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_METHOD_STATEMENT_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_MOD_BY_ID'
+       ,'N'
+       ,33
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Modified By ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_MOD_BY_ID'
+       ,'WOR_MOD_BY_ID'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_MOD_BY_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_OUN_ORG_ID'
+       ,'N'
+       ,34
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Contractor ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_OUN_ORG_ID'
+       ,'WOR_OUN_ORG_ID'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select oun_org_id ,oun_name ,oun_org_id '||CHR(10)||'from org_units'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_OUN_ORG_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_PEO_PERSON_ID'
+       ,'N'
+       ,35
+       ,'N'
+       ,'NUMBER'
+       ,8
+       ,0
+       ,'Originator User ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_PEO_PERSON_ID'
+       ,'WOR_PEO_PERSON_ID'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
+       ,'Y'
+       ,8
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_PEO_PERSON_ID');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_PERC_ITEM_COMP'
+       ,'N'
+       ,59
+       ,'N'
+       ,'VARCHAR2'
+       ,10
+       ,0
+       ,'Percent Item Computation'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_PERC_ITEM_COMP'
+       ,'WOR_PERC_ITEM_COMP'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,10
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_PERC_ITEM_COMP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_PLANNED_COMP_DATE'
+       ,'N'
+       ,66
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Planned Completion'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_PLANNED_COMP_DATE'
+       ,'WOR_PLANNED_COMP_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_PLANNED_COMP_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_PRICE_VARIATION'
+       ,'N'
+       ,53
+       ,'N'
+       ,'NUMBER'
+       ,6
+       ,4
+       ,'Final Price Variation%'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_PRICE_VARIATION'
+       ,'WOR_PRICE_VARIATION'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,6
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_PRICE_VARIATION');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_PRIORITY'
+       ,'N'
+       ,58
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Priority'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_PRIORITY'
+       ,'WOR_PRIORITY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''WOR_PRIORITY'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_PRIORITY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_REASON_NOT_CHEAPEST'
+       ,'N'
+       ,57
+       ,'N'
+       ,'VARCHAR2'
+       ,100
+       ,0
+       ,'Reason not Cheapest'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_REASON_NOT_CHEAPEST'
+       ,'WOR_REASON_NOT_CHEAPEST'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,100
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_REASON_NOT_CHEAPEST');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_RECEIVED_BY'
+       ,'N'
+       ,62
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Received By'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_RECEIVED_BY'
+       ,'WOR_RECEIVED_BY'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hus_initials ,hus_name ,hus_user_id '||CHR(10)||'from hig_users'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_RECEIVED_BY');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_RECHARGEABLE'
+       ,'N'
+       ,63
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Rechargeable'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_RECHARGEABLE'
+       ,'WOR_RECHARGEABLE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_RECHARGEABLE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_REGISTER_FLAG'
+       ,'N'
+       ,83
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Register'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_REGISTER_FLAG'
+       ,'WOR_REGISTER_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_REGISTER_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_REGISTER_STATUS'
+       ,'N'
+       ,84
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Register Status'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_REGISTER_STATUS'
+       ,'WOR_REGISTER_STATUS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''WOR_REGISTER_STATUS'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_REGISTER_STATUS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_REMARKS'
+       ,'N'
+       ,37
+       ,'N'
+       ,'VARCHAR2'
+       ,70
+       ,0
+       ,'Remarks'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_REMARKS'
+       ,'WOR_REMARKS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,70
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_REMARKS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_REVISED_COMP_DATE'
+       ,'N'
+       ,52
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Revised Completion'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_REVISED_COMP_DATE'
+       ,'WOR_REVISED_COMP_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_REVISED_COMP_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_RISK_ASSESSMENT_FLAG'
+       ,'N'
+       ,45
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Risk Assessment Report'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_RISK_ASSESSMENT_FLAG'
+       ,'WOR_RISK_ASSESSMENT_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_RISK_ASSESSMENT_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_RSE_HE_ID_GROUP'
+       ,'N'
+       ,3
+       ,'N'
+       ,'NUMBER'
+       ,9
+       ,0
+       ,'Group ID'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_RSE_HE_ID_GROUP'
+       ,'WOR_RSE_HE_ID_GROUP'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095049','YYYYMMDDHH24MISS')
+       ,to_date('20101004095049','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'SELECT NE_UNIQUE ,NE_DESCR ,NE_ID  '||CHR(10)||'FROM NM_ELEMENTS WHERE NE_GTY_GROUP_TYPE IN (SELECT NGT_GROUP_TYPE FROM NM_GROUP_TYPES WHERE  NGT_NT_TYPE IN (SELECT NT_TYPE FROM NM_TYPES WHERE NT_DATUM != ''Y''))'
+       ,'Y'
+       ,9
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_RSE_HE_ID_GROUP');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_SCHEME_TYPE'
+       ,'N'
+       ,41
+       ,'N'
+       ,'VARCHAR2'
+       ,2
+       ,0
+       ,'Scheme Type'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_SCHEME_TYPE'
+       ,'WOR_SCHEME_TYPE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,'select hco_code,hco_meaning,hco_code from HIG_CODES'||CHR(10)||'Where hco_domain = ''SCHEME_TYPES'''||CHR(10)||'order by hco_meaning'
+       ,'Y'
+       ,2
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_SCHEME_TYPE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_SCORE'
+       ,'N'
+       ,42
+       ,'N'
+       ,'NUMBER'
+       ,1
+       ,0
+       ,'Contractor Score'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_SCORE'
+       ,'WOR_SCORE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,to_date('20101004095051','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_SCORE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_SITE_COMPLETE_DATE'
+       ,'N'
+       ,68
+       ,'N'
+       ,'DATE'
+       ,7
+       ,0
+       ,'Actual Completion'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_SITE_COMPLETE_DATE'
+       ,'WOR_SITE_COMPLETE_DATE'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,to_date('20101004095054','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,7
+       ,'N'
+       ,'UPPER' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_SITE_COMPLETE_DATE');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_SUPP_DOCUMENTS'
+       ,'N'
+       ,64
+       ,'N'
+       ,'VARCHAR2'
+       ,80
+       ,0
+       ,'Supporting Documentation'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_SUPP_DOCUMENTS'
+       ,'WOR_SUPP_DOCUMENTS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,to_date('20101004095053','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,80
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_SUPP_DOCUMENTS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_UTILITY_PLANS'
+       ,'N'
+       ,81
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Utility Plans?'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_UTILITY_PLANS'
+       ,'WOR_UTILITY_PLANS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_UTILITY_PLANS');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_WORKS_ORDER_NO'
+       ,'N'
+       ,1
+       ,'N'
+       ,'VARCHAR2'
+       ,16
+       ,0
+       ,'Work Order'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_WORKS_ORDER_NO'
+       ,'WOR_WORKS_ORDER_NO'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095049','YYYYMMDDHH24MISS')
+       ,to_date('20101004095049','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,16
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_WORKS_ORDER_NO');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_WORKS_PROGRAMME_FLAG'
+       ,'N'
+       ,47
+       ,'N'
+       ,'VARCHAR2'
+       ,1
+       ,0
+       ,'Works Programme?'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_WORKS_PROGRAMME_FLAG'
+       ,'WOR_WORKS_PROGRAMME_FLAG'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,to_date('20101004095052','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,1
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_WORKS_PROGRAMME_FLAG');
+--
+INSERT INTO NM_INV_TYPE_ATTRIBS_ALL
+       (ITA_INV_TYPE
+       ,ITA_ATTRIB_NAME
+       ,ITA_DYNAMIC_ATTRIB
+       ,ITA_DISP_SEQ_NO
+       ,ITA_MANDATORY_YN
+       ,ITA_FORMAT
+       ,ITA_FLD_LENGTH
+       ,ITA_DEC_PLACES
+       ,ITA_SCRN_TEXT
+       ,ITA_ID_DOMAIN
+       ,ITA_VALIDATE_YN
+       ,ITA_DTP_CODE
+       ,ITA_MAX
+       ,ITA_MIN
+       ,ITA_VIEW_ATTRI
+       ,ITA_VIEW_COL_NAME
+       ,ITA_START_DATE
+       ,ITA_END_DATE
+       ,ITA_QUERYABLE
+       ,ITA_UKPMS_PARAM_NO
+       ,ITA_UNITS
+       ,ITA_FORMAT_MASK
+       ,ITA_EXCLUSIVE
+       ,ITA_KEEP_HISTORY_YN
+       ,ITA_DATE_CREATED
+       ,ITA_DATE_MODIFIED
+       ,ITA_MODIFIED_BY
+       ,ITA_CREATED_BY
+       ,ITA_QUERY
+       ,ITA_DISPLAYED
+       ,ITA_DISP_WIDTH
+       ,ITA_INSPECTABLE
+       ,ITA_CASE
+       )
+SELECT 
+        'WOR$'
+       ,'WOR_WORK_RESTRICTIONS'
+       ,'N'
+       ,82
+       ,'N'
+       ,'VARCHAR2'
+       ,80
+       ,0
+       ,'Work Restrictions'
+       ,''
+       ,'N'
+       ,''
+       ,null
+       ,null
+       ,'WOR_WORK_RESTRICTIONS'
+       ,'WOR_WORK_RESTRICTIONS'
+       ,to_date('20100303000000','YYYYMMDDHH24MISS')
+       ,null
+       ,'Y'
+       ,null
+       ,null
+       ,''
+       ,'N'
+       ,'N'
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,to_date('20101004095055','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,'MAI_METADATA'
+       ,''
+       ,'Y'
+       ,80
+       ,'N'
+       ,'MIXED' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ATTRIBS_ALL
+                   WHERE ITA_INV_TYPE = 'WOR$'
+                    AND  ITA_ATTRIB_NAME = 'WOR_WORK_RESTRICTIONS');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- INV_TYPE_TRANSLATIONS
+--
+-- select * from mai_metadata.inv_type_translations
+-- order by ity_inv_code
+--         ,ity_sys_flag
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT inv_type_translations
+SET TERM OFF
+
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'DF'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'Deflectograph'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,70
+       ,null
+       ,'BPR_DDF'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_DF' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'DF'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'DS'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'Deflectograph Summary'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'DISTANCE'
+       ,'HEIGHT'
+       ,'WIDTH'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,71
+       ,null
+       ,'BPR_DDS'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_DS' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'DS'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'HL'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'HRM Longitudinal'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'ANGLE'
+       ,'GAP'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,64
+       ,null
+       ,'BPR_DHL'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_HL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'HL'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'HR'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'HRM Rutting Depth'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'ANGLE'
+       ,'GAP'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,65
+       ,null
+       ,'BPR_DHR'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_HR' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'HR'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'HT'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'HRM Macrotexture'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'ANGLE'
+       ,'GAP'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,67
+       ,null
+       ,'BPR_DHT'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_HT' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'HT'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'MI'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'HRM Macrotexture Interval'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'ANGLE'
+       ,'GAP'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,68
+       ,null
+       ,'BPR_DMI'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_MI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'MI'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'RC'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'N'
+       ,'Road Construction'
+       ,''
+       ,null
+       ,''
+       ,'NO_OF_UNITS'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'MATERIAL'
+       ,'LENGTH'
+       ,'CLASS'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'R'
+       ,75
+       ,null
+       ,'BPR_DRC'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_RC' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'RC'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'RI'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'HRM Rutting Depth Interval'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'ANGLE'
+       ,'GAP'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,66
+       ,null
+       ,'BPR_DRI'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_RI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'RI'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+INSERT INTO INV_TYPE_TRANSLATIONS
+       (ITY_DTP_FLAG
+       ,ITY_ELEC_DRAIN_CARR
+       ,ITY_INV_CODE
+       ,ITY_PNT_OR_CONT
+       ,ITY_SYS_FLAG
+       ,ITY_X_SECT_ALLOW_FLAG
+       ,ITY_CONTIGUOUS
+       ,ITY_DESCR
+       ,ITY_DUPLICATE
+       ,ITY_FEA_CODE
+       ,ITY_PARENT_ITY
+       ,ITY_HHPOS1
+       ,ITY_HHPOS10
+       ,ITY_HHPOS11
+       ,ITY_HHPOS12
+       ,ITY_HHPOS13
+       ,ITY_HHPOS14
+       ,ITY_HHPOS15
+       ,ITY_HHPOS2
+       ,ITY_HHPOS3
+       ,ITY_HHPOS4
+       ,ITY_HHPOS5
+       ,ITY_HHPOS6
+       ,ITY_HHPOS7
+       ,ITY_HHPOS8
+       ,ITY_HHPOS9
+       ,ITY_HHSTRLNGTH
+       ,ITY_HHSUBLNG1
+       ,ITY_HHSUBLNG10
+       ,ITY_HHSUBLNG2
+       ,ITY_HHSUBLNG3
+       ,ITY_HHSUBLNG4
+       ,ITY_HHSUBLNG5
+       ,ITY_HHSUBLNG6
+       ,ITY_HHSUBLNG7
+       ,ITY_HHSUBLNG8
+       ,ITY_HHSUBLNG9
+       ,ITY_HHSUBSTATS
+       ,ITY_HHSUBSTRT1
+       ,ITY_HHSUBSTRT10
+       ,ITY_HHSUBSTRT2
+       ,ITY_HHSUBSTRT3
+       ,ITY_HHSUBSTRT4
+       ,ITY_HHSUBSTRT5
+       ,ITY_HHSUBSTRT6
+       ,ITY_HHSUBSTRT7
+       ,ITY_HHSUBSTRT8
+       ,ITY_HHSUBSTRT9
+       ,ITY_MAX_ATTR_REQ
+       ,ITY_MIN_ATTR_REQ
+       ,ITY_ROAD_CHARACTERISTIC
+       ,ITY_SCREEN_SEQ
+       ,ITY_TOLERANCE
+       ,ITY_VIEW_NAME
+       ,ITY_START_DATE
+       ,ITY_END_DATE
+       ,ITY_CONTIG_JOINS_GAP
+       ,ITY_HHPOS16
+       ,ITY_HHPOS17
+       ,ITY_HHPOS18
+       ,ITY_HHPOS19
+       ,ITY_HHPOS20
+       ,ITY_HHPOS21
+       ,ITY_HHPOS22
+       ,ITY_HHPOS23
+       ,ITY_HHPOS24
+       ,ITY_HHPOS25
+       ,ITY_HHPOS26
+       ,ITY_HHPOS27
+       ,ITY_HHPOS28
+       ,ITY_HHPOS29
+       ,ITY_HHPOS30
+       ,ITY_HHPOS31
+       ,ITY_HHPOS32
+       ,ITY_HHPOS33
+       ,ITY_HHPOS34
+       ,ITY_HHPOS35
+       ,ITY_HHPOS36
+       ,ITY_HHPOS37
+       ,ITY_HHPOS38
+       ,ITY_HHPOS39
+       ,ITY_HHPOS40
+       ,ITY_HHPOS41
+       ,ITY_HHPOS42
+       ,ITY_HHPOS43
+       ,ITY_HHPOS44
+       ,ITY_HHPOS45
+       ,ITY_HHPOS46
+       ,ITY_HHPOS47
+       ,ITY_HHPOS48
+       ,ITY_HHPOS49
+       ,ITY_HHPOS50
+       ,ITY_HHPOS51
+       ,ITY_HHPOS52
+       ,ITY_HHPOS53
+       ,ITY_HHPOS54
+       ,ITY_HHPOS55
+       ,ITY_HHPOS56
+       ,ITY_HHPOS57
+       ,ITY_HHPOS58
+       ,ITY_HHPOS59
+       ,ITY_HHPOS60
+       ,ITY_HHPOS61
+       ,ITY_HHPOS62
+       ,ITY_HHPOS63
+       ,ITY_HHPOS64
+       ,ITY_HHPOS65
+       ,ITY_HHPOS66
+       ,ITY_HHPOS67
+       ,ITY_HHPOS68
+       ,ITY_HHPOS69
+       ,ITY_HHPOS70
+       ,ITY_HHPOS71
+       ,ITY_HHPOS72
+       ,ITY_HHPOS73
+       ,ITY_HHPOS74
+       ,ITY_HHPOS75
+       ,ITY_AREA_OR_LENGTH
+       ,ITY_SURVEY
+       ,ITY_MULTI_ALLOWED
+       ,ITY_SHORT_DESCR
+       ,ITY_INCL_ROAD_SEGS
+       ,NIT_INV_TYPE
+       )
+SELECT 
+        'D'
+       ,'R'
+       ,'SR'
+       ,'C'
+       ,'D'
+       ,'Y'
+       ,'Y'
+       ,'Skid'
+       ,''
+       ,null
+       ,''
+       ,'XTRA_DATE_1'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'OPTIONS'
+       ,'DISTANCE'
+       ,'HEIGHT'
+       ,'WIDTH'
+       ,'GAP'
+       ,'HEIGHT_2'
+       ,''
+       ,''
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,null
+       ,0
+       ,'M'
+       ,69
+       ,null
+       ,'BPR_DSR'
+       ,null
+       ,null
+       ,null
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,'1'
+       ,'D_SR' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM INV_TYPE_TRANSLATIONS
+                   WHERE ITY_INV_CODE = 'SR'
+                    AND  ITY_SYS_FLAG = 'D');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_NAVIGATOR
+--
+-- select * from mai_metadata.hig_navigator
+-- order by hnv_child_alias
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_navigator
+SET TERM OFF
+
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'defects'
+       ,'def_iit_item_id'
+       ,'nm_inv_items_all ast'
+       ,'ast.iit_ne_id'
+       ,5
+       ,'Asset'
+       ,'def_defect_id'
+       ,'ast.iit_ne_id'
+       ,'-INST'
+       ,'-AST'
+       ,'asset'
+       ,''
+       ,''
+       ,'ast.iit_primary_key'
+       ,'hig_nav.concate_label(ast.iit_inv_type)'
+       ,'hig_nav.concate_label(hig_nav.get_asset_descr(ast.iit_inv_type))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095449','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-AST');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'WOR_ORDER_LINES'
+       ,'wol_bud_id'
+       ,'budgets'
+       ,'bud_id'
+       ,3
+       ,'Budget'
+       ,'wol_id'
+       ,'bud_id'
+       ,'-WOL'
+       ,'-BUD'
+       ,'budget'
+       ,''
+       ,''
+       ,'BUD_ICB_ITEM_CODE||BUD_ICB_SUB_ITEM_CODE||BUD_ICB_SUB_SUB_ITEM_CODE'
+       ,'hig_nav.concate_label(hig_nav.get_budget_descr(bud_sys_flag,bud_icb_item_code,bud_icb_sub_item_code,bud_icb_sub_sub_item_code,bud_agency))'
+       ,'hig_nav.concate_label(''Budget : ''||bud_value)'
+       ,'hig_nav.concate_label(''Committed : ''||BUD_COMMITTED)'
+       ,'hig_nav.concate_label(''Actual : ''||BUD_ACTUAL)'
+       ,'hig_nav.concate_label(''Balance : ''||hig_nav.get_bud_balance(bud_value,bud_committed,bud_actual))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,1
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100419163511','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-BUD');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'defects'
+       ,'def_iit_item_id'
+       ,'nm_inv_items_all'
+       ,'iit_ne_id'
+       ,2
+       ,'Asset'
+       ,'def_defect_id'
+       ,'iit_ne_id'
+       ,'-DEF'
+       ,'-DAST'
+       ,'asset'
+       ,''
+       ,''
+       ,'iit_primary_key'
+       ,'hig_nav.concate_label(iit_inv_type)'
+       ,'hig_nav.concate_label(hig_nav.get_asset_descr(iit_inv_type))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100421133555','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DAST');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'work_order_lines'
+       ,'wol_bud_id'
+       ,'budgets'
+       ,'bud_id'
+       ,4
+       ,'Budget'
+       ,'wol_id'
+       ,'bud_id'
+       ,'-DWOL'
+       ,'-DBUD'
+       ,'budget'
+       ,''
+       ,''
+       ,'BUD_ICB_ITEM_CODE||BUD_ICB_SUB_ITEM_CODE||BUD_ICB_SUB_SUB_ITEM_CODE'
+       ,'hig_nav.concate_label(hig_nav.get_budget_descr(bud_sys_flag,bud_icb_item_code,bud_icb_sub_item_code,bud_icb_sub_sub_item_code,bud_agency))'
+       ,'hig_nav.concate_label(''Budget : ''||bud_value)'
+       ,'hig_nav.concate_label(''Committed : ''||BUD_COMMITTED)'
+       ,'hig_nav.concate_label(''Actual : ''||BUD_ACTUAL)'
+       ,'hig_nav.concate_label(''Balance : ''||hig_nav.get_bud_balance(bud_value,bud_committed,bud_actual))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095436','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DBUD');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,''
+       ,''
+       ,'defects'
+       ,'def_defect_id'
+       ,1
+       ,'Defect'
+       ,''
+       ,'def_defect_id'
+       ,''
+       ,'-DEF'
+       ,'defect'
+       ,''
+       ,'Y'
+       ,'def_defect_id'
+       ,'hig_nav.concate_label(def_status_code)'
+       ,'hig_nav.concate_label(DEF_ATV_ACTY_AREA_CODE)'
+       ,'hig_nav.concate_label(DEF_DEFECT_CODE)'
+       ,'hig_nav.concate_label(DEF_PRIORITY)'
+       ,'hig_nav.concate_label(DEF_LOCN_DESCR)'
+       ,'hig_nav.concate_label(DEF_DEFECT_DESCR)'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330144956','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DEF');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'defects'
+       ,'To_char(def_defect_id)'
+       ,'docs,doc_assocs'
+       ,'das_rec_id'
+       ,5
+       ,'Enquiry'
+       ,'def_defect_id'
+       ,'das_doc_id'
+       ,'-INST'
+       ,'-DOC'
+       ,'enquiry'
+       ,'AND das_doc_id = docs.doc_id  '||CHR(10)||'AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')'||CHR(10)||'AND (das_table_name IN (select dgs_table_syn from DOC_GATE_SYNS where dgs_dgt_table_name = ''DEFECTS'') or das_table_name = ''DEFECTS'')'||CHR(10)||''
+       ,''
+       ,'das_doc_id'
+       ,'hig_nav.concate_label(hig_nav.get_doc_status_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_dtp_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_dcl_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_compl_type(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_descr(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_compl_location(das_doc_id))'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095500','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DOC');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'work_order_lines'
+       ,'wol_id'
+       ,'tma_id_mapping'
+       ,'tidm_primary_key_value'
+       ,4
+       ,'Notice'
+       ,'wol_id'
+       ,'TIDM_RESULTANT_WORKS_ID'
+       ,'-DWOL'
+       ,'-DTMA'
+       ,'tma'
+       ,'AND TIDM_ORIGIN = ''WOL'''
+       ,''
+       ,'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095424','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DTMA');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,'work_order_lines'
+       ,'wol_def_defect_id'
+       ,3
+       ,'Work Order Line'
+       ,'rep_def_defect_id||REP_ACTION_CAT'
+       ,'wol_id'
+       ,'-REP'
+       ,'-DWOL'
+       ,'work_order_line'
+       ,'AND REP_ACTION_CAT = WOL_REP_ACTION_CAT'
+       ,''
+       ,'wol_id'
+       ,'hig_nav.concate_label(wol_status_code)'
+       ,'hig_nav.concate_label(wol_rse_he_id)'
+       ,'hig_nav.concate_label(hig_nav.get_road_descr(wol_rse_he_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422105206','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DWOL');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'work_order_lines'
+       ,'wol_works_order_no'
+       ,'work_orders'
+       ,'wor_works_order_no'
+       ,4
+       ,'Work Order'
+       ,'wol_id'
+       ,'wor_works_order_no'
+       ,'-DWOL'
+       ,'-DWOR'
+       ,'works_order'
+       ,''
+       ,''
+       ,'wor_works_order_no'
+       ,'hig_nav.concate_label(wor_descr)'
+       ,'hig_nav.concate_label(wor_scheme_type)'
+       ,'hig_nav.concate_label(hig_nav.get_contract_det(wor_con_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095439','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-DWOR');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'defects'
+       ,'To_Char(def_defect_id)'
+       ,'docs,doc_assocs'
+       ,'das_rec_id'
+       ,2
+       ,'Enquiry'
+       ,'def_defect_id'
+       ,'das_doc_id'
+       ,'-DEF'
+       ,'-ENQ'
+       ,'enquiry'
+       ,'AND das_doc_id = docs.doc_id  '||CHR(10)||'AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')'||CHR(10)||'AND (das_table_name IN (select dgs_table_syn from DOC_GATE_SYNS where dgs_dgt_table_name = ''DEFECTS'') or das_table_name = ''DEFECTS'')'||CHR(10)||'  '
+       ,''
+       ,'das_doc_id'
+       ,'hig_nav.concate_label(hig_nav.get_doc_status_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_dtp_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_dcl_code(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_compl_type(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_descr(das_doc_id))'
+       ,'hig_nav.concate_label(hig_nav.get_doc_compl_location(das_doc_id))'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100419222834','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ENQ');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'defects'
+       ,'def_are_report_id'
+       ,'ACTIVITIES_REPORT'
+       ,'are_report_id'
+       ,4
+       ,'Inspection'
+       ,'def_defect_id'
+       ,'are_report_id'
+       ,'-INST'
+       ,'-INS1'
+       ,'inspection'
+       ,''
+       ,''
+       ,'ARE_REPORT_ID'
+       ,'hig_nav.concate_label(hig_nav.get_hig_code_meaning(''MAINT_INSP_FLAG'',ARE_MAINT_INSP_FLAG))'
+       ,'hig_nav.concate_label(ARE_INITIATION_TYPE)'
+       ,'hig_nav.concate_label(ARE_SURFACE_CONDITION)'
+       ,'hig_nav.concate_label(hig_nav.get_hig_user_initials(ARE_PEO_PERSON_ID_ACTIONED))'
+       ,'hig_nav.concate_label(ARE_BATCH_ID)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422095452','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-INS1');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'defects'
+       ,'def_are_report_id'
+       ,'activities_report'
+       ,'are_report_id'
+       ,2
+       ,'Inspection'
+       ,'def_defect_id'
+       ,'are_report_id'
+       ,'-DEF'
+       ,'-INSP'
+       ,'inspection'
+       ,''
+       ,'Y'
+       ,'ARE_REPORT_ID'
+       ,'hig_nav.concate_label(hig_nav.get_hig_code_meaning(''MAINT_INSP_FLAG'',ARE_MAINT_INSP_FLAG))'
+       ,'hig_nav.concate_label(ARE_INITIATION_TYPE)'
+       ,'hig_nav.concate_label(ARE_SURFACE_CONDITION)'
+       ,'hig_nav.concate_label(hig_nav.get_hig_user_initials(ARE_PEO_PERSON_ID_ACTIONED))'
+       ,'hig_nav.concate_label(ARE_BATCH_ID)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330145112','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-INSP');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,'defects'
+       ,'def_defect_id'
+       ,4
+       ,'Defect'
+       ,'rep_def_defect_id||rep_action_cat'
+       ,'def_defect_id'
+       ,'-WREP'
+       ,'-INST'
+       ,'defect'
+       ,''
+       ,''
+       ,'def_defect_id'
+       ,'hig_nav.concate_label(def_status_code)'
+       ,'hig_nav.concate_label(DEF_ATV_ACTY_AREA_CODE)'
+       ,'hig_nav.concate_label(DEF_DEFECT_CODE)'
+       ,'hig_nav.concate_label(DEF_PRIORITY)'
+       ,'hig_nav.concate_label(DEF_LOCN_DESCR)'
+       ,'hig_nav.concate_label(DEF_DEFECT_DESCR)'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100419163521','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-INST');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Defects'
+       ,'defects'
+       ,'def_defect_id'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,2
+       ,'Repair'
+       ,'def_defect_id'
+       ,'rep_def_defect_id||REP_ACTION_CAT'
+       ,'-DEF'
+       ,'-REP'
+       ,'repair'
+       ,''
+       ,''
+       ,'hig_nav.get_hig_code_meaning(''REPAIR_TYPE'',REP_ACTION_CAT)'
+       ,'hig_nav.concate_label(REP_TRE_TREAT_CODE)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100419215104','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-REP');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'WORK_ORDER_LINES'
+       ,'wol_id'
+       ,'tma_id_mapping'
+       ,'TIDM_PRIMARY_KEY_VALUE'
+       ,3
+       ,'Notice'
+       ,'wol_id'
+       ,'TIDM_RESULTANT_WORKS_ID'
+       ,'-WOL'
+       ,'-TMID'
+       ,'tma'
+       ,'AND TIDM_ORIGIN = ''WOL'''
+       ,''
+       ,'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,2
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422093916','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-TMID');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'WORK_ORDERS'
+       ,'wor_works_order_no'
+       ,'work_order_lines'
+       ,'wol_works_order_no'
+       ,2
+       ,'Work Order Line'
+       ,'wol_works_order_no'
+       ,'wol_id'
+       ,'-WOR'
+       ,'-WOL'
+       ,'work_order_line'
+       ,''
+       ,'Y'
+       ,'wol_id'
+       ,'hig_nav.concate_label(wol_status_code)'
+       ,'hig_nav.concate_label(wol_rse_he_id)'
+       ,'hig_nav.concate_label(hig_nav.get_road_descr(wol_rse_he_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100419163507','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-WOL');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,''
+       ,''
+       ,'work_orders'
+       ,'wor_works_order_no'
+       ,1
+       ,'Work Order'
+       ,''
+       ,'wor_works_order_no'
+       ,''
+       ,'-WOR'
+       ,'works_order'
+       ,''
+       ,'Y'
+       ,'wor_works_order_no'
+       ,'hig_nav.concate_label(wor_descr)'
+       ,'hig_nav.concate_label(wor_scheme_type)'
+       ,'hig_nav.concate_label(hig_nav.get_contract_det(wor_con_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330144631','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-WOR');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Works Orders'
+       ,'work_order_lines'
+       ,'wol_def_defect_id'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,3
+       ,'Repair'
+       ,'wol_id'
+       ,'rep_def_defect_id||rep_action_cat'
+       ,'-WOL'
+       ,'-WREP'
+       ,'repair'
+       ,'AND REP_ACTION_CAT = WOL_REP_ACTION_CAT'
+       ,''
+       ,'hig_nav.get_hig_code_meaning(''REPAIR_TYPE'',REP_ACTION_CAT)'
+       ,'hig_nav.concate_label(REP_TRE_TREAT_CODE)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,3
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100422105145','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-WREP');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_NAVIGATOR_MODULES
+--
+-- select * from mai_metadata.hig_navigator_modules
+-- order by hnm_module_name
+--         ,hnm_module_param
+--         ,hnm_hierarchy_label
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_navigator_modules
+SET TERM OFF
+
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3660'
+       ,'bud_id'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Budget'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3660'
+                    AND  HNM_MODULE_PARAM = 'bud_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Budget');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3800'
+       ,'wo_no'
+       ,'Y'
+       ,1
+       ,'WORK_ORDERS'
+       ,'B1.WOR_WORKS_ORDER_NO'
+       ,'Work Order'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3800'
+                    AND  HNM_MODULE_PARAM = 'wo_no'
+                    AND  HNM_HIERARCHY_LABEL = 'Work Order');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3800'
+       ,'wol_id'
+       ,'Y'
+       ,1
+       ,'WORK_ORDER_LINES'
+       ,'B2.WOL_ID'
+       ,'Work Order Line'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3800'
+                    AND  HNM_MODULE_PARAM = 'wol_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Work Order Line');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3806'
+       ,'defect_id'
+       ,'Y'
+       ,1
+       ,'DEFECTS'
+       ,'B1.DEF_DEFECT_ID'
+       ,'Defect'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3806'
+                    AND  HNM_MODULE_PARAM = 'defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Defect');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3806'
+       ,'defect_id'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Repair'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3806'
+                    AND  HNM_MODULE_PARAM = 'defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Repair');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'are_report_id'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Inspection'
+       ,to_date('20100222165343','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100224112703','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'are_report_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Inspection');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'nav_defect_id'
+       ,'N'
+       ,2
+       ,''
+       ,''
+       ,'Defect'
+       ,to_date('20100330174740','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174740','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'nav_defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Defect');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3808'
+       ,'nav_defect_id'
+       ,'N'
+       ,2
+       ,''
+       ,''
+       ,'Repair'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100330174829','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3808'
+                    AND  HNM_MODULE_PARAM = 'nav_defect_id'
+                    AND  HNM_HIERARCHY_LABEL = 'Repair');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_DIRECTORIES
+--
+-- select * from mai_metadata.hig_directories
+-- order by hdir_name
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_directories
+SET TERM OFF
+
+INSERT INTO HIG_DIRECTORIES
+       (HDIR_NAME
+       ,HDIR_PATH
+       ,HDIR_URL
+       ,HDIR_COMMENTS
+       ,HDIR_PROTECTED
+       )
+SELECT 
+        'CIM_ARC'
+       ,'<to be specified>'
+       ,'<to be specified>'
+       ,'Location for CIM files to be archived '
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORIES
+                   WHERE HDIR_NAME = 'CIM_ARC');
+--
+INSERT INTO HIG_DIRECTORIES
+       (HDIR_NAME
+       ,HDIR_PATH
+       ,HDIR_URL
+       ,HDIR_COMMENTS
+       ,HDIR_PROTECTED
+       )
+SELECT 
+        'CIM_DIR'
+       ,'<to be specified>'
+       ,'<to be specified>'
+       ,'Location for CIM files to load'
+       ,'Y' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORIES
+                   WHERE HDIR_NAME = 'CIM_DIR');
+--
+INSERT INTO HIG_DIRECTORIES
+       (HDIR_NAME
+       ,HDIR_PATH
+       ,HDIR_URL
+       ,HDIR_COMMENTS
+       ,HDIR_PROTECTED
+       )
+SELECT 
+        'MAI_INSP_DIRECTORY'
+       ,'<to be specified>'
+       ,''
+       ,'Directory for MAI Inspection Files To Be Loaded.'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORIES
+                   WHERE HDIR_NAME = 'MAI_INSP_DIRECTORY');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_DIRECTORY_ROLES
+--
+-- select * from mai_metadata.hig_directory_roles
+-- order by hdr_name
+--         ,hdr_role
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_directory_roles
+SET TERM OFF
+
+INSERT INTO HIG_DIRECTORY_ROLES
+       (HDR_NAME
+       ,HDR_ROLE
+       ,HDR_MODE
+       )
+SELECT 
+        'CIM_ARC'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORY_ROLES
+                   WHERE HDR_NAME = 'CIM_ARC'
+                    AND  HDR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_DIRECTORY_ROLES
+       (HDR_NAME
+       ,HDR_ROLE
+       ,HDR_MODE
+       )
+SELECT 
+        'CIM_DIR'
+       ,'MAI_ADMIN'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORY_ROLES
+                   WHERE HDR_NAME = 'CIM_DIR'
+                    AND  HDR_ROLE = 'MAI_ADMIN');
+--
+INSERT INTO HIG_DIRECTORY_ROLES
+       (HDR_NAME
+       ,HDR_ROLE
+       ,HDR_MODE
+       )
+SELECT 
+        'MAI_INSP_DIRECTORY'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DIRECTORY_ROLES
+                   WHERE HDR_NAME = 'MAI_INSP_DIRECTORY'
+                    AND  HDR_ROLE = 'MAI_USER');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_ALERT_RECIPIENT_RULES
+--
+-- select * from mai_metadata.hig_alert_recipient_rules
+-- order by harr_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_alert_recipient_rules
+SET TERM OFF
+
+INSERT INTO HIG_ALERT_RECIPIENT_RULES
+       (HARR_ID
+       ,HARR_NIT_INV_TYPE
+       ,HARR_ATTRIBUTE_NAME
+       ,HARR_LABEL
+       ,HARR_RECIPIENT_TYPE
+       ,HARR_SQL
+       ,HARR_DATE_CREATED
+       ,HARR_CREATED_BY
+       ,HARR_DATE_MODIFIED
+       ,HARR_MODIFIED_BY
+       )
+SELECT 
+        -4
+       ,'WOR$'
+       ,'WOR_RECEIVED_BY'
+       ,''
+       ,'USER_ID'
+       ,''
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -4);
+--
+INSERT INTO HIG_ALERT_RECIPIENT_RULES
+       (HARR_ID
+       ,HARR_NIT_INV_TYPE
+       ,HARR_ATTRIBUTE_NAME
+       ,HARR_LABEL
+       ,HARR_RECIPIENT_TYPE
+       ,HARR_SQL
+       ,HARR_DATE_CREATED
+       ,HARR_CREATED_BY
+       ,HARR_DATE_MODIFIED
+       ,HARR_MODIFIED_BY
+       )
+SELECT 
+        -3
+       ,'WOR$'
+       ,'WOR_PEO_PERSON_ID'
+       ,''
+       ,'USER_ID'
+       ,''
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -3);
+--
+INSERT INTO HIG_ALERT_RECIPIENT_RULES
+       (HARR_ID
+       ,HARR_NIT_INV_TYPE
+       ,HARR_ATTRIBUTE_NAME
+       ,HARR_LABEL
+       ,HARR_RECIPIENT_TYPE
+       ,HARR_SQL
+       ,HARR_DATE_CREATED
+       ,HARR_CREATED_BY
+       ,HARR_DATE_MODIFIED
+       ,HARR_MODIFIED_BY
+       )
+SELECT 
+        -2
+       ,'WOR$'
+       ,'WOR_MOD_BY_ID'
+       ,''
+       ,'USER_ID'
+       ,''
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -2);
+--
+INSERT INTO HIG_ALERT_RECIPIENT_RULES
+       (HARR_ID
+       ,HARR_NIT_INV_TYPE
+       ,HARR_ATTRIBUTE_NAME
+       ,HARR_LABEL
+       ,HARR_RECIPIENT_TYPE
+       ,HARR_SQL
+       ,HARR_DATE_CREATED
+       ,HARR_CREATED_BY
+       ,HARR_DATE_MODIFIED
+       ,HARR_MODIFIED_BY
+       )
+SELECT 
+        -1
+       ,'WOR$'
+       ,'WOR_CLOSED_BY_ID'
+       ,''
+       ,'USER_ID'
+       ,''
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET'
+       ,to_date('20100301114315','YYYYMMDDHH24MISS')
+       ,'DORSET' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_RECIPIENT_RULES
+                   WHERE HARR_ID = -1);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_FLEX_ATTRIBUTES
+--
+-- select * from mai_metadata.hig_flex_attributes
+-- order by hfa_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_flex_attributes
+SET TERM OFF
+
+INSERT INTO HIG_FLEX_ATTRIBUTES
+       (HFA_ID
+       ,HFA_TABLE_NAME
+       ,HFA_ATTRIBUTE1
+       ,HFA_ATTRIBUTE2
+       ,HFA_ATTRIBUTE3
+       ,HFA_ATTRIBUTE4
+       ,HFA_ATTRIBUTE5
+       ,HFA_DATE_CREATED
+       ,HFA_CREATED_BY
+       ,HFA_DATE_MODIFIED
+       ,HFA_MODIFIED_BY
+       )
+SELECT 
+        -1
+       ,'WORK_ORDERS'
+       ,'WOR_SCHEME_TYPE'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,to_date('20101004095119','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20101004095119','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_FLEX_ATTRIBUTES
+                   WHERE HFA_ID = -1);
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- NM_INV_TYPE_ROLES
+--
+-- select * from mai_metadata.nm_inv_type_roles
+-- order by itr_inv_type
+--         ,itr_hro_role
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT nm_inv_type_roles
+SET TERM OFF
+
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'BOQ$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'BOQ$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'BOQ$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'BOQ$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'DEF$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'DEF$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'DEF$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'DEF$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'PRO$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'PRO$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOL$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOL$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOL$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOL$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOR$'
+       ,'HIG_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOR$'
+                    AND  ITR_HRO_ROLE = 'HIG_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'WOR$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'WOR$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+--
+COMMIT;
+--
+set feedback on
+set define on
+--
+-------------------------------
+-- END OF GENERATED METADATA --
+-------------------------------
+--
