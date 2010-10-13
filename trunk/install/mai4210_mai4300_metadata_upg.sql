@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_metadata_upg.sql-arc   3.1   Oct 04 2010 09:35:34   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_metadata_upg.sql-arc   3.2   Oct 13 2010 16:32:18   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4210_mai4300_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 04 2010 09:35:34  $
---       Date fetched Out : $Modtime:   Oct 04 2010 09:33:28  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Oct 13 2010 16:32:18  $
+--       Date fetched Out : $Modtime:   Oct 13 2010 16:21:36  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -723,6 +723,75 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM GRI_MODULE_PARAMS
                    WHERE GMP_MODULE = 'MAI3900'
                     AND  GMP_PARAM = 'ANSWER2');
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Update Standard Defect Theme FT Asset Type.
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- **** COMMENTS TO BE ADDED BY MIKE HUITSON ****
+-- 
+------------------------------------------------------------------
+DECLARE
+  --
+  lv_view_name     user_tables.table_name%TYPE := mai_sdo_util.g_view_name;
+  lv_ne_id_col     user_tab_columns.column_name%TYPE := mai_sdo_util.g_view_ne_id_col;
+  lv_st_chain_col  user_tab_columns.column_name%TYPE := mai_sdo_util.g_view_st_chain_col;
+  --
+  PROCEDURE check_columns
+    IS
+    --
+    lv_temp  NUMBER;
+    --
+  BEGIN
+    --
+    SELECT 1
+      INTO lv_temp
+      FROM user_tab_columns
+     WHERE table_name = lv_view_name
+       AND column_name = lv_ne_id_col
+         ;
+    --
+    SELECT 1
+      INTO lv_temp
+      FROM user_tab_columns
+     WHERE table_name = lv_view_name
+       AND column_name = lv_st_chain_col
+         ;
+    --
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        raise_application_error(-20001,'Unable to update Defects Theme FT Asset Metamodel - Missing LRS Columns on view');
+    WHEN others
+     THEN
+        RAISE;
+  END check_columns;
+  --
+BEGIN
+  --Check For The Standard Theme View.
+  IF nm3ddl.does_object_exist(lv_view_name)
+   THEN
+      --
+      check_columns;
+      --
+      UPDATE nm_inv_types_all
+         SET nit_lr_ne_column_name = lv_ne_id_col
+            ,nit_lr_st_chain = lv_st_chain_col
+            ,nit_lr_end_chain = lv_st_chain_col
+       WHERE nit_table_name = lv_view_name
+           ;
+      --
+      COMMIT;
+      --
+  END IF;
+END;
+/
 ------------------------------------------------------------------
 
 

@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_ddl_upg.sql-arc   3.1   Oct 04 2010 09:35:32   mike.alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4210_mai4300_ddl_upg.sql-arc   3.2   Oct 13 2010 16:32:18   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4210_mai4300_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 04 2010 09:35:32  $
---       Date fetched Out : $Modtime:   Oct 04 2010 09:33:26  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Oct 13 2010 16:32:18  $
+--       Date fetched Out : $Modtime:   Oct 13 2010 16:21:34  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -161,6 +161,78 @@ CREATE INDEX SCHR_INDEX_P1 ON SCHEDULE_ROADS
  (SCHR_SCHD_ID
  ,SCHR_STA_ITEM_CODE
  ,SCHR_RSE_HE_ID)
+/
+
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT Sort Out Activities Primary Key
+SET TERM OFF
+
+------------------------------------------------------------------
+-- 
+-- DEVELOPMENT COMMENTS (MIKE HUITSON)
+-- Indexes are now being created after the constraints, as a result the existing index atv_index_p1 is causing problems. This index is to be dropped, a similar index will be created by default as a result of the Primary Key constraint.
+-- Also added the index mia_atv_fk_ind on mai_inv_activities to support the FK Constaint to activities.
+-- 
+------------------------------------------------------------------
+ALTER TABLE mai_inv_activities
+  DROP CONSTRAINT mia_atv_fk
+/
+
+ALTER TABLE activities
+  DROP CONSTRAINT atv_pk
+/
+
+DECLARE
+  --ORA-01418: specified index does not exist
+  index_not_found EXCEPTION;
+  PRAGMA EXCEPTION_INIT(index_not_found,-01418); 
+  --
+BEGIN
+  --
+  EXECUTE IMMEDIATE 'DROP INDEX atv_index_p1';
+  --   
+EXCEPTION
+  WHEN index_not_found
+   THEN
+      NULL;
+  WHEN others
+   THEN
+      RAISE;
+END;
+/
+
+ALTER TABLE activities
+  ADD (CONSTRAINT atv_pk
+       PRIMARY KEY(atv_acty_area_code,atv_dtp_flag))
+/
+
+ALTER TABLE mai_inv_activities
+  ADD (CONSTRAINT mia_atv_fk
+       FOREIGN KEY(mia_atv_acty_area_code,mia_sys_flag)
+       REFERENCES activities(atv_acty_area_code,atv_dtp_flag))
+/
+
+DECLARE
+  --ORA-00955: name is already used by an existing object
+  object_exists EXCEPTION;
+  PRAGMA EXCEPTION_INIT(object_exists,-00955);
+  --
+BEGIN
+  --
+  EXECUTE IMMEDIATE 'CREATE INDEX mia_atv_fk_ind ON mai_inv_activities(mia_atv_acty_area_code, mia_sys_flag)';
+  --   
+EXCEPTION
+  WHEN object_exists
+   THEN
+      NULL;
+  WHEN others
+   THEN
+      RAISE;
+END;
 /
 
 ------------------------------------------------------------------
