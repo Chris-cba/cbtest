@@ -8,11 +8,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/delete_wols.trg-arc   3.0   Oct 20 2010 11:06:40   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/delete_wols.trg-arc   3.1   Oct 20 2010 11:15:32   Mike.Alexander  $
 --       Module Name      : $Workfile:   delete_wols.trg  $
---       Date into PVCS   : $Date:   Oct 20 2010 11:06:40  $
---       Date fetched Out : $Modtime:   Oct 20 2010 11:06:12  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Oct 20 2010 11:15:32  $
+--       Date fetched Out : $Modtime:   Oct 20 2010 11:15:08  $
+--       Version          : $Revision:   3.1  $
 --
 --
 -----------------------------------------------------------------------------
@@ -71,3 +71,4 @@ BEGIN
    END LOOP;
 
 END DELETE_WOLS;
+/
