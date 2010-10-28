@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.14   Oct 04 2010 10:12:04   mike.alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.15   Oct 28 2010 16:30:12   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Oct 04 2010 10:12:04  $
---       Date fetched Out : $Modtime:   Oct 04 2010 10:11:40  $
---       PVCS Version     : $Revision:   2.14  $
+--       Date into PVCS   : $Date:   Oct 28 2010 16:30:12  $
+--       Date fetched Out : $Modtime:   Oct 28 2010 16:29:54  $
+--       PVCS Version     : $Revision:   2.15  $
 --
 --------------------------------------------------------------------------------
 --
@@ -358,6 +358,11 @@ START '&run_file'
 spool &logfile2
 
 START compile_all.sql
+--
+alter view network_node compile;
+--
+alter synonym road_seg_membs_partial compile;
+--
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   CONTEXT   *******************
