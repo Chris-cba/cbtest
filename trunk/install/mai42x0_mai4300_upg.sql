@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai42x0_mai4300_upg.sql-arc   3.2   Oct 15 2010 11:35:02   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai42x0_mai4300_upg.sql-arc   3.3   Oct 28 2010 16:30:14   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai42x0_mai4300_upg.sql  $
---       Date into PVCS   : $Date:   Oct 15 2010 11:35:02  $
---       Date fetched Out : $Modtime:   Oct 15 2010 11:34:38  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Oct 28 2010 16:30:14  $
+--       Date fetched Out : $Modtime:   Oct 28 2010 16:29:34  $
+--       Version          : $Revision:   3.3  $
 --
 --   Product upgrade script
 --
@@ -249,6 +249,11 @@ start '&run_file'
 spool &logfile2
 SET TERM ON
 start compile_all.sql
+--
+alter view network_node compile;
+--
+alter synonym road_seg_membs_partial compile;
+--
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   CONTEXT   *******************
