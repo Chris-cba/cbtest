@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.9   Sep 14 2010 14:29:28   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.10   Oct 28 2010 14:37:52   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Sep 14 2010 14:29:28  $
---       Date fetched Out : $Modtime:   Sep 10 2010 18:17:12  $
---       PVCS Version     : $Revision:   3.9  $
+--       Date into PVCS   : $Date:   Oct 28 2010 14:37:52  $
+--       Date fetched Out : $Modtime:   Oct 28 2010 13:39:22  $
+--       PVCS Version     : $Revision:   3.10  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.9  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.10  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -259,6 +259,11 @@ PROCEDURE supersede_insp_defects(pi_are_report_id       IN activities_report.are
 -----------------------------------------------------------------------------
 --
 PROCEDURE supersede_insp_defects(pi_are_report_id IN activities_report.are_report_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE upd_roadstud_repairs(pi_ne_id     IN nm_elements_all.ne_id%TYPE
+                              ,pi_insp_date IN activities_report.are_date_work_done%TYPE);
 --
 -----------------------------------------------------------------------------
 --
