@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.16   Sep 14 2010 14:29:28   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.17   Oct 28 2010 14:37:50   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Sep 14 2010 14:29:28  $
---       Date fetched Out : $Modtime:   Sep 14 2010 14:02:54  $
---       PVCS Version     : $Revision:   3.16  $
+--       Date into PVCS   : $Date:   Oct 28 2010 14:37:50  $
+--       Date fetched Out : $Modtime:   Oct 28 2010 14:32:14  $
+--       PVCS Version     : $Revision:   3.17  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.16  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.17  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3407,7 +3407,7 @@ END supersede_insp_defects;
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE auto_create_wo(pi_are_report_id       IN activities_report.are_report_id%TYPE)
+PROCEDURE auto_create_wo(pi_are_report_id IN activities_report.are_report_id%TYPE)
   IS
   --
   lt_insp_defects     defects_tab;
@@ -3416,26 +3416,23 @@ PROCEDURE auto_create_wo(pi_are_report_id       IN activities_report.are_report_
   lv_alert_subject    hig_process_alert_log.hpal_email_subject%TYPE;
   lv_alert_body       hig_process_alert_log.hpal_email_body%TYPE;
   
-  PROCEDURE create_wo_failure_alert(pi_subject    IN hig_process_alert_log.hpal_email_subject%TYPE
-                                   ,pi_body       IN hig_process_alert_log.hpal_email_body%TYPE) IS
-
-   l_current_process_rec  hig_processes%ROWTYPE;
-   l_current_job_run_seq  hig_process_job_runs.hpjr_job_run_seq%TYPE;
-   l_hpal_rec             hig_process_alert_log%ROWTYPE;
-   
-   l_nau_rec              nm_admin_units_all%ROWTYPE;
-   l_refcursor            nm3type.ref_cursor;
-   
-
+  PROCEDURE create_wo_failure_alert(pi_subject IN hig_process_alert_log.hpal_email_subject%TYPE
+                                   ,pi_body    IN hig_process_alert_log.hpal_email_body%TYPE) IS
+    --
+    l_current_process_rec  hig_processes%ROWTYPE;
+    l_current_job_run_seq  hig_process_job_runs.hpjr_job_run_seq%TYPE;
+    l_hpal_rec             hig_process_alert_log%ROWTYPE;
+    --
+    l_nau_rec              nm_admin_units_all%ROWTYPE;
+    l_refcursor            nm3type.ref_cursor;
+    --
   BEGIN
-
+    --
     l_current_process_rec := hig_process_api.get_current_process;
     l_current_job_run_seq := hig_process_api.get_current_job_run_seq;
-   
     /*
     || Create an Interim alert message indicating an Automatic Work Order Creation error
     */
-    
     l_hpal_rec.hpal_success_flag      := 'I'; 
     l_hpal_rec.hpal_process_type_id   := l_current_process_rec.hp_process_type_id; 
     l_hpal_rec.hpal_process_id        := l_current_process_rec.hp_process_id;
@@ -3443,95 +3440,183 @@ PROCEDURE auto_create_wo(pi_are_report_id       IN activities_report.are_report_
     l_hpal_rec.hpal_initiated_user    := l_current_process_rec.hp_initiated_by_username;
     l_hpal_rec.hpal_email_subject     := pi_subject;
     l_hpal_rec.hpal_email_body        := pi_body;
-                  
-    IF l_current_process_rec.hp_area_type = 'ADMIN_UNIT' AND l_current_process_rec.hp_area_id IS NOT NULL THEN
-       l_nau_rec := nm3get.get_nau_all(pi_nau_admin_unit =>  l_current_process_rec.hp_area_id
-                                      ,pi_raise_not_found => FALSE);  
-                      
-       l_hpal_rec.hpal_admin_unit     := l_nau_rec.nau_admin_unit;
-       l_hpal_rec.hpal_unit_code      := l_nau_rec.nau_unit_code;
-       l_hpal_rec.hpal_unit_name      := l_nau_rec.nau_name;
-
-    ELSIF l_current_process_rec.hp_area_type IN ('CONTRACTOR','CIM_CONTRACTOR') AND l_current_process_rec.hp_area_id IS NOT NULL THEN 
-                  
-       OPEN l_refcursor FOR 'SELECT oun_unit_code, oun_name FROM org_units WHERE oun_org_id = :a' USING l_current_process_rec.hp_area_id;
-       FETCH l_refcursor INTO l_hpal_rec.hpal_con_code,l_hpal_rec.hpal_con_name;
-       CLOSE l_refcursor;
-                     
-    END IF;
-                  
-    hig_process_api.create_alert_log (pi_hpal_rec => l_hpal_rec);
-                
-   
-  END create_wo_failure_alert;
-
-BEGIN
-   lt_insp_defects := get_insp_defects(pi_are_report_id  =>pi_are_report_id);
-
-   /*
-   || For each of the Defects on the Inspection
-   || check if Auto Create Work Orders is required
-   */
-   hig_process_api.log_it(' ');
-   hig_process_api.log_it('Attempting Automatic Work Order Creation');
-   nm_debug.debug('Defects count = '||lt_insp_defects.count);
-   
-   FOR i IN 1..lt_insp_defects.count LOOP
-     
-     /*
-     || Exclude defects from autoamtic work order creation
-     || when they have been superseded, or the date complete has been set
-     */         
-     IF NVL(lt_insp_defects(i).def_superseded_flag,'N') != 'Y'
-      AND lt_insp_defects(i).def_date_compl IS NULL 
-      THEN
-
-         mai_wo_api.create_auto_defect_wo(pi_defect_id    => lt_insp_defects(i).def_defect_id
-                                      ,po_work_order_tab  => lt_work_orders_tab);
-                                                  
-         FOR j IN 1 .. lt_work_orders_tab.count LOOP
-           
-            IF lt_work_orders_tab(j).error IS NULL 
-             THEN
-               hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
-            ELSE
-               hig_process_api.log_it(pi_message       => 'Warning: '||lt_work_orders_tab(j).error
-                                     ,pi_message_type  => 'W');
-                                       
-               lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||
-                                   lt_insp_defects(i).def_defect_id;
-               lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
-                                   lt_work_orders_tab(j).error||chr(10)||
-                                   'Inspection = '||pi_are_report_id||chr(10)||
-                                   'Defect     = '||lt_insp_defects(i).def_defect_id;
-                 
-               create_wo_failure_alert(pi_subject => lv_alert_subject
-                                      ,pi_body    =>lv_alert_body);
-                                        
-            END IF;
-              
-         END LOOP;
-          
-                                                         
-     END IF;
-     
-   END LOOP;
-  --
-
-EXCEPTION
-   WHEN OTHERS 
+    --
+    IF l_current_process_rec.hp_area_type = 'ADMIN_UNIT'
+     AND l_current_process_rec.hp_area_id IS NOT NULL
      THEN
-         hig_process_api.log_it(pi_message       => 'Automatic Work Order creation error:'||SQLERRM 
-                               ,pi_message_type  => 'W');
-                                     
-        lv_alert_subject := 'Error: Automatic Work Order creation failure for Inspection '||pi_are_report_id;
-        lv_alert_body    := 'Automatic Work Order Creation failed with: '||chr(10)||
-                            SQLERRM||chr(10)||
-                            'Inspection = '||pi_are_report_id;
-
-        create_wo_failure_alert(pi_subject => lv_alert_subject
-                               ,pi_body    =>lv_alert_body);
+        l_nau_rec := nm3get.get_nau_all(pi_nau_admin_unit  =>  l_current_process_rec.hp_area_id
+                                       ,pi_raise_not_found => FALSE);  
+        --
+        l_hpal_rec.hpal_admin_unit     := l_nau_rec.nau_admin_unit;
+        l_hpal_rec.hpal_unit_code      := l_nau_rec.nau_unit_code;
+        l_hpal_rec.hpal_unit_name      := l_nau_rec.nau_name;
+        --
+    ELSIF l_current_process_rec.hp_area_type IN ('CONTRACTOR','CIM_CONTRACTOR')
+     AND l_current_process_rec.hp_area_id IS NOT NULL
+     THEN 
+        --
+        OPEN  l_refcursor FOR 'SELECT oun_unit_code, oun_name FROM org_units WHERE oun_org_id = :a' USING l_current_process_rec.hp_area_id;
+        FETCH l_refcursor
+         INTO l_hpal_rec.hpal_con_code,l_hpal_rec.hpal_con_name;
+        CLOSE l_refcursor;
+        --
+    END IF;
+    --
+    hig_process_api.create_alert_log (pi_hpal_rec => l_hpal_rec);
+    --
+  END create_wo_failure_alert;
+  --
+BEGIN
+  --
+  lt_insp_defects := get_insp_defects(pi_are_report_id  =>pi_are_report_id);
+  /*
+  || For each of the Defects on the Inspection
+  || check if Auto Create Work Orders is required
+  */
+  hig_process_api.log_it(' ');
+  hig_process_api.log_it('Checking Automatic Work Order Creation Rules...');
+  nm_debug.debug('Defects count = '||lt_insp_defects.count);
+  --   
+  FOR i IN 1..lt_insp_defects.count LOOP
+    /*
+    || Exclude defects from autoamtic work order creation
+    || when they have been superseded, or the date complete has been set
+    */         
+    IF NVL(lt_insp_defects(i).def_superseded_flag,'N') != 'Y'
+     AND lt_insp_defects(i).def_date_compl IS NULL 
+     THEN
+        mai_wo_api.create_auto_defect_wo(pi_defect_id      => lt_insp_defects(i).def_defect_id
+                                        ,po_work_order_tab => lt_work_orders_tab);
+        --
+        IF lt_work_orders_tab.count = 0
+         THEN
+            hig_process_api.log_it('No Work Orders Created.');
+        END IF;
+        --
+        FOR j IN 1 .. lt_work_orders_tab.count LOOP
+          --        
+          IF lt_work_orders_tab(j).error IS NULL 
+           THEN
+              hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
+          ELSE
+              hig_process_api.log_it(pi_message      => 'Warning: '||lt_work_orders_tab(j).error
+                                    ,pi_message_type => 'W');
+              --
+              lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||lt_insp_defects(i).def_defect_id;
+              lv_alert_body    := 'Automatic Work Order Creation failed with: '
+                                   ||chr(10)||lt_work_orders_tab(j).error
+                                   ||chr(10)||'Inspection = '||pi_are_report_id
+                                   ||chr(10)||'Defect     = '||lt_insp_defects(i).def_defect_id;
+              --
+              create_wo_failure_alert(pi_subject => lv_alert_subject
+                                     ,pi_body    =>lv_alert_body);
+              --                          
+          END IF;
+        END LOOP;
+    END IF;
+  END LOOP;
+  --
+EXCEPTION
+  WHEN OTHERS 
+   THEN
+      hig_process_api.log_it(pi_message       => 'Automatic Work Order creation error:'||SQLERRM 
+                            ,pi_message_type  => 'W');
+      lv_alert_subject := 'Error: Automatic Work Order creation failure for Inspection '||pi_are_report_id;
+      lv_alert_body    := 'Automatic Work Order Creation failed with: '
+                           ||chr(10)||SQLERRM
+                           ||chr(10)||'Inspection = '||pi_are_report_id;
+      create_wo_failure_alert(pi_subject => lv_alert_subject
+                             ,pi_body    => lv_alert_body);
 END auto_create_wo;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE upd_roadstud_repairs(pi_ne_id     IN nm_elements_all.ne_id%TYPE
+                              ,pi_insp_date IN activities_report.are_date_work_done%TYPE)
+  IS
+  /*
+  ||Calculate percentage of defective roadstuds and set dates appropriately 
+  ||If the percentage is < 25 pct then the date due is 31-DEC-2048 otherwise
+  ||it is months from the inspection date.  
+  */
+  lv_due_date        DATE := TO_DATE('31-DEC-2048','DD-MON-YYYY');
+  lv_defect_count    NUMBER := 0;
+  lv_rs_count        NUMBER;
+  lv_perc_defective  NUMBER := 0;
+  --
+  PROCEDURE count_defects
+    IS
+  BEGIN
+    --
+    SELECT NVL(SUM(NVL(d.def_number,1)),0)
+      INTO lv_defect_count
+      FROM defects d
+     WHERE d.def_rse_he_id = pi_ne_id
+       AND d.def_atv_acty_area_code = 'RS'
+       AND d.def_mand_adv = 'A'
+       AND d.def_date_compl IS NULL
+       AND d.def_superseded_flag = 'N'
+       AND d.def_ity_sys_flag = 'D' 
+       AND NOT EXISTS(SELECT 'x' 
+                        FROM work_order_lines w
+                       WHERE w.wol_def_defect_id = d.def_defect_id)
+         ;
+    --
+  END count_defects;
+  --
+  PROCEDURE count_roadstuds
+    IS
+  BEGIN
+    --
+    SELECT NVL(SUM((iit_end_chain - iit_st_chain) / NVL(iit_gap,1)),0) + 1
+      INTO lv_rs_count
+      FROM inv_items i
+     WHERE i.iit_ity_inv_code = 'RS'
+       AND i.iit_rse_he_id = pi_ne_id
+       AND i.iit_class = '2'
+       AND i.iit_ity_sys_flag = 'D' 
+       AND i.iit_end_date IS NULL
+         ;
+    --
+  END count_roadstuds;
+  --
+BEGIN
+  --
+  count_defects;
+  --
+  count_roadstuds;
+  --
+  IF lv_defect_count > 0
+   THEN
+      lv_perc_defective := (lv_defect_count/lv_rs_count)*100;
+  END IF;
+  --
+  IF lv_perc_defective >= 25
+   THEN
+      lv_due_date := ADD_MONTHS(pi_insp_date,3);
+      hig_process_api.log_it(' ');
+      hig_process_api.log_it(lv_perc_defective||'% of Roadstuds are defective, setting repair due dates to '||TO_DATE(lv_due_date,'DD-MON-YYYY'));
+      hig_process_api.log_it(' ');
+  END IF;
+  --
+  UPDATE repairs rep
+     SET rep.rep_date_due = lv_due_date
+        ,rep.rep_local_date_due = lv_due_date
+        ,rep.rep_last_updated_date = SYSDATE
+   WHERE rep.rep_rse_he_id = pi_ne_id
+     AND rep.rep_atv_acty_area_code = 'RS'
+     AND rep.rep_action_cat = 'P'
+     AND EXISTS(SELECT 'x'
+                  FROM defects def
+                 WHERE def.def_defect_id = rep.rep_def_defect_id
+                   AND def.def_mand_adv = 'A'
+                   AND def.def_date_compl IS NULL)
+                   AND NOT EXISTS(SELECT 'x'
+                                    FROM work_order_lines wol
+                                   WHERE wol.wol_def_defect_id = rep.rep_def_defect_id)
+       ;
+  --
+END upd_roadstud_repairs;
 --
 -----------------------------------------------------------------------------
 --
@@ -3891,14 +3976,15 @@ BEGIN
   ELSE
       RAISE invalid_inspection;
   END IF;
-  
+  /*
+  ||Process Roadstud Repairs.
+  */
+  upd_roadstud_repairs(pi_ne_id     => lr_insp_rec.are_rse_he_id
+                      ,pi_insp_date => lr_insp_rec.are_date_work_done);
   /*
   || Auto create Work Orders, if required
   */
-  --
-  auto_create_wo(pi_are_report_id       => lr_insp_rec.are_report_id); 
-  --  
-
+  auto_create_wo(pi_are_report_id => lr_insp_rec.are_report_id); 
   /*
   ||Loop Through The Comments.
   */
@@ -3911,9 +3997,9 @@ BEGIN
        THEN
          lv_error_flag := 'Y';
          lv_text := SUBSTR(nm3get.get_ner(pi_ner_id   => 9105
-                          ,pi_ner_appl => 'MAI').ner_descr
-                     ,1
-                     ,4000);
+                                         ,pi_ner_appl => 'MAI').ner_descr
+                          ,1
+                          ,4000);
          pio_insp_rec.insp_comments(i).com_error := lv_text;
 
       END IF;
@@ -3934,7 +4020,7 @@ BEGIN
   */
   IF NVL(lv_error_flag,'N') != 'Y'
    THEN
-     ins_comment(pi_com_tab         =>pio_insp_rec.insp_comments
+     ins_comment(pi_com_tab        =>pio_insp_rec.insp_comments
                 ,pi_rse_he_id      =>lr_insp_rec.are_rse_he_id
                 ,pi_are_report_id  =>lr_insp_rec.are_report_id);
   ELSE
