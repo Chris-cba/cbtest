@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.28   Oct 08 2010 10:57:42   Linesh.Sorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.29   Oct 28 2010 14:11:06   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 08 2010 10:57:42  $
---       Date fetched Out : $Modtime:   Oct 08 2010 10:37:22  $
---       SCCS Version     : $Revision:   2.28  $
+--       Date into SCCS   : $Date:   Oct 28 2010 14:11:06  $
+--       Date fetched Out : $Modtime:   Oct 28 2010 08:44:36  $
+--       SCCS Version     : $Revision:   2.29  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.28  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.29  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2087,10 +2087,14 @@ BEGIN
   SET    icboq_error = SUBSTR(icboq_error||'This Bill Items Rate does not match its rate on the Works Order. ', 1, 254)
         ,icboq_status = 'R'
   WHERE  NOT EXISTS ( SELECT 1
-                FROM   boq_items
-                WHERE  boq_sta_item_code = icboq_sta_item_code
+                FROM  boq_items
+                WHERE boq_sta_item_code = icboq_sta_item_code
                 AND    boq_wol_id = icboq_wol_id
-                      AND    icboq_rate = NVL(boq_act_rate, boq_est_rate) )
+                AND    icboq_rate = NVL(boq_act_rate, boq_est_rate) )
+  AND    EXISTS( SELECT 1
+                   FROM standard_items
+                  WHERE sta_item_code = icboq_sta_item_code
+                    AND NVL(sta_rogue_flag, 'N') = 'N')           
   AND    EXISTS ( SELECT 1
             FROM   boq_items
             WHERE  boq_sta_item_code = icboq_sta_item_code
