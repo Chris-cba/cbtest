@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.3   Aug 18 2010 11:48:46   Linesh.Sorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.4   Nov 16 2010 13:49:38   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Aug 18 2010 11:48:46  $
---       Date fetched Out : $Modtime:   Aug 18 2010 11:09:00  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Nov 16 2010 13:49:38  $
+--       Date fetched Out : $Modtime:   Nov 15 2010 16:41:12  $
+--       Version          : $Revision:   3.4  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.3  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.4  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -41,44 +41,6 @@ BEGIN
 END get_body_version;
 --
 -----------------------------------------------------------------------------
-PROCEDURE add_to_budget(v_wol_id in work_order_lines.wol_id%type
-                       ,v_bud_id in work_order_lines.wol_bud_id%type
-                       ,v_est    in work_order_lines.wol_est_cost%type default 0
-                       ,v_act    in work_order_lines.wol_act_cost%type default 0)
-IS
---
-   CURSOR c1 (p_wol_id WORK_ORDER_LINES.wol_id%TYPE) is
-   SELECT wol_status_code
-   FROM   WORK_ORDER_LINES, HIG_STATUS_CODES
-   WHERE  SYSDATE BETWEEN NVL(hsc_start_date,SYSDATE) AND NVL(hsc_end_date,SYSDATE)
-   AND    hsc_allow_feature3 = 'Y'
-   AND    hsc_status_code = wol_status_code
-   AND    hsc_domain_code = 'WORK_ORDER_LINES'
-   AND    wol_id = p_wol_id;
-   l_status_code WORK_ORDER_LINES.wol_status_code%type;
-   v_retval boolean := TRUE;
---
-BEGIN
---
-   OPEN  c1(v_wol_id);
-   FETCH c1 INTO l_status_code;
-   IF c1%notfound 
-   THEN
-       CLOSE c1;
-   ELSE
-       CLOSE c1;
-       UPDATE work_order_lines
-       SET    wol_status_code = null
-       WHERE  wol_id = v_wol_id;
-       v_retval := mai_budgets.update_budget_actual(v_wol_id, v_bud_id, v_act);
-       UPDATE work_order_lines
-       SET    wol_status_code = l_status_code
-       WHERE  wol_id = v_wol_id;
-   END IF;
-   Commit ;
---  
-END add_to_budget;
---
 PROCEDURE run_batch(pi_batch_type Varchar2)
 IS
 --
@@ -213,17 +175,22 @@ IS
                            ,pi_file_name     Varchar2)
    IS
    --
-      CURSOR c_col_claim_val (p_wol_id interface_claims_wol_all.icwol_wol_id%TYPE) 
+      CURSOR c_col_claim_val (p_wol_id interface_claims_wol_all.icwol_wol_id%TYPE,
+                              p_ih_id interface_claims_wor_all.icwor_ih_id%TYPE) 
       IS
       SELECT icwol_claim_value  
       FROM   interface_claims_wol_all
-      WHERE  icwol_wol_id = p_wol_id ;
-      l_works_order_no interface_claims_wor_all.icwor_works_order_no%TYPE;
-      l_error     Varchar2(32767);
-      l_fd_file   Varchar2(200) ;   
+      WHERE  icwol_wol_id = p_wol_id
+        AND  icwol_ih_id = p_ih_id;
+        
+      lv_wol_act             work_order_lines.wol_act_cost%TYPE;
+      lv_icwol_claim_value   interface_claims_wor_all.icwor_works_order_no%TYPE;
+      l_error                Varchar2(32767);
+      l_fd_file              Varchar2(200) ;   
    --
    BEGIN
    --
+
       hig_process_api.log_it(pi_process_id => l_process_id
                             ,pi_message    => 'Loading File '||pi_file_name); 
       interfaces.claim_file_ph1(pi_contractor_id
@@ -236,34 +203,11 @@ IS
       CLOSE c_con_details ;      
       IF Sys_Context('NM3SQL','CIM_WI_IH_ID') IS NOT NULL
       THEN
+      
           l_ih_id := Sys_Context('NM3SQL','CIM_WI_IH_ID') ;
+      
           interfaces.claim_file_ph2(l_ih_id , l_fd_file, l_error);
-          IF l_error IS NULL
-          THEN
-              FOR c2rec IN (SELECT icwor_works_order_no, icwor_claim_value  
-                         FROM   interface_claims_wor_all
-                         WHERE  icwor_ih_id =  l_ih_id
-                         AND    icwor_error IS NULL) 
-              LOOP
-                  FOR wol_rec IN (SELECT wol_rse_he_id
-                                        ,wol_id
-                                        ,wol_def_defect_id
-                                        ,wol_act_cost
-                                        ,wol_est_cost
-                                        ,wol_bud_id
-                                  FROM   work_order_lines
-                                  WHERE  wol_works_order_no = c2rec.icwor_works_order_no ) 
-                  LOOP
-                      OPEN  c_col_claim_val(wol_rec.wol_id);
-                      FETCH c_col_claim_val INTO l_works_order_no;
-                      CLOSE c_col_claim_val ;
-                      add_to_budget(wol_rec.wol_id
-                                   ,wol_rec.wol_bud_id
-                                   ,wol_rec.wol_est_cost * -1
-                                   ,l_works_order_no);       
-                  END LOOP;
-              END LOOP;
-          END IF ;
+
           hig_process_api.set_process_internal_reference(pi_internal_reference => l_ih_id);
           OPEN  c_get_ih(l_ih_id);
           FETCH c_get_ih INTO l_ih_rec ;
