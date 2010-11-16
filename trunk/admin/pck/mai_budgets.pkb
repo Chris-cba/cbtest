@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.1   Sep 29 2008 11:53:14   jwadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.2   Nov 16 2010 13:47:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_budgets.pkb  $
---       Date into SCCS   : $Date:   Sep 29 2008 11:53:14  $
---       Date fetched Out : $Modtime:   Sep 29 2008 11:50:22  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Nov 16 2010 13:47:12  $
+--       Date fetched Out : $Modtime:   Nov 15 2010 16:46:46  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -113,7 +113,8 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
    -- returns TRUE if value is applied and does not go over budget
    FUNCTION update_budget_actual ( p_wol_id         WORK_ORDER_LINES.wol_id%TYPE,
                                    p_bud_id         BUDGETS.bud_id%TYPE,
-                                   p_bud_actual     BUDGETS.bud_actual%TYPE
+                                   p_bud_actual     BUDGETS.bud_actual%TYPE,
+                                   p_claim_type     VARCHAR2 DEFAULT NULL
                                  ) RETURN BOOLEAN
    IS
    rtrn               BOOLEAN := TRUE;
@@ -145,6 +146,7 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
    p_bud_value      BUDGETS.bud_value%TYPE;
 
    BEGIN
+      nm_debug.debug_on;
      -- check that applying the value will not go over budget
      -- check that there is enough committed to apply actual
 
@@ -158,7 +160,9 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 
      -- calculate what the committed value should be
 
-     IF lstatus is null then
+     IF lstatus IS NULL AND
+        NVL(p_claim_type, '@') != 'F' 
+     THEN
 
         IF v_wol_unposted_est = 0 then                --If the Actual Value has been greater than or
                                                       --equal to the Estimated Value WOL_UNPOSTED_EST
@@ -195,19 +199,18 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
              v_wol_unposted_est := 0;
            END IF;
         END IF;
-     ELSIF lstatus = 'COMPLETED' then
+     ELSIF lstatus = 'COMPLETED' OR
+           NVL(p_claim_type,'@') = 'F'
+        THEN
         v_committed := v_wol_unposted_est;
         v_wol_unposted_est := 0;
      END IF;
 
-     IF NVL(abs(v_wol_est_cost),0) - NVL(abs(v_wol_act_cost),0) >0
-       AND maiwo.get_last_interim_amount(p_wol_id) IS NOT NULL THEN
-           l_committed := maiwo.get_last_interim_amount(p_wol_id) - abs(v_wol_est_cost);
-     END IF;
-
      IF check_budget(p_bud_id, (v_committed * -1), p_bud_actual ) AND NOT allow_over_budget THEN
        rtrn := FALSE;
+
      ELSE
+
        UPDATE BUDGETS
        SET bud_committed = NVL(bud_committed,0) - NVL(v_committed,0),
            bud_actual = NVL(bud_actual,0) + NVL(p_bud_actual,0)
@@ -292,7 +295,9 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
       rtrn := v_bud_value - ( v_bud_committed + v_bud_actual + p_bud_committed + v_act_to_check );
       rtrn := rtrn * -1;
     END IF;
-
+    
+nm_debug.debug_off;
+    
     RETURN rtrn;
    END;
 ----------------------------------------------------------------------------------------
@@ -369,6 +374,7 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 
       IF v_wol_unposted_est - NVL(p_bud_actual, 0) >= 0 THEN
          v_act_to_check := 0;
+         
       ELSE
          v_act_to_check := NVL(p_bud_actual,0) - v_wol_unposted_est;
       END IF;
