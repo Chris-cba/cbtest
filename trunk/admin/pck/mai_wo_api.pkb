@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.15   Oct 12 2010 09:52:40   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.16   Nov 16 2010 13:33:30   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Oct 12 2010 09:52:40  $
---       Date fetched Out : $Modtime:   Oct 08 2010 14:54:20  $
---       PVCS Version     : $Revision:   3.15  $
+--       Date into PVCS   : $Date:   Nov 16 2010 13:33:30  $
+--       Date fetched Out : $Modtime:   Nov 16 2010 10:20:00  $
+--       PVCS Version     : $Revision:   3.16  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.16  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -4871,14 +4871,15 @@ PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.m
                        UNION
                       SELECT pi_admin_unit
                         FROM dual)
-     AND (pi_road_group_id IN (SELECT nm_ne_id_of
+     AND ((pi_road_group_id IN (SELECT nm_ne_id_of
                    FROM nm_members
                   WHERE nm_type = 'G'
                 CONNECT BY
                   PRIOR nm_ne_id_of = nm_ne_id_in
                   START
                    WITH nm_ne_id_in = mawr_road_group_id)
-               OR pi_road_group_id = NVL(mawr_road_group_id,pi_road_group_id))
+               OR pi_road_group_id = NVL(mawr_road_group_id,pi_road_group_id)) 
+           OR pi_road_group_id IS NULL)
      AND mawr_enabled = 'Y'
      AND mawc_enabled = 'Y'
      AND (pi_start_date BETWEEN mawr_start_date AND mawr_end_date OR
