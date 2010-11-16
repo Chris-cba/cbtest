@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkh-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkh-arc   2.1   Nov 16 2010 13:45:44   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_budgets.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Nov 16 2010 13:45:44  $
+--       Date fetched Out : $Modtime:   Nov 15 2010 16:39:02  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.0  $';
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -43,7 +43,8 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
      FUNCTION update_budget_actual 
                      ( p_wol_id        IN WORK_ORDER_LINES.wol_id%TYPE,
                        p_bud_id        IN BUDGETS.bud_id%TYPE,
-                       p_bud_actual    IN BUDGETS.bud_actual%TYPE) RETURN BOOLEAN ;
+                       p_bud_actual    IN BUDGETS.bud_actual%TYPE,
+                       p_claim_type    IN VARCHAR2 DEFAULT NULL) RETURN BOOLEAN ;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
