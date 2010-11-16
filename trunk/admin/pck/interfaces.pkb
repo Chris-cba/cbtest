@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.29   Oct 28 2010 14:11:06   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.30   Nov 16 2010 13:42:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 28 2010 14:11:06  $
---       Date fetched Out : $Modtime:   Oct 28 2010 08:44:36  $
---       SCCS Version     : $Revision:   2.29  $
+--       Date into SCCS   : $Date:   Nov 16 2010 13:42:04  $
+--       Date fetched Out : $Modtime:   Nov 16 2010 09:49:06  $
+--       SCCS Version     : $Revision:   2.30  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.29  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.30  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2564,37 +2564,6 @@ BEGIN
 END;
 
 ---------------------------------------------------------------------
--- reject files where a WOL would cause an over-budget
--- 
-PROCEDURE validate_overbudget
-(p_ih_id   IN interface_claims_wol.icwol_ih_id%TYPE
-,p_wol_id IN interface_claims_wol.icwol_wol_id%TYPE) IS
-
- PRAGMA AUTONOMOUS_TRANSACTION;
- 
-BEGIN
-      UPDATE interface_headers
-      SET    ih_error = 'A Works Order line has been rejected.  '
-            ,ih_status = 'R'
-      WHERE  ih_id = p_ih_id
-        AND  ih_status != 'R';
-
-      UPDATE interface_claims_wor
-      SET    icwor_error ='A Works Order line has been rejected.'
-            ,icwor_status = 'R'
-      WHERE  icwor_ih_id = p_ih_id
-        AND  icwor_status != 'R';
-       
-      UPDATE interface_claims_wol
-      SET    icwol_error = 'Cannot complete operation. Budget limit exceeded.'
-            ,icwol_status = 'R'
-      WHERE  icwol_ih_id = p_ih_id
-        AND  icwol_wol_id = p_wol_id
-        AND  icwol_status != 'R';
-       
-      COMMIT;
-END;
----------------------------------------------------------------------
 -- Populates interface tables with data read in from a Completion file.
 -- Called from the completion_file_ph1 procedure and from the claims
 -- form (when validating an erroneous completion record).
@@ -4328,6 +4297,7 @@ END;
 -- tables.
 --
 
+--
 PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
                 ,p_file  OUT varchar2
                 ,p_error OUT varchar2) IS
@@ -4394,6 +4364,14 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
      where def_defect_id = pi_def_defect_id
      	 and def_date_compl is null;
 
+   CURSOR c_col_claim_val (p_wol_id interface_claims_wol_all.icwol_wol_id%TYPE,
+                           p_ih_id interface_claims_wor_all.icwor_ih_id%TYPE) 
+   IS
+   SELECT icwol_claim_value  
+   FROM   interface_claims_wol_all
+   WHERE  icwol_wol_id = p_wol_id
+     AND  icwol_ih_id = p_ih_id;
+
   l_boq_id_seq        number;
   l_user_id            hig_users.hus_user_id%TYPE;
   l_wol_not_done_status    hig_status_codes.hsc_status_code%TYPE;
@@ -4414,6 +4392,52 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
   invalid_file        EXCEPTION;
   l_fyr_id            financial_years.fyr_id%TYPE; 
   l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
+  lv_icwol_claim_value  interface_claims_wor_all.icwor_works_order_no%TYPE;
+  
+  TYPE wol_over_budget_tab IS TABLE OF work_order_lines.wol_id%type INDEX BY BINARY_INTEGER;
+  
+  lt_wol_over_budget   wol_over_budget_tab;
+  
+   PROCEDURE add_to_budget (v_wol_id      IN work_order_lines.wol_id%type
+                           ,v_bud_id      IN work_order_lines.wol_bud_id%type
+                           ,v_act         IN work_order_lines.wol_act_cost%type default 0
+                           ,v_claim_type  IN VARCHAR2 DEFAULT NULL)
+   IS
+      CURSOR c1 (p_wol_id WORK_ORDER_LINES.wol_id%TYPE) is 
+      SELECT wol_status_code
+      FROM   WORK_ORDER_LINES
+      WHERE  wol_id = p_wol_id;
+      
+      l_status_code    WORK_ORDER_LINES.wol_status_code%type;
+      lv_row_found     boolean := FALSE;
+      v_retval         boolean := TRUE;
+   --
+   BEGIN
+   --
+       OPEN c1(v_wol_id);
+       FETCH c1 INTO l_status_code;
+       CLOSE c1;
+       
+       UPDATE work_order_lines
+       SET    wol_status_code = null
+       WHERE  wol_id = v_wol_id;
+          
+       v_retval := mai_budgets.update_budget_actual(v_wol_id, 
+                                                    v_bud_id, 
+                                                    v_act,
+                                                    v_claim_type);
+          
+       UPDATE work_order_lines
+       SET    wol_status_code = l_status_code
+       WHERE  wol_id = v_wol_id;
+
+       if not v_retval then
+
+           lt_wol_over_budget(lt_wol_over_budget.count+1) := v_wol_id;
+
+       end if;
+   --  
+   END add_to_budget;
 
 BEGIN
 
@@ -4460,7 +4484,65 @@ BEGIN
 
   END;
 
--- write financial debit transaction header record
+  /*---------------------------------------------------
+  || Update Budget details, and check for over budget
+  ----------------------------------------------------*/
+  FOR c2rec IN (SELECT icwor_works_order_no, 
+                       icwor_claim_value,
+                       icwor_claim_type  
+                FROM   interface_claims_wor_all
+               WHERE   icwor_ih_id =  p_ih_id
+               AND     icwor_error IS NULL) 
+  LOOP
+      lt_wol_over_budget.DELETE;
+      SAVEPOINT wo_claim;
+            
+      FOR wol_rec IN (SELECT wol_rse_he_id
+                            ,wol_id
+                            ,wol_def_defect_id
+                            ,NVL(wol_act_cost,0) wol_act_cost
+                            ,NVL(wol_est_cost,0) wol_est_cost
+                            ,wol_bud_id
+                      FROM   work_order_lines
+                      WHERE  wol_works_order_no = c2rec.icwor_works_order_no ) 
+      LOOP
+          OPEN  c_col_claim_val(wol_rec.wol_id
+                               ,p_ih_id);
+          FETCH c_col_claim_val INTO lv_icwol_claim_value;
+          CLOSE c_col_claim_val ;
+
+          add_to_budget(wol_rec.wol_id
+                       ,wol_rec.wol_bud_id
+                       ,lv_icwol_claim_value - wol_rec.wol_act_cost
+                       ,c2rec.icwor_claim_type);  
+ 
+      END LOOP;
+      
+      IF lt_wol_over_budget.count > 0 
+      THEN
+         ROLLBACK TO SAVEPOINT wo_claim;
+         
+      
+         FOR i IN 1 .. lt_wol_over_budget.count LOOP
+
+            UPDATE interface_claims_wol
+            SET    icwol_error = 'Cannot complete operation. Budget limit exceeded.'
+                  ,icwol_status = 'R'
+            WHERE  icwol_ih_id = p_ih_id
+              AND  icwol_wol_id = lt_wol_over_budget(i)
+              AND  icwol_status != 'R';       
+
+            IF SQL%rowcount > 0 THEN
+              validate_wo_item(p_ih_id,'WOL',1);
+            END IF;
+         END LOOP;
+         
+      END IF;
+      
+  END LOOP;
+  ----------------------------------------------------------------------------------------
+
+ -- write financial debit transaction header record
   l_fhand := UTL_FILE.FOPEN(g_filepath, l_filename, 'w');
   IF UTL_FILE.IS_OPEN(l_fhand) THEN
     UTL_FILE.PUT_LINE(l_fhand, l_header_record);
