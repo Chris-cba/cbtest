@@ -4,11 +4,11 @@ as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkb-arc   2.1   Apr 01 2010 18:11:22   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkb-arc   2.2   Nov 18 2010 17:52:36   Mike.Huitson  $
 --       Module Name      : $Workfile:   wo_budget_check.pkb  $
---       Date into SCCS   : $Date:   Apr 01 2010 18:11:22  $
---       Date fetched Out : $Modtime:   Apr 01 2010 17:59:42  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Nov 18 2010 17:52:36  $
+--       Date fetched Out : $Modtime:   Nov 18 2010 17:51:06  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.3
 --
 -----------------------------------------------------------------------------
@@ -16,7 +16,26 @@ as
 -----------------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2002
 -----------------------------------------------------------------------------
----------------------------------------------------------------------
+--
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
+g_package_name  CONSTANT  varchar2(30)   := 'wo_budget_check';
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE update_budget(p_bud_committed budgets.bud_committed%TYPE
                        ,p_bud_actual    budgets.bud_actual%TYPE
                        ,p_bud_id        budgets.bud_id%TYPE)
@@ -231,5 +250,5 @@ BEGIN
   --
 END valbud;
 ---------------------------------------------------------------------
-end wo_budget_check;
+END wo_budget_check;
 /
