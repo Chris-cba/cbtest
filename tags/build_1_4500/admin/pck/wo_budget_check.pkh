@@ -1,0 +1,56 @@
+CREATE OR REPLACE package wo_budget_check is
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkh-arc   2.1   Nov 18 2010 17:52:36   Mike.Huitson  $
+--       Module Name      : $Workfile:   wo_budget_check.pkh  $
+--       Date into SCCS   : $Date:   Nov 18 2010 17:52:36  $
+--       Date fetched Out : $Modtime:   Nov 18 2010 17:46:40  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based onSCCS Version     : 1.2
+--
+-----------------------------------------------------------------------------
+--   Originally taken from @(#)wo_budget_check.pck	1.1 03/26/02
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN VARCHAR2;
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN VARCHAR2;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE update_budget(p_bud_committed IN budgets.bud_committed%TYPE
+                       ,p_bud_actual    IN budgets.bud_actual%TYPE
+                       ,p_bud_id        IN budgets.bud_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE update_valbud(p_bud_id         IN budgets.bud_id%TYPE
+                       ,p_bud_committed  IN OUT budgets.bud_committed%TYPE
+                       ,p_bud_actual     IN OUT budgets.bud_actual%TYPE
+                       ,p_update_records IN OUT boolean);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE valbud_unique( p_bud_id        IN budgets.bud_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE valbud;
+--
+-----------------------------------------------------------------------------
+END wo_budget_check;
+/
