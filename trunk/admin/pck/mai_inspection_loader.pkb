@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.13   Oct 12 2010 09:33:22   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.14   Nov 22 2010 10:29:42   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Oct 12 2010 09:33:22  $
---       Date fetched Out : $Modtime:   Oct 11 2010 10:54:26  $
---       PVCS Version     : $Revision:   3.13  $
+--       Date into PVCS   : $Date:   Nov 22 2010 10:29:42  $
+--       Date fetched Out : $Modtime:   Nov 22 2010 10:22:20  $
+--       PVCS Version     : $Revision:   3.14  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.13  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1409,8 +1409,8 @@ nm_debug.debug('File inspdate = '||lv_token);
     ||If Chainage Is Mandatory And The Value In
     ||The File Is NULL Raise An Error.
     */
-    IF (lv_sys_flag = 'D' AND lv_usedefchnd)
-     OR (lv_sys_flag = 'L' AND lv_usedefchnl)
+    IF ((lv_sys_flag = 'D' AND lv_usedefchnd)
+     OR (lv_sys_flag = 'L' AND lv_usedefchnl))
      AND lv_token IS NULL
      THEN
         add_error_to_stack(pi_seq_no => lv_i_seq_no
@@ -1684,6 +1684,11 @@ nm_debug.debug('File inspdate = '||lv_token);
             add_error_to_stack(pi_seq_no => lv_j_seq_no
                               ,pi_ner_id => 9273);
             RAISE invalid_record;
+        ELSIF lv_road_stud IN ('A', 'M')
+          THEN 
+            nm_debug.debug( 'Road Stud Ind = '||lv_road_stud);
+            
+            lr_def.def_mand_adv := lv_road_stud;
         END IF;
         --
         lv_j_rec_text := substr(lv_j_rec_text,1,instr(lv_j_rec_text,',',-1)-1);
@@ -1844,6 +1849,7 @@ nm_debug.debug('File inspdate = '||lv_token);
     END IF;
     --
     nm_debug.debug('Defect Attributes Set');
+    
     /*
     ||Got This Far So Set The Inspection and Defect Ids.
     */
