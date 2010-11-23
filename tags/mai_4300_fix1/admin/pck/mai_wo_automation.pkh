@@ -1,0 +1,155 @@
+CREATE OR REPLACE PACKAGE mai_wo_automation
+AS
+--<PACKAGE>
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.2   Nov 23 2010 14:00:12   Mike.Huitson  $
+--       Module Name      : $Workfile:   mai_wo_automation.pkh  $
+--       Date into PVCS   : $Date:   Nov 23 2010 14:00:12  $
+--       Date fetched Out : $Modtime:   Nov 23 2010 13:56:58  $
+--       Version          : $Revision:   3.2  $
+--       Based on SCCS version : 
+-------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+
+  -----------
+  --constants
+  -----------
+  --g_sccsid is the SCCS ID for the package
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+
+TYPE g_bud_rec_type IS RECORD (
+     bud_code                  Varchar2(30)
+    ,bud_descr                 item_code_breakdowns.icb_work_category_name%TYPE
+    ,bud_sys_flag              budgets.bud_sys_flag%TYPE
+    ,bud_rse_he_id             budgets.bud_rse_he_id%TYPE
+    ,bud_fyr_id                budgets.bud_fyr_id%TYPE 
+    ,icb_id                    item_code_breakdowns.icb_id%TYPE
+    );   
+
+g_bud_rec g_bud_rec_type ;
+
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns road_segments_all rowtype
+FUNCTION get_rse (pi_rse_he_id IN nm_elements.ne_id%TYPE)
+RETURN road_segs%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns budget details for the passed budget id
+FUNCTION get_bud_details(pi_bud_id IN budgets.bud_id%TYPE)
+Return g_bud_rec%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns contract row for passed contract id
+FUNCTION get_con(pi_con_id IN contracts.con_id%TYPE)
+Return   contracts%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns activity row for passed activity code
+FUNCTION get_atv(pi_atv_acty_code IN Varchar2)
+Return   activities%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns def_types row for passed defect code
+FUNCTION get_dty(pi_dty_code IN Varchar2)
+Return   def_types%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns treatment row for passed treatment code
+FUNCTION get_tre(pi_tre_code IN Varchar2)
+Return   treatments%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns true if details exists
+FUNCTION check_detail_exists(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
+Return   Boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns true if details exists
+FUNCTION get_mawr(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
+Return   mai_auto_wo_rules%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the financial years row for the passed financial year id
+FUNCTION get_fyr(pi_fyr_id IN financial_years.fyr_id%TYPE)
+Return   financial_years%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This procedure deletes the criteria for the passed rule id
+PROCEDURE delete_criteria(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This procedure copies the passed rule
+PROCEDURE copy_rule(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE
+                   ,po_mawr_id OUT mai_auto_wo_rules.mawr_id%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function return true if the rule is duplicate 
+FUNCTION duplicate_rule(pi_mawr_rec IN mai_auto_wo_rules%ROWTYPE)
+RETURN BOOLEAN ;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+  PRAGMA RESTRICT_REFERENCES(get_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_wo_automation;
+/
