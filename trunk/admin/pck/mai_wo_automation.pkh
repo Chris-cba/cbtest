@@ -4,11 +4,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.1   May 07 2010 15:51:56   lsorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.2   Nov 23 2010 14:00:12   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkh  $
---       Date into PVCS   : $Date:   May 07 2010 15:51:56  $
---       Date fetched Out : $Modtime:   May 07 2010 14:36:02  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Nov 23 2010 14:00:12  $
+--       Date fetched Out : $Modtime:   Nov 23 2010 13:56:58  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --</PACKAGE>
@@ -18,7 +18,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
 
 TYPE g_bud_rec_type IS RECORD (
      bud_code                  Varchar2(30)
@@ -51,8 +51,8 @@ FUNCTION get_body_version RETURN varchar2;
 --
 --<PROC NAME="GET_BODY_VERSION">
 -- This function returns road_segments_all rowtype
-FUNCTION get_rse (pi_rse_he_id IN road_segments_all.rse_he_id%TYPE)
-RETURN road_segments_all%ROWTYPE;
+FUNCTION get_rse (pi_rse_he_id IN nm_elements.ne_id%TYPE)
+RETURN road_segs%ROWTYPE;
 --</PROC>
 --
 -----------------------------------------------------------------------------

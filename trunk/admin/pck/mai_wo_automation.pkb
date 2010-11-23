@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.2   May 26 2010 14:12:44   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.3   Nov 23 2010 14:00:12   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkb  $
---       Date into PVCS   : $Date:   May 26 2010 14:12:44  $
---       Date fetched Out : $Modtime:   May 26 2010 14:11:18  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Nov 23 2010 14:00:12  $
+--       Date fetched Out : $Modtime:   Nov 23 2010 13:56:58  $
+--       Version          : $Revision:   3.3  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -17,7 +17,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.2  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.3  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_wo_automation' ;
 --
@@ -37,8 +37,8 @@ END get_body_version;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION get_rse (pi_rse_he_id IN road_segments_all.rse_he_id%TYPE)
-RETURN road_segments_all%ROWTYPE
+FUNCTION get_rse (pi_rse_he_id IN nm_elements.ne_id%TYPE)
+RETURN road_segs%ROWTYPE
 IS
 --
    CURSOR c_get_rse
