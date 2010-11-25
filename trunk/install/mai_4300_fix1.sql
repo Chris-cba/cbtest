@@ -2,11 +2,11 @@
 --
 --   Pvcs Identifiers :-
 --
---       Pvcsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix1.sql-arc   3.0   Nov 22 2010 11:29:38   Mike.Alexander  $
+--       Pvcsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix1.sql-arc   3.1   Nov 25 2010 09:59:00   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4300_fix1.sql  $
---       Date Into Pvcs   : $Date:   Nov 22 2010 11:29:38  $
---       Date Fetched Out : $Modtime:   Nov 22 2010 11:28:28  $
---       Pvcs Version     : $Revision:   3.0  $
+--       Date Into Pvcs   : $Date:   Nov 25 2010 09:59:00  $
+--       Date Fetched Out : $Modtime:   Nov 25 2010 09:58:26  $
+--       Pvcs Version     : $Revision:   3.1  $
 --
 --
 -----------------------------------------------------------------------------
@@ -89,6 +89,10 @@ start mai_cim_automation.pkw
 start mai_wo_api.pkw
 /
 start mai_inspection_loader.pkw
+/
+start mai_wo_automation.pkh
+/
+start mai_wo_automation.pkw
 /
 --
 --------------------------------------------------------------------------------
