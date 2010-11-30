@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.4   Nov 16 2010 13:49:38   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.5   Nov 30 2010 13:42:36   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Nov 16 2010 13:49:38  $
---       Date fetched Out : $Modtime:   Nov 15 2010 16:41:12  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Nov 30 2010 13:42:36  $
+--       Date fetched Out : $Modtime:   Nov 30 2010 13:29:46  $
+--       Version          : $Revision:   3.5  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.4  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.5  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -47,6 +47,7 @@ IS
    l_file_name  Varchar2(100);
    l_continue_rec    hig_ftp_connections%ROWTYPE;
    l_conn       utl_tcp.connection;
+   l_arc_conn   utl_tcp.connection;
    l_cnt        Number;
    l_file_tab   nm3ftp.t_string_table ;
    l_flist      nm3file.file_list;
@@ -165,7 +166,7 @@ IS
                                 ,pi_summary_flag => 'Y' );                                     
       ELSE
           hig_process_api.log_it(pi_process_id => l_process_id
-                                ,pi_message    => 'WC file '||pi_file_name||' archived');
+                                ,pi_message    => 'WC file '||pi_file_name||' archived on the Database server');
       END IF ;
 
    --
@@ -257,7 +258,7 @@ IS
                                 ,pi_summary_flag => 'Y' );                                     
       ELSE
           hig_process_api.log_it(pi_process_id => l_process_id
-                                ,pi_message    => 'WI file '||pi_file_name||' archived');
+                                ,pi_message    => 'WI file '||pi_file_name||' archived on the Database server');
       END IF ;
    --
    END run_claim_file ;
@@ -445,6 +446,8 @@ BEGIN
                           nm3ftp.list(l_conn,ftp.hfc_ftp_in_dir, l_file_tab);
                           FOR i IN 1..l_file_tab.Count
                           LOOP
+                              l_tmp := Null ; 
+                              l_file_name := Null ; 
                               IF l_file_tab(i) IS NOT NULL
                               THEN
                                   l_tmp := Upper(l_file_tab(i)) ;
@@ -461,6 +464,7 @@ BEGIN
                                   BEGIN
                                      -- 
                                      nm3ftp.get(l_conn,ftp.hfc_ftp_in_dir||l_file_name,'CIM_DIR',l_file_name);
+                                     nm3ftp.delete(l_conn,ftp.hfc_ftp_in_dir||l_file_name);
                                      l_continue := True;
                                      --
                                   EXCEPTION
@@ -487,19 +491,48 @@ BEGIN
                                   END IF ;
                                   IF l_continue
                                   THEN
-                                      BEGIN 
-                                         --
-                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name,TRUE,TRUE);
-                                         l_continue := True;
-                                         --
-                                      EXCEPTION
-                                          WHEN OTHERS THEN
-                                              l_continue := False;
-                                              hig_process_api.log_it(pi_process_id => l_process_id
-                                                                    ,pi_message    => 'Error while moving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
-                                                                    ,pi_summary_flag => 'Y' ); 
-                                      END ;    
-                                  END IF ;                              
+                                      -- archive the file
+                                      IF  ftp.hfc_ftp_arc_password IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_host IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_port IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_username IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_in_dir   IS NOT NULL
+                                      THEN
+                                      --
+                                          BEGIN 
+                                          --
+                                             nm3ctx.set_context('NM3FTPPASSWORD','Y');
+                                             BEGIN
+                                             --
+                                                l_arc_conn := nm3ftp.login(ftp.hfc_ftp_arc_host,ftp.hfc_ftp_arc_port,ftp.hfc_ftp_arc_username,nm3ftp.get_password(ftp.hfc_ftp_arc_password));
+                                                l_continue  := True ;
+                                                IF l_continue
+                                                THEN   
+                                                    nm3ftp.put(l_arc_conn,'CIM_ARC',l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name);
+                                                    l_continue := True;
+                                                    hig_process_api.log_it(pi_process_id => l_process_id
+                                                                          ,pi_message    => 'WC file '||l_file_name||' archived on the FTP server');
+                                                END IF ;
+                                                --
+                                             EXCEPTION
+                                                 WHEN OTHERS THEN
+                                                     l_continue := False;
+                                                     hig_process_api.log_it(pi_process_id => l_process_id
+                                                                           ,pi_message    => 'Error while archiving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                                           ,pi_summary_flag => 'Y' ); 
+                                             END ;    
+                                             nm3ftp.logout(l_arc_conn);
+                                          EXCEPTION
+                                              WHEN OTHERS THEN
+                                              l_continue  := False ;
+                                              l_failed    := 'Y' ; 
+                                              hig_process_api.log_it(pi_process_id   => l_process_id
+                                                                    ,pi_message      => 'Error while connecting to the archiving FTP server for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                                    ,pi_message_type => 'E'
+                                                                    ,pi_summary_flag => 'Y' );
+                                          END ;
+                                      END IF ;                              
+                                  END IF ;
                               END IF ; -- file name not null
                           END LOOP; -- loop through all the files in the ftp folder
                           nm3ftp.logout(l_conn);                 
@@ -582,6 +615,8 @@ BEGIN
                           nm3ftp.list(l_conn,ftp.hfc_ftp_in_dir, l_file_tab);
                           FOR i IN 1..l_file_tab.Count
                           LOOP
+                              l_tmp := Null ; 
+                              l_file_name := Null ;
                               IF l_file_tab(i) IS NOT NULL
                               THEN
                                   l_tmp := Upper(l_file_tab(i)) ;
@@ -597,7 +632,8 @@ BEGIN
                                   l_found := 'Y' ;
                                   BEGIN
                                   --
-                                     nm3ftp.get(l_conn,ftp.hfc_ftp_in_dir||l_file_name,'CIM_DIR',l_file_name);                          
+                                     nm3ftp.get(l_conn,ftp.hfc_ftp_in_dir||l_file_name,'CIM_DIR',l_file_name);      
+                                     nm3ftp.delete(l_conn,ftp.hfc_ftp_in_dir||l_file_name);                    
                                      l_continue := True;
                                   --
                                   EXCEPTION
@@ -626,21 +662,49 @@ BEGIN
                                   END IF ;
                                   IF l_continue
                                   THEN
-                                      BEGIN
-                                      --                              
-                                         nm3ftp.rename(l_conn,ftp.hfc_ftp_in_dir||l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name,TRUE,TRUE);                      
-                                         l_continue := True;
+                                      -- archive the file
+                                      IF  ftp.hfc_ftp_arc_password IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_host IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_port IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_username IS NOT NULL
+                                      AND ftp.hfc_ftp_arc_in_dir   IS NOT NULL
+                                      THEN
                                       --
-                                      EXCEPTION
-                                         WHEN OTHERS THEN
-                                             l_continue := False;
-                                             hig_process_api.log_it(pi_process_id => l_process_id
-                                                                   ,pi_message    => 'Error while moving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
-                                                                   ,pi_summary_flag => 'Y' );
-                                      --
-                                      END ;
+                                          BEGIN 
+                                          --
+                                             nm3ctx.set_context('NM3FTPPASSWORD','Y');
+                                             BEGIN
+                                             --
+                                                l_arc_conn := nm3ftp.login(ftp.hfc_ftp_arc_host,ftp.hfc_ftp_arc_port,ftp.hfc_ftp_arc_username,nm3ftp.get_password(ftp.hfc_ftp_arc_password));
+                                                l_continue  := True ;
+                                                IF l_continue
+                                                THEN   
+                                                    nm3ftp.put(l_arc_conn,'CIM_ARC',l_file_name,ftp.hfc_ftp_arc_in_dir||l_file_name);
+                                                    l_continue := True;
+                                                    hig_process_api.log_it(pi_process_id => l_process_id
+                                                                          ,pi_message    => 'WI file '||l_file_name||' archived on the FTP server');
+                                                END IF ;
+                                                --
+                                             EXCEPTION
+                                                 WHEN OTHERS THEN
+                                                     l_continue := False;
+                                                     hig_process_api.log_it(pi_process_id => l_process_id
+                                                                           ,pi_message    => 'Error while archiving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                                           ,pi_summary_flag => 'Y' ); 
+                                             END ;   
+                                             nm3ftp.logout(l_arc_conn); 
+                                          EXCEPTION
+                                              WHEN OTHERS THEN
+                                              l_continue  := False ;
+                                              l_failed    := 'Y' ; 
+                                              hig_process_api.log_it(pi_process_id   => l_process_id
+                                                                    ,pi_message      => 'Error while connecting to the archiving FTP server for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
+                                                                    ,pi_message_type => 'E'
+                                                                    ,pi_summary_flag => 'Y' );
+                                          END ;
+                                      END IF ;
                                   END IF ;
-                              END IF ;
+                              END IF;
                           END LOOP; 
                           nm3ftp.logout(l_conn);                 
                       END IF ;  
