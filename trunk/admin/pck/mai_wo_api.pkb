@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.16   Nov 16 2010 13:33:30   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.17   Dec 03 2010 11:36:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 16 2010 13:33:30  $
---       Date fetched Out : $Modtime:   Nov 16 2010 10:20:00  $
---       PVCS Version     : $Revision:   3.16  $
+--       Date into PVCS   : $Date:   Dec 03 2010 11:36:14  $
+--       Date fetched Out : $Modtime:   Nov 30 2010 10:05:40  $
+--       PVCS Version     : $Revision:   3.17  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.16  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.17  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -4845,6 +4845,7 @@ PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.m
                              ,pi_activity        IN  mai_auto_wo_rule_criteria.mawc_atv_acty_area_code%TYPE
                              ,pi_priority        IN  mai_auto_wo_rule_criteria.mawc_priority%TYPE
                              ,pi_defect_code     IN  mai_auto_wo_rule_criteria.mawc_dty_defect_code%TYPE
+                             ,pi_siss_id         IN  mai_auto_wo_rule_criteria.mawc_def_siss_id%TYPE
                              ,pi_treatment       IN  mai_auto_wo_rule_criteria.mawc_tre_treat_code%TYPE
                              ,pi_include_temp    IN  mai_auto_wo_rule_criteria.mawc_include_temp_repair%TYPE
                              ,pi_include_perm    IN  mai_auto_wo_rule_criteria.mawc_include_perm_repair%TYPE
@@ -4887,6 +4888,7 @@ PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.m
      AND mawc_atv_acty_area_code = pi_activity
      AND NVL(mawc_priority, '@') = NVL(pi_priority, '@')
      AND NVL(mawc_dty_defect_code, '@') = NVL(pi_defect_code, '@')
+     AND NVL(mawc_def_siss_id, '@') = NVL(pi_siss_id, '@')
      AND NVL(mawc_tre_treat_code, '@') = NVL(pi_treatment, '@')
      AND (NVL(mawc_include_temp_repair, '@') = NVL(pi_include_temp, '@') OR
           NVL(mawc_include_perm_repair, '@') = NVL(pi_include_perm, '@'))
@@ -4907,6 +4909,7 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ,pi_activity        IN  activities.atv_acty_area_code%TYPE
                              ,pi_priority        IN  defects.def_priority%TYPE
                              ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
+                             ,pi_siss_id         IN  standard_item_sub_sections.siss_id%TYPE
                              ,pi_rep_action_cat  IN  VARCHAR2
                              ,pi_treatment       IN  treatments.tre_treat_code%TYPE
                              ,pi_rep_date_due    IN  repairs.rep_date_due%TYPE
@@ -4979,7 +4982,7 @@ BEGIN
                        UNION
                       SELECT lv_admin_unit
                         FROM dual)
-     AND (pi_rse_he_id IN (SELECT nm_ne_id_of
+     AND ((pi_rse_he_id IN (SELECT nm_ne_id_of
                    FROM nm_members
                   WHERE nm_type = 'G'
                 CONNECT BY
@@ -4987,6 +4990,7 @@ BEGIN
                   START
                    WITH nm_ne_id_in = mawr_road_group_id)
                OR pi_rse_he_id = NVL(mawr_road_group_id,pi_rse_he_id))
+           OR pi_rse_he_id IS NULL)
      AND mawr_enabled = 'Y'
      AND mawc_enabled = 'Y'
      AND pi_rep_date_due BETWEEN mawr_start_date AND
@@ -4994,6 +4998,7 @@ BEGIN
      AND mawc_atv_acty_area_code = pi_activity
      AND NVL(mawc_priority, NVL(pi_priority, '@')) = NVL(pi_priority, '@')
      AND NVL(mawc_dty_defect_code, NVL(pi_defect_code, '@')) = NVL(pi_defect_code, '@')
+     AND NVL(mawc_def_siss_id, NVL(pi_siss_id, '@')) = NVL(pi_siss_id, '@')
      AND pi_rep_action_cat IN (DECODE(mawc_include_temp_repair, 'Y', 'T', '@'),
                                DECODE(mawc_include_perm_repair, 'Y', 'P', '@'))
      AND NVL(mawc_tre_treat_code, NVL(pi_treatment, '@')) = NVL(pi_treatment, '@');
@@ -5112,6 +5117,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                                      ,def_atv_acty_area_code   defects.def_atv_acty_area_code%TYPE
                                      ,def_defect_code          defects.def_defect_code%TYPE
                                      ,def_priority             defects.def_priority%TYPE
+                                     ,def_siss_id              defects.def_siss_id%TYPE
                                      ,rep_tre_treat_code       repairs.rep_tre_treat_code%TYPE
                                      ,rep_action_cat           repairs.rep_action_cat%TYPE
                                      ,rep_date_due             DATE);
@@ -5125,6 +5131,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
             ,def_rse_he_id
             ,def_atv_acty_area_code
             ,def_defect_code
+            ,def_siss_id
             ,def_priority
             ,rep_tre_treat_code
             ,rep_action_cat
@@ -5161,6 +5168,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                          ,pi_activity        => lt_defect_repairs(i).def_atv_acty_area_code
                          ,pi_priority        => lt_defect_repairs(i).def_priority
                          ,pi_defect_code     => lt_defect_repairs(i).def_defect_code
+                         ,pi_siss_id         => lt_defect_repairs(i).def_siss_id
                          ,pi_rep_action_cat  => lt_defect_repairs(i).rep_action_cat
                          ,pi_treatment       => lt_defect_repairs(i).rep_tre_treat_code
                          ,pi_rep_date_due    => lt_defect_repairs(i).rep_date_due
