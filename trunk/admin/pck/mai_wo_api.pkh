@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.6   Oct 12 2010 09:52:02   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.7   Dec 03 2010 11:35:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Oct 12 2010 09:52:02  $
---       Date fetched Out : $Modtime:   Oct 08 2010 14:53:52  $
---       PVCS Version     : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   Dec 03 2010 11:35:56  $
+--       Date fetched Out : $Modtime:   Dec 03 2010 11:32:44  $
+--       PVCS Version     : $Revision:   3.7  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -211,6 +211,7 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              ,pi_activity        IN  activities.atv_acty_area_code%TYPE
                              ,pi_priority        IN  defects.def_priority%TYPE
                              ,pi_defect_code     IN  def_types.dty_defect_code%TYPE
+                             ,pi_siss_id         IN  standard_item_sub_sections.siss_id%TYPE
                              ,pi_rep_action_cat  IN  VARCHAR2
                              ,pi_treatment       IN  treatments.tre_treat_code%TYPE
                              ,pi_rep_date_due    IN  repairs.rep_date_due%TYPE
@@ -232,6 +233,7 @@ PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.m
                              ,pi_activity        IN  mai_auto_wo_rule_criteria.mawc_atv_acty_area_code%TYPE
                              ,pi_priority        IN  mai_auto_wo_rule_criteria.mawc_priority%TYPE
                              ,pi_defect_code     IN  mai_auto_wo_rule_criteria.mawc_dty_defect_code%TYPE
+                             ,pi_siss_id         IN  mai_auto_wo_rule_criteria.mawc_def_siss_id%TYPE
                              ,pi_treatment       IN  mai_auto_wo_rule_criteria.mawc_tre_treat_code%TYPE
                              ,pi_include_temp    IN  mai_auto_wo_rule_criteria.mawc_include_temp_repair%TYPE
                              ,pi_include_perm    IN  mai_auto_wo_rule_criteria.mawc_include_perm_repair%TYPE
