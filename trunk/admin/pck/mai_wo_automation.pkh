@@ -4,11 +4,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.2   Nov 23 2010 14:00:12   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.3   Dec 03 2010 11:40:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkh  $
---       Date into PVCS   : $Date:   Nov 23 2010 14:00:12  $
---       Date fetched Out : $Modtime:   Nov 23 2010 13:56:58  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Dec 03 2010 11:40:04  $
+--       Date fetched Out : $Modtime:   Nov 29 2010 17:07:36  $
+--       Version          : $Revision:   3.3  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --</PACKAGE>
@@ -18,7 +18,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
 
 TYPE g_bud_rec_type IS RECORD (
      bud_code                  Varchar2(30)
@@ -85,6 +85,14 @@ Return   activities%ROWTYPE;
 -- This function returns def_types row for passed defect code
 FUNCTION get_dty(pi_dty_code IN Varchar2)
 Return   def_types%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns standard_item_sub_sections row for passed siss id
+FUNCTION get_siss(pi_siss_id IN standard_item_sub_sections.siss_id%TYPE)
+Return   standard_item_sub_sections%ROWTYPE;
 --</PROC>
 --
 -----------------------------------------------------------------------------
