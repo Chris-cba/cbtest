@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.3   Nov 23 2010 14:00:12   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.4   Dec 03 2010 11:40:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkb  $
---       Date into PVCS   : $Date:   Nov 23 2010 14:00:12  $
---       Date fetched Out : $Modtime:   Nov 23 2010 13:56:58  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Dec 03 2010 11:40:20  $
+--       Date fetched Out : $Modtime:   Nov 29 2010 17:07:32  $
+--       Version          : $Revision:   3.4  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --
@@ -17,7 +17,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.3  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.4  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_wo_automation' ;
 --
@@ -163,6 +163,29 @@ END  get_dty;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_siss(pi_siss_id IN standard_item_sub_sections.siss_id%TYPE)
+Return   standard_item_sub_sections%ROWTYPE
+IS
+--
+   CURSOR c_siss
+   IS
+   SELECT *
+   FROM   standard_item_sub_sections
+   WHERE  siss_id = pi_siss_id;
+   l_siss_rec standard_item_sub_sections%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_siss;
+   FETCH c_siss INTO l_siss_rec;
+   CLOSE c_siss;
+
+   Return l_siss_rec ;
+--
+END  get_siss;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION get_tre(pi_tre_code IN Varchar2)
 Return   treatments%ROWTYPE
 IS
@@ -228,41 +251,61 @@ BEGIN
    SELECT mawr_id_seq.nextval
    INTO   l_mawr_id 
    FROM   dual;
-   INSERT INTO mai_auto_wo_rules SELECT l_mawr_id 
-                                        ,mawr_name
-                                        ,mawr_descr
-                                        ,mawr_admin_unit
-                                        ,mawr_road_group_id
-                                        ,mawr_scheme_type
-                                        ,mawr_bud_id
-                                        ,mawr_con_id
-                                        ,mawr_aggregate_repairs
-                                        ,mawr_start_date
-                                        ,mawr_end_date
-                                        ,mawr_enabled
-                                        ,Null
-                                        ,Null
-                                        ,Null
-                                        ,Null
-                                  FROM   mai_auto_wo_rules
-                                  WHERE  mawr_id = pi_mawr_id ;
    
-   INSERT INTO mai_auto_wo_rule_criteria SELECT mawc_id_seq.nextval
-                                                ,l_mawr_id
-                                                ,mawc_atv_acty_area_code
-                                                ,mawc_dty_defect_code
-                                                ,mawc_priority
-                                                ,mawc_include_temp_repair
-                                                ,mawc_include_perm_repair
-                                                ,mawc_tre_treat_code
-                                                ,mawc_auto_instruct
-                                                ,mawc_enabled 
-                                                ,Null
-                                                ,Null
-                                                ,Null
-                                                ,Null
-                                         FROM   mai_auto_wo_rule_criteria
-                                         WHERE  mawc_mawr_id  = pi_mawr_id ;
+   INSERT INTO mai_auto_wo_rules 
+          (mawr_id
+          ,mawr_name
+          ,mawr_descr
+          ,mawr_admin_unit
+          ,mawr_road_group_id
+          ,mawr_scheme_type
+          ,mawr_bud_id
+          ,mawr_con_id
+          ,mawr_aggregate_repairs
+          ,mawr_start_date
+          ,mawr_end_date
+          ,mawr_enabled)
+   SELECT l_mawr_id 
+         ,mawr_name
+         ,mawr_descr
+         ,mawr_admin_unit
+         ,mawr_road_group_id
+         ,mawr_scheme_type
+         ,mawr_bud_id
+         ,mawr_con_id
+         ,mawr_aggregate_repairs
+         ,mawr_start_date
+         ,mawr_end_date
+         ,mawr_enabled
+   FROM   mai_auto_wo_rules
+   WHERE  mawr_id = pi_mawr_id ;
+   
+  INSERT INTO mai_auto_wo_rule_criteria 
+         (mawc_id
+         ,mawc_mawr_id
+         ,mawc_atv_acty_area_code
+         ,mawc_dty_defect_code
+         ,mawc_priority
+         ,mawc_def_siss_id
+         ,mawc_include_temp_repair
+         ,mawc_include_perm_repair
+         ,mawc_tre_treat_code
+         ,mawc_auto_instruct
+         ,mawc_enabled) 
+   SELECT mawc_id_seq.nextval
+         ,l_mawr_id
+         ,mawc_atv_acty_area_code
+         ,mawc_dty_defect_code
+         ,mawc_priority
+         ,mawc_def_siss_id
+         ,mawc_include_temp_repair
+         ,mawc_include_perm_repair
+         ,mawc_tre_treat_code
+         ,mawc_auto_instruct
+         ,mawc_enabled 
+  FROM   mai_auto_wo_rule_criteria
+  WHERE  mawc_mawr_id  = pi_mawr_id ;
+
    po_mawr_id := l_mawr_id ;
 --
 END copy_rule;
