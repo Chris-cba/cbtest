@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.14   Nov 22 2010 10:29:42   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.15   Dec 06 2010 13:58:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Nov 22 2010 10:29:42  $
---       Date fetched Out : $Modtime:   Nov 22 2010 10:22:20  $
---       PVCS Version     : $Revision:   3.14  $
+--       Date into PVCS   : $Date:   Dec 06 2010 13:58:12  $
+--       Date fetched Out : $Modtime:   Dec 06 2010 12:18:16  $
+--       PVCS Version     : $Revision:   3.15  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1368,7 +1368,7 @@ nm_debug.debug('File inspdate = '||lv_token);
     lv_token            VARCHAR2(4000);
     lv_chainage         defects.def_st_chain%TYPE;
     lv_org_id           org_units.oun_org_id%TYPE;
-    lv_def_locn_descr   VARCHAR2(240);
+    lv_def_locn_descr   VARCHAR2(1000); -- clb 06122010 task 0107258 - increased to 1000 chars
     --
   BEGIN
     /*
@@ -1466,7 +1466,8 @@ nm_debug.debug('File inspdate = '||lv_token);
     || Truncate the defect location description to 40 characters
     || to avoid failure
     */
-    lr_def.def_locn_descr := SUBSTR(lv_def_locn_descr,1,40);
+   -- lr_def.def_locn_descr := SUBSTR(lv_def_locn_descr,1,40);
+    lr_def.def_locn_descr := lv_def_locn_descr; -- clb 06122010 task 0107258 - increased to 1000 chars
     /*
     ||Get The Defect Time From The File.
     */
