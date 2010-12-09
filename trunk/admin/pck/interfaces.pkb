@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.30   Nov 16 2010 13:42:04   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.31   Dec 09 2010 09:47:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Nov 16 2010 13:42:04  $
---       Date fetched Out : $Modtime:   Nov 16 2010 09:49:06  $
---       SCCS Version     : $Revision:   2.30  $
+--       Date into SCCS   : $Date:   Dec 09 2010 09:47:04  $
+--       Date fetched Out : $Modtime:   Dec 08 2010 16:54:10  $
+--       SCCS Version     : $Revision:   2.31  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.30  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.31  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -888,7 +888,9 @@ BEGIN
   --SM 09/04/2008 log712203
   --Removed reference to extract_filename as no longer required for forms9. Used to be required to create a 
   --*.lis file.
-  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath,g_filepath),/*NVL(interfaces.extract_filename,*/l_filename/*)*/,'w');
+  
+  -- CLB 06122010 Task 0107258 - changed to use overloaded FOPEN to allow for rec size > 1023 bytes
+  l_fhand := UTL_FILE.FOPEN(NVL(p_filepath,g_filepath),/*NVL(interfaces.extract_filename,*/l_filename/*)*/,'w', 32767); 
   --
   IF UTL_FILE.IS_OPEN(l_fhand)
    THEN
@@ -4364,40 +4366,147 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
      where def_defect_id = pi_def_defect_id
      	 and def_date_compl is null;
 
-   CURSOR c_col_claim_val (p_wol_id interface_claims_wol_all.icwol_wol_id%TYPE,
-                           p_ih_id interface_claims_wor_all.icwor_ih_id%TYPE) 
-   IS
-   SELECT icwol_claim_value  
-   FROM   interface_claims_wol_all
-   WHERE  icwol_wol_id = p_wol_id
-     AND  icwol_ih_id = p_ih_id;
-
-  l_boq_id_seq        number;
-  l_user_id            hig_users.hus_user_id%TYPE;
+  l_boq_id_seq             number;
+  l_user_id                hig_users.hus_user_id%TYPE;
   l_wol_not_done_status    hig_status_codes.hsc_status_code%TYPE;
-  l_wol_interim_status    hig_status_codes.hsc_status_code%TYPE;
-  l_count            number;
-  l_quantity        boq_items.boq_act_quantity%TYPE;
-  l_rowid            ROWID;
-  l_no_of_recs        number(7) := 0;
-  l_total_value        number := 0;
-  l_cost_code        budgets.bud_cost_code%TYPE;
-  l_fhand            utl_file.file_type;        -- financial debit file
-  l_seq_no            varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
-  l_filename        varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
-  l_today            date := SYSDATE;
-  l_header_record        varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
-                        TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
-  l_file_not_found     varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
-  invalid_file        EXCEPTION;
-  l_fyr_id            financial_years.fyr_id%TYPE; 
-  l_wol_date_complete   work_order_lines.wol_date_complete%TYPE;
-  lv_icwol_claim_value  interface_claims_wor_all.icwor_works_order_no%TYPE;
+  l_wol_interim_status     hig_status_codes.hsc_status_code%TYPE;
+  l_count                  number;
+  l_quantity               boq_items.boq_act_quantity%TYPE;
+  l_rowid                  ROWID;
+  l_no_of_recs             number(7) := 0;
+  l_total_value            number := 0;
+  l_cost_code              budgets.bud_cost_code%TYPE;
+  l_fhand                  utl_file.file_type;        -- financial debit file
+  l_seq_no                 varchar2(6) := file_seq(interfaces.g_job_id,'', '', 'FD');
+  l_filename               varchar2(12) := 'FD'||TO_CHAR(l_seq_no)||'.'||'DAT';
+  l_today                  date := SYSDATE;
+  l_header_record          varchar2(30) := '00,'||TO_CHAR(l_seq_no)||','||
+                                           TO_CHAR(l_today, g_date_format)||','||TO_CHAR(l_today, g_time_format);
+  l_file_not_found         varchar2(250) := 'Error: Unable to write Financial Debit File. Path: '||g_filepath||'  File: '||l_filename;
+  invalid_file             EXCEPTION;
+  l_fyr_id                 financial_years.fyr_id%TYPE; 
+  l_wol_date_complete      work_order_lines.wol_date_complete%TYPE;
+  lv_row_found             BOOLEAN;
   
   TYPE wol_over_budget_tab IS TABLE OF work_order_lines.wol_id%type INDEX BY BINARY_INTEGER;
   
   lt_wol_over_budget   wol_over_budget_tab;
   
+   FUNCTION update_budget_actual ( p_wol_id         WORK_ORDER_LINES.wol_id%TYPE,
+                                   p_bud_id         BUDGETS.bud_id%TYPE,
+                                   p_bud_actual     BUDGETS.bud_actual%TYPE,
+                                   p_claim_type     VARCHAR2 DEFAULT NULL
+                                 ) RETURN BOOLEAN
+   IS
+   rtrn               BOOLEAN := TRUE;
+
+   cursor c_wol (lp_wol_id WORK_ORDER_LINES.wol_id%TYPE) is
+     select  NVL(wol_est_cost,0) wol_est_cost
+            ,NVL(wol_act_cost,0) wol_act_cost
+            ,NVL(wol_unposted_est,0) wol_unposted_est
+     from   work_order_lines
+     where  wol_id = lp_wol_id;
+
+   cursor c_bud (lp_bud_id BUDGETS.bud_id%TYPE) is
+     select  bud_value
+           ,bud_actual
+         ,bud_committed
+     from   budgets
+     where  bud_id = lp_bud_id;
+
+   lv_wol_rec       c_wol%ROWTYPE;
+      
+   lv_committed      BUDGETS.bud_actual%TYPE;
+   lv_actual         BUDGETS.bud_actual%TYPE;
+   lv_unposted       work_order_lines.wol_unposted_est%TYPE;
+   lv_bud_value      BUDGETS.bud_value%TYPE;
+   lv_bud_actual     BUDGETS.bud_actual%TYPE;
+   lv_bud_committed  BUDGETS.bud_committed%TYPE;
+   
+   BEGIN
+     nm_debug.debug_on;
+
+     /*
+     || Get current WOL details (ie before update due to Invoice)
+     */
+     OPEN c_wol(p_wol_id);
+     FETCH c_wol INTO lv_wol_rec;
+     CLOSE c_wol;
+
+     nm_debug.debug('--> Est='||lv_wol_rec.wol_est_cost||' Act='||lv_wol_rec.wol_act_cost||' Unposted='||lv_wol_rec.wol_unposted_est);
+     /*
+     || New Unposted = WOL estimated cost - Invoice value (if Invoice > Estimated, unposted = 0)
+     */
+     lv_unposted := GREATEST((lv_wol_rec.wol_est_cost - p_bud_actual), 0);
+
+     /* 
+     || Value to substract from Budget Committed = WOL unposted estimate - newly calculated unposted estimate
+     */
+     lv_committed := lv_wol_rec.wol_unposted_est - lv_unposted;
+     
+     /*
+     || Value to add to Budget Actual = Invoice value - WOL actual cost
+     */
+     lv_actual   := p_bud_actual - lv_wol_rec.wol_act_cost;
+     
+     /*
+     || If not allowing over budget, check the budget hasn't been blown
+     */
+     IF Maiwo.has_role('OVER_BUDGET') != 'TRUE'
+     THEN
+     
+       /*
+       || Get current budget details
+       */
+       OPEN c_bud(p_bud_id);
+       FETCH c_bud INTO lv_bud_value,
+                        lv_bud_actual,
+                        lv_bud_committed;
+       CLOSE c_bud;
+
+       nm_debug.debug('--> lv_unposted='||lv_unposted||' lv_committed='||lv_committed||' lv_actual='||lv_actual);
+  
+       -- Is budget unlimmited (ie value = -1) 
+       IF lv_bud_value != -1 
+       THEN
+       
+         -- Calculate new budget value, depending on whether this a final claim
+         IF p_claim_type = 'F'
+         THEN
+            lv_bud_value := lv_bud_value - (NVL(lv_bud_actual,0) + NVL(lv_actual,0));
+         ELSE
+            lv_bud_value := lv_bud_value - (NVL(lv_bud_actual,0) + NVL(lv_actual,0) + NVL(lv_bud_committed,0) - NVL(lv_committed,0));
+         END IF;
+         
+         -- If lv_bud_value <0, budget has been blown
+         IF lv_bud_value < 0
+         THEN         
+            rtrn := FALSE;
+         END IF;
+         
+       END IF;
+       
+     END IF;
+    
+     IF rtrn
+     THEN
+
+       UPDATE BUDGETS
+       SET bud_committed = DECODE(p_claim_type, 'F', NVL(bud_committed,0) - lv_wol_rec.wol_unposted_est, NVL(bud_committed,0) - NVL(lv_committed,0)),
+           bud_actual = NVL(bud_actual,0) + NVL(lv_actual,0)
+       WHERE bud_id = p_bud_id;
+
+       UPDATE WORK_ORDER_LINES
+       SET wol_unposted_est = DECODE(p_claim_type , 'F', 0, lv_unposted)
+       WHERE wol_id = p_wol_id;
+       
+     END IF;
+
+     RETURN rtrn;
+
+   END update_budget_actual;
+   
+   
    PROCEDURE add_to_budget (v_wol_id      IN work_order_lines.wol_id%type
                            ,v_bud_id      IN work_order_lines.wol_bud_id%type
                            ,v_act         IN work_order_lines.wol_act_cost%type default 0
@@ -4422,10 +4531,10 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
        SET    wol_status_code = null
        WHERE  wol_id = v_wol_id;
           
-       v_retval := mai_budgets.update_budget_actual(v_wol_id, 
-                                                    v_bud_id, 
-                                                    v_act,
-                                                    v_claim_type);
+       v_retval := update_budget_actual(v_wol_id, 
+                                        v_bud_id, 
+                                        v_act,
+                                        v_claim_type);
           
        UPDATE work_order_lines
        SET    wol_status_code = l_status_code
@@ -4489,7 +4598,8 @@ BEGIN
   ----------------------------------------------------*/
   FOR c2rec IN (SELECT icwor_works_order_no, 
                        icwor_claim_value,
-                       icwor_claim_type  
+                       icwor_claim_type,  
+                       icwor_con_claim_ref
                 FROM   interface_claims_wor_all
                WHERE   icwor_ih_id =  p_ih_id
                AND     icwor_error IS NULL) 
@@ -4503,19 +4613,18 @@ BEGIN
                             ,NVL(wol_act_cost,0) wol_act_cost
                             ,NVL(wol_est_cost,0) wol_est_cost
                             ,wol_bud_id
-                      FROM   work_order_lines
-                      WHERE  wol_works_order_no = c2rec.icwor_works_order_no ) 
+                            ,icwol_claim_value
+                      FROM   interface_claims_wol_all,
+                             work_order_lines
+                      WHERE  icwol_wol_id = wol_id
+                        AND  icwol_ih_id = p_ih_id
+                        AND  icwol_con_claim_ref = c2rec.icwor_con_claim_ref
+                        AND  wol_works_order_no = c2rec.icwor_works_order_no ) 
       LOOP
-          OPEN  c_col_claim_val(wol_rec.wol_id
-                               ,p_ih_id);
-          FETCH c_col_claim_val INTO lv_icwol_claim_value;
-          CLOSE c_col_claim_val ;
-
           add_to_budget(wol_rec.wol_id
                        ,wol_rec.wol_bud_id
-                       ,lv_icwol_claim_value - wol_rec.wol_act_cost
+                       ,wol_rec.icwol_claim_value
                        ,c2rec.icwor_claim_type);  
- 
       END LOOP;
       
       IF lt_wol_over_budget.count > 0 
