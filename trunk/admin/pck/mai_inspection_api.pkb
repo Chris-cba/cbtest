@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.17   Oct 28 2010 14:37:50   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.18   Dec 20 2010 16:22:06   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Oct 28 2010 14:37:50  $
---       Date fetched Out : $Modtime:   Oct 28 2010 14:32:14  $
---       PVCS Version     : $Revision:   3.17  $
+--       Date into PVCS   : $Date:   Dec 20 2010 16:22:06  $
+--       Date fetched Out : $Modtime:   Dec 20 2010 15:54:16  $
+--       PVCS Version     : $Revision:   3.18  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.17  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1534,6 +1534,31 @@ END validate_file_location;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION validate_notrefound(pi_notrefound  IN  hig_option_values.hov_value%TYPE)
+  RETURN BOOLEAN IS
+  --
+  --
+BEGIN
+  --
+  IF NVL(pi_notrefound, 'OFF') NOT IN ('OFF', 'ALL', 'PRI')
+    THEN
+    
+    RETURN FALSE;
+    
+  ELSE
+      
+    RETURN TRUE;
+    
+  END IF;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RETURN FALSE;
+END validate_notrefound;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE validate_insp_rec(pio_insp_rec IN OUT activities_report%ROWTYPE
                            ,po_sys_flag     OUT VARCHAR2)
   IS
@@ -2962,6 +2987,13 @@ BEGIN
       --
       lv_def_compl_status := get_complete_defect_status(pi_effective_date => pi_are_date_work_done);
       --
+      IF NOT validate_notrefound(pi_notrefound => lv_notrefound)
+      THEN
+      --
+         raise_application_error(-20046,'Invalid Not Refound value specified.');
+      --
+      END IF;
+      
       IF lv_notrefound = 'ALL'
        THEN
           get_all_defects;
@@ -3104,6 +3136,14 @@ FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
   --
 BEGIN
   --
+  IF lv_defsuptype IS NOT NULL AND
+     lv_defsuptype NOT IN ('1', '2')
+      THEN
+      --
+         raise_application_error(-20047,'Invalid Defect Superseding Type value specified.');
+      --
+  END IF;
+  
   IF lv_defsuptype = 1
    THEN
       get_matching_defects_1;
@@ -3170,6 +3210,17 @@ BEGIN
           lv_superseded_defect_id := pi_superseded_defect_id;
           lv_active_defect_id := pi_active_defect_id;
       END IF;
+      /*
+      || Validate RMMS Network Flag
+      */
+       IF lv_rmmsflag IS NOT NULL AND
+     lv_rmmsflag NOT IN ('1', '3', '4')
+      THEN
+      --
+         raise_application_error(-20048,'Invalid RMMS Network Type Flag value specified.');
+      --
+      END IF;
+
       /*
       ||Get The Superseded Defect Status.
       */
