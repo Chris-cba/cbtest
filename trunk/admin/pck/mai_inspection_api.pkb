@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.18   Dec 20 2010 16:22:06   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.19   Jan 05 2011 15:51:04   mike.huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Dec 20 2010 16:22:06  $
---       Date fetched Out : $Modtime:   Dec 20 2010 15:54:16  $
---       PVCS Version     : $Revision:   3.18  $
+--       Date into PVCS   : $Date:   Jan 05 2011 15:51:04  $
+--       Date fetched Out : $Modtime:   Jan 05 2011 15:35:38  $
+--       PVCS Version     : $Revision:   3.19  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3524,9 +3524,12 @@ BEGIN
   || For each of the Defects on the Inspection
   || check if Auto Create Work Orders is required
   */
-  hig_process_api.log_it(' ');
-  hig_process_api.log_it('Checking Automatic Work Order Creation Rules...');
-  nm_debug.debug('Defects count = '||lt_insp_defects.count);
+  --nm_debug.debug('Defects count = '||lt_insp_defects.count);
+  IF lt_insp_defects.count > 0
+   THEN
+      hig_process_api.log_it(' ');
+      hig_process_api.log_it('Checking Automatic Work Order Creation Rules...');
+  END IF;
   --   
   FOR i IN 1..lt_insp_defects.count LOOP
     /*
@@ -3541,7 +3544,7 @@ BEGIN
         --
         IF lt_work_orders_tab.count = 0
          THEN
-            hig_process_api.log_it('No Work Orders Created.');
+            hig_process_api.log_it('No Work Orders created for Defect '||lt_insp_defects(i).def_defect_id);
         END IF;
         --
         FOR j IN 1 .. lt_work_orders_tab.count LOOP
@@ -3553,8 +3556,8 @@ BEGIN
               hig_process_api.log_it(pi_message      => 'Warning: '||lt_work_orders_tab(j).error
                                     ,pi_message_type => 'W');
               --
-              lv_alert_subject := 'Error: Automatic Work Order creation failure for defect '||lt_insp_defects(i).def_defect_id;
-              lv_alert_body    := 'Automatic Work Order Creation failed with: '
+              lv_alert_subject := 'Error: Automatic Work Order creation failure for Defect '||lt_insp_defects(i).def_defect_id;
+              lv_alert_body    := 'Automatic Work Order creation failed with: '
                                    ||chr(10)||lt_work_orders_tab(j).error
                                    ||chr(10)||'Inspection = '||pi_are_report_id
                                    ||chr(10)||'Defect     = '||lt_insp_defects(i).def_defect_id;
@@ -3564,6 +3567,8 @@ BEGIN
               --                          
           END IF;
         END LOOP;
+    ELSE
+        hig_process_api.log_it('No Work Orders created for Defect '||lt_insp_defects(i).def_defect_id);
     END IF;
   END LOOP;
   --
