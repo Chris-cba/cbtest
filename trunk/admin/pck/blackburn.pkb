@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY Blackburn AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.1   Jan 05 2011 09:30:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   blackburn.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 05 2011 09:30:02  $
+--       Date fetched Out : $Modtime:   Jan 05 2011 09:28:48  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -963,7 +963,7 @@ is
 							 ,IWOL_SCHD_ID              NUMBER(9)
 							 ,IWOL_ROAD_ID              VARCHAR2(20)
                              ,IWOL_ROAD_DESCR           VARCHAR2(80)
-							 ,IWOL_DEF_LOCN_DESCR       VARCHAR2(80)
+							 ,IWOL_DEF_LOCN_DESCR       VARCHAR2(1000) -- clb 05012011 Task 0107258
                              ,IWOL_DEF_DEFECT_DESCR     VARCHAR2(254)
 							 ,IWOL_DEF_SPECIAL_INSTR    VARCHAR2(254)
                              ,IWOL_DEF_PRIORITY         VARCHAR2(4)
