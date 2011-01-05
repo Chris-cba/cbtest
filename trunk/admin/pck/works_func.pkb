@@ -3,11 +3,11 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.2   Jul 17 2007 09:14:08   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.3   Jan 05 2011 13:55:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jul 17 2007 09:14:08  $
---       Date fetched Out : $Modtime:   Jul 16 2007 16:10:18  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jan 05 2011 13:55:12  $
+--       Date fetched Out : $Modtime:   Jan 05 2011 13:54:08  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -399,7 +399,7 @@ RETURN VARCHAR2 IS
 		AND WOL_DEF_DEFECT_ID = DEF_DEFECT_ID;
 
 	intRecordCount INTEGER :=1;
-	strLine	VARCHAR2(250);
+	strLine	NM3TYPE.MAX_VARCHAR2; -- clb 05012011 Task 0107258
 
 begin
 	Open Def_Loc;
@@ -427,7 +427,7 @@ RETURN VARCHAR2 IS
 		AND WOL_DEF_DEFECT_ID = DEF_DEFECT_ID;
 
 	intRecordCount INTEGER :=1;
-	strLine	VARCHAR2(250);
+	strLine	NM3TYPE.MAX_VARCHAR2; -- clb 05012011 Task 0107258
 
 begin
 	Open Def_Loc;
