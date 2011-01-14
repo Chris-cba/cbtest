@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.9   Sep 07 2010 11:51:14   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.10   Jan 14 2011 17:40:34   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Sep 07 2010 11:51:14  $
---       Date fetched Out : $Modtime:   Sep 07 2010 11:48:12  $
---       SCCS Version     : $Revision:   2.9  $
+--       Date into SCCS   : $Date:   Jan 14 2011 17:40:34  $
+--       Date fetched Out : $Modtime:   Jan 11 2011 13:43:24  $
+--       SCCS Version     : $Revision:   2.10  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,14 +22,14 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.9  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.10  $';
     g_application_owner     VARCHAR2(30);
     g_language              VARCHAR2(30);
     g_thing_already_exists  VARCHAR2(2000);
     g_thing_does_not_exist  VARCHAR2(2000);
     g_product               VARCHAR2(6);
     g_context               VARCHAR2(10) := 'NM3SQL';
-    g_ctx_agency_attr       VARCHAR2(10) := 'MAI_AGENCY'; 
+    g_ctx_agency_attr       VARCHAR2(10) := 'MAI_AGENCY';
     g_works_order_no        WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE;
     g_wo_no                 WORK_ORDERS.WOR_WORKS_ORDER_NO%TYPE;
 --  g_sccsid is the SCCS ID for the package
@@ -836,75 +836,79 @@ FUNCTION get_gis_sys_flag(p_gis_session_id IN gis_data_objects.gdo_session_id%TY
 --
 --<PROC NAME="CREATE_WOL">
 --
-  FUNCTION create_wol
-        ( P_WOL_ID                 IN WORK_ORDER_LINES.WOL_ID%TYPE default 0
-        , P_WOL_WORKS_ORDER_NO     IN WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE default 0
-        , P_WOL_RSE_HE_ID          IN WORK_ORDER_LINES.WOL_RSE_HE_ID%TYPE default 0
-        , P_WOL_SISS_ID            IN WORK_ORDER_LINES.WOL_SISS_ID%TYPE default 0
-        , P_WOL_ICB_WORK_CODE      IN WORK_ORDER_LINES.WOL_ICB_WORK_CODE%TYPE default 0
-        , P_WOL_DEF_DEFECT_ID      IN WORK_ORDER_LINES.WOL_DEF_DEFECT_ID%TYPE default null
-        , P_WOL_REP_ACTION_CAT     IN WORK_ORDER_LINES.WOL_REP_ACTION_CAT%TYPE default null
-        , P_WOL_SCHD_ID            IN WORK_ORDER_LINES.WOL_SCHD_ID%TYPE default null
-        , P_WOL_CNP_ID             IN WORK_ORDER_LINES.WOL_CNP_ID%TYPE default null
-        , P_WOL_ACT_AREA_CODE      IN WORK_ORDER_LINES.WOL_ACT_AREA_CODE%TYPE default null
-        , P_WOL_ACT_COST           IN WORK_ORDER_LINES.WOL_ACT_COST%TYPE default null
-        , P_WOL_ACT_LABOUR         IN WORK_ORDER_LINES.WOL_ACT_LABOUR%TYPE default null
-        , P_WOL_ARE_END_CHAIN      IN WORK_ORDER_LINES.WOL_ARE_END_CHAIN%TYPE default null
-        , P_WOL_ARE_REPORT_ID      IN WORK_ORDER_LINES.WOL_ARE_REPORT_ID%TYPE default null
-        , P_WOL_ARE_ST_CHAIN       IN WORK_ORDER_LINES.WOL_ARE_ST_CHAIN%TYPE default null
-        , P_WOL_CHECK_CODE         IN WORK_ORDER_LINES.WOL_CHECK_CODE%TYPE default null
-        , P_WOL_CHECK_COMMENTS     IN WORK_ORDER_LINES.WOL_CHECK_COMMENTS%TYPE default null
-        , P_WOL_CHECK_DATE         IN WORK_ORDER_LINES.WOL_CHECK_DATE%TYPE default null
-        , P_WOL_CHECK_ID           IN WORK_ORDER_LINES.WOL_CHECK_ID%TYPE default null
-        , P_WOL_CHECK_PEO_ID       IN WORK_ORDER_LINES.WOL_CHECK_PEO_ID%TYPE default null
-        , P_WOL_CHECK_RESULT       IN WORK_ORDER_LINES.WOL_CHECK_RESULT%TYPE default null
-        , P_WOL_DATE_COMPLETE      IN WORK_ORDER_LINES.WOL_DATE_COMPLETE%TYPE default null
-        , P_WOL_DATE_CREATED       IN WORK_ORDER_LINES.WOL_DATE_CREATED%TYPE default null
-        , P_WOL_DATE_PAID          IN WORK_ORDER_LINES.WOL_DATE_PAID%TYPE default null
-        , P_WOL_DESCR              IN WORK_ORDER_LINES.WOL_DESCR%TYPE default null
-        , P_WOL_DISCOUNT           IN WORK_ORDER_LINES.WOL_DISCOUNT%TYPE default null
-        , P_WOL_EST_COST           IN WORK_ORDER_LINES.WOL_EST_COST%TYPE default null
-        , P_WOL_EST_LABOUR         IN WORK_ORDER_LINES.WOL_EST_LABOUR%TYPE default null
-        , P_WOL_FLAG               IN WORK_ORDER_LINES.WOL_FLAG%TYPE default null
-        , P_WOL_MONTH_DUE          IN WORK_ORDER_LINES.WOL_MONTH_DUE%TYPE default null
-        , P_WOL_ORIG_EST           IN WORK_ORDER_LINES.WOL_ORIG_EST%TYPE default null
-        , P_WOL_PAYMENT_CODE       IN WORK_ORDER_LINES.WOL_PAYMENT_CODE%TYPE default null
-        , P_WOL_QUANTITY           IN WORK_ORDER_LINES.WOL_QUANTITY%TYPE default null
-        , P_WOL_RATE               IN WORK_ORDER_LINES.WOL_RATE%TYPE default null
-        , P_WOL_SS_TRE_TREAT_CODE  IN WORK_ORDER_LINES.WOL_SS_TRE_TREAT_CODE%TYPE default null
-        , P_WOL_STATUS             IN WORK_ORDER_LINES.WOL_STATUS%TYPE default null
-        , P_WOL_STATUS_CODE        IN WORK_ORDER_LINES.WOL_STATUS_CODE%TYPE default null
-        , P_WOL_UNIQUE_FLAG        IN WORK_ORDER_LINES.WOL_UNIQUE_FLAG%TYPE default null
-        , P_WOL_WORK_SHEET_DATE    IN WORK_ORDER_LINES.WOL_WORK_SHEET_DATE%TYPE default null
-        , P_WOL_WORK_SHEET_ISSUE   IN WORK_ORDER_LINES.WOL_WORK_SHEET_ISSUE%TYPE default null
-        , P_WOL_WORK_SHEET_NO      IN WORK_ORDER_LINES.WOL_WORK_SHEET_NO%TYPE default null
-        , P_WOL_WOR_FLAG           IN WORK_ORDER_LINES.WOL_WOR_FLAG%TYPE default null
-        , P_WOL_DATE_REPAIRED      IN WORK_ORDER_LINES.WOL_DATE_REPAIRED%TYPE default null
-        , P_WOL_INVOICE_STATUS     IN WORK_ORDER_LINES.WOL_INVOICE_STATUS%TYPE default null
-        , P_WOL_BUD_ID             IN WORK_ORDER_LINES.WOL_BUD_ID%TYPE default null
-        , P_WOL_UNPOSTED_EST       IN WORK_ORDER_LINES.WOL_UNPOSTED_EST%TYPE default null
-        , P_WOL_IIT_ITEM_ID        IN WORK_ORDER_LINES.WOL_IIT_ITEM_ID%TYPE default null
-        , P_WOL_GANG               IN WORK_ORDER_LINES.WOL_GANG%TYPE default null
-        , P_WOL_REGISTER_FLAG      IN WORK_ORDER_LINES.WOL_REGISTER_FLAG%TYPE default 'N'
-        , pi_zeroize               IN BOOLEAN DEFAULT FALSE
-        )  RETURN NUMBER;
+PROCEDURE create_wol(p_old_wol_id             IN     work_order_lines.wol_id%TYPE default 0
+                    ,p_new_wol_id             IN OUT work_order_lines.wol_id%TYPE
+                    ,p_wol_works_order_no     IN     work_order_lines.wol_works_order_no%TYPE default 0
+                    ,p_wol_rse_he_id          IN     work_order_lines.wol_rse_he_id%TYPE default 0
+                    ,p_wol_siss_id            IN     work_order_lines.wol_siss_id%TYPE default 0
+                    ,p_wol_icb_work_code      IN     work_order_lines.wol_icb_work_code%TYPE default 0
+                    ,p_wol_def_defect_id      IN     work_order_lines.wol_def_defect_id%TYPE default null
+                    ,p_wol_rep_action_cat     IN     work_order_lines.wol_rep_action_cat%TYPE default null
+                    ,p_wol_schd_id            IN     work_order_lines.wol_schd_id%TYPE default null
+                    ,p_wol_cnp_id             IN     work_order_lines.wol_cnp_id%TYPE default null
+                    ,p_wol_act_area_code      IN     work_order_lines.wol_act_area_code%TYPE default null
+                    ,p_wol_act_cost           IN     work_order_lines.wol_act_cost%TYPE default null
+                    ,p_wol_act_labour         IN     work_order_lines.wol_act_labour%TYPE default null
+                    ,p_wol_are_end_chain      IN     work_order_lines.wol_are_end_chain%TYPE default null
+                    ,p_wol_are_report_id      IN     work_order_lines.wol_are_report_id%TYPE default null
+                    ,p_wol_are_st_chain       IN     work_order_lines.wol_are_st_chain%TYPE default null
+                    ,p_wol_check_code         IN     work_order_lines.wol_check_code%TYPE default null
+                    ,p_wol_check_comments     IN     work_order_lines.wol_check_comments%TYPE default null
+                    ,p_wol_check_date         IN     work_order_lines.wol_check_date%TYPE default null
+                    ,p_wol_check_id           IN     work_order_lines.wol_check_id%TYPE default null
+                    ,p_wol_check_peo_id       IN     work_order_lines.wol_check_peo_id%TYPE default null
+                    ,p_wol_check_result       IN     work_order_lines.wol_check_result%TYPE default null
+                    ,p_wol_date_complete      IN     work_order_lines.wol_date_complete%TYPE default null
+                    ,p_wol_date_created       IN     work_order_lines.wol_date_created%TYPE default null
+                    ,p_wol_date_paid          IN     work_order_lines.wol_date_paid%TYPE default null
+                    ,p_wol_descr              IN     work_order_lines.wol_descr%TYPE default null
+                    ,p_wol_discount           IN     work_order_lines.wol_discount%TYPE default null
+                    ,p_wol_est_cost           IN     work_order_lines.wol_est_cost%TYPE default null
+                    ,p_wol_est_labour         IN     work_order_lines.wol_est_labour%TYPE default null
+                    ,p_wol_flag               IN     work_order_lines.wol_flag%TYPE default null
+                    ,p_wol_month_due          IN     work_order_lines.wol_month_due%TYPE default null
+                    ,p_wol_orig_est           IN     work_order_lines.wol_orig_est%TYPE default null
+                    ,p_wol_payment_code       IN     work_order_lines.wol_payment_code%TYPE default null
+                    ,p_wol_quantity           IN     work_order_lines.wol_quantity%TYPE default null
+                    ,p_wol_rate               IN     work_order_lines.wol_rate%TYPE default null
+                    ,p_wol_ss_tre_treat_code  IN     work_order_lines.wol_ss_tre_treat_code%TYPE default null
+                    ,p_wol_status             IN     work_order_lines.wol_status%TYPE default null
+                    ,p_wol_status_code        IN     work_order_lines.wol_status_code%TYPE default null
+                    ,p_wol_unique_flag        IN     work_order_lines.wol_unique_flag%TYPE default null
+                    ,p_wol_work_sheet_date    IN     work_order_lines.wol_work_sheet_date%TYPE default null
+                    ,p_wol_work_sheet_issue   IN     work_order_lines.wol_work_sheet_issue%TYPE default null
+                    ,p_wol_work_sheet_no      IN     work_order_lines.wol_work_sheet_no%TYPE default null
+                    ,p_wol_wor_flag           IN     work_order_lines.wol_wor_flag%TYPE default null
+                    ,p_wol_date_repaired      IN     work_order_lines.wol_date_repaired%TYPE default null
+                    ,p_wol_invoice_status     IN     work_order_lines.wol_invoice_status%TYPE default null
+                    ,p_wol_bud_id             IN     work_order_lines.wol_bud_id%TYPE default null
+                    ,p_wol_unposted_est       IN     work_order_lines.wol_unposted_est%TYPE default null
+                    ,p_wol_iit_item_id        IN     work_order_lines.wol_iit_item_id%TYPE default null
+                    ,p_wol_gang               IN     work_order_lines.wol_gang%TYPE default null
+                    ,p_wol_register_flag      IN     work_order_lines.wol_register_flag%TYPE default 'N'
+                    ,pi_zeroize               IN     BOOLEAN DEFAULT FALSE
+                    ,pi_copy_boqs             IN     BOOLEAN DEFAULT TRUE);
 --
 -- </PROC>
 -------------------------------------------------------------------------------
 --
 --<PROC NAME="COPY_WORKS_ORDER">
 --
-  FUNCTION copy_works_order
-        ( pi_wor_works_order_no             IN work_orders.wor_works_order_no%TYPE
-        ) RETURN work_orders.wor_works_order_no%TYPE;
+FUNCTION copy_works_order(pi_wor_works_order_no  IN work_orders.wor_works_order_no%TYPE
+                         ,pi_zeroize             IN BOOLEAN DEFAULT TRUE
+                         ,pi_copy_boqs           IN BOOLEAN DEFAULT TRUE)
+  RETURN work_orders.wor_works_order_no%TYPE;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
 --
 --<PROC NAME="copy_wol">
 --
-PROCEDURE copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
-                  ,pi_wol_id IN work_order_lines.wol_id%TYPE);
+FUNCTION copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                 ,pi_wol_id             IN work_order_lines.wol_id%TYPE
+                 ,pi_zeroize            IN BOOLEAN DEFAULT TRUE
+                 ,pi_copy_boqs          IN BOOLEAN DEFAULT TRUE)
+  RETURN work_order_lines.wol_id%TYPE;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
@@ -1059,35 +1063,55 @@ FUNCTION defect_is_SUPERSEDED(pi_defect_status   IN defects.def_status_code%TYPE
 --
 -- </PROC>
 -----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+FUNCTION select_defects_for_wo(pi_defect_id           IN defects.def_defect_id%TYPE
+                              ,pi_from_date           IN DATE
+                              ,pi_to_date             IN DATE
+                              ,pi_wor_date_raised     IN DATE
+                              ,pi_con_admin_org_id    IN contracts.con_admin_org_id%TYPE
+                              ,pi_xsp                 IN defects.def_x_sect%TYPE
+                              ,pi_qry_id              IN pbi_query.qry_id%TYPE
+                              ,pi_sys_flag            IN work_orders.wor_sys_flag%TYPE
+                              ,pi_icb_id              IN item_code_breakdowns.icb_id%TYPE
+                              ,pi_item_id             IN nm_inv_items_all.iit_ne_id%TYPE
+                              ,pi_inv_code            IN inv_items_all.iit_ity_inv_code%TYPE
+                              ,pi_priority_1          IN defects.def_priority%TYPE
+                              ,pi_priority_2          IN defects.def_priority%TYPE
+                              ,pi_priority_3          IN defects.def_priority%TYPE
+                              ,pi_priority_4          IN defects.def_priority%TYPE
+                              ,pi_priority_5          IN defects.def_priority%TYPE
+                              ,pi_priority_6          IN defects.def_priority%TYPE
+                              ,pi_sta_item_code       IN standard_items.sta_item_code%TYPE
+                              ,pi_siss_id_1           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_2           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_3           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_4           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_5           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_6           IN defects.def_siss_id%TYPE
+                              ,pi_defect_code_1       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_2       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_3       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_4       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_5       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_6       IN defects.def_defect_code%TYPE
+                              ,pi_rse_he_id_1         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_2         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_3         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_4         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_5         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_6         IN nm_elements_all.ne_id%TYPE
+                              ,pi_bud_rse_he_id       IN nm_elements_all.ne_id%TYPE
+                              ,pi_wor_rse_he_id_group IN nm_elements_all.ne_id%TYPE
+                              ,pi_tre_treat_code_1    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_2    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_3    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_4    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_5    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_6    IN treatments.tre_treat_code%TYPE
+                              ,pi_include_permanent   IN VARCHAR2
+                              ,pi_include_temporary   IN VARCHAR2)
+  RETURN NUMBER;
+--
 -----------------------------------------------------------------------------
 --
--- <PRAGMA>
---     PRAGMA RESTRICT_REFERENCES(get_hco_seq           , wnds);
---     PRAGMA RESTRICT_REFERENCES(get_version           , wnds);
---     PRAGMA RESTRICT_REFERENCES(calc_st_chain         , wnds);
---     PRAGMA RESTRICT_REFERENCES(translate_nm_inv_type , wnds);
---     PRAGMA RESTRICT_REFERENCES(translate_mai_inv_type, wnds);
---     PRAGMA RESTRICT_REFERENCES(budget_allocation_used, wnds);
----     PRAGMA RESTRICT_REFERENCES(get_gis_sys_flag, wnds, wnps);
--- </PRAGMA>
 END mai;
 /
