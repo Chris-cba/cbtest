@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.21   Sep 13 2010 11:16:56   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.22   Jan 14 2011 17:42:00   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 13 2010 11:16:56  $
---       Date fetched Out : $Modtime:   Sep 13 2010 10:58:00  $
---       SCCS Version     : $Revision:   2.21  $
+--       Date into SCCS   : $Date:   Jan 14 2011 17:42:00  $
+--       Date fetched Out : $Modtime:   Jan 12 2011 11:09:34  $
+--       SCCS Version     : $Revision:   2.22  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.21  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.22  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4923,576 +4923,801 @@ END check_wo_can_be_copied;
 -- if you set this to TRUE - which is what it is set to by copy_wol - it will copy boq items
 -- across with zero/null quantities
 --
-  FUNCTION create_wol
-        ( P_WOL_ID                 IN WORK_ORDER_LINES.WOL_ID%TYPE default 0
-        , P_WOL_WORKS_ORDER_NO     IN WORK_ORDER_LINES.WOL_WORKS_ORDER_NO%TYPE default 0
-        , P_WOL_RSE_HE_ID          IN WORK_ORDER_LINES.WOL_RSE_HE_ID%TYPE default 0
-        , P_WOL_SISS_ID            IN WORK_ORDER_LINES.WOL_SISS_ID%TYPE default 0
-        , P_WOL_ICB_WORK_CODE      IN WORK_ORDER_LINES.WOL_ICB_WORK_CODE%TYPE default 0
-        , P_WOL_DEF_DEFECT_ID      IN WORK_ORDER_LINES.WOL_DEF_DEFECT_ID%TYPE default null
-        , P_WOL_REP_ACTION_CAT     IN WORK_ORDER_LINES.WOL_REP_ACTION_CAT%TYPE default null
-        , P_WOL_SCHD_ID            IN WORK_ORDER_LINES.WOL_SCHD_ID%TYPE default null
-        , P_WOL_CNP_ID             IN WORK_ORDER_LINES.WOL_CNP_ID%TYPE default null
-        , P_WOL_ACT_AREA_CODE      IN WORK_ORDER_LINES.WOL_ACT_AREA_CODE%TYPE default null
-        , P_WOL_ACT_COST           IN WORK_ORDER_LINES.WOL_ACT_COST%TYPE default null
-        , P_WOL_ACT_LABOUR         IN WORK_ORDER_LINES.WOL_ACT_LABOUR%TYPE default null
-        , P_WOL_ARE_END_CHAIN      IN WORK_ORDER_LINES.WOL_ARE_END_CHAIN%TYPE default null
-        , P_WOL_ARE_REPORT_ID      IN WORK_ORDER_LINES.WOL_ARE_REPORT_ID%TYPE default null
-        , P_WOL_ARE_ST_CHAIN       IN WORK_ORDER_LINES.WOL_ARE_ST_CHAIN%TYPE default null
-        , P_WOL_CHECK_CODE         IN WORK_ORDER_LINES.WOL_CHECK_CODE%TYPE default null
-        , P_WOL_CHECK_COMMENTS     IN WORK_ORDER_LINES.WOL_CHECK_COMMENTS%TYPE default null
-        , P_WOL_CHECK_DATE         IN WORK_ORDER_LINES.WOL_CHECK_DATE%TYPE default null
-        , P_WOL_CHECK_ID           IN WORK_ORDER_LINES.WOL_CHECK_ID%TYPE default null
-        , P_WOL_CHECK_PEO_ID       IN WORK_ORDER_LINES.WOL_CHECK_PEO_ID%TYPE default null
-        , P_WOL_CHECK_RESULT       IN WORK_ORDER_LINES.WOL_CHECK_RESULT%TYPE default null
-        , P_WOL_DATE_COMPLETE      IN WORK_ORDER_LINES.WOL_DATE_COMPLETE%TYPE default null
-        , P_WOL_DATE_CREATED       IN WORK_ORDER_LINES.WOL_DATE_CREATED%TYPE default null
-        , P_WOL_DATE_PAID          IN WORK_ORDER_LINES.WOL_DATE_PAID%TYPE default null
-        , P_WOL_DESCR              IN WORK_ORDER_LINES.WOL_DESCR%TYPE default null
-        , P_WOL_DISCOUNT           IN WORK_ORDER_LINES.WOL_DISCOUNT%TYPE default null
-        , P_WOL_EST_COST           IN WORK_ORDER_LINES.WOL_EST_COST%TYPE default null
-        , P_WOL_EST_LABOUR         IN WORK_ORDER_LINES.WOL_EST_LABOUR%TYPE default null
-        , P_WOL_FLAG               IN WORK_ORDER_LINES.WOL_FLAG%TYPE default null
-        , P_WOL_MONTH_DUE          IN WORK_ORDER_LINES.WOL_MONTH_DUE%TYPE default null
-        , P_WOL_ORIG_EST           IN WORK_ORDER_LINES.WOL_ORIG_EST%TYPE default null
-        , P_WOL_PAYMENT_CODE       IN WORK_ORDER_LINES.WOL_PAYMENT_CODE%TYPE default null
-        , P_WOL_QUANTITY           IN WORK_ORDER_LINES.WOL_QUANTITY%TYPE default null
-        , P_WOL_RATE               IN WORK_ORDER_LINES.WOL_RATE%TYPE default null
-        , P_WOL_SS_TRE_TREAT_CODE  IN WORK_ORDER_LINES.WOL_SS_TRE_TREAT_CODE%TYPE default null
-        , P_WOL_STATUS             IN WORK_ORDER_LINES.WOL_STATUS%TYPE default null
-        , P_WOL_STATUS_CODE        IN WORK_ORDER_LINES.WOL_STATUS_CODE%TYPE default null
-        , P_WOL_UNIQUE_FLAG        IN WORK_ORDER_LINES.WOL_UNIQUE_FLAG%TYPE default null
-        , P_WOL_WORK_SHEET_DATE    IN WORK_ORDER_LINES.WOL_WORK_SHEET_DATE%TYPE default null
-        , P_WOL_WORK_SHEET_ISSUE   IN WORK_ORDER_LINES.WOL_WORK_SHEET_ISSUE%TYPE default null
-        , P_WOL_WORK_SHEET_NO      IN WORK_ORDER_LINES.WOL_WORK_SHEET_NO%TYPE default null
-        , P_WOL_WOR_FLAG           IN WORK_ORDER_LINES.WOL_WOR_FLAG%TYPE default null
-        , P_WOL_DATE_REPAIRED      IN WORK_ORDER_LINES.WOL_DATE_REPAIRED%TYPE default null
-        , P_WOL_INVOICE_STATUS     IN WORK_ORDER_LINES.WOL_INVOICE_STATUS%TYPE default null
-        , P_WOL_BUD_ID             IN WORK_ORDER_LINES.WOL_BUD_ID%TYPE default null
-        , P_WOL_UNPOSTED_EST       IN WORK_ORDER_LINES.WOL_UNPOSTED_EST%TYPE default null
-        , P_WOL_IIT_ITEM_ID        IN WORK_ORDER_LINES.WOL_IIT_ITEM_ID%TYPE default null
-        , P_WOL_GANG               IN WORK_ORDER_LINES.WOL_GANG%TYPE default null
-        , P_WOL_REGISTER_FLAG      IN WORK_ORDER_LINES.WOL_REGISTER_FLAG%TYPE default 'N'
-        , pi_zeroize               IN BOOLEAN DEFAULT FALSE
-        ) RETURN NUMBER IS
-
-  CURSOR C1 ( p_wol_id boq_items.boq_wol_id%TYPE
-            )IS
-  select *
-  from boq_items
-  where boq_wol_id = p_wol_id;
-
-  l_boq_rec   boq_items%ROWTYPE;
-
-  l_wol_id          work_order_lines.wol_id%TYPE := wol_id_nextseq;
-  l_wol_act_cost    work_order_lines.wol_act_cost%TYPE;
-  l_wol_act_labour  work_order_lines.wol_act_labour%TYPE;
-  l_wol_est_cost    work_order_lines.wol_est_cost%TYPE;
-  l_wol_est_labour  work_order_lines.wol_est_labour%TYPE;
-
-
-  cursor get_inst_status IS
-  select hsc_status_code
-  from hig_status_codes
-  where hsc_domain_code = 'WORK_ORDER_LINES'
-  and hsc_allow_feature1 = 'Y'
-  and hsc_allow_feature10 != 'Y';
-
-  cursor get_initial_status IS
-  select hsc_status_code
-  from hig_status_codes
-  where hsc_domain_code = 'WORK_ORDER_LINES'
-  and hsc_allow_feature1 = 'Y'
-  and hsc_allow_feature10 = 'Y';
-
-  l_status_code hig_status_codes.hsc_status_code%TYPE;
-  l_error number;
-
+PROCEDURE create_wol(p_old_wol_id             IN     work_order_lines.wol_id%TYPE default 0
+                    ,p_new_wol_id             IN OUT work_order_lines.wol_id%TYPE
+                    ,p_wol_works_order_no     IN     work_order_lines.wol_works_order_no%TYPE default 0
+                    ,p_wol_rse_he_id          IN     work_order_lines.wol_rse_he_id%TYPE default 0
+                    ,p_wol_siss_id            IN     work_order_lines.wol_siss_id%TYPE default 0
+                    ,p_wol_icb_work_code      IN     work_order_lines.wol_icb_work_code%TYPE default 0
+                    ,p_wol_def_defect_id      IN     work_order_lines.wol_def_defect_id%TYPE default null
+                    ,p_wol_rep_action_cat     IN     work_order_lines.wol_rep_action_cat%TYPE default null
+                    ,p_wol_schd_id            IN     work_order_lines.wol_schd_id%TYPE default null
+                    ,p_wol_cnp_id             IN     work_order_lines.wol_cnp_id%TYPE default null
+                    ,p_wol_act_area_code      IN     work_order_lines.wol_act_area_code%TYPE default null
+                    ,p_wol_act_cost           IN     work_order_lines.wol_act_cost%TYPE default null
+                    ,p_wol_act_labour         IN     work_order_lines.wol_act_labour%TYPE default null
+                    ,p_wol_are_end_chain      IN     work_order_lines.wol_are_end_chain%TYPE default null
+                    ,p_wol_are_report_id      IN     work_order_lines.wol_are_report_id%TYPE default null
+                    ,p_wol_are_st_chain       IN     work_order_lines.wol_are_st_chain%TYPE default null
+                    ,p_wol_check_code         IN     work_order_lines.wol_check_code%TYPE default null
+                    ,p_wol_check_comments     IN     work_order_lines.wol_check_comments%TYPE default null
+                    ,p_wol_check_date         IN     work_order_lines.wol_check_date%TYPE default null
+                    ,p_wol_check_id           IN     work_order_lines.wol_check_id%TYPE default null
+                    ,p_wol_check_peo_id       IN     work_order_lines.wol_check_peo_id%TYPE default null
+                    ,p_wol_check_result       IN     work_order_lines.wol_check_result%TYPE default null
+                    ,p_wol_date_complete      IN     work_order_lines.wol_date_complete%TYPE default null
+                    ,p_wol_date_created       IN     work_order_lines.wol_date_created%TYPE default null
+                    ,p_wol_date_paid          IN     work_order_lines.wol_date_paid%TYPE default null
+                    ,p_wol_descr              IN     work_order_lines.wol_descr%TYPE default null
+                    ,p_wol_discount           IN     work_order_lines.wol_discount%TYPE default null
+                    ,p_wol_est_cost           IN     work_order_lines.wol_est_cost%TYPE default null
+                    ,p_wol_est_labour         IN     work_order_lines.wol_est_labour%TYPE default null
+                    ,p_wol_flag               IN     work_order_lines.wol_flag%TYPE default null
+                    ,p_wol_month_due          IN     work_order_lines.wol_month_due%TYPE default null
+                    ,p_wol_orig_est           IN     work_order_lines.wol_orig_est%TYPE default null
+                    ,p_wol_payment_code       IN     work_order_lines.wol_payment_code%TYPE default null
+                    ,p_wol_quantity           IN     work_order_lines.wol_quantity%TYPE default null
+                    ,p_wol_rate               IN     work_order_lines.wol_rate%TYPE default null
+                    ,p_wol_ss_tre_treat_code  IN     work_order_lines.wol_ss_tre_treat_code%TYPE default null
+                    ,p_wol_status             IN     work_order_lines.wol_status%TYPE default null
+                    ,p_wol_status_code        IN     work_order_lines.wol_status_code%TYPE default null
+                    ,p_wol_unique_flag        IN     work_order_lines.wol_unique_flag%TYPE default null
+                    ,p_wol_work_sheet_date    IN     work_order_lines.wol_work_sheet_date%TYPE default null
+                    ,p_wol_work_sheet_issue   IN     work_order_lines.wol_work_sheet_issue%TYPE default null
+                    ,p_wol_work_sheet_no      IN     work_order_lines.wol_work_sheet_no%TYPE default null
+                    ,p_wol_wor_flag           IN     work_order_lines.wol_wor_flag%TYPE default null
+                    ,p_wol_date_repaired      IN     work_order_lines.wol_date_repaired%TYPE default null
+                    ,p_wol_invoice_status     IN     work_order_lines.wol_invoice_status%TYPE default null
+                    ,p_wol_bud_id             IN     work_order_lines.wol_bud_id%TYPE default null
+                    ,p_wol_unposted_est       IN     work_order_lines.wol_unposted_est%TYPE default null
+                    ,p_wol_iit_item_id        IN     work_order_lines.wol_iit_item_id%TYPE default null
+                    ,p_wol_gang               IN     work_order_lines.wol_gang%TYPE default null
+                    ,p_wol_register_flag      IN     work_order_lines.wol_register_flag%TYPE default 'N'
+                    ,pi_zeroize               IN     BOOLEAN DEFAULT FALSE
+                    ,pi_copy_boqs             IN     BOOLEAN DEFAULT TRUE)
+  IS
+  --
+  lt_boqs mai_wo_api.boq_tab;
+  --
+  lr_wo  work_orders%ROWTYPE;
+  --
+  lv_status_code     hig_status_codes.hsc_status_code%TYPE;
+  lv_error           NUMBER;
+  lv_perc_item       hig_option_values.hov_value%TYPE := hig.get_sysopt('PERC_ITEM');
+  lv_new_boq_id      boq_items.boq_id%TYPE;
+  lv_wol_id          work_order_lines.wol_id%TYPE;
+  lv_wol_est_cost    work_order_lines.wol_est_cost%TYPE := 0;
+  lv_wol_est_labour  work_order_lines.wol_est_labour%TYPE := 0;
+  --
+  CURSOR C1(cp_wol_id boq_items.boq_wol_id%TYPE)
+      IS
+  SELECT *
+    FROM boq_items
+   WHERE boq_wol_id = cp_wol_id
+       ;
+  --
+  CURSOR get_inst_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+     AND hsc_allow_feature1 = 'Y'
+     AND hsc_allow_feature10 != 'Y'
+       ;
+  --
+  CURSOR get_initial_status
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+     AND hsc_allow_feature1 = 'Y'
+     AND hsc_allow_feature10 = 'Y'
+       ;
+  --
+  FUNCTION a_percent_item(pi_sta_item_code IN standard_items.sta_item_code%TYPE)
+    RETURN BOOLEAN IS
+    --
+    lv_unit    standard_items.sta_unit%TYPE;
+    lv_retval  BOOLEAN := FALSE;
+    --
   BEGIN
-    /*
-    ||If WO has been instructed then the new line status should
-    ||be INSTRUCTED otherwise the line status should be DRAFT.
-    */
-    IF maiwo.get_wo(pi_wor_works_order_no => p_wol_works_order_no).wor_date_confirmed IS NOT NULL
+    --
+    SELECT sta_unit
+      INTO lv_unit
+      FROM standard_items
+     WHERE sta_item_code = pi_sta_item_code
+         ;
+    --
+    IF lv_unit = lv_perc_item
      THEN
-        OPEN  get_inst_status;
-        FETCH get_inst_status
-         INTO l_status_code;
-        CLOSE get_inst_status;
-     ELSE
-        OPEN  get_initial_status;
-        FETCH get_initial_status
-         INTO l_status_code;
-        CLOSE get_initial_status;
-     END IF;
+        lv_retval := TRUE;
+    END IF;
+    --
+    RETURN lv_retval;
+    --
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        raise_application_error(-20053,'Invalid Standard Item Code.');
+    WHEN others
+     THEN
+        RAISE;
 
-      IF pi_zeroize THEN
-        l_wol_act_cost    := 0;
-        l_wol_act_labour  := 0;
-        l_wol_est_cost    := 0;
-        l_wol_est_labour  := 0;
-      ELSE
-        l_wol_act_cost    := p_wol_act_cost;
-        l_wol_act_labour  := p_wol_act_labour;
-        l_wol_est_cost    := p_wol_est_cost;
-        l_wol_est_labour  := p_wol_est_labour;
-      END IF;
-
-      insert into work_order_lines
-                ( WOL_ID
-                , WOL_WORKS_ORDER_NO
-                , WOL_RSE_HE_ID
-                , WOL_SISS_ID
-                , WOL_ICB_WORK_CODE
-                , WOL_DEF_DEFECT_ID
-                , WOL_REP_ACTION_CAT
-                , WOL_SCHD_ID
-                , WOL_CNP_ID
-                , WOL_ACT_AREA_CODE
-                , WOL_ACT_COST
-                , WOL_ACT_LABOUR
-                , WOL_ARE_END_CHAIN
-                , WOL_ARE_REPORT_ID
-                , WOL_ARE_ST_CHAIN
-                , WOL_CHECK_CODE
-                , WOL_CHECK_COMMENTS
-                , WOL_CHECK_DATE
-                , WOL_CHECK_ID
-                , WOL_CHECK_PEO_ID
-                , WOL_CHECK_RESULT
-                , WOL_DATE_COMPLETE
-                , WOL_DATE_CREATED
-                , WOL_DATE_PAID
-                , WOL_DESCR
-                , WOL_DISCOUNT
-                , WOL_EST_COST
-                , WOL_EST_LABOUR
-                , WOL_FLAG
-                , WOL_MONTH_DUE
-                , WOL_ORIG_EST
-                , WOL_PAYMENT_CODE
-                , WOL_QUANTITY
-                , WOL_RATE
-                , WOL_SS_TRE_TREAT_CODE
-                , WOL_STATUS
-                , WOL_STATUS_CODE
-                , WOL_UNIQUE_FLAG
-                , WOL_WORK_SHEET_DATE
-                , WOL_WORK_SHEET_ISSUE
-                , WOL_WORK_SHEET_NO
-                , WOL_WOR_FLAG
-                , WOL_DATE_REPAIRED
-                , WOL_INVOICE_STATUS
-                , WOL_BUD_ID
-                , WOL_UNPOSTED_EST
-                , WOL_IIT_ITEM_ID
-                , WOL_GANG
-                , WOL_REGISTER_FLAG
-                ) values (
-                  l_wol_id
-                , P_WOL_WORKS_ORDER_NO
-                , P_WOL_RSE_HE_ID
-                , P_WOL_SISS_ID
-                , P_WOL_ICB_WORK_CODE
-                , P_WOL_DEF_DEFECT_ID
-                , P_WOL_REP_ACTION_CAT
-                , P_WOL_SCHD_ID
-                , P_WOL_CNP_ID
-                , P_WOL_ACT_AREA_CODE
-                , l_wol_act_cost
-                , l_wol_act_labour
-                , P_WOL_ARE_END_CHAIN
-                , P_WOL_ARE_REPORT_ID
-                , P_WOL_ARE_ST_CHAIN
-                , P_WOL_CHECK_CODE
-                , P_WOL_CHECK_COMMENTS
-                , P_WOL_CHECK_DATE
-                , P_WOL_CHECK_ID
-                , P_WOL_CHECK_PEO_ID
-                , P_WOL_CHECK_RESULT
-                , P_WOL_DATE_COMPLETE
-                , P_WOL_DATE_CREATED
-                , P_WOL_DATE_PAID
-                , P_WOL_DESCR
-                , P_WOL_DISCOUNT
-                , l_wol_est_cost
-                , l_wol_est_labour
-                , P_WOL_FLAG
-                , P_WOL_MONTH_DUE
-                , P_WOL_ORIG_EST
-                , P_WOL_PAYMENT_CODE
-                , P_WOL_QUANTITY
-                , P_WOL_RATE
-                , P_WOL_SS_TRE_TREAT_CODE
-                , P_WOL_STATUS
-                , l_status_code  -- INSTRUCTED
-                , P_WOL_UNIQUE_FLAG
-                , P_WOL_WORK_SHEET_DATE
-                , P_WOL_WORK_SHEET_ISSUE
-                , P_WOL_WORK_SHEET_NO
-                , P_WOL_WOR_FLAG
-                , P_WOL_DATE_REPAIRED
-                , P_WOL_INVOICE_STATUS
-                , P_WOL_BUD_ID
-                , P_WOL_UNPOSTED_EST
-                , P_WOL_IIT_ITEM_ID
-                , P_WOL_GANG
-                , P_WOL_REGISTER_FLAG
-                );
-      for c1rec in c1(p_wol_id) loop
-
-        IF pi_zeroize THEN
-
-           --
-           -- GJ 9th August 2006
-           -- Logic used when copying BOQ's and zeroizing the figures
-           --
-           --
-           --   boq_est_quantity     0
-           --   boq_est_rate         bring thru
-           --   boq_est_cost         0
-           --   boq_est_labour       0
-           --
-           --   boq_est_dim1         0
-           --   boq_est_dim2         0 if there is a value already otherwise null
-           --   boq_est_dim3         0 if there is a value already otherwise null
-           --
-           -- all of actual's are inserted as null
-
-          c1rec.boq_est_quantity := 0;
-          c1rec.boq_est_cost := 0;
-          c1rec.boq_est_labour := 0;
-          c1rec.boq_est_dim1 := 0;
-
-          IF c1rec.boq_est_dim2 IS NOT NULL THEN
-           c1rec.boq_est_dim2 := 0;
-          ELSE
-           c1rec.boq_est_dim2 := Null;
-          END IF;
-
-          IF c1rec.boq_est_dim3 IS NOT NULL THEN
-           c1rec.boq_est_dim3 := 0;
-          ELSE
-           c1rec.boq_est_dim3 := Null;
-          END IF;
-
-        END IF;
-
-        l_error := cre_boq_items2( p_boq_work_flag      => c1rec.boq_work_flag
-                                 , p_boq_defect_id      => c1rec.boq_defect_id
-                                 , p_boq_rep_action_cat => c1rec.boq_rep_action_cat
-                                 , p_boq_wol_id         => l_wol_id
-                                 , p_boq_sta_item_code  => c1rec.boq_sta_item_code
-                                 , p_boq_date_created   => sysdate
-                                 , p_boq_est_dim1       => c1rec.boq_est_dim1
-                                 , p_boq_est_dim2       => c1rec.boq_est_dim2
-                                 , p_boq_est_dim3       => c1rec.boq_est_dim3
-                                 , p_boq_est_quantity   => c1rec.boq_est_quantity
-                                 , p_boq_est_rate       => c1rec.boq_est_rate
-                                 , p_boq_est_cost       => c1rec.boq_est_cost
-                                 , p_boq_est_labour     => c1rec.boq_est_labour
-                                 , p_boq_id             => boq_id_nextseq);
-
-
-      end loop;
-RETURN( SQL%rowcount );
-
-EXCEPTION
-   WHEN NO_DATA_FOUND THEN
-      RETURN (0);
---   WHEN OTHERS THEN
---      RETURN (-1);
-  END create_wol;
---
----------------------------------------------------------------------------------------------------
---
-  FUNCTION copy_works_order
-        ( pi_wor_works_order_no             IN work_orders.wor_works_order_no%TYPE
-        ) RETURN work_orders.wor_works_order_no%TYPE IS
-
-
-
-    CURSOR c1 ( p_works_order_no work_order_lines.wol_works_order_no%TYPE
-              ) IS
-    select *
-    from work_order_lines
-    where wol_works_order_no = p_works_order_no
-    and  wol_flag != 'D'; -- exclude any defect lines
-
-    l_wor_rec           work_orders%ROWTYPE;
-    l_error             number;
-    l_retval            work_orders.wor_works_order_no%TYPE;
-
+  END a_percent_item;
+  --
+  PROCEDURE get_wol_draft_status(pi_date_raised IN DATE)
+    IS
   BEGIN
-
-   --
-   -- belt and braces cos in MAI3800 a when-new-record instance trigger on B1 should
-   -- disable the Copy button
-   --
-    check_wo_can_be_copied(pi_wor_works_order_no => pi_wor_works_order_no);
-
-    l_wor_rec := maiwo.get_wo(pi_wor_works_order_no => pi_wor_works_order_no);
-
-
-    l_wor_rec.wor_act_cost_code := null;
-    l_wor_rec.wor_act_balancing_sum := null;
-    l_wor_rec.wor_act_cost := null;
-    l_wor_rec.wor_act_labour := null;
-    l_wor_rec.wor_cheapest_flag := null;
-    l_wor_rec.wor_closed_by_id := null;
-    l_wor_rec.wor_date_closed := null;
-    l_wor_rec.wor_date_confirmed := null;
-    l_wor_rec.wor_mod_by_id := null;
-    l_wor_rec.wor_date_mod := SYSDATE;
-    l_wor_rec.wor_date_raised := SYSDATE;
-    l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';
-    l_wor_rec.wor_est_balancing_sum := null;
-    l_wor_rec.wor_est_complete := null;
-    l_wor_rec.wor_est_cost := null;
-    l_wor_rec.wor_est_labour := null;
-    l_wor_rec.wor_last_print_date := null;
-    l_wor_rec.wor_year_code := null;
-    l_wor_rec.wor_def_correction := null;
-    l_wor_rec.wor_def_correction_acceptable := null;
-    l_wor_rec.wor_corr_extension_time := null;
-    l_wor_rec.wor_revised_comp_date := null;
-    l_wor_rec.wor_commence_by := null;
-    l_wor_rec.wor_act_commence_by := null;
-    l_wor_rec.wor_def_correction_period := null;
-    l_wor_rec.wor_reason_not_cheapest := null;
-    l_wor_rec.wor_date_received := null;
-    l_wor_rec.wor_received_by := null;
-    l_wor_rec.wor_earliest_start_date := null;
-    l_wor_rec.wor_planned_comp_date := null;
-    l_wor_rec.wor_latest_comp_date := null;
-    l_wor_rec.wor_site_complete_date := null;
-    l_wor_rec.wor_est_duration := null;
-    l_wor_rec.wor_act_duration := null;
-    l_wor_rec.wor_cert_complete := null;
-    l_wor_rec.wor_con_cert_complete := null;
-    l_wor_rec.wor_agreed_by := null;
-    l_wor_rec.wor_agreed_by_date := null;
-    l_wor_rec.wor_con_agreed_by := null;
-    l_wor_rec.wor_con_agreed_by_date := null;
-    l_wor_rec.wor_late_costs := null;
-    l_wor_rec.wor_late_cost_certified_by := null;
-    l_wor_rec.wor_late_cost_certified_date := null;
-
-    l_error := create_wo_header( p_wor_works_order_no             => l_wor_rec.wor_works_order_no
-                               , p_wor_sys_flag                   => l_wor_rec.wor_sys_flag
-                               , p_wor_rse_he_id_group            => l_wor_rec.wor_rse_he_id_group
-                               , p_wor_flag                       => l_wor_rec.wor_flag
-                               , p_wor_con_id                     => l_wor_rec.wor_con_id
-                               , p_wor_act_cost_code              => l_wor_rec.wor_act_cost_code
-                               , p_wor_act_balancing_sum          => l_wor_rec.wor_act_balancing_sum
-                               , p_wor_act_cost                   => l_wor_rec.wor_act_cost
-                               , p_wor_act_labour                 => l_wor_rec.wor_act_labour
-                               , p_wor_agency                     => l_wor_rec.wor_agency
-                               , p_wor_are_sched_act_flag         => l_wor_rec.wor_are_sched_act_flag
-                               , p_wor_cheapest_flag              => l_wor_rec.wor_cheapest_flag
-                               , p_wor_closed_by_id               => l_wor_rec.wor_closed_by_id
-                               , p_wor_coc_cost_centre            => l_wor_rec.wor_coc_cost_centre
-                               , p_wor_cost_recharg               => l_wor_rec.wor_cost_recharg
-                               , p_wor_date_closed                => l_wor_rec.wor_date_closed
-                               , p_wor_date_confirmed             => l_wor_rec.wor_date_confirmed
-                               , p_wor_date_mod                   => l_wor_rec.wor_date_mod
-                               , p_wor_date_raised                => l_wor_rec.wor_date_raised
-                               , p_wor_descr                      => l_wor_rec.wor_descr
-                               , p_wor_div_code                   => l_wor_rec.wor_div_code
-                               , p_wor_dtp_expend_code            => l_wor_rec.wor_dtp_expend_code
-                               , p_wor_est_balancing_sum          => l_wor_rec.wor_est_balancing_sum
-                               , p_wor_est_complete               => l_wor_rec.wor_est_complete
-                               , p_wor_est_cost                   => l_wor_rec.wor_est_cost
-                               , p_wor_est_labour                 => l_wor_rec.wor_est_labour
-                               , p_wor_icb_item_code              => l_wor_rec.wor_icb_item_code
-                               , p_wor_icb_sub_item_code          => l_wor_rec.wor_icb_sub_item_code
-                               , p_wor_icb_sub_sub_item_code      => l_wor_rec.wor_icb_sub_sub_item_code
-                               , p_wor_job_number                 => l_wor_rec.wor_job_number
-                               , p_wor_last_print_date            => l_wor_rec.wor_last_print_date
-                               , p_wor_la_expend_code             => l_wor_rec.wor_la_expend_code
-                               , p_wor_mod_by_id                  => l_wor_rec.wor_mod_by_id
-                               , p_wor_oun_org_id                 => l_wor_rec.wor_oun_org_id
-                               , p_wor_peo_person_id              => l_wor_rec.wor_peo_person_id
-                               , p_wor_price_type                 => l_wor_rec.wor_price_type
-                               , p_wor_remarks                    => l_wor_rec.wor_remarks
-                               , p_wor_road_type                  => l_wor_rec.wor_road_type
-                               , p_wor_rse_he_id_link             => l_wor_rec.wor_rse_he_id_link
-                               , p_wor_scheme_ref                 => l_wor_rec.wor_scheme_ref
-                               , p_wor_scheme_type                => l_wor_rec.wor_scheme_type
-                               , p_wor_score                      => l_wor_rec.wor_score
-                               , p_wor_year_code                  => l_wor_rec.wor_year_code
-                               , p_wor_interim_payment_flag       => l_wor_rec.wor_interim_payment_flag
-                               , p_wor_risk_assessment_flag       => l_wor_rec.wor_risk_assessment_flag
-                               , p_wor_method_statement_flag      => l_wor_rec.wor_method_statement_flag
-                               , p_wor_works_programme_flag       => l_wor_rec.wor_works_programme_flag
-                               , p_wor_additional_safety_flag     => l_wor_rec.wor_additional_safety_flag
-                               , p_wor_def_correction             => l_wor_rec.wor_def_correction
-                               , p_wor_def_correction_accept      => l_wor_rec.wor_def_correction_acceptable
-                               , p_wor_corr_extension_time        => l_wor_rec.wor_corr_extension_time
-                               , p_wor_revised_comp_date          => l_wor_rec.wor_revised_comp_date
-                               , p_wor_price_variation            => l_wor_rec.wor_price_variation
-                               , p_wor_commence_by                => l_wor_rec.wor_commence_by
-                               , p_wor_act_commence_by            => l_wor_rec.wor_act_commence_by
-                               , p_wor_def_correction_period      => l_wor_rec.wor_def_correction_period
-                               , p_wor_reason_not_cheapest        => l_wor_rec.wor_reason_not_cheapest
-                               , p_wor_priority                   => l_wor_rec.wor_priority
-                               , p_wor_perc_item_comp             => l_wor_rec.wor_perc_item_comp
-                               , p_wor_contact                    => l_wor_rec.wor_contact
-                               , p_wor_date_received              => l_wor_rec.wor_date_received
-                               , p_wor_received_by                => l_wor_rec.wor_received_by
-                               , p_wor_rechargeable               => l_wor_rec.wor_rechargeable
-                               , p_wor_supp_documents             => l_wor_rec.wor_supp_documents
-                               , p_wor_earliest_start_date        => l_wor_rec.wor_earliest_start_date
-                               , p_wor_planned_comp_date          => l_wor_rec.wor_planned_comp_date
-                               , p_wor_latest_comp_date           => l_wor_rec.wor_latest_comp_date
-                               , p_wor_site_complete_date         => l_wor_rec.wor_site_complete_date
-                               , p_wor_est_duration               => l_wor_rec.wor_est_duration
-                               , p_wor_act_duration               => l_wor_rec.wor_act_duration
-                               , p_wor_cert_complete              => l_wor_rec.wor_cert_complete
-                               , p_wor_con_cert_complete          => l_wor_rec.wor_con_cert_complete
-                               , p_wor_agreed_by                  => l_wor_rec.wor_agreed_by
-                               , p_wor_agreed_by_date             => l_wor_rec.wor_agreed_by_date
-                               , p_wor_con_agreed_by              => l_wor_rec.wor_con_agreed_by
-                               , p_wor_con_agreed_by_date         => l_wor_rec.wor_con_agreed_by_date
-                               , p_wor_late_costs                 => l_wor_rec.wor_late_costs
-                               , p_wor_late_cost_certified_by     => l_wor_rec.wor_late_cost_certified_by
-                               , p_wor_late_cost_certified_date   => l_wor_rec.wor_late_cost_certified_date
-                               , p_wor_location_plan              => l_wor_rec.wor_location_plan
-                               , p_wor_utility_plans              => l_wor_rec.wor_utility_plans
---                               , p_wor_streetwork_notice          => l_wor_rec.wor_streetwork_notice
-                               , p_wor_work_restrictions          => l_wor_rec.wor_work_restrictions
-                               , p_wor_register_flag              => l_wor_rec.wor_register_flag
-                               , p_wor_register_status            => l_wor_rec.wor_register_status);
-
-    l_retval :=  g_works_order_no;  -- set by calling mai.create_wo_header;
-
-
-    for c1rec in c1(pi_wor_works_order_no) loop
-
-     l_error := create_wol(p_wol_id                 => c1rec.wol_id
-                         , p_wol_works_order_no     => l_retval
-                         , p_wol_rse_he_id          => c1rec.wol_rse_he_id
-                         , p_wol_siss_id            => c1rec.wol_siss_id
-                         , p_wol_icb_work_code      => c1rec.wol_icb_work_code
-                         , p_wol_def_defect_id      => Null
-                         , p_wol_rep_action_cat     => Null
-                         , p_wol_schd_id            => c1rec.wol_schd_id
-                         , p_wol_cnp_id             => c1rec.wol_cnp_id
-                         , p_wol_act_area_code      => c1rec.wol_act_area_code
-                         , p_wol_act_cost           => 0
-                         , p_wol_act_labour         => 0
-                         , p_wol_are_end_chain      => Null
-                         , p_wol_are_report_id      => Null
-                         , p_wol_are_st_chain       => Null
-                         , p_wol_check_code         => c1rec.wol_check_code
-                         , p_wol_check_comments     => c1rec.wol_check_comments
-                         , p_wol_check_date         => c1rec.wol_check_date
-                         , p_wol_check_id           => c1rec.wol_check_id
-                         , p_wol_check_peo_id       => c1rec.wol_check_peo_id
-                         , p_wol_check_result       => c1rec.wol_check_result
-                         , p_wol_date_complete      => Null
-                         , p_wol_date_created       => sysdate
-                         , p_wol_date_paid          => Null
-                         , p_wol_descr              => c1rec.wol_descr
-                         , p_wol_discount           => c1rec.wol_discount
-                         , p_wol_est_cost           => 0
-                         , p_wol_est_labour         => 0
-                         , p_wol_flag               => c1rec.wol_flag
-                         , p_wol_month_due          => c1rec.wol_month_due
-                         , p_wol_orig_est           => c1rec.wol_orig_est
-                         , p_wol_payment_code       => c1rec.wol_payment_code
-                         , p_wol_quantity           => c1rec.wol_quantity
-                         , p_wol_rate               => c1rec.wol_rate
-                         , p_wol_ss_tre_treat_code  => c1rec.wol_ss_tre_treat_code
-                         , p_wol_status             => c1rec.wol_status
-                         , p_wol_status_code        => c1rec.wol_status_code -- actually ignored by create_wol cos it uses 'INSTRUCTUED' by default
-                         , p_wol_unique_flag        => c1rec.wol_unique_flag
-                         , p_wol_work_sheet_date    => c1rec.wol_work_sheet_date
-                         , p_wol_work_sheet_issue   => c1rec.wol_work_sheet_issue
-                         , p_wol_work_sheet_no      => c1rec.wol_work_sheet_no
-                         , p_wol_wor_flag           => c1rec.wol_wor_flag
-                         , p_wol_date_repaired      => Null
-                         , p_wol_invoice_status     => Null
-                         , p_wol_bud_id             => c1rec.wol_bud_id
-                         , p_wol_unposted_est       => 0
-                         , p_wol_iit_item_id        => c1rec.wol_iit_item_id
-                         , p_wol_gang               => c1rec.wol_gang
-                         , p_wol_register_flag      => c1rec.wol_register_flag
-                         , pi_zeroize               => TRUE);
-
-    end loop;
-
-  RETURN(l_retval);
-
-  END copy_works_order;
+    SELECT hsc_status_code
+      INTO lv_status_code
+      FROM hig_status_codes
+     WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+       AND hsc_allow_feature1 = 'Y'
+       AND hsc_allow_feature10 = 'Y'
+       AND TRUNC(pi_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(pi_date_raised))
+                                     AND NVL(hsc_end_date  ,TRUNC(pi_date_raised))
+         ;
+  EXCEPTION
+    WHEN too_many_rows
+     THEN
+        raise_application_error(-20058,'Too Many Values Defined For Work Order Line DRAFT Status');
+    WHEN no_data_found
+     THEN
+        raise_application_error(-20054,'Cannot Obtain Value For Work Order Line DRAFT Status');
+    WHEN others
+     THEN
+        RAISE;
+  END get_wol_draft_status;
+  --
+  PROCEDURE get_wol_instructed_status(pi_date_raised IN DATE)
+    IS
+  BEGIN
+    SELECT hsc_status_code
+      INTO lv_status_code
+      FROM hig_status_codes
+     WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+       AND hsc_allow_feature1 = 'Y'
+       AND hsc_allow_feature10 != 'Y'
+       AND TRUNC(pi_date_raised) BETWEEN NVL(hsc_start_date,TRUNC(pi_date_raised))
+                                     AND NVL(hsc_end_date  ,TRUNC(pi_date_raised))
+         ;
+  EXCEPTION
+    WHEN too_many_rows
+     THEN
+        raise_application_error(-20058,'Too Many Values Defined For Work Order Line DRAFT Status');
+    WHEN no_data_found
+     THEN
+        raise_application_error(-20054,'Cannot Obtain Value For Work Order Line DRAFT Status');
+    WHEN others
+     THEN
+        RAISE;
+  END get_wol_instructed_status;
+  --
+BEGIN
+  nm_debug.debug_on;
+  nm_debug.debug('Start of create_wol');
+  /*
+  ||If WO has been instructed then the new line status should
+  ||be INSTRUCTED otherwise the line status should be DRAFT.
+  */
+  lr_wo := maiwo.get_wo(pi_wor_works_order_no => p_wol_works_order_no);
+  --
+  IF lr_wo.wor_date_confirmed IS NOT NULL
+   THEN
+      get_wol_instructed_status(pi_date_raised => lr_wo.wor_date_raised);
+  ELSE
+      get_wol_draft_status(pi_date_raised => lr_wo.wor_date_raised);
+  END IF;
+  --
+  lv_wol_id := NVL(p_new_wol_id,wol_id_nextseq);
+  --
+  INSERT
+    INTO work_order_lines
+        (wol_id
+        ,wol_works_order_no
+        ,wol_rse_he_id
+        ,wol_siss_id
+        ,wol_icb_work_code
+        ,wol_def_defect_id
+        ,wol_rep_action_cat
+        ,wol_schd_id
+        ,wol_cnp_id
+        ,wol_act_area_code
+        ,wol_act_cost
+        ,wol_act_labour
+        ,wol_are_end_chain
+        ,wol_are_report_id
+        ,wol_are_st_chain
+        ,wol_check_code
+        ,wol_check_comments
+        ,wol_check_date
+        ,wol_check_id
+        ,wol_check_peo_id
+        ,wol_check_result
+        ,wol_date_complete
+        ,wol_date_created
+        ,wol_date_paid
+        ,wol_descr
+        ,wol_discount
+        ,wol_est_cost
+        ,wol_est_labour
+        ,wol_flag
+        ,wol_month_due
+        ,wol_orig_est
+        ,wol_payment_code
+        ,wol_quantity
+        ,wol_rate
+        ,wol_ss_tre_treat_code
+        ,wol_status
+        ,wol_status_code
+        ,wol_unique_flag
+        ,wol_work_sheet_date
+        ,wol_work_sheet_issue
+        ,wol_work_sheet_no
+        ,wol_wor_flag
+        ,wol_date_repaired
+        ,wol_invoice_status
+        ,wol_bud_id
+        ,wol_unposted_est
+        ,wol_iit_item_id
+        ,wol_gang
+        ,wol_register_flag)
+  VALUES(lv_wol_id
+        ,p_wol_works_order_no
+        ,p_wol_rse_he_id
+        ,p_wol_siss_id
+        ,p_wol_icb_work_code
+        ,p_wol_def_defect_id
+        ,p_wol_rep_action_cat
+        ,p_wol_schd_id
+        ,p_wol_cnp_id
+        ,p_wol_act_area_code
+        ,0
+        ,0
+        ,p_wol_are_end_chain
+        ,p_wol_are_report_id
+        ,p_wol_are_st_chain
+        ,p_wol_check_code
+        ,p_wol_check_comments
+        ,p_wol_check_date
+        ,p_wol_check_id
+        ,p_wol_check_peo_id
+        ,p_wol_check_result
+        ,p_wol_date_complete
+        ,p_wol_date_created
+        ,p_wol_date_paid
+        ,p_wol_descr
+        ,p_wol_discount
+        ,lv_wol_est_cost
+        ,lv_wol_est_labour
+        ,p_wol_flag
+        ,p_wol_month_due
+        ,p_wol_orig_est
+        ,p_wol_payment_code
+        ,p_wol_quantity
+        ,p_wol_rate
+        ,p_wol_ss_tre_treat_code
+        ,p_wol_status
+        ,lv_status_code
+        ,p_wol_unique_flag
+        ,p_wol_work_sheet_date
+        ,p_wol_work_sheet_issue
+        ,p_wol_work_sheet_no
+        ,p_wol_wor_flag
+        ,p_wol_date_repaired
+        ,p_wol_invoice_status
+        ,p_wol_bud_id
+        ,lv_wol_est_cost
+        ,p_wol_iit_item_id
+        ,p_wol_gang
+        ,p_wol_register_flag)
+       ;
+  /*
+  ||Copy the BOQs if required.
+  */
+  IF pi_copy_boqs
+   THEN
+      nm_debug.debug('Copying BOQs');
+      FOR c1rec IN c1(p_old_wol_id) LOOP
+        --
+        IF pi_zeroize
+         THEN
+            --
+            IF a_percent_item(pi_sta_item_code => c1rec.boq_sta_item_code)
+             THEN
+                c1rec.boq_est_quantity := 1;
+            ELSE
+                c1rec.boq_est_quantity := 0;
+            END IF;
+            --
+            c1rec.boq_est_cost := 0;
+            c1rec.boq_est_labour := 0;
+            c1rec.boq_est_dim1 := 0;
+            --
+            IF c1rec.boq_est_dim2 IS NOT NULL
+             THEN
+                c1rec.boq_est_dim2 := 0;
+            END IF;
+            --
+            IF c1rec.boq_est_dim3 IS NOT NULL
+             THEN
+                c1rec.boq_est_dim3 := 0;
+            END IF;
+            --
+        END IF;
+        --
+        lt_boqs(lt_boqs.count+1).boq_id           := c1rec.boq_id;
+        lt_boqs(lt_boqs.count).boq_parent_id      := c1rec.boq_parent_id;
+        lt_boqs(lt_boqs.count).boq_work_flag      := c1rec.boq_work_flag;
+        lt_boqs(lt_boqs.count).boq_defect_id      := c1rec.boq_defect_id;
+        lt_boqs(lt_boqs.count).boq_rep_action_cat := c1rec.boq_rep_action_cat;
+        lt_boqs(lt_boqs.count).boq_wol_id         := lv_wol_id;
+        lt_boqs(lt_boqs.count).boq_date_created   := SYSDATE;
+        lt_boqs(lt_boqs.count).boq_sta_item_code  := c1rec.boq_sta_item_code;
+        lt_boqs(lt_boqs.count).boq_item_name      := c1rec.boq_item_name;
+        lt_boqs(lt_boqs.count).boq_est_dim1       := c1rec.boq_est_dim1;
+        lt_boqs(lt_boqs.count).boq_est_dim2       := c1rec.boq_est_dim2;
+        lt_boqs(lt_boqs.count).boq_est_dim3       := c1rec.boq_est_dim3;
+        lt_boqs(lt_boqs.count).boq_est_quantity   := c1rec.boq_est_quantity;
+        lt_boqs(lt_boqs.count).boq_est_rate       := c1rec.boq_est_rate;
+        lt_boqs(lt_boqs.count).boq_est_cost       := c1rec.boq_est_cost;
+        lt_boqs(lt_boqs.count).boq_est_labour     := c1rec.boq_est_labour;
+        --
+        lv_wol_est_cost := lv_wol_est_cost + c1rec.boq_est_cost;
+        lv_wol_est_labour := lv_wol_est_labour + c1rec.boq_est_labour;
+        --
+      END LOOP;
+      --
+      /*
+      ||Assign new BOQ_IDs
+      */
+      FOR parent_index IN 1..lt_boqs.count LOOP
+        --
+        lv_new_boq_id := boq_id_nextseq;
+        /*
+        ||Find child items and update the parent id.
+        */
+        FOR child_index IN 1..lt_boqs.count LOOP
+          --
+          IF lt_boqs(child_index).boq_parent_id = lt_boqs(parent_index).boq_id
+           THEN
+              lt_boqs(child_index).boq_parent_id := lv_new_boq_id;
+          END IF;
+          --
+        END LOOP;
+        --
+        lt_boqs(parent_index).boq_id := lv_new_boq_id;
+        --
+      END LOOP;
+      /*
+      ||Insert the BOQs.
+      */
+      FORALL i IN 1 .. lt_boqs.COUNT
+      INSERT
+        INTO boq_items
+      VALUES lt_boqs(i)
+           ;
+      /*
+      ||Update the WOL Totals and associated Budget if required.
+      */
+      IF NOT pi_zeroize
+       THEN
+          /*
+          ||Update the totals.
+          */
+          UPDATE work_order_lines
+             SET wol_est_cost = lv_wol_est_cost
+                ,wol_est_labour = lv_wol_est_labour
+           WHERE wol_id = lv_wol_id
+               ;
+          /*
+          ||Update the Budgets if required.
+          */
+          IF lr_wo.wor_date_confirmed IS NOT NULL
+           THEN
+              --
+              IF mai_wo_api.within_budget(pi_bud_id => p_wol_bud_id
+                                         ,pi_con_id => lr_wo.wor_con_id
+                                         ,pi_est    => lv_wol_est_cost
+                                         ,pi_act    => 0
+                                         ,pi_wol_id => lv_wol_id)
+               THEN
+                  mai_wo_api.add_to_budget(pi_wol_id => lv_wol_id
+                                          ,pi_bud_id => p_wol_bud_id
+                                          ,pi_con_id => lr_wo.wor_con_id
+                                          ,pi_est    => lv_wol_est_cost
+                                          ,pi_act    => 0);
+              ELSE
+                  raise_application_error(-20047,'Budget Exceeded.');
+              END IF;
+          END IF;
+      END IF;
+      --
+  END IF;
+  --
+  p_new_wol_id := lv_wol_id;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      RAISE;
+END create_wol;
 --
 ---------------------------------------------------------------------------------------------------
 --
-PROCEDURE copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
-                  ,pi_wol_id IN work_order_lines.wol_id%TYPE) IS
-
- l_wol_rec work_order_lines%ROWTYPE;
- l_integer PLS_INTEGER;
-
+FUNCTION copy_works_order(pi_wor_works_order_no  IN work_orders.wor_works_order_no%TYPE
+                         ,pi_zeroize             IN BOOLEAN DEFAULT TRUE
+                         ,pi_copy_boqs           IN BOOLEAN DEFAULT TRUE)
+  RETURN work_orders.wor_works_order_no%TYPE IS
+  --
+  CURSOR c1(cp_works_order_no work_order_lines.wol_works_order_no%TYPE)
+      IS
+  SELECT *
+    FROM work_order_lines
+   WHERE wol_works_order_no = cp_works_order_no
+     AND wol_flag != 'D' -- exclude any defect lines
+       ;
+  --
+  l_wor_rec      work_orders%ROWTYPE;
+  l_error        NUMBER;
+  lv_new_wol_id  work_order_lines.wol_id%TYPE;
+  l_retval       work_orders.wor_works_order_no%TYPE;
+  --
+  PROCEDURE update_wor_totals(pi_wo_no  IN work_orders.wor_works_order_no%TYPE
+                             ,pi_con_id IN contracts.con_id%TYPE)
+    IS
+    --
+    lv_discount_group         org_units.oun_cng_disc_group%TYPE;
+    lv_wor_est_cost           work_orders.wor_est_cost%type;
+    lv_wor_act_cost           work_orders.wor_act_cost%type;
+    lv_wor_est_labour         work_orders.wor_est_labour%type;
+    lv_wor_est_balancing_sum  work_orders.wor_est_balancing_sum%TYPE;
+    --
+    CURSOR discount_group(cp_con_id      IN contracts.con_id%TYPE)
+        IS
+    SELECT oun_cng_disc_group
+      FROM org_units
+          ,contracts
+     WHERE con_id = cp_con_id
+       AND TRUNC(SYSDATE) BETWEEN NVL(con_start_date,TRUNC(SYSDATE))
+                              AND NVL(con_end_date,TRUNC(SYSDATE))
+       AND con_contr_org_id = oun_org_id
+         ;
+    --
+    CURSOR wor_totals(cp_wo_no work_orders.wor_works_order_no%TYPE)
+        IS
+    SELECT SUM(boq_est_labour)
+          ,DECODE(COUNT(0),COUNT(boq_est_cost),SUM(boq_est_cost)
+                                              ,NULL)
+      FROM boq_items
+          ,work_order_lines
+     WHERE wol_id = boq_wol_id
+       AND wol_works_order_no = cp_wo_no
+         ;
+    --
+  BEGIN
+    --
+    OPEN  discount_group(pi_con_id);
+    FETCH discount_group
+     INTO lv_discount_group;
+    CLOSE discount_group;
+    --
+    OPEN  wor_totals(pi_wo_no);
+    FETCH wor_totals
+     INTO lv_wor_est_labour
+         ,lv_wor_est_cost;
+    CLOSE wor_totals;
+    --
+    lv_wor_est_balancing_sum := maiwo.bal_sum(lv_wor_est_cost
+                                             ,lv_discount_group);
+    --
+    UPDATE work_orders
+       SET wor_est_labour        = lv_wor_est_labour
+          ,wor_est_cost          = lv_wor_est_cost
+          ,wor_est_balancing_sum = lv_wor_est_balancing_sum
+     WHERE wor_works_order_no = pi_wo_no
+         ;
+    --
+  END update_wor_totals;
+  --
 BEGIN
-
-   check_wol_can_be_copied(pi_wol_works_order_no => pi_wol_works_order_no
-                          ,pi_wol_id             => pi_wol_id);
-
-   l_wol_rec := maiwo.get_wol(pi_wol_id => pi_wol_id);
-
-
-   l_integer := create_wol(p_wol_id                 => l_wol_rec.wol_id
-                         , p_wol_works_order_no     => l_wol_rec.wol_works_order_no
-                         , p_wol_rse_he_id          => l_wol_rec.wol_rse_he_id
-                         , p_wol_siss_id            => l_wol_rec.wol_siss_id
-                         , p_wol_icb_work_code      => l_wol_rec.wol_icb_work_code
-                         , p_wol_def_defect_id      => Null
-                         , p_wol_rep_action_cat     => Null
-                         , p_wol_schd_id            => l_wol_rec.wol_schd_id
-                         , p_wol_cnp_id             => l_wol_rec.wol_cnp_id
-                         , p_wol_act_area_code      => l_wol_rec.wol_act_area_code
-                         , p_wol_act_cost           => 0
-                         , p_wol_act_labour         => 0
-                         , p_wol_are_end_chain      => Null
-                         , p_wol_are_report_id      => Null
-                         , p_wol_are_st_chain       => Null
-                         , p_wol_check_code         => l_wol_rec.wol_check_code
-                         , p_wol_check_comments     => l_wol_rec.wol_check_comments
-                         , p_wol_check_date         => l_wol_rec.wol_check_date
-                         , p_wol_check_id           => l_wol_rec.wol_check_id
-                         , p_wol_check_peo_id       => l_wol_rec.wol_check_peo_id
-                         , p_wol_check_result       => l_wol_rec.wol_check_result
-                         , p_wol_date_complete      => Null
-                         , p_wol_date_created       => sysdate
-                         , p_wol_date_paid          => Null
-                         , p_wol_descr              => 'COPY OF '||l_wol_rec.wol_id
-                         , p_wol_discount           => l_wol_rec.wol_discount
-                         , p_wol_est_cost           => 0
-                         , p_wol_est_labour         => 0
-                         , p_wol_flag               => l_wol_rec.wol_flag
-                         , p_wol_month_due          => l_wol_rec.wol_month_due
-                         , p_wol_orig_est           => l_wol_rec.wol_orig_est
-                         , p_wol_payment_code       => l_wol_rec.wol_payment_code
-                         , p_wol_quantity           => l_wol_rec.wol_quantity
-                         , p_wol_rate               => l_wol_rec.wol_rate
-                         , p_wol_ss_tre_treat_code  => l_wol_rec.wol_ss_tre_treat_code
-                         , p_wol_status             => l_wol_rec.wol_status
-                         , p_wol_status_code        => l_wol_rec.wol_status_code -- actually ignored by create_wol cos it uses 'INSTRUCTUED' by default
-                         , p_wol_unique_flag        => l_wol_rec.wol_unique_flag
-                         , p_wol_work_sheet_date    => l_wol_rec.wol_work_sheet_date
-                         , p_wol_work_sheet_issue   => l_wol_rec.wol_work_sheet_issue
-                         , p_wol_work_sheet_no      => l_wol_rec.wol_work_sheet_no
-                         , p_wol_wor_flag           => l_wol_rec.wol_wor_flag
-                         , p_wol_date_repaired      => Null
-                         , p_wol_invoice_status     => Null
-                         , p_wol_bud_id             => l_wol_rec.wol_bud_id
-                         , p_wol_unposted_est       => 0
-                         , p_wol_iit_item_id        => l_wol_rec.wol_iit_item_id
-                         , p_wol_gang               => l_wol_rec.wol_gang
-                         , p_wol_register_flag      => l_wol_rec.wol_register_flag
-                         , pi_zeroize               => TRUE);
-
+  --
+  -- belt and braces cos in MAI3800 a when-new-record instance trigger on B1 should
+  -- disable the Copy button
+  --
+  check_wo_can_be_copied(pi_wor_works_order_no => pi_wor_works_order_no);
+  --
+  l_wor_rec := maiwo.get_wo(pi_wor_works_order_no => pi_wor_works_order_no);
+  --
+  l_wor_rec.wor_act_cost_code := null;
+  l_wor_rec.wor_act_balancing_sum := null;
+  l_wor_rec.wor_act_cost := null;
+  l_wor_rec.wor_act_labour := null;
+  l_wor_rec.wor_cheapest_flag := null;
+  l_wor_rec.wor_closed_by_id := null;
+  l_wor_rec.wor_date_closed := null;
+  l_wor_rec.wor_date_confirmed := null;
+  l_wor_rec.wor_mod_by_id := null;
+  l_wor_rec.wor_date_mod := SYSDATE;
+  l_wor_rec.wor_date_raised := SYSDATE;
+  l_wor_rec.wor_descr := pi_wor_works_order_no||' COPY';
+  l_wor_rec.wor_est_balancing_sum := null;
+  l_wor_rec.wor_est_complete := null;
+  l_wor_rec.wor_est_cost := null;
+  l_wor_rec.wor_est_labour := null;
+  l_wor_rec.wor_last_print_date := null;
+  l_wor_rec.wor_year_code := null;
+  l_wor_rec.wor_def_correction := null;
+  l_wor_rec.wor_def_correction_acceptable := null;
+  l_wor_rec.wor_corr_extension_time := null;
+  l_wor_rec.wor_revised_comp_date := null;
+  l_wor_rec.wor_commence_by := null;
+  l_wor_rec.wor_act_commence_by := null;
+  l_wor_rec.wor_def_correction_period := null;
+  l_wor_rec.wor_reason_not_cheapest := null;
+  l_wor_rec.wor_date_received := null;
+  l_wor_rec.wor_received_by := null;
+  l_wor_rec.wor_earliest_start_date := null;
+  l_wor_rec.wor_planned_comp_date := null;
+  l_wor_rec.wor_latest_comp_date := null;
+  l_wor_rec.wor_site_complete_date := null;
+  l_wor_rec.wor_est_duration := null;
+  l_wor_rec.wor_act_duration := null;
+  l_wor_rec.wor_cert_complete := null;
+  l_wor_rec.wor_con_cert_complete := null;
+  l_wor_rec.wor_agreed_by := null;
+  l_wor_rec.wor_agreed_by_date := null;
+  l_wor_rec.wor_con_agreed_by := null;
+  l_wor_rec.wor_con_agreed_by_date := null;
+  l_wor_rec.wor_late_costs := null;
+  l_wor_rec.wor_late_cost_certified_by := null;
+  l_wor_rec.wor_late_cost_certified_date := null;
+  --
+  l_error := create_wo_header(p_wor_works_order_no             => l_wor_rec.wor_works_order_no
+                             ,p_wor_sys_flag                   => l_wor_rec.wor_sys_flag
+                             ,p_wor_rse_he_id_group            => l_wor_rec.wor_rse_he_id_group
+                             ,p_wor_flag                       => l_wor_rec.wor_flag
+                             ,p_wor_con_id                     => l_wor_rec.wor_con_id
+                             ,p_wor_act_cost_code              => l_wor_rec.wor_act_cost_code
+                             ,p_wor_act_balancing_sum          => l_wor_rec.wor_act_balancing_sum
+                             ,p_wor_act_cost                   => l_wor_rec.wor_act_cost
+                             ,p_wor_act_labour                 => l_wor_rec.wor_act_labour
+                             ,p_wor_agency                     => l_wor_rec.wor_agency
+                             ,p_wor_are_sched_act_flag         => l_wor_rec.wor_are_sched_act_flag
+                             ,p_wor_cheapest_flag              => l_wor_rec.wor_cheapest_flag
+                             ,p_wor_closed_by_id               => l_wor_rec.wor_closed_by_id
+                             ,p_wor_coc_cost_centre            => l_wor_rec.wor_coc_cost_centre
+                             ,p_wor_cost_recharg               => l_wor_rec.wor_cost_recharg
+                             ,p_wor_date_closed                => l_wor_rec.wor_date_closed
+                             ,p_wor_date_confirmed             => l_wor_rec.wor_date_confirmed
+                             ,p_wor_date_mod                   => l_wor_rec.wor_date_mod
+                             ,p_wor_date_raised                => l_wor_rec.wor_date_raised
+                             ,p_wor_descr                      => l_wor_rec.wor_descr
+                             ,p_wor_div_code                   => l_wor_rec.wor_div_code
+                             ,p_wor_dtp_expend_code            => l_wor_rec.wor_dtp_expend_code
+                             ,p_wor_est_balancing_sum          => l_wor_rec.wor_est_balancing_sum
+                             ,p_wor_est_complete               => l_wor_rec.wor_est_complete
+                             ,p_wor_est_cost                   => l_wor_rec.wor_est_cost
+                             ,p_wor_est_labour                 => l_wor_rec.wor_est_labour
+                             ,p_wor_icb_item_code              => l_wor_rec.wor_icb_item_code
+                             ,p_wor_icb_sub_item_code          => l_wor_rec.wor_icb_sub_item_code
+                             ,p_wor_icb_sub_sub_item_code      => l_wor_rec.wor_icb_sub_sub_item_code
+                             ,p_wor_job_number                 => l_wor_rec.wor_job_number
+                             ,p_wor_last_print_date            => l_wor_rec.wor_last_print_date
+                             ,p_wor_la_expend_code             => l_wor_rec.wor_la_expend_code
+                             ,p_wor_mod_by_id                  => l_wor_rec.wor_mod_by_id
+                             ,p_wor_oun_org_id                 => l_wor_rec.wor_oun_org_id
+                             ,p_wor_peo_person_id              => l_wor_rec.wor_peo_person_id
+                             ,p_wor_price_type                 => l_wor_rec.wor_price_type
+                             ,p_wor_remarks                    => l_wor_rec.wor_remarks
+                             ,p_wor_road_type                  => l_wor_rec.wor_road_type
+                             ,p_wor_rse_he_id_link             => l_wor_rec.wor_rse_he_id_link
+                             ,p_wor_scheme_ref                 => l_wor_rec.wor_scheme_ref
+                             ,p_wor_scheme_type                => l_wor_rec.wor_scheme_type
+                             ,p_wor_score                      => l_wor_rec.wor_score
+                             ,p_wor_year_code                  => l_wor_rec.wor_year_code
+                             ,p_wor_interim_payment_flag       => l_wor_rec.wor_interim_payment_flag
+                             ,p_wor_risk_assessment_flag       => l_wor_rec.wor_risk_assessment_flag
+                             ,p_wor_method_statement_flag      => l_wor_rec.wor_method_statement_flag
+                             ,p_wor_works_programme_flag       => l_wor_rec.wor_works_programme_flag
+                             ,p_wor_additional_safety_flag     => l_wor_rec.wor_additional_safety_flag
+                             ,p_wor_def_correction             => l_wor_rec.wor_def_correction
+                             ,p_wor_def_correction_accept      => l_wor_rec.wor_def_correction_acceptable
+                             ,p_wor_corr_extension_time        => l_wor_rec.wor_corr_extension_time
+                             ,p_wor_revised_comp_date          => l_wor_rec.wor_revised_comp_date
+                             ,p_wor_price_variation            => l_wor_rec.wor_price_variation
+                             ,p_wor_commence_by                => l_wor_rec.wor_commence_by
+                             ,p_wor_act_commence_by            => l_wor_rec.wor_act_commence_by
+                             ,p_wor_def_correction_period      => l_wor_rec.wor_def_correction_period
+                             ,p_wor_reason_not_cheapest        => l_wor_rec.wor_reason_not_cheapest
+                             ,p_wor_priority                   => l_wor_rec.wor_priority
+                             ,p_wor_perc_item_comp             => l_wor_rec.wor_perc_item_comp
+                             ,p_wor_contact                    => l_wor_rec.wor_contact
+                             ,p_wor_date_received              => l_wor_rec.wor_date_received
+                             ,p_wor_received_by                => l_wor_rec.wor_received_by
+                             ,p_wor_rechargeable               => l_wor_rec.wor_rechargeable
+                             ,p_wor_supp_documents             => l_wor_rec.wor_supp_documents
+                             ,p_wor_earliest_start_date        => l_wor_rec.wor_earliest_start_date
+                             ,p_wor_planned_comp_date          => l_wor_rec.wor_planned_comp_date
+                             ,p_wor_latest_comp_date           => l_wor_rec.wor_latest_comp_date
+                             ,p_wor_site_complete_date         => l_wor_rec.wor_site_complete_date
+                             ,p_wor_est_duration               => l_wor_rec.wor_est_duration
+                             ,p_wor_act_duration               => l_wor_rec.wor_act_duration
+                             ,p_wor_cert_complete              => l_wor_rec.wor_cert_complete
+                             ,p_wor_con_cert_complete          => l_wor_rec.wor_con_cert_complete
+                             ,p_wor_agreed_by                  => l_wor_rec.wor_agreed_by
+                             ,p_wor_agreed_by_date             => l_wor_rec.wor_agreed_by_date
+                             ,p_wor_con_agreed_by              => l_wor_rec.wor_con_agreed_by
+                             ,p_wor_con_agreed_by_date         => l_wor_rec.wor_con_agreed_by_date
+                             ,p_wor_late_costs                 => l_wor_rec.wor_late_costs
+                             ,p_wor_late_cost_certified_by     => l_wor_rec.wor_late_cost_certified_by
+                             ,p_wor_late_cost_certified_date   => l_wor_rec.wor_late_cost_certified_date
+                             ,p_wor_location_plan              => l_wor_rec.wor_location_plan
+                             ,p_wor_utility_plans              => l_wor_rec.wor_utility_plans
+--                             ,p_wor_streetwork_notice          => l_wor_rec.wor_streetwork_notice
+                             ,p_wor_work_restrictions          => l_wor_rec.wor_work_restrictions
+                             ,p_wor_register_flag              => l_wor_rec.wor_register_flag
+                             ,p_wor_register_status            => l_wor_rec.wor_register_status);
+  l_retval := g_works_order_no;  -- set by calling mai.create_wo_header;
+  --
+  FOR c1rec IN c1(pi_wor_works_order_no) LOOP
+    /*
+    ||Initialise the new WOL ID.
+    */
+    lv_new_wol_id := NULL;
+    /*
+    ||Create the new WOL.
+    */
+    create_wol(p_old_wol_id             => c1rec.wol_id
+              ,p_new_wol_id             => lv_new_wol_id
+              ,p_wol_works_order_no     => l_retval
+              ,p_wol_rse_he_id          => c1rec.wol_rse_he_id
+              ,p_wol_siss_id            => c1rec.wol_siss_id
+              ,p_wol_icb_work_code      => c1rec.wol_icb_work_code
+              ,p_wol_def_defect_id      => Null
+              ,p_wol_rep_action_cat     => Null
+              ,p_wol_schd_id            => c1rec.wol_schd_id
+              ,p_wol_cnp_id             => c1rec.wol_cnp_id
+              ,p_wol_act_area_code      => c1rec.wol_act_area_code
+              ,p_wol_act_cost           => 0
+              ,p_wol_act_labour         => 0
+              ,p_wol_are_end_chain      => Null
+              ,p_wol_are_report_id      => Null
+              ,p_wol_are_st_chain       => Null
+              ,p_wol_check_code         => c1rec.wol_check_code
+              ,p_wol_check_comments     => c1rec.wol_check_comments
+              ,p_wol_check_date         => c1rec.wol_check_date
+              ,p_wol_check_id           => c1rec.wol_check_id
+              ,p_wol_check_peo_id       => c1rec.wol_check_peo_id
+              ,p_wol_check_result       => c1rec.wol_check_result
+              ,p_wol_date_complete      => Null
+              ,p_wol_date_created       => sysdate
+              ,p_wol_date_paid          => NULL
+              ,p_wol_descr              => c1rec.wol_descr
+              ,p_wol_discount           => c1rec.wol_discount
+              ,p_wol_est_cost           => 0
+              ,p_wol_est_labour         => 0
+              ,p_wol_flag               => c1rec.wol_flag
+              ,p_wol_month_due          => c1rec.wol_month_due
+              ,p_wol_orig_est           => c1rec.wol_orig_est
+              ,p_wol_payment_code       => c1rec.wol_payment_code
+              ,p_wol_quantity           => c1rec.wol_quantity
+              ,p_wol_rate               => c1rec.wol_rate
+              ,p_wol_ss_tre_treat_code  => c1rec.wol_ss_tre_treat_code
+              ,p_wol_status             => c1rec.wol_status
+              ,p_wol_status_code        => c1rec.wol_status_code -- actually ignored by create_wol cos it uses 'INSTRUCTUED' by default
+              ,p_wol_unique_flag        => c1rec.wol_unique_flag
+              ,p_wol_work_sheet_date    => c1rec.wol_work_sheet_date
+              ,p_wol_work_sheet_issue   => c1rec.wol_work_sheet_issue
+              ,p_wol_work_sheet_no      => c1rec.wol_work_sheet_no
+              ,p_wol_wor_flag           => c1rec.wol_wor_flag
+              ,p_wol_date_repaired      => Null
+              ,p_wol_invoice_status     => Null
+              ,p_wol_bud_id             => c1rec.wol_bud_id
+              ,p_wol_unposted_est       => 0
+              ,p_wol_iit_item_id        => c1rec.wol_iit_item_id
+              ,p_wol_gang               => c1rec.wol_gang
+              ,p_wol_register_flag      => c1rec.wol_register_flag
+              ,pi_zeroize               => pi_zeroize
+              ,pi_copy_boqs             => pi_copy_boqs);
+  END LOOP;
+  /*
+  ||Update The Works Order Cost Totals.
+  */
+  update_wor_totals(pi_wo_no  => l_retval
+                   ,pi_con_id => l_wor_rec.wor_con_id);
+  --
+  RETURN(l_retval);
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      ROLLBACK;
+      RAISE;
+END copy_works_order;
+--
+---------------------------------------------------------------------------------------------------
+--
+FUNCTION copy_wol(pi_wol_works_order_no IN work_order_lines.wol_works_order_no%TYPE
+                 ,pi_wol_id             IN work_order_lines.wol_id%TYPE
+                 ,pi_zeroize            IN BOOLEAN DEFAULT TRUE
+                 ,pi_copy_boqs          IN BOOLEAN DEFAULT TRUE)
+  RETURN work_order_lines.wol_id%TYPE IS
+  --
+  l_wol_rec work_order_lines%ROWTYPE;
+  --
+  l_wol_id  work_order_lines.wol_id%TYPE;
+  l_integer PLS_INTEGER;
+  --
+BEGIN
+  --
+  check_wol_can_be_copied(pi_wol_works_order_no => pi_wol_works_order_no
+                         ,pi_wol_id             => pi_wol_id);
+  --
+  l_wol_rec := maiwo.get_wol(pi_wol_id => pi_wol_id);
+  --
+  l_wol_id := wol_id_nextseq;
+  --
+  create_wol(p_old_wol_id             => pi_wol_id
+            ,p_new_wol_id             => l_wol_id
+            ,p_wol_works_order_no     => l_wol_rec.wol_works_order_no
+            ,p_wol_rse_he_id          => l_wol_rec.wol_rse_he_id
+            ,p_wol_siss_id            => l_wol_rec.wol_siss_id
+            ,p_wol_icb_work_code      => l_wol_rec.wol_icb_work_code
+            ,p_wol_def_defect_id      => Null
+            ,p_wol_rep_action_cat     => Null
+            ,p_wol_schd_id            => l_wol_rec.wol_schd_id
+            ,p_wol_cnp_id             => l_wol_rec.wol_cnp_id
+            ,p_wol_act_area_code      => l_wol_rec.wol_act_area_code
+            ,p_wol_act_cost           => 0
+            ,p_wol_act_labour         => 0
+            ,p_wol_are_end_chain      => Null
+            ,p_wol_are_report_id      => Null
+            ,p_wol_are_st_chain       => Null
+            ,p_wol_check_code         => l_wol_rec.wol_check_code
+            ,p_wol_check_comments     => l_wol_rec.wol_check_comments
+            ,p_wol_check_date         => l_wol_rec.wol_check_date
+            ,p_wol_check_id           => l_wol_rec.wol_check_id
+            ,p_wol_check_peo_id       => l_wol_rec.wol_check_peo_id
+            ,p_wol_check_result       => l_wol_rec.wol_check_result
+            ,p_wol_date_complete      => Null
+            ,p_wol_date_created       => sysdate
+            ,p_wol_date_paid          => Null
+            ,p_wol_descr              => 'COPY OF '||l_wol_rec.wol_id
+            ,p_wol_discount           => l_wol_rec.wol_discount
+            ,p_wol_est_cost           => 0
+            ,p_wol_est_labour         => 0
+            ,p_wol_flag               => l_wol_rec.wol_flag
+            ,p_wol_month_due          => l_wol_rec.wol_month_due
+            ,p_wol_orig_est           => l_wol_rec.wol_orig_est
+            ,p_wol_payment_code       => l_wol_rec.wol_payment_code
+            ,p_wol_quantity           => l_wol_rec.wol_quantity
+            ,p_wol_rate               => l_wol_rec.wol_rate
+            ,p_wol_ss_tre_treat_code  => l_wol_rec.wol_ss_tre_treat_code
+            ,p_wol_status             => l_wol_rec.wol_status
+            ,p_wol_status_code        => l_wol_rec.wol_status_code -- actually ignored by create_wol cos it uses 'INSTRUCTUED' by default
+            ,p_wol_unique_flag        => l_wol_rec.wol_unique_flag
+            ,p_wol_work_sheet_date    => l_wol_rec.wol_work_sheet_date
+            ,p_wol_work_sheet_issue   => l_wol_rec.wol_work_sheet_issue
+            ,p_wol_work_sheet_no      => l_wol_rec.wol_work_sheet_no
+            ,p_wol_wor_flag           => l_wol_rec.wol_wor_flag
+            ,p_wol_date_repaired      => Null
+            ,p_wol_invoice_status     => Null
+            ,p_wol_bud_id             => l_wol_rec.wol_bud_id
+            ,p_wol_unposted_est       => 0
+            ,p_wol_iit_item_id        => l_wol_rec.wol_iit_item_id
+            ,p_wol_gang               => l_wol_rec.wol_gang
+            ,p_wol_register_flag      => l_wol_rec.wol_register_flag
+            ,pi_zeroize               => pi_zeroize
+            ,pi_copy_boqs             => pi_copy_boqs);
+  --
+  RETURN l_wol_id;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      ROLLBACK;
+      RAISE;
 END copy_wol;
 --
 ---------------------------------------------------------------------------------------------------
@@ -6169,7 +6394,451 @@ END defect_is_SUPERSEDED;
 --
 ---------------------------------------------------------------------------------------------------
 --
+FUNCTION select_defects_for_wo(pi_defect_id           IN defects.def_defect_id%TYPE
+                              ,pi_from_date           IN DATE
+                              ,pi_to_date             IN DATE
+                              ,pi_wor_date_raised     IN DATE
+                              ,pi_con_admin_org_id    IN contracts.con_admin_org_id%TYPE
+                              ,pi_xsp                 IN defects.def_x_sect%TYPE
+                              ,pi_qry_id              IN pbi_query.qry_id%TYPE
+                              ,pi_sys_flag            IN work_orders.wor_sys_flag%TYPE
+                              ,pi_icb_id              IN item_code_breakdowns.icb_id%TYPE
+                              ,pi_item_id             IN nm_inv_items_all.iit_ne_id%TYPE
+                              ,pi_inv_code            IN inv_items_all.iit_ity_inv_code%TYPE
+                              ,pi_priority_1          IN defects.def_priority%TYPE
+                              ,pi_priority_2          IN defects.def_priority%TYPE
+                              ,pi_priority_3          IN defects.def_priority%TYPE
+                              ,pi_priority_4          IN defects.def_priority%TYPE
+                              ,pi_priority_5          IN defects.def_priority%TYPE
+                              ,pi_priority_6          IN defects.def_priority%TYPE
+                              ,pi_sta_item_code       IN standard_items.sta_item_code%TYPE
+                              ,pi_siss_id_1           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_2           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_3           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_4           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_5           IN defects.def_siss_id%TYPE
+                              ,pi_siss_id_6           IN defects.def_siss_id%TYPE
+                              ,pi_defect_code_1       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_2       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_3       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_4       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_5       IN defects.def_defect_code%TYPE
+                              ,pi_defect_code_6       IN defects.def_defect_code%TYPE
+                              ,pi_rse_he_id_1         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_2         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_3         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_4         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_5         IN nm_elements_all.ne_id%TYPE
+                              ,pi_rse_he_id_6         IN nm_elements_all.ne_id%TYPE
+                              ,pi_bud_rse_he_id       IN nm_elements_all.ne_id%TYPE
+                              ,pi_wor_rse_he_id_group IN nm_elements_all.ne_id%TYPE
+                              ,pi_tre_treat_code_1    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_2    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_3    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_4    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_5    IN treatments.tre_treat_code%TYPE
+                              ,pi_tre_treat_code_6    IN treatments.tre_treat_code%TYPE
+                              ,pi_include_permanent   IN VARCHAR2
+                              ,pi_include_temporary   IN VARCHAR2)
+  RETURN NUMBER IS
+  --
+  TYPE defect_rep_tab IS TABLE OF mai_def_selection_temp%ROWTYPE;
+  lt_defects  defect_rep_tab;
+  --
+  lv_query   nm3type.max_varchar2;
+  lv_in_list nm3type.max_varchar2;
+  --
+  FUNCTION get_in_list(pi_value1         IN VARCHAR2
+                      ,pi_value2         IN VARCHAR2
+                      ,pi_value3         IN VARCHAR2
+                      ,pi_value4         IN VARCHAR2
+                      ,pi_value5         IN VARCHAR2
+                      ,pi_value6         IN VARCHAR2
+                      ,pi_enclose_values IN BOOLEAN DEFAULT TRUE)
+    RETURN VARCHAR2 IS
+    --
+    lv_retval nm3type.max_varchar2;
+    --
+    PROCEDURE add_to_list(pi_value IN VARCHAR2)
+      IS
+      --
+    BEGIN
+      IF pi_value IS NOT NULL
+       THEN
+          IF lv_retval IS NOT NULL
+           THEN
+              IF pi_enclose_values
+               THEN
+                  lv_retval := lv_retval||','||nm3flx.string(pi_value);
+              ELSE
+                  lv_retval := lv_retval||','||pi_value;
+              END IF;
+          ELSE
+              IF pi_enclose_values
+               THEN
+                  lv_retval := nm3flx.string(pi_value);
+              ELSE
+                  lv_retval := pi_value;
+              END IF;
+          END IF;
+      END IF;
+    END add_to_list;
+    --
+  BEGIN
+    --
+    IF pi_value1 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value1);
+    END IF;
+    --
+    IF pi_value2 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value2);
+    END IF;
+    --
+    IF pi_value3 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value3);
+    END IF;
+    --
+    IF pi_value4 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value4);
+    END IF;
+    --
+    IF pi_value5 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value5);
+    END IF;
+    --
+    IF pi_value6 IS NOT NULL
+     THEN
+        add_to_list(pi_value => pi_value6);
+    END IF;
+    --
+    RETURN lv_retval;
+    --
+  END get_in_list;
+  --
+BEGIN
+  /*
+  ||Build the select statement.
+  */
+  lv_query := 'SELECT def_defect_id '
+                  ||',rep_action_cat '
+              ||'FROM repairs '
+                  ||',defects '
+             ||'WHERE def_status_code IN(SELECT hsc_status_code '
+                                        ||'FROM hig_status_codes '
+                                       ||'WHERE hsc_domain_code = ''DEFECTS'' '
+                                         ||'AND (hsc_allow_feature2 = ''Y'' '
+                                              ||'OR (hsc_allow_feature3 = ''Y'' AND hsc_allow_feature10 = ''Y'') '
+                                              ||'OR (hsc_allow_feature3 = ''Y'' AND hsc_allow_feature10 != ''Y''))) '
+               ||'AND def_date_compl IS NULL '
+               ||'AND (def_notify_org_id IS NULL OR def_rechar_org_id IS NOT NULL) '
+               ||'AND def_defect_id = rep_def_defect_id '
+               ||'AND rep_date_completed IS NULL '
+               ||'AND NVL(rep_superseded_flag,''N'') = ''N'' '
+               ||'AND TRUNC(rep_created_date) <= nm3user.get_effective_date '
+               ||'AND NOT EXISTS(SELECT 1 '
+                                ||'FROM work_order_lines '
+                               ||'WHERE wol_def_defect_id = rep_def_defect_id '
+                                 ||'AND wol_rep_action_cat = rep_action_cat '
+                                 ||'AND wol_status_code != (SELECT hsc_status_code '
+                                                           ||'FROM hig_status_codes '
+                                                          ||'WHERE hsc_domain_code = ''WORK_ORDER_LINES'' '
+                                                            ||'AND hsc_allow_feature5 = ''Y'')) '
+               ||'AND EXISTS(SELECT 1 '
+                            ||'FROM hig_admin_groups hag '
+                                ||',road_sections rse1 '
+                           ||'WHERE hag.hag_parent_admin_unit = '||pi_con_admin_org_id||' '
+                           ||'AND hag.hag_child_admin_unit = rse1.rse_admin_unit '
+                           ||'AND rse1.rse_he_id = def_rse_he_id) '
+               ||'AND EXISTS(SELECT 1 '
+                            ||'FROM ihms_conversions '
+                            ||'WHERE ihc_atv_acty_area_code = rep_atv_acty_area_code '
+                            ||'AND ihc_atv_acty_area_code = def_atv_acty_area_code '
+                            ||'AND ihc_icb_id = '||pi_icb_id||') '
+               ||'AND EXISTS(SELECT 1 '
+                            ||'FROM activities_report '
+                           ||'WHERE TRUNC(are_date_work_done) BETWEEN NVL(:pi_from_date,TRUNC(are_date_work_done)) '
+                                                               ||'AND NVL(:pi_to_date,TRUNC(are_date_work_done)) '
+                             ||'AND TRUNC(are_date_work_done) <= TRUNC(:pi_wor_date_raised) '
+                             ||'AND are_report_id = def_are_report_id) '
 
+  ;
+  /*
+  ||Check the sys_flag parameter.
+  */
+  IF pi_sys_flag != 'L'
+   THEN
+      lv_query := lv_query||'AND EXISTS(SELECT 1'
+                                       ||'FROM road_segments_all '
+                                           ||',item_code_breakdowns '
+                                      ||'WHERE rse_road_environment = DECODE(icb_rse_road_environment,NULL,rse_road_environment '
+                                                                                                  ||',''R'' ,DECODE(rse_road_environment,''S'',''S'' '
+                                                                                                                                           ||',''R'') '
+                                                                                                  ||',''S'' ,DECODE(rse_road_environment,''R'',''R'' '
+                                                                                                                                           ||',''S'') '
+                                                                                                       ||',icb_rse_road_environment) '
+                                        ||'AND icb_id = '||pi_icb_id||' '
+                                        ||'AND rse_he_id = def_rse_he_id) '
+      ;
+  END IF;
+  /*
+  ||Check the XSP parameter.
+  */
+  IF pi_xsp IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND NVL(def_x_sect,''@'') = '||pi_xsp||' ';
+  END IF;
+  /*
+  ||Check the PBI Query Id parameter.
+  */
+  IF pi_qry_id IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND def_iit_item_id IN(SELECT pbi_item_id '
+                                                   ||'FROM pbi_results_inv '
+                                                  ||'WHERE pbi_qry_id = '||pi_qry_id||' '
+                                                    ||'AND pbi_user_name = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,''USER_ID''))) '
+      ;
+  END IF;
+  /*
+  ||Check the Asset Id parameter.
+  */
+  IF pi_item_id IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND def_iit_item_id = '||pi_item_id||' ';
+  END IF;
+  /*
+  ||Check the Asset Type parameter.
+  */
+  IF pi_inv_code IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND EXISTS(SELECT 1 '
+                                       ||'FROM inv_items_all '
+                                      ||'WHERE iit_item_id = def_iit_item_id '
+                                        ||'AND iit_ity_inv_code = '||nm3flx.string(pi_inv_code)||') '
+      ;
+  END IF;
+  /*
+  ||Check the Treatment Code parameters.
+  */
+  lv_in_list := get_in_list(pi_value1         => pi_priority_1
+                           ,pi_value2         => pi_priority_2
+                           ,pi_value3         => pi_priority_3
+                           ,pi_value4         => pi_priority_4
+                           ,pi_value5         => pi_priority_5
+                           ,pi_value6         => pi_priority_6
+                           ,pi_enclose_values => TRUE);
+  IF lv_in_list IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND def_priority IN('||lv_in_list||') ';
+  END IF;            
+  /*
+  ||Check the Standard Item Code parameter.
+  */
+  IF pi_sta_item_code IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND EXISTS(SELECT 1 '
+                                       ||'FROM boq_items '
+                                      ||'WHERE boq_defect_id = def_defect_id '
+                                        ||'AND boq_sta_item_code LIKE '||nm3flx.string(pi_sta_item_code)||') '
+      ;
+  END IF;
+  /*
+  ||Check the SISS Code parameters.
+  */
+  lv_in_list := get_in_list(pi_value1         => pi_siss_id_1
+                           ,pi_value2         => pi_siss_id_2
+                           ,pi_value3         => pi_siss_id_3
+                           ,pi_value4         => pi_siss_id_4
+                           ,pi_value5         => pi_siss_id_5
+                           ,pi_value6         => pi_siss_id_6
+                           ,pi_enclose_values => TRUE);
+  IF lv_in_list IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND NVL(def_siss_id,''@'') IN('||lv_in_list||') ';
+  END IF;
+  /*
+  ||Check the Defect Code parameters.
+  */
+  lv_in_list := get_in_list(pi_value1         => pi_defect_code_1
+                           ,pi_value2         => pi_defect_code_2
+                           ,pi_value3         => pi_defect_code_3
+                           ,pi_value4         => pi_defect_code_4
+                           ,pi_value5         => pi_defect_code_5
+                           ,pi_value6         => pi_defect_code_6
+                           ,pi_enclose_values => TRUE);
+  IF lv_in_list IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND def_defect_code IN('||lv_in_list||') ';
+  END IF;
+  /*
+  ||Check the Defect Id parameter.
+  */
+  IF pi_defect_id IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND def_defect_id = '||pi_defect_id||' ';
+  END IF;
+  /*
+  ||Build the network subquery.
+  */
+  lv_query := lv_query||'AND def_rse_he_id IN(';
+  --
+  lv_in_list := get_in_list(pi_value1         => pi_rse_he_id_1
+                           ,pi_value2         => pi_rse_he_id_2
+                           ,pi_value3         => pi_rse_he_id_3
+                           ,pi_value4         => pi_rse_he_id_4
+                           ,pi_value5         => pi_rse_he_id_5
+                           ,pi_value6         => pi_rse_he_id_6
+                           ,pi_enclose_values => FALSE);
+  --
+  IF pi_defect_id IS NOT NULL
+   THEN
+      lv_query := lv_query||'SELECT def_rse_he_id '
+                            ||'FROM defects '
+                           ||'WHERE def_defect_id = '||pi_defect_id||' '
+      ;
+  ELSE
+      IF lv_in_list IS NOT NULL
+       THEN
+          lv_in_list := 'IN('||lv_in_list||') ';
+      ELSE
+          lv_in_list := '= '||pi_wor_rse_he_id_group||' ';
+      END IF;
+      --
+      lv_query := lv_query||'(SELECT nm_ne_id_of '
+            ||'FROM nm_members '
+            ||'WHERE nm_type = ''G'' '
+            ||'CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in '
+            ||'AND nm_end_date IS NULL '
+            ||'START WITH nm_ne_id_in '||lv_in_list||' '
+            ||'UNION '
+            ||'SELECT ne_id '
+            ||'FROM nm_elements '
+            ||'WHERE ne_id '||lv_in_list||') '
+      ;
+  END IF;
+  --
+  lv_query := lv_query||'INTERSECT '
+            ||'SELECT nm_ne_id_of '
+            ||'FROM nm_members '
+            ||'WHERE nm_type = ''G'' '
+            ||'CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in '
+            ||'AND nm_end_date IS NULL '
+            ||'START with nm_ne_id_in = '||NVL(pi_bud_rse_he_id,pi_wor_rse_he_id_group)||') '
+  ;
+  /*
+            ||'     AND def_rse_he_id IN((SELECT nm_ne_id_of'
+            ||'                             FROM nm_members'
+            ||'                            WHERE nm_type = ''G'''
+            ||'                              AND cp_defect_id IS NULL'
+            ||'                          CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in'
+            ||'                                       AND nm_end_date IS NULL'
+            ||'                            START WITH nm_ne_id_in IN(NVL(cp_rse_he_id_1,pi_wor_rse_he_id_group)'
+            ||'                                                     ,cp_rse_he_id_2'
+            ||'                                                     ,cp_rse_he_id_3'
+            ||'                                                     ,cp_rse_he_id_4'
+            ||'                                                     ,cp_rse_he_id_5'
+            ||'                                                     ,cp_rse_he_id_6)'
+            ||'                            UNION'
+            ||'                           SELECT ne_id'
+            ||'                             FROM nm_elements'
+            ||'                            WHERE ne_id IN(NVL(cp_rse_he_id_1,pi_wor_rse_he_id_group)'
+            ||'                                          ,cp_rse_he_id_2'
+            ||'                                          ,cp_rse_he_id_3'
+            ||'                                          ,cp_rse_he_id_4'
+            ||'                                          ,cp_rse_he_id_5'
+            ||'                                          ,cp_rse_he_id_6)'
+            ||'                              AND cp_defect_id IS NULL'
+            ||'                            UNION'
+            ||'                           SELECT def_rse_he_id'
+            ||'                             FROM defects'
+            ||'                            WHERE def_defect_id = cp_defect_id)'
+            ||'                        INTERSECT'
+            ||'                           SELECT nm_ne_id_of'
+            ||'                             FROM nm_members'
+            ||'                            WHERE nm_type = ''G'''
+            ||'                          CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in'
+            ||'                                       AND nm_end_date IS NULL'
+            ||'                            START with nm_ne_id_in = NVL(cp_bud_rse_he_id,cp_wor_rse_he_id_group))'
+*/
+
+  /*
+  ||Check the Treatment Code parameters.
+  */
+  lv_in_list := get_in_list(pi_value1         => pi_tre_treat_code_1
+                           ,pi_value2         => pi_tre_treat_code_2
+                           ,pi_value3         => pi_tre_treat_code_3
+                           ,pi_value4         => pi_tre_treat_code_4
+                           ,pi_value5         => pi_tre_treat_code_5
+                           ,pi_value6         => pi_tre_treat_code_6
+                           ,pi_enclose_values => TRUE);
+  IF lv_in_list IS NOT NULL
+   THEN
+      lv_query := lv_query||'AND NVL(rep_tre_treat_code,''@'') IN('||lv_in_list||') ';
+  END IF;            
+  /*
+  ||Check the Include Repair Category flags.
+  */  
+  IF (NVL(pi_include_permanent,'N') = 'Y' AND NVL(pi_include_temporary,'N') = 'Y')
+   THEN
+      --
+      lv_query := lv_query||'AND rep_action_cat IN(''P'',''T'') ';
+      --
+  ELSE
+      IF NVL(pi_include_permanent,'N') = 'Y'
+       THEN
+          --
+          lv_query := lv_query||'AND rep_action_cat = ''P'' ';
+          --
+      ELSIF NVL(pi_include_temporary,'N') = 'Y'
+       THEN
+          --
+          lv_query := lv_query||'AND rep_action_cat = ''T'' ';
+          --
+      END IF;
+  END IF;
+  --  
+  lv_query := lv_query||'FOR UPDATE '
+                       ||'OF def_status_code '
+                         ||',def_works_order_no '
+                      ||'NOWAIT '
+  ;
+  
+  nm_debug.debug_on;
+  nm_debug.debug(lv_query);
+  /*
+  ||Execute the query.
+  */
+  EXECUTE IMMEDIATE lv_query 
+  BULK COLLECT INTO lt_defects
+  USING pi_from_date
+       ,pi_to_date
+       ,pi_wor_date_raised;
+  /*
+  ||Clear any records from previous searches.
+  */
+  DELETE FROM mai_def_selection_temp;
+  /*
+  ||Insert the Defect Id's into the temp table to be picked up by the calling code.
+  */
+  FORALL i IN 1..lt_defects.COUNT
+    INSERT
+      INTO mai_def_selection_temp
+    VALUES lt_defects(i)
+         ;
+  /*
+  ||Return the number of defects selected.
+  */
+  nm_debug.debug_off;
+  RETURN lt_defects.COUNT;
+  --
+END select_defects_for_wo;
+--
+---------------------------------------------------------------------------------------------------
+--
 BEGIN  /* mai - automatic variables */
   /*
     return the Oracle user who is owner of the MAI application
