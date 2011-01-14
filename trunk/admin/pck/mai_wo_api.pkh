@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.7   Dec 03 2010 11:35:56   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.8   Jan 14 2011 17:39:24   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Dec 03 2010 11:35:56  $
---       Date fetched Out : $Modtime:   Dec 03 2010 11:32:44  $
---       PVCS Version     : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   Jan 14 2011 17:39:24  $
+--       Date fetched Out : $Modtime:   Jan 10 2011 11:02:30  $
+--       PVCS Version     : $Revision:   3.8  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -112,6 +112,23 @@ FUNCTION get_wo_status(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
 FUNCTION works_order_complete(pi_works_order_no      work_orders.wor_works_order_no%TYPE
                              ,pi_exclude_wol_id_tab  nm3type.tab_number)
   RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION within_budget(pi_bud_id IN work_order_lines.wol_bud_id%TYPE
+                      ,pi_con_id IN contracts.con_id%TYPE
+                      ,pi_est    IN work_order_lines.wol_est_cost%TYPE DEFAULT 0
+                      ,pi_act    IN work_order_lines.wol_act_cost%TYPE DEFAULT 0
+                      ,pi_wol_id IN work_order_lines.wol_id%TYPE DEFAULT NULL)
+  RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_to_budget(pi_wol_id in work_order_lines.wol_id%TYPE
+                       ,pi_bud_id in work_order_lines.wol_bud_id%TYPE
+                       ,pi_con_id in contracts.con_id%TYPE
+                       ,pi_est    in work_order_lines.wol_est_cost%TYPE DEFAULT 0
+                       ,pi_act    in work_order_lines.wol_act_cost%TYPE DEFAULT 0);
 --
 -----------------------------------------------------------------------------
 --
