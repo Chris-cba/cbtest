@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.7   Jun 01 2010 10:45:48   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.8   Jan 14 2011 15:42:24   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   Jun 01 2010 10:45:48  $
---       Date fetched Out : $Modtime:   Jun 01 2010 10:44:14  $
---       PVCS Version     : $Revision:   2.7  $
+--       Date into PVCS   : $Date:   Jan 14 2011 15:42:24  $
+--       Date fetched Out : $Modtime:   Jan 14 2011 15:38:06  $
+--       PVCS Version     : $Revision:   2.8  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Tue Jun 01  10:38:38 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Fri Jan 14  15:22:01 2011 by Server Generator 10.1.2.9.28
   
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
@@ -70,6 +70,13 @@ ALTER TABLE MAI_BUDGET_ALLOCATIONS
  ADD (CONSTRAINT MBA_PK PRIMARY KEY 
   (MBA_NIT_INV_TYPE
   ,MBA_NE_ID))
+/
+
+PROMPT Creating Primary Key on 'MAI_DEF_SELECTION_TEMP'
+ALTER TABLE MAI_DEF_SELECTION_TEMP
+ ADD (CONSTRAINT MDST_PK PRIMARY KEY 
+  (MDST_DEFECT_ID
+  ,MDST_ACTION_CAT))
 /
 
 PROMPT Creating Primary Key on 'MAI_GMIS_LOAD_BATCHES'
@@ -199,6 +206,7 @@ ALTER TABLE MAI_AUTO_WO_RULE_CRITERIA
   (MAWC_MAWR_ID
   ,MAWC_ATV_ACTY_AREA_CODE
   ,MAWC_DTY_DEFECT_CODE
+  ,MAWC_DEF_SISS_ID
   ,MAWC_PRIORITY
   ,MAWC_INCLUDE_TEMP_REPAIR
   ,MAWC_INCLUDE_PERM_REPAIR
@@ -219,7 +227,7 @@ PROMPT Creating Check Constraint on 'DEF_SUPERSEDING_RULES'
 ALTER TABLE DEF_SUPERSEDING_RULES
  ADD (CONSTRAINT DSR_TOLERANCE_CHK CHECK (dsr_tolerance >= 0))
 /
-                                                 
+                                            
 PROMPT Creating Check Constraint on 'MAI_AUTO_WO_RULES'
 ALTER TABLE MAI_AUTO_WO_RULES
  ADD (CONSTRAINT MAWR_AGGREGATE_REPAIRS_CHK CHECK (mawr_aggregate_repairs IN ('Y','N')))
@@ -249,7 +257,7 @@ PROMPT Creating Check Constraint on 'MAI_AUTO_WO_RULE_CRITERIA'
 ALTER TABLE MAI_AUTO_WO_RULE_CRITERIA
  ADD (CONSTRAINT MAWC_INCLUDE_TEMP_REPAIR_CHK CHECK (mawc_include_temp_repair IN ('Y','N')))
 /
-  
+   
 PROMPT Creating Check Constraint on 'MAI_GMIS_LOAD_BATCHES'
 ALTER TABLE MAI_GMIS_LOAD_BATCHES
  ADD (CONSTRAINT GLB_LOAD_ERR_CHK1 CHECK (glb_load_errors IN ('Y', 'N')))
