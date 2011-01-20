@@ -1,16 +1,16 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.15   Oct 28 2010 16:30:12   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.16   Jan 20 2011 16:51:40   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Oct 28 2010 16:30:12  $
---       Date fetched Out : $Modtime:   Oct 28 2010 16:29:54  $
---       PVCS Version     : $Revision:   2.15  $
+--       Date into PVCS   : $Date:   Jan 20 2011 16:51:40  $
+--       Date fetched Out : $Modtime:   Jan 20 2011 16:51:22  $
+--       PVCS Version     : $Revision:   2.16  $
 --
 --------------------------------------------------------------------------------
+-- Copyright (c) Exor Corporation Ltd, 2011
+--------------------------------------------------------------------------------
 --
-REM Copyright (c) Exor Corporation Ltd, 2010
-
 set echo off
 set linesize 120
 set heading off
@@ -121,11 +121,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.3.0.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.4.0.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.3.0.0'
+                                ,p_VERSION        => '4.4.0.0'
                                 );
 END;
 /
@@ -432,8 +432,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.3.0.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.3.0.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.4.0.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.4.0.0');
 END;
 /
 COMMIT;
