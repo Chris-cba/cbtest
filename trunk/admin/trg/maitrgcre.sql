@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.6   Oct 20 2010 11:08:24   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.7   Jan 21 2011 12:14:28   Mike.Alexander  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into PVCS   : $Date:   Oct 20 2010 11:08:24  $
---       Date fetched Out : $Modtime:   Oct 20 2010 11:08:02  $
---       Version          : $Revision:   2.6  $
+--       Date into PVCS   : $Date:   Jan 21 2011 12:14:28  $
+--       Date fetched Out : $Modtime:   Jan 21 2011 12:14:04  $
+--       Version          : $Revision:   2.7  $
 -------------------------------------------------------------------------
 --
 --
@@ -14,14 +14,6 @@ SET ECHO OFF
 set TERM off
 --
 COL run_file new_value run_file noprint
---
--------------------------------------------------------------------------
---
-SET define ON
-SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'trg'||'&terminator'||'action_wor_status.trg' run_file
-FROM dual
-/
-START '&run_file'
 --
 -------------------------------------------------------------------------
 --
@@ -43,14 +35,6 @@ START '&run_file'
 --
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'trg'||'&terminator'||'complete_doc_status.trg' run_file
-FROM dual
-/
-START '&run_file'
---
--------------------------------------------------------------------------
---
-SET define ON
-SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'trg'||'&terminator'||'complete_wor_status.trg' run_file
 FROM dual
 /
 START '&run_file'
