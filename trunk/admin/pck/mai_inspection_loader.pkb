@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.15   Dec 06 2010 13:58:12   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.16   Jan 26 2011 18:11:00   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Dec 06 2010 13:58:12  $
---       Date fetched Out : $Modtime:   Dec 06 2010 12:18:16  $
---       PVCS Version     : $Revision:   3.15  $
+--       Date into PVCS   : $Date:   Jan 26 2011 18:11:00  $
+--       Date fetched Out : $Modtime:   Jan 26 2011 17:27:50  $
+--       PVCS Version     : $Revision:   3.16  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.15  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.16  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -267,7 +267,8 @@ END get_user_id;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION get_org_id(pi_org_code VARCHAR2)
+FUNCTION get_org_id(pi_org_code VARCHAR2
+                   ,pi_org_type VARCHAR2)
   RETURN org_units.oun_org_id%TYPE IS
   --
   lv_retval org_units.oun_org_id%TYPE;
@@ -278,6 +279,7 @@ BEGIN
     INTO lv_retval
     FROM org_units
    WHERE oun_unit_code = pi_org_code
+     AND oun_org_unit_type = pi_org_type
        ;
   --
   RETURN lv_retval;
@@ -1565,7 +1567,8 @@ nm_debug.debug('File inspdate = '||lv_token);
         IF lv_token IS NOT NULL
          THEN
             --
-            lv_org_id := get_org_id(pi_org_code => lv_token);
+            lv_org_id := get_org_id(pi_org_code => lv_token
+                                   ,pi_org_type => 'NO');
             --
             IF lv_org_id IS NULL
              THEN
@@ -1584,7 +1587,8 @@ nm_debug.debug('File inspdate = '||lv_token);
         IF lv_token IS NOT NULL
          THEN
             --
-            lv_org_id := get_org_id(pi_org_code => lv_token);
+            lv_org_id := get_org_id(pi_org_code => lv_token
+                                   ,pi_org_type => 'RE');
             --
             IF lv_org_id IS NULL
              THEN
