@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.0.1.0   Jan 27 2011 13:54:22   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.0.1.1   Jan 27 2011 14:43:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Jan 27 2011 13:54:22  $
---       Date fetched Out : $Modtime:   Sep 27 2010 12:11:14  $
---       Version          : $Revision:   3.0.1.0  $
+--       Date into PVCS   : $Date:   Jan 27 2011 14:43:14  $
+--       Date fetched Out : $Modtime:   Jan 27 2011 14:42:14  $
+--       Version          : $Revision:   3.0.1.1  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.0.1.0  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.0.1.1  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -1615,10 +1615,12 @@ BEGIN
     --
   END IF;
   --
+  /* Commented out for Task 0110636
   FOR i_rec IN c39 LOOP
     rec_count := rec_count + 1;
     cursor_recs(rec_count) := i_rec.rec;
   END LOOP;
+  */
   /* all records in the table now write them out to the file */
   IF (debug)
    THEN
