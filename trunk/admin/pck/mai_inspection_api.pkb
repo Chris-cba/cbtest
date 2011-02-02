@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.19   Jan 05 2011 15:51:04   mike.huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.20   Feb 02 2011 15:33:38   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jan 05 2011 15:51:04  $
---       Date fetched Out : $Modtime:   Jan 05 2011 15:35:38  $
---       PVCS Version     : $Revision:   3.19  $
+--       Date into PVCS   : $Date:   Feb 02 2011 15:33:38  $
+--       Date fetched Out : $Modtime:   Feb 02 2011 15:13:36  $
+--       PVCS Version     : $Revision:   3.20  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.20  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -300,7 +300,7 @@ EXCEPTION
       raise_application_error(-20020,'Cannot Find Initial Defect Status.');
   WHEN others
    THEN
-      RAISE;
+      raise_application_error(-20020,'Error occured whilst getting the Initial Defect Status. ['||SQLCODE||']');
 END get_initial_defect_status;
 --
 -----------------------------------------------------------------------------
@@ -329,7 +329,7 @@ EXCEPTION
       raise_application_error(-20021,'Cannot Find Complete Defect Status.');
   WHEN others
    THEN
-      RAISE;
+      raise_application_error(-20021,'Error occured whilst getting the Complete Defect Status. ['||SQLCODE||']');
 END get_complete_defect_status;
 --
 -----------------------------------------------------------------------------
@@ -337,28 +337,41 @@ END get_complete_defect_status;
 FUNCTION get_superseded_defect_status(pi_effective_date IN DATE)
   RETURN hig_status_codes.hsc_status_code%TYPE IS
   --
+  CURSOR get_code(cp_effective_date DATE)
+      IS
+  SELECT hsc_status_code
+    FROM hig_status_codes
+   WHERE hsc_domain_code = 'DEFECTS'
+     AND hsc_allow_feature8 = 'Y'
+     AND cp_effective_date BETWEEN NVL(hsc_start_date,cp_effective_date)
+                               AND NVL(hsc_end_date,cp_effective_date)
+   ORDER
+      BY hsc_seq_no DESC
+       ;
+  --
   lv_retval  hig_status_codes.hsc_status_code%TYPE;
   --
 BEGIN
   --
-  SELECT hsc_status_code
-    INTO lv_retval
-    FROM hig_status_codes
-   WHERE hsc_domain_code = 'DEFECTS'
-     AND hsc_allow_feature8 = 'Y'
-     AND pi_effective_date BETWEEN NVL(hsc_start_date,pi_effective_date)
-                               AND NVL(hsc_end_date,pi_effective_date)
-       ;
+  OPEN  get_code(pi_effective_date);
+  FETCH get_code
+   INTO lv_retval;
+  CLOSE get_code;
+  --
+  IF lv_retval IS NULL
+   THEN
+      RAISE no_data_found;
+  END IF;
   --
   RETURN lv_retval;
   --
 EXCEPTION
   WHEN no_data_found
    THEN
-      raise_application_error(-20021,'Cannot Find Complete Defect Status.');
+      raise_application_error(-20021,'Cannot Find Superseded Defect Status.');
   WHEN others
    THEN
-      RAISE;
+      raise_application_error(-20021,'Error occured whilst getting the Superseded Defect Status. ['||SQLCODE||']');
 END get_superseded_defect_status;
 --
 -----------------------------------------------------------------------------
@@ -1102,7 +1115,7 @@ BEGIN
       --
       raise_application_error(-20006,'Value Is Less Than Zero.');
       --
-  ELSIF pi_chainage > pi_rse_length
+  ELSIF pi_chainage > ROUND(pi_rse_length)
    THEN
       --
       raise_application_error(-20007,'Value Is Greater Than Section Length.');
