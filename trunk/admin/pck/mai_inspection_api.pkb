@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.20   Feb 02 2011 15:33:38   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.21   Feb 16 2011 18:23:16   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 02 2011 15:33:38  $
---       Date fetched Out : $Modtime:   Feb 02 2011 15:13:36  $
---       PVCS Version     : $Revision:   3.20  $
+--       Date into PVCS   : $Date:   Feb 16 2011 18:23:16  $
+--       Date fetched Out : $Modtime:   Feb 16 2011 18:20:30  $
+--       PVCS Version     : $Revision:   3.21  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.20  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.21  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1007,7 +1007,8 @@ BEGIN
       /*
       ||Check nm3 Asset.
       */
-      lr_nm3_asset := nm3inv.get_inv_item_all(pi_item_id);
+      lr_nm3_asset :=  nm3get.get_iit_all(pi_iit_ne_id       => pi_item_id
+                                         ,pi_raise_not_found => TRUE);
       lv_retval := TRUE;
   END IF;
   --
