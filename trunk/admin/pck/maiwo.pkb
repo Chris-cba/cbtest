@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.8   Sep 10 2010 16:43:40   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.9   Feb 16 2011 10:47:34   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Sep 10 2010 16:43:40  $
---       Date fetched Out : $Modtime:   Sep 10 2010 16:05:18  $
---       SCCS Version     : $Revision:   2.8  $
+--       Date into SCCS   : $Date:   Feb 16 2011 10:47:34  $
+--       Date fetched Out : $Modtime:   Feb 04 2011 17:01:48  $
+--       SCCS Version     : $Revision:   2.9  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.8  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.9  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -28,18 +28,40 @@ CREATE OR REPLACE package body maiwo is
   connect by prior boq_parent_id = boq_id
   start with              boq_id = p_boq_item;
 
-
+--
+-----------------------------------------------------------------------------
+--
   function get_version return varchar2 is
   begin
      return g_sccsid;
   end;
+--
+-----------------------------------------------------------------------------
+--
 
   FUNCTION get_body_version RETURN varchar2 IS
   BEGIN
     RETURN g_body_sccsid;
   END get_body_version;
-
-
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_next_id(pi_seq_name IN VARCHAR2)
+  RETURN NUMBER IS
+  --
+  lv_query_string varchar2(1000) := 'SELECT '||pi_seq_name||'.nextval FROM dual';
+  lv_seq_no number;
+  --
+BEGIN
+  --
+  EXECUTE IMMEDIATE lv_query_string INTO lv_seq_no;
+  --
+  RETURN lv_seq_no;
+  --
+END get_next_id;
+--
+-----------------------------------------------------------------------------
+--
   -- get the computation method for a boq item
   function get_perc_item_comp(p_boq_id in boq_items.boq_id%type)
   return varchar2 is
@@ -753,6 +775,256 @@ END create_interim_payment;
     end if;
     close get_items;
   end;
+--
+----------------------------------------------------------------
+--
+PROCEDURE add_percent_items(pi_parent_boqs   IN  boq_id_tab
+                           ,pi_percent_item  IN  standard_items.sta_item_code%TYPE
+                           ,pi_bud_id        IN  budgets.bud_id%TYPE
+                           ,po_child_boqs    OUT boq_id_tab
+                           ,po_error_no      OUT PLS_INTEGER)
+  IS
+  --
+  lr_user  hig_users%ROWTYPE;
+  --
+  TYPE boq_items_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
+  lt_perc_items  boq_items_tab;
+  --
+  lv_est_cost      NUMBER(10,4);
+  lv_act_cost      NUMBER(10,4);
+  lv_result        BOOLEAN := FALSE;
+  lv_wor_est_cost  work_orders.wor_est_cost%TYPE;
+  lv_check_value   NUMBER;
+  --
+  error_occured  EXCEPTION;
+  --
+  CURSOR get_parent_det(cp_parent boq_items.boq_id%TYPE)
+      IS
+  SELECT boq.boq_est_cost
+        ,boq.boq_act_cost
+        ,boq.boq_sta_item_code
+        ,boq.boq_defect_id
+        ,boq.boq_work_flag
+        ,boq.boq_rep_action_cat
+        ,boq.boq_wol_id
+        ,wol.wol_date_complete
+        ,(SELECT hsc_allow_feature8
+            FROM hig_status_codes
+           WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+             AND hsc_status_code = wol.wol_status_code) valuation
+        ,wor.wor_con_id
+        ,wor.wor_est_cost
+        ,wor.wor_date_confirmed
+        ,(SELECT oun_cng_disc_group
+            FROM org_units
+                ,contracts
+           WHERE con_id = wor.wor_con_id
+             AND wor.wor_date_raised BETWEEN NVL(con_start_date,wor.wor_date_raised)
+                                         AND NVL(con_end_date,wor.wor_date_raised)
+             AND con_contr_org_id = oun_org_id) discount_group
+        ,(SELECT NVL(sta_allow_percent,'Y')
+            FROM standard_items
+           WHERE sta_item_code = boq.boq_sta_item_code) sta_allow_percent
+    FROM work_orders wor
+        ,work_order_lines wol
+        ,boq_items boq
+   WHERE wol.wol_works_order_no = wor.wor_works_order_no
+     AND boq.boq_wol_id = wol.wol_id
+     AND boq.boq_id = cp_parent
+       ;
+  --
+  r_parent_det get_parent_det%ROWTYPE;
+  --
+  CURSOR percent_item(cp_con_id        contract_items.cni_con_id%TYPE
+                     ,cp_percent_item  standard_items.sta_item_code%TYPE)
+      IS
+  SELECT sta_item_name
+        ,cni_rate
+        ,cni_rse_he_id
+    FROM standard_items
+        ,contract_items
+   WHERE cni_con_id = cp_con_id
+     AND cni_sta_item_code = sta_item_code
+     AND sta_item_code = cp_percent_item
+       ;
+  --
+  r_percent    percent_item%ROWTYPE;
+  --
+BEGIN
+  nm_debug.debug_on;
+  nm_debug.debug('1');
+  /*
+  ||Get User Limits.
+  */
+   lr_user := nm3user.get_hus(pi_hus_user_id => nm3user.get_user_id);
+  /*
+  ||Loop through the nominated parent items.
+  */
+nm_debug.debug('2');
+  FOR i IN 1..pi_parent_boqs.count LOOP
+    /*
+    ||Get details of the parent item.
+    */
+nm_debug.debug('3 boq_id = '||pi_parent_boqs(i));
+    OPEN  get_parent_det(pi_parent_boqs(i));
+nm_debug.debug('3A');
+    FETCH get_parent_det
+     INTO r_parent_det;
+nm_debug.debug('3B');
+    IF get_parent_det%NOTFOUND
+     THEN
+        CLOSE get_parent_det;
+        nm_debug.debug('3C');
+        po_error_no := 880;
+        RAISE error_occured;
+    ELSE
+        CLOSE get_parent_det;
+    END IF;
+    --
+nm_debug.debug('4');
+    IF r_parent_det.sta_allow_percent = 'N'
+     THEN
+        po_error_no := 880;
+        RAISE error_occured;
+    END IF;
+    /*
+    ||Get details of the percentage item to be added.
+    */
+nm_debug.debug('5');
+    OPEN  percent_item(r_parent_det.wor_con_id
+                      ,pi_percent_item);
+    FETCH percent_item
+     INTO r_percent;
+    IF percent_item%NOTFOUND
+     THEN
+        CLOSE percent_item;
+        po_error_no := 880;
+        RAISE error_occured;
+    ELSE
+        CLOSE percent_item;
+    END IF;
+    /*
+    ||compute the cost
+    */
+nm_debug.debug('6');
+    return_perc_sum(p_parent    => pi_parent_boqs(i)
+                   ,p_perc_item => NULL
+                   ,p_est_cost  => lv_est_cost
+                   ,p_act_cost  => lv_act_cost);
+    --
+nm_debug.debug('7');
+    IF r_parent_det.wol_date_complete IS NULL
+     AND r_parent_det.valuation != 'Y'
+     THEN
+        lv_est_cost := round((lv_est_cost / 100) * r_percent.cni_rate,2);
+    ELSE
+        /*
+        ||If the Percentage Item is being added
+        ||as an actual cost the estimate should
+        ||be zero.
+        */
+        lv_est_cost := 0;
+    END IF;
+nm_debug.debug('8');
+    /*
+    ||Check that the new WO Estimated Cost is within the users limits.
+    */
+    lv_wor_est_cost := NVL(lv_wor_est_cost,r_parent_det.wor_est_cost) + lv_est_cost;
+    --
+nm_debug.debug('9');
+    IF lv_est_cost != 0
+     AND lr_user.hus_wor_flag IN('1','2')
+     AND r_parent_det.wor_date_confirmed IS NULL
+     THEN
+        --
+nm_debug.debug('10');
+	   	  lv_check_value := lv_wor_est_cost + maiwo.bal_sum(lv_wor_est_cost,r_parent_det.discount_group);
+	   	  --
+nm_debug.debug('11');
+        IF lv_check_value NOT BETWEEN lr_user.hus_wor_value_min
+                                  AND lr_user.hus_wor_value_max
+         THEN
+            IF lr_user.hus_wor_flag = '2'
+             THEN
+                /*
+                ||Error.
+                */
+                po_error_no := 246;
+                RAISE error_occured;
+            ELSE
+                /*
+                ||Warning.
+                */
+                po_error_no := 247;
+            END IF;
+        END IF;
+    END IF;
+    --
+nm_debug.debug('12');
+    lv_act_cost := round((lv_act_cost / 100) * r_percent.cni_rate,2);
+    /*
+    ||Check that the additional cost is within budget
+    */
+    lv_result := mai_budgets.check_budget(pi_bud_id, lv_est_cost, lv_act_cost, r_parent_det.boq_wol_id);
+    --
+    IF lv_result AND NOT mai_budgets.allow_over_budget
+     THEN
+        po_error_no := 882;
+        RAISE error_occured;
+    ELSE
+        /*
+        ||Store the new percentage item for insert later.
+        */
+        lt_perc_items(lt_perc_items.count+1).boq_work_flag    := r_parent_det.boq_work_flag;
+        lt_perc_items(lt_perc_items.count).boq_defect_id      := r_parent_det.boq_defect_id;
+        lt_perc_items(lt_perc_items.count).boq_rep_action_cat := r_parent_det.boq_rep_action_cat;
+        lt_perc_items(lt_perc_items.count).boq_wol_id         := r_parent_det.boq_wol_id;
+        lt_perc_items(lt_perc_items.count).boq_sta_item_code  := pi_percent_item;
+        lt_perc_items(lt_perc_items.count).boq_item_name      := r_percent.sta_item_name;
+        lt_perc_items(lt_perc_items.count).boq_date_created   := SYSDATE;
+        lt_perc_items(lt_perc_items.count).boq_est_dim1       := 1;
+        lt_perc_items(lt_perc_items.count).boq_est_quantity   := 1;
+        lt_perc_items(lt_perc_items.count).boq_est_rate       := r_percent.cni_rate;
+        lt_perc_items(lt_perc_items.count).boq_est_cost       := lv_est_cost;
+        lt_perc_items(lt_perc_items.count).boq_act_dim1       := 1;
+        lt_perc_items(lt_perc_items.count).boq_act_cost       := lv_act_cost;
+        lt_perc_items(lt_perc_items.count).boq_parent_id      := pi_parent_boqs(i);
+        IF lv_act_cost IS NOT NULL
+         THEN
+            lt_perc_items(lt_perc_items.count).boq_act_quantity := 1;
+            lt_perc_items(lt_perc_items.count).boq_act_rate     := r_percent.cni_rate;
+        END IF;
+    END IF;
+  END LOOP;
+  /*
+  ||Got this far so populate the BOQ_IDs.
+  ||and insert the records.
+  */
+  FOR i IN 1..lt_perc_items.count LOOP
+    --
+    lt_perc_items(i).boq_id := get_next_id('BOQ_ID_SEQ');
+    po_child_boqs(i) := lt_perc_items(i).boq_id;
+    --
+  END LOOP;
+  --
+  FORALL i IN 1..lt_perc_items.count
+    INSERT
+      INTO boq_items
+    VALUES lt_perc_items(i)
+         ;
+  --
+  nm_debug.debug_off;
+  --
+EXCEPTION
+  WHEN error_occured
+   THEN
+      ROLLBACK;
+  WHEN others
+   THEN
+      ROLLBACK;
+      nm_debug.debug_off;
+      RAISE;
+END add_percent_items;
 --
 ----------------------------------------------------------------
 --
