@@ -4,11 +4,11 @@ CREATE OR REPLACE package maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.2   Sep 10 2010 16:43:40   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkh-arc   2.3   Feb 16 2011 10:47:32   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiwo.pkh  $
---       Date into SCCS   : $Date:   Sep 10 2010 16:43:40  $
---       Date fetched Out : $Modtime:   Sep 10 2010 16:05:48  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Feb 16 2011 10:47:32  $
+--       Date fetched Out : $Modtime:   Feb 04 2011 15:54:14  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.5
 --
 -----------------------------------------------------------------------------
@@ -18,9 +18,11 @@ CREATE OR REPLACE package maiwo is
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    --g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
-    g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   2.2  $';
+  --g_sccsid      CONSTANT  VARCHAR2(2000) := '@(#)maiwo.pkh	1.5 08/10/06';
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   2.3  $';
 --  g_sccsid is the SCCS ID for the package
+--
+TYPE boq_id_tab IS TABLE OF boq_items.boq_id%TYPE INDEX BY BINARY_INTEGER;
 --</GLOBVAR>
 --
 -----------------------------------------------------------------------------
@@ -132,6 +134,14 @@ FUNCTION get_body_version RETURN varchar2;
 --</PROC>
 -------------------------------------------------------------------------------
 --<PROC NAME="add_percent_item">
+--
+PROCEDURE add_percent_items(pi_parent_boqs   IN  boq_id_tab
+                           ,pi_percent_item  IN  standard_items.sta_item_code%TYPE
+                           ,pi_bud_id        IN  budgets.bud_id%TYPE
+                           ,po_child_boqs    OUT boq_id_tab
+                           ,po_error_no      OUT PLS_INTEGER);
+--
+-------------------------------------------------------------------------------
 --
    function add_percent_item(p_parent in boq_items.boq_id%type
                             ,p_percent_item in standard_items.sta_item_code%type
