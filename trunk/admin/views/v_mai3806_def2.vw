@@ -1,7 +1,7 @@
 CREATE OR REPLACE FORCE VIEW v_mai3806_def2
 ( works_order_no
 , wol_date_created
-, wor_est_complete
+, wol_target_date
 , wol_date_complete
 , wol_status_code
 , wol_date_paid
@@ -35,16 +35,16 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.0   Nov 05 2009 10:35:04   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.1   Feb 21 2011 12:22:58   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def2.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:04  $
---       Date fetched Out : $Modtime:   Nov 04 2009 16:14:44  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Feb 21 2011 12:22:58  $
+--       Date fetched Out : $Modtime:   Feb 21 2011 12:22:00  $
+--       Version          : $Revision:   3.1  $
 -------------------------------------------------------------------------
 --
        wol.wol_works_order_no
       ,wol.wol_date_created
-      ,wor.wor_est_complete
+      ,wol.wol_target_date
       ,wol.wol_date_complete
       ,wol.wol_status_code
       ,wol.wol_date_paid
