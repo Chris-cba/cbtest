@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.17   Dec 03 2010 11:36:14   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.18   Feb 21 2011 10:51:28   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Dec 03 2010 11:36:14  $
---       Date fetched Out : $Modtime:   Nov 30 2010 10:05:40  $
---       PVCS Version     : $Revision:   3.17  $
+--       Date into PVCS   : $Date:   Feb 21 2011 10:51:28  $
+--       Date fetched Out : $Modtime:   Feb 21 2011 10:49:30  $
+--       PVCS Version     : $Revision:   3.18  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.17  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2713,6 +2713,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                              ,pi_commit          IN VARCHAR2)
   IS
   --
+  
   lv_wol_inst_status hig_status_codes.hsc_status_code%TYPE := get_instructed_wol_status;
   lv_def_inst_status hig_status_codes.hsc_status_code%TYPE := get_instructed_def_status;
   --
@@ -2863,6 +2864,120 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
     END IF;
     --
   END check_contract;
+  --
+  PROCEDURE update_wol_target_date
+   IS
+	--
+	CURSOR c_defect(cp_defect_id   defects.def_defect_id%TYPE)
+	  IS 
+	SELECT def_priority
+	  FROM defects
+	 WHERE def_defect_id = cp_defect_id;
+	--
+	CURSOR c_repair(cp_defect_id   defects.def_defect_id%TYPE,
+				    cp_action_cat  repairs.rep_action_cat%TYPE)
+	  IS 
+	SELECT rep_date_due
+	  FROM repairs
+	 WHERE rep_def_defect_id = cp_defect_id
+	   AND rep_action_cat = cp_action_cat;
+	--
+	lv_rep_due_date		  DATE;
+	lv_wo_target_date      DATE;
+   lv_target_date         DATE;
+   lv_defect_priority     defects.def_priority%TYPE;
+	--
+	FUNCTION recalc_due_date(pi_activity            IN activities.atv_acty_area_code%TYPE
+                            ,pi_priority           IN defects.def_priority%TYPE
+                            ,pi_action_cat         IN repairs.rep_action_cat%TYPE
+                            ,pi_rse_he_id          IN nm_elements_all.ne_id%TYPE)
+      RETURN DATE IS
+
+	    lv_date_due		DATE;
+	    lv_dummy		NUMBER;
+	BEGIN
+	    mai.rep_date_due(pi_date_instructed
+                        ,pi_activity
+                        ,pi_priority
+                        ,pi_action_cat
+                        ,pi_rse_he_id
+                        ,lv_date_due
+                        ,lv_dummy);
+		IF lv_dummy <> 0
+		 THEN
+			IF lv_dummy = 8509
+			 THEN
+				hig.raise_ner(nm3type.c_mai,904); --Cannot Find Interval For Priority/Repair Category
+			ELSIF lv_dummy = 8213
+			 THEN
+				hig.raise_ner(nm3type.c_mai,905); --Cannot Find Interval For Road
+			ELSE
+				hig.raise_ner(nm3type.c_mai,906); --Cannot Find Due Date From Interval
+			END IF;
+		END IF;
+		
+		RETURN lv_date_due;
+		
+	END recalc_due_date;
+
+  BEGIN
+    --
+	lv_wo_target_date := lr_wo.wor_est_complete;
+	--
+    FOR i IN 1..lt_wols.count LOOP
+
+		IF lt_wols(i).wol_def_defect_id IS NOT NULL
+		THEN
+
+		  IF lr_con.con_recalc_due_date = 'Y'
+		  THEN 
+			-- Get Defect priority
+			OPEN C_defect(lt_wols(i).wol_def_defect_id);
+			FETCH C_defect INTO lv_defect_priority;
+			CLOSE C_defect;
+		  
+			-- Calculate the wol target date
+			lv_target_date := recalc_due_date(lt_wols(i).wol_act_area_code
+											 ,lv_defect_priority
+											 ,lt_wols(i).wol_rep_action_cat
+											 ,lt_wols(i).wol_rse_he_id);
+		  ELSE
+			-- Get Repair Due Date 
+			OPEN C_repair(lt_wols(i).wol_def_defect_id,
+						  lt_wols(i).wol_rep_action_cat);
+			FETCH C_repair INTO lv_rep_due_date;
+			CLOSE C_repair;
+				
+			lv_target_date := lv_rep_due_date;
+			
+		  END IF;
+		  
+		  update work_order_lines
+			 set wol_target_date = lv_target_date
+		   where wol_id = lt_wols(i).wol_id;
+
+	   -- If newly calculated target date > WO target
+		  -- date, update the WO date to the new value
+		  IF lv_wo_target_date IS NULL OR
+			 lv_target_date > lv_wo_target_date
+		  THEN
+			 lv_wo_target_date := lv_target_date;
+		  END IF; 
+
+		END IF;
+	END LOOP;
+
+    -- Update WO target date, if required
+    IF NVL(lr_wo.wor_est_complete, TO_DATE('01012099', 'DDMMYYYY')) != 
+       NVL(lv_wo_target_date, TO_DATE('01012099', 'DDMMYYYY'))
+    THEN
+	  UPDATE work_orders
+		 SET wor_est_complete = lv_wo_target_date
+	   WHERE wor_works_order_no = pi_works_order_no
+		   ;
+    END IF;
+ 
+  END update_wol_target_date;
   --
   PROCEDURE update_budgets
     IS
@@ -3018,19 +3133,22 @@ BEGIN
                           ,pi_works_order_no => pi_works_order_no
                           ,pi_commit         => 'N');
   END IF;
+
+  /*
+  ||Update The WOLs. -- clb 18022011 modified for task 0110522 
+  */
+    update_wol_target_date;
+	--
+    UPDATE work_order_lines
+       SET wol_status_code = lv_wol_inst_status
+     WHERE wol_works_order_no = pi_works_order_no
+       ;
   /*
   ||Instruct The Work Order.
   */
   UPDATE work_orders
      SET wor_date_confirmed = pi_date_instructed
    WHERE wor_works_order_no = pi_works_order_no
-       ;
-  /*
-  ||Update The WOLs.
-  */
-  UPDATE work_order_lines
-     SET wol_status_code = lv_wol_inst_status
-   WHERE wol_works_order_no = pi_works_order_no
        ;
   /*
   ||Set the status of any associated Defects to INSTRUCTED
@@ -6784,6 +6902,87 @@ END get_wol_target_date;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_forward_wo_to_user_where(pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
+                                     ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+  RETURN VARCHAR2 IS
+  --
+  lv_retval  nm3type.max_varchar2;
+  --
+  lv_consecmode  hig_option_values.hov_value%TYPE := hig.get_sysopt(p_option_id => 'CONSECMODE');
+  --
+BEGIN
+  /*
+  ||Initial Query Based On The Admin Unit Of The Road Group
+  ||Associsted With The Works Order (As In MAI3800).
+  */
+  lv_retval := ' WHERE hus_user_id != nm3user.get_user_id'
+    ||CHR(10)||'   AND hus_user_id IN(SELECT mus_user_id'
+    ||CHR(10)||'                        FROM mai_users'
+    ||CHR(10)||'                       WHERE mus_wor_aur_allowed = ''Y'')'
+    ||CHR(10)||'   AND TRUNC(SYSDATE) BETWEEN hus_start_date AND NVL(hus_end_date,TRUNC(SYSDATE))'
+    ||CHR(10)||'   AND (hus_admin_unit IN(SELECT hag_parent_admin_unit'
+    ||CHR(10)||'                            FROM nm_elements_all'
+    ||CHR(10)||'                                ,hig_admin_groups'
+    ||CHR(10)||'                           WHERE hag_child_admin_unit = ne_admin_unit'
+    ||CHR(10)||'                             AND ne_id = '||pi_wor_rse_he_id_group||')'
+    ||CHR(10)||'        OR EXISTS(SELECT 1'
+    ||CHR(10)||'                    FROM nm_elements_all'
+    ||CHR(10)||'                        ,hig_admin_units'
+    ||CHR(10)||'                   WHERE hau_level = 1'
+    ||CHR(10)||'                     AND hau_admin_unit = ne_admin_unit'
+    ||CHR(10)||'                     AND ne_id = '||pi_wor_rse_he_id_group||'))'
+  ;
+  /*
+  ||Check To See If Contrator\Contract Security Is Switched On.
+  */
+  IF lv_consecmode = maisec.c_admin_unit
+   THEN
+      /*
+      ||Add The Contract Admin Unit Clause.
+      */
+      lv_retval := lv_retval||'   AND (hus_admin_unit IN(SELECT hag_parent_admin_unit'
+             ||CHR(10)||'                            FROM contracts'
+             ||CHR(10)||'                                ,hig_admin_groups'
+             ||CHR(10)||'                           WHERE hag_child_admin_unit = con_admin_org_id'
+             ||CHR(10)||'                             AND con_id = '||pi_wor_con_id||')'
+             ||CHR(10)||'        OR (hig.get_sysopt(''INCTOPCON'') = ''Y'''
+             ||CHR(10)||'            AND EXISTS(SELECT 1'
+             ||CHR(10)||'                         FROM contracts'
+             ||CHR(10)||'                             ,hig_admin_units'
+             ||CHR(10)||'                        WHERE hau_level = 1'
+             ||CHR(10)||'                          AND hau_admin_unit = con_admin_org_id'
+             ||CHR(10)||'                          AND  con_id = '||pi_wor_con_id||')))'
+      ;
+      --
+  ELSIF lv_consecmode = maisec.c_user
+   THEN
+      /*
+      ||Add The Contractor User Clause.
+      */
+      lv_retval := lv_retval||'   AND (hus_user_id IN(SELECT cou_hus_user_id'
+             ||CHR(10)||'                         FROM contractor_users'
+             ||CHR(10)||'                             ,contracts'
+             ||CHR(10)||'                        WHERE con_id = '||pi_wor_con_id
+             ||CHR(10)||'                          AND con_contr_org_id = cou_oun_org_id)'
+             ||CHR(10)||'        OR hus_username IN(SELECT hur_username'
+             ||CHR(10)||'                             FROM hig_user_roles'
+             ||CHR(10)||'                                 ,contractor_roles'
+             ||CHR(10)||'                                 ,contracts'
+             ||CHR(10)||'                            WHERE con_id = '||pi_wor_con_id
+             ||CHR(10)||'                              AND con_contr_org_id = cor_oun_org_id'
+             ||CHR(10)||'                              AND cor_role = hur_role))'
+      ;
+      --
+  END IF;
+  /*
+  ||Return The Results.
+  */
+  RETURN lv_retval;
+  --
+END get_forward_wo_to_user_where;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION get_forward_wo_to_user_lov(pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
   RETURN forward_to_user_tab IS
   --
@@ -6811,66 +7010,10 @@ BEGIN
   lv_str := 'SELECT hus_user_id'
  ||CHR(10)||'      ,hus_name'
  ||CHR(10)||'  FROM hig_users'
- ||CHR(10)||' WHERE hus_user_id != nm3user.get_user_id'
- ||CHR(10)||'   AND TRUNC(SYSDATE) BETWEEN hus_start_date AND NVL(hus_end_date,TRUNC(SYSDATE))'
- ||CHR(10)||'   AND (hus_admin_unit IN(SELECT hag_parent_admin_unit'
- ||CHR(10)||'                            FROM nm_elements_all'
- ||CHR(10)||'                                ,hig_admin_groups'
- ||CHR(10)||'                           WHERE hag_child_admin_unit = ne_admin_unit'
- ||CHR(10)||'                             AND ne_id = '||lr_wo.wor_rse_he_id_group||')'
- ||CHR(10)||'        OR EXISTS(SELECT 1'
- ||CHR(10)||'                    FROM nm_elements_all'
- ||CHR(10)||'                        ,hig_admin_units'
- ||CHR(10)||'                   WHERE hau_level = 1'
- ||CHR(10)||'                     AND hau_admin_unit = ne_admin_unit'
- ||CHR(10)||'                     AND ne_id = '||lr_wo.wor_rse_he_id_group||'))'
+ ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => lr_wo.wor_rse_he_id_group
+                                        ,pi_wor_con_id          => lr_wo.wor_con_id)
+ ||CHR(10)||' ORDER BY UPPER(hus_name)'
   ;
-  /*
-  ||Check To See If Contrator\Contract Security Is Switched On.
-  */
-  IF lv_consecmode = maisec.c_admin_unit
-   THEN
-      /*
-      ||Add The Contract Admin Unit Clause.
-      */
-      lv_str := lv_str||'   AND (hus_admin_unit IN(SELECT hag_parent_admin_unit'
-             ||CHR(10)||'                            FROM contracts'
-             ||CHR(10)||'                                ,hig_admin_groups'
-             ||CHR(10)||'                           WHERE hag_child_admin_unit = con_admin_org_id'
-             ||CHR(10)||'                             AND con_id = '||lr_wo.wor_con_id||')'
-             ||CHR(10)||'        OR (hig.get_sysopt(''INCTOPCON'') = ''Y'''
-             ||CHR(10)||'            AND EXISTS(SELECT 1'
-             ||CHR(10)||'                         FROM contracts'
-             ||CHR(10)||'                             ,hig_admin_units'
-             ||CHR(10)||'                        WHERE hau_level = 1'
-             ||CHR(10)||'                          AND hau_admin_unit = con_admin_org_id'
-             ||CHR(10)||'                          AND  con_id = '||lr_wo.wor_con_id||')))'
-      ;
-      --
-  ELSIF lv_consecmode = maisec.c_user
-   THEN
-      /*
-      ||Add The Contractor User Clause.
-      */
-      lv_str := lv_str||'   AND (hus_user_id IN(SELECT cou_hus_user_id'
-             ||CHR(10)||'                         FROM contractor_users'
-             ||CHR(10)||'                             ,contracts'
-             ||CHR(10)||'                        WHERE con_id = '||lr_wo.wor_con_id
-             ||CHR(10)||'                          AND con_contr_org_id = cou_oun_org_id)'
-             ||CHR(10)||'        OR hus_username IN(SELECT hur_username'
-             ||CHR(10)||'                             FROM hig_user_roles'
-             ||CHR(10)||'                                 ,contractor_roles'
-             ||CHR(10)||'                                 ,contracts'
-             ||CHR(10)||'                            WHERE con_id = '||lr_wo.wor_con_id
-             ||CHR(10)||'                              AND con_contr_org_id = cor_oun_org_id'
-             ||CHR(10)||'                              AND cor_role = hur_role))'
-      ;
-      --
-  END IF;
-  /*
-  ||Add The Order By Clause.
-  */
-  lv_str := lv_str||' ORDER BY UPPER(hus_name)';
   /*
   ||Run The Query.
   */
@@ -6888,6 +7031,68 @@ END get_forward_wo_to_user_lov;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_forward_wo_to_user_rg_sql(pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
+                                      ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+  RETURN VARCHAR2 IS
+  --
+  lv_retval  nm3type.max_varchar2;
+  --
+BEGIN
+  --
+  lv_retval := 'SELECT hus_user_id'
+    ||CHR(10)||'      ,hus_initials'
+    ||CHR(10)||'      ,hus_name'
+    ||CHR(10)||'  FROM hig_users'
+    ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => pi_wor_rse_he_id_group
+                                           ,pi_wor_con_id          => pi_wor_con_id)
+    ||CHR(10)||' ORDER BY hus_initials'
+  ;
+  --
+  RETURN lv_retval;
+  --
+END get_forward_wo_to_user_rg_sql;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_forward_wo_to_user(pi_user_id             IN hig_users.hus_user_id%TYPE
+                                    ,pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
+                                    ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+  RETURN BOOLEAN IS
+  --
+  lv_retval  BOOLEAN := TRUE;
+  lv_dummy   hig_users.hus_user_id%TYPE;
+  lv_str     nm3type.max_varchar2;
+  --
+BEGIN
+  --
+  /*
+  ||Initial Query Based On The Admin Unit Of The Road Group
+  ||Associsted With The Works Order (As In MAI3800).
+  */
+  lv_str := 'SELECT hus_user_id'
+ ||CHR(10)||'  FROM hig_users'
+ ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => pi_wor_rse_he_id_group
+                                        ,pi_wor_con_id          => pi_wor_con_id)
+ ||CHR(10)||'   AND hus_user_id = '||pi_user_id
+  ;
+  /*
+  ||Run The Query.
+  */
+  EXECUTE IMMEDIATE lv_str INTO lv_dummy;
+  --
+  RETURN lv_retval;
+  --
+EXCEPTION
+  WHEN no_data_found
+   THEN
+      RETURN FALSE;
+  WHEN others
+   THEN
+      RAISE;
+END validate_forward_wo_to_user;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE forward_works_order(pi_works_order_no     IN     work_orders.wor_works_order_no%TYPE
                              ,pi_forward_to_user_id IN     hig_users.hus_user_id%TYPE
                              ,pi_commit             IN     VARCHAR2 DEFAULT 'Y'
@@ -6902,8 +7107,9 @@ BEGIN
   */
   lr_wo := get_wo(pi_works_order_no => pi_works_order_no);
   --
-  IF NOT validate_user_id(pi_user_id        => pi_forward_to_user_id
-                         ,pi_effective_date => TRUNC(SYSDATE))
+  IF NOT validate_forward_wo_to_user(pi_user_id             => pi_forward_to_user_id
+                                    ,pi_wor_rse_he_id_group => lr_wo.wor_rse_he_id_group
+                                    ,pi_wor_con_id          => lr_wo.wor_con_id)
    THEN
       raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_forward_to_user_id)||'].');
   END IF;
@@ -6930,3 +7136,4 @@ END;
 --
 END mai_wo_api;
 /
+
