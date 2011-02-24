@@ -1,0 +1,49 @@
+CREATE OR REPLACE PACKAGE mai_user AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_users.pkh-arc   3.0   Feb 24 2011 17:56:12   Mike.Huitson  $
+--       Module Name      : $Workfile:   mai_users.pkh  $
+--       Date into PVCS   : $Date:   Feb 24 2011 17:56:12  $
+--       Date fetched Out : $Modtime:   Feb 14 2011 12:36:30  $
+--       PVCS Version     : $Revision:   3.0  $
+--
+-----------------------------------------------------------------------------
+--      Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--
+--<GLOBVAR>
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.0  $';
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_mai_user(pi_hus_user_id IN hig_users.hus_user_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE delete_mai_user(pi_hus_user_id IN hig_users.hus_user_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_mus(pi_mus_user_id IN mai_users.mus_user_id%TYPE)
+  RETURN mai_users%ROWTYPE;
+--
+-----------------------------------------------------------------------------
+--
+END mai_user;
+/
