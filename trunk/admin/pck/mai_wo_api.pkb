@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.18   Feb 21 2011 10:51:28   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.19   Feb 24 2011 18:21:16   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Feb 21 2011 10:51:28  $
---       Date fetched Out : $Modtime:   Feb 21 2011 10:49:30  $
---       PVCS Version     : $Revision:   3.18  $
+--       Date into PVCS   : $Date:   Feb 24 2011 18:21:16  $
+--       Date fetched Out : $Modtime:   Feb 24 2011 17:42:04  $
+--       PVCS Version     : $Revision:   3.19  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2612,22 +2612,75 @@ END create_defect_work_order;
 --
 -----------------------------------------------------------------------------
 --
-PROCEDURE authorise_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
-                              ,pi_works_order_no  IN work_orders.wor_works_order_no%TYPE
-                              ,pi_commit          IN VARCHAR2)
-
+FUNCTION check_daily_auth_limit(pi_user_id   IN hig_users.hus_user_id%TYPE
+                               ,pi_auth_date IN DATE
+                               ,pi_test_cost IN work_orders.wor_est_cost%TYPE)
+  RETURN BOOLEAN IS
+  --
+  lv_retval BOOLEAN := TRUE;
+  lv_cost_today  NUMBER;
+  --
+  lr_mai_user  mai_users%ROWTYPE;
+  --
+  PROCEDURE get_cost_today
+    IS
+  BEGIN
+    SELECT NVL(SUM(wor_est_cost),0)
+      INTO lv_cost_today
+      FROM work_orders
+     WHERE wor_mod_by_id = pi_user_id
+       AND TRUNC(wor_date_authorised) = TRUNC(pi_auth_date)
+         ;
+  END get_cost_today;
+  --
+BEGIN
+  --
+  lr_mai_user := mai_user.get_mus(pi_mus_user_id => pi_user_id);
+  --
+  IF lr_mai_user.mus_wor_aur_daily_max IS NOT NULL
+   THEN
+      --
+      get_cost_today;
+      --
+      IF (lv_cost_today + pi_test_cost) > lr_mai_user.mus_wor_aur_daily_max
+       THEN
+          lv_retval := FALSE;
+      END IF;
+  END IF;
+  --
+  RETURN lv_retval;
+  --
+END check_daily_auth_limit; 
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE can_user_authorise_wo(pi_user_id          IN     hig_users.hus_user_id%TYPE
+                               ,pi_works_order_no   IN     work_orders.wor_works_order_no%TYPE
+                               ,pi_raise_exceptions IN     BOOLEAN
+                               ,pio_can_authorise   IN OUT BOOLEAN
+                               ,pio_error           IN OUT VARCHAR2)
   IS
   --
-  lv_auth_own hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
+  lv_auth_own   hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
+  lv_test_cost  work_orders.wor_est_cost%TYPE;
   --
-  lr_user  hig_users%ROWTYPE;
-  lr_wo    work_orders%ROWTYPE;
+  lr_user      hig_users%ROWTYPE;
+  lr_mai_user  mai_users%ROWTYPE;
+  lr_wo        work_orders%ROWTYPE;
   --
 BEGIN
   /*
   ||Get User Details.
   */
   lr_user := get_user(pi_user_id => pi_user_id);
+  lr_mai_user := mai_user.get_mus(pi_mus_user_id => pi_user_id);
+  /*
+  ||Is the user allowed to Authorise Works Orders.
+  */
+  IF lr_mai_user.mus_wor_aur_allowed != 'Y'
+   THEN
+      raise_application_error(-20075,'User Is Not Allowed To Authorise Work Orders.');
+  END IF;
   /*
   ||Get The Work Order Details.
   */
@@ -2647,30 +2700,73 @@ BEGIN
       raise_application_error(-20078,'Work Order Date Raised Is Outside Users Start/End Dates.');
   END IF;
   --
+  lv_test_cost := apply_balancing_sum(pi_con_id => lr_wo.wor_con_id
+                                     ,pi_value  => lr_wo.wor_est_cost);
+  --
   IF lr_wo.wor_est_cost IS NOT NULL
-   AND apply_balancing_sum(pi_con_id => lr_wo.wor_con_id
-                          ,pi_value  => lr_wo.wor_est_cost)
-       BETWEEN nvl(lr_user.hus_wor_aur_min,0)
-           AND nvl(lr_user.hus_wor_aur_max,999999999)
+   AND lv_test_cost BETWEEN nvl(lr_mai_user.mus_wor_aur_min,0)
+                        AND nvl(lr_mai_user.mus_wor_aur_max,999999999)
    THEN
       /*
-      ||Okay So Far
+      ||Now check Daily Limit.
       */
-      NULL;
+      IF NOT check_daily_auth_limit(pi_user_id   => pi_user_id
+                                   ,pi_auth_date => SYSDATE
+                                   ,pi_test_cost => lv_test_cost)
+       THEN
+          raise_application_error(-20049,'Cannot Authorise Works Order, The Cost exceeds the User''s daily limit.');
+      END IF;
   ELSE
       raise_application_error(-20049,'Cannot Authorise Works Order, Cost Is Outside User Limits.');
   END IF;
+  /*
+  ||Got this far so okay to Authorise.
+  */
+  pio_can_authorise := TRUE;
+  --
+EXCEPTION
+  WHEN others
+   THEN
+      pio_can_authorise := FALSE;
+      pio_error := SQLERRM;
+      IF pi_raise_exceptions
+       THEN
+          RAISE;
+      END IF;
+END can_user_authorise_wo;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE authorise_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
+                              ,pi_works_order_no  IN work_orders.wor_works_order_no%TYPE
+                              ,pi_commit          IN VARCHAR2)
+
+  IS
+  --
+  lv_can_authorise  BOOLEAN;
+  lv_error          nm3type.max_varchar2;
+  --
+BEGIN
+  /*
+  ||Make sure the user can Authorise the WO.
+  */
+  can_user_authorise_wo(pi_user_id          => pi_user_id
+                       ,pi_works_order_no   => pi_works_order_no
+                       ,pi_raise_exceptions => TRUE
+                       ,pio_can_authorise   => lv_can_authorise
+                       ,pio_error           => lv_error);
   /*
   ||All Okay So Authorise.
   */
   UPDATE work_orders
      SET wor_mod_by_id = pi_user_id
+        ,wor_date_authorised = SYSDATE
    WHERE wor_works_order_no = pi_works_order_no
        ;
   /*
   ||Commit If Required.
   */
-  nm_debug.debug('Authorise Work Order '||pi_works_order_no||' complete '||pi_user_id);
+  --nm_debug.debug('Authorise Work Order '||pi_works_order_no||' complete '||pi_user_id);
   IF NVL(pi_commit,'Y') = 'Y'
    THEN
       COMMIT;
@@ -2679,7 +2775,7 @@ BEGIN
 EXCEPTION
   WHEN OTHERS
    THEN
-      nm_debug.debug('authorise_work_order '||SQLERRM);
+      --nm_debug.debug('authorise_work_order '||SQLERRM);
       ROLLBACK;
       RAISE;
 END authorise_work_order;
@@ -2882,10 +2978,10 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
 	 WHERE rep_def_defect_id = cp_defect_id
 	   AND rep_action_cat = cp_action_cat;
 	--
-	lv_rep_due_date		  DATE;
-	lv_wo_target_date      DATE;
-   lv_target_date         DATE;
-   lv_defect_priority     defects.def_priority%TYPE;
+	lv_rep_due_date	    DATE;
+	lv_wo_target_date   DATE;
+    lv_target_date      DATE;
+    lv_defect_priority  defects.def_priority%TYPE;
 	--
 	FUNCTION recalc_due_date(pi_activity            IN activities.atv_acty_area_code%TYPE
                             ,pi_priority           IN defects.def_priority%TYPE
@@ -3030,7 +3126,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                   ,p_confirmed    => pi_date_instructed
                                   ,p_est_complete => lr_wo.wor_est_complete
                                   ,p_est_cost     => lr_wo.wor_est_cost
-								  ,p_act_cost     => lr_wo.wor_act_cost
+                                  ,p_act_cost     => lr_wo.wor_act_cost
                                   ,p_labour       => lr_wo.wor_est_labour
                                   ,p_ip_flag      => lr_wo.wor_interim_payment_flag
                                   ,p_ra_flag      => lr_wo.wor_risk_assessment_flag
@@ -3038,7 +3134,8 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
                                   ,p_wp_flag      => lr_wo.wor_works_programme_flag
                                   ,p_as_flag      => lr_wo.wor_additional_safety_flag
                                   ,p_commence_by  => lr_wo.wor_commence_by
-                                  ,p_descr        => lr_wo.wor_descr);
+                                  ,p_descr        => lr_wo.wor_descr
+                                  ,p_remarks      => lr_wo.wor_remarks);
         --
         /* clb 30062010 - task 0109900 commented out code, which was creating rec type A data in CIM file
         FOR i IN 1..lt_wols.count LOOP
@@ -3137,11 +3234,11 @@ BEGIN
   /*
   ||Update The WOLs. -- clb 18022011 modified for task 0110522 
   */
-    update_wol_target_date;
-	--
-    UPDATE work_order_lines
-       SET wol_status_code = lv_wol_inst_status
-     WHERE wol_works_order_no = pi_works_order_no
+  update_wol_target_date;
+  --
+  UPDATE work_order_lines
+     SET wol_status_code = lv_wol_inst_status
+   WHERE wol_works_order_no = pi_works_order_no
        ;
   /*
   ||Instruct The Work Order.
@@ -4413,7 +4510,7 @@ PROCEDURE update_wol_status(pi_user_id       IN hig_users.hus_user_id%TYPE
                                   ,p_confirmed    => lr_wo.wor_date_confirmed
                                   ,p_est_complete => lr_wo.wor_est_complete
                                   ,p_est_cost     => lv_wor_act_cost
-								  ,p_act_cost	  => lv_wor_est_cost
+                                  ,p_act_cost     => lv_wor_est_cost
                                   ,p_labour       => lr_wo.wor_est_labour
                                   ,p_ip_flag      => lr_wo.wor_interim_payment_flag
                                   ,p_ra_flag      => lr_wo.wor_risk_assessment_flag
@@ -4421,17 +4518,19 @@ PROCEDURE update_wol_status(pi_user_id       IN hig_users.hus_user_id%TYPE
                                   ,p_wp_flag      => lr_wo.wor_works_programme_flag
                                   ,p_as_flag      => lr_wo.wor_additional_safety_flag
                                   ,p_commence_by  => lr_wo.wor_commence_by
-                                  ,p_descr        => lr_wo.wor_descr);
+                                  ,p_descr        => lr_wo.wor_descr
+                                  ,p_remarks      => lr_wo.wor_remarks);
         --
         lr_ne := nm3get.get_ne(pi_ne_id => lr_wol.wol_rse_he_id);
         --
-        interfaces.add_wol_to_list(lr_wol.wol_id
-                                  ,lr_wol.wol_works_order_no
-                                  ,lr_wol.wol_def_defect_id
-                                  ,lr_wol.wol_schd_id
-                                  ,lr_wol.wol_icb_work_code
-                                  ,lr_ne.ne_unique
-                                  ,lr_ne.ne_descr);
+        interfaces.add_wol_to_list(p_wol_id     => lr_wol.wol_id
+                                  ,p_wor_no     => lr_wol.wol_works_order_no
+                                  ,p_defect_id  => lr_wol.wol_def_defect_id
+                                  ,p_schd_id    => lr_wol.wol_schd_id
+                                  ,p_work_code  => lr_wol.wol_icb_work_code
+                                  ,p_road_id    => lr_ne.ne_unique
+                                  ,p_road_descr => lr_ne.ne_descr
+                                  ,p_wol_descr  => lr_wol.wol_descr);
         --
         interfaces.copy_data_to_interface;
         --
@@ -6903,7 +7002,8 @@ END get_wol_target_date;
 -----------------------------------------------------------------------------
 --
 FUNCTION get_forward_wo_to_user_where(pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
-                                     ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+                                     ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE
+                                     ,pi_wor_date_raised     IN work_orders.wor_date_raised%TYPE)
   RETURN VARCHAR2 IS
   --
   lv_retval  nm3type.max_varchar2;
@@ -6919,7 +7019,7 @@ BEGIN
     ||CHR(10)||'   AND hus_user_id IN(SELECT mus_user_id'
     ||CHR(10)||'                        FROM mai_users'
     ||CHR(10)||'                       WHERE mus_wor_aur_allowed = ''Y'')'
-    ||CHR(10)||'   AND TRUNC(SYSDATE) BETWEEN hus_start_date AND NVL(hus_end_date,TRUNC(SYSDATE))'
+    ||CHR(10)||'   AND TO_DATE('''||TO_CHAR(pi_wor_date_raised,'DD-MON-YYYY')||''',''DD-MON-YYYY'') BETWEEN hus_start_date AND NVL(hus_end_date,TO_DATE('''||TO_CHAR(pi_wor_date_raised,'DD-MON-YYYY')||''',''DD-MON-YYYY''))'
     ||CHR(10)||'   AND (hus_admin_unit IN(SELECT hag_parent_admin_unit'
     ||CHR(10)||'                            FROM nm_elements_all'
     ||CHR(10)||'                                ,hig_admin_groups'
@@ -7004,14 +7104,14 @@ BEGIN
   */
   lr_wo := get_wo(pi_works_order_no => pi_works_order_no);
   /*
-  ||Initial Query Based On The Admin Unit Of The Road Group
-  ||Associsted With The Works Order (As In MAI3800).
+  ||Build the query.
   */
   lv_str := 'SELECT hus_user_id'
  ||CHR(10)||'      ,hus_name'
  ||CHR(10)||'  FROM hig_users'
  ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => lr_wo.wor_rse_he_id_group
-                                        ,pi_wor_con_id          => lr_wo.wor_con_id)
+                                        ,pi_wor_con_id          => lr_wo.wor_con_id
+                                        ,pi_wor_date_raised     => lr_wo.wor_date_raised)
  ||CHR(10)||' ORDER BY UPPER(hus_name)'
   ;
   /*
@@ -7032,20 +7132,22 @@ END get_forward_wo_to_user_lov;
 -----------------------------------------------------------------------------
 --
 FUNCTION get_forward_wo_to_user_rg_sql(pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
-                                      ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+                                      ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE
+                                      ,pi_wor_date_raised     IN work_orders.wor_date_raised%TYPE)
   RETURN VARCHAR2 IS
   --
   lv_retval  nm3type.max_varchar2;
   --
 BEGIN
   --
-  lv_retval := 'SELECT hus_user_id'
+  lv_retval := 'SELECT hus_name'
     ||CHR(10)||'      ,hus_initials'
-    ||CHR(10)||'      ,hus_name'
+    ||CHR(10)||'      ,hus_user_id'
     ||CHR(10)||'  FROM hig_users'
     ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => pi_wor_rse_he_id_group
-                                           ,pi_wor_con_id          => pi_wor_con_id)
-    ||CHR(10)||' ORDER BY hus_initials'
+                                           ,pi_wor_con_id          => pi_wor_con_id
+                                           ,pi_wor_date_raised     => pi_wor_date_raised)
+    ||CHR(10)||' ORDER BY hus_name'
   ;
   --
   RETURN lv_retval;
@@ -7056,7 +7158,8 @@ END get_forward_wo_to_user_rg_sql;
 --
 FUNCTION validate_forward_wo_to_user(pi_user_id             IN hig_users.hus_user_id%TYPE
                                     ,pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
-                                    ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE)
+                                    ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE
+                                    ,pi_wor_date_raised     IN work_orders.wor_date_raised%TYPE)
   RETURN BOOLEAN IS
   --
   lv_retval  BOOLEAN := TRUE;
@@ -7066,13 +7169,13 @@ FUNCTION validate_forward_wo_to_user(pi_user_id             IN hig_users.hus_use
 BEGIN
   --
   /*
-  ||Initial Query Based On The Admin Unit Of The Road Group
-  ||Associsted With The Works Order (As In MAI3800).
+  ||Build the validation query.
   */
   lv_str := 'SELECT hus_user_id'
  ||CHR(10)||'  FROM hig_users'
  ||CHR(10)||get_forward_wo_to_user_where(pi_wor_rse_he_id_group => pi_wor_rse_he_id_group
-                                        ,pi_wor_con_id          => pi_wor_con_id)
+                                        ,pi_wor_con_id          => pi_wor_con_id
+                                        ,pi_wor_date_raised     => pi_wor_date_raised)
  ||CHR(10)||'   AND hus_user_id = '||pi_user_id
   ;
   /*
@@ -7109,7 +7212,8 @@ BEGIN
   --
   IF NOT validate_forward_wo_to_user(pi_user_id             => pi_forward_to_user_id
                                     ,pi_wor_rse_he_id_group => lr_wo.wor_rse_he_id_group
-                                    ,pi_wor_con_id          => lr_wo.wor_con_id)
+                                    ,pi_wor_con_id          => lr_wo.wor_con_id
+                                    ,pi_wor_date_raised     => lr_wo.wor_date_raised)
    THEN
       raise_application_error(-20067,'Invalid User Id Supplied ['||TO_CHAR(pi_forward_to_user_id)||'].');
   END IF;
