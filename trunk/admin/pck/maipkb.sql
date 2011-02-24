@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.7   Aug 10 2010 09:28:38   Linesh.Sorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.8   Feb 24 2011 18:00:46   Mike.Huitson  $
 --       Module Name      : $Workfile:   maipkb.sql  $
---       Date into SCCS   : $Date:   Aug 10 2010 09:28:38  $
---       Date fetched Out : $Modtime:   Aug 10 2010 09:23:16  $
---       SCCS Version     : $Revision:   2.7  $
+--       Date into SCCS   : $Date:   Feb 24 2011 18:00:46  $
+--       Date fetched Out : $Modtime:   Feb 24 2011 18:00:00  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -405,10 +405,20 @@ FROM dual
 /
 --
 START '&run_file'
---
+-----------------------------------------------------------------------------
+-- mai_cim_automation package
+-----------------------------------------------------------------------------
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
 '&terminator'||'pck'||'&terminator'||'mai_cim_automation.pkw' run_file
+FROM dual
+/
+-----------------------------------------------------------------------------
+-- mai_users package
+-----------------------------------------------------------------------------
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+'&terminator'||'pck'||'&terminator'||'mai_users.pkw' run_file
 FROM dual
 /
 --
