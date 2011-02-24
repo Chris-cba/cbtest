@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.9   Feb 16 2011 10:47:34   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.10   Feb 24 2011 18:16:18   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Feb 16 2011 10:47:34  $
---       Date fetched Out : $Modtime:   Feb 04 2011 17:01:48  $
---       SCCS Version     : $Revision:   2.9  $
+--       Date into SCCS   : $Date:   Feb 24 2011 18:16:18  $
+--       Date fetched Out : $Modtime:   Feb 22 2011 18:16:32  $
+--       SCCS Version     : $Revision:   2.10  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.9  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.10  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -2343,11 +2343,11 @@ END process_payment_run;
 -- get the minimum value that the current user can authorise in mai3848.fmt
    function get_user_authorise_min return number
    IS
-   rtrn hig_users.hus_wor_aur_min%TYPE := -1;
+   rtrn mai_users.mus_wor_aur_min%TYPE := -1;
    CURSOR c1 IS
-      SELECT nvl(hus_wor_aur_min,0)
-      FROM hig_users
-      WHERE hus_username = user;
+      SELECT nvl(mus_wor_aur_min,0)
+      FROM mai_users
+      WHERE mus_user_id = nm3user.get_user_id;
    BEGIN
       OPEN c1;
       FETCH c1 INTO rtrn;
@@ -2359,11 +2359,11 @@ END process_payment_run;
    -- get the maximum value that the current user can authorise in mai3848.fmt
    function get_user_authorise_max return number
    IS
-   rtrn hig_users.hus_wor_aur_max%TYPE := -1;
+   rtrn mai_users.mus_wor_aur_max%TYPE := -1;
    CURSOR c1 IS
-      SELECT nvl(hus_wor_aur_max,999999999)
-      FROM hig_users
-      WHERE hus_username = user;
+      SELECT nvl(mus_wor_aur_max,999999999)
+      FROM mai_users
+      WHERE mus_user_id = nm3user.get_user_id;
    BEGIN
       OPEN c1;
       FETCH c1 INTO rtrn;
