@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.8   Jan 14 2011 17:39:24   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.9   Feb 24 2011 18:19:50   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Jan 14 2011 17:39:24  $
---       Date fetched Out : $Modtime:   Jan 10 2011 11:02:30  $
---       PVCS Version     : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Feb 24 2011 18:19:50  $
+--       Date fetched Out : $Modtime:   Feb 23 2011 15:22:20  $
+--       PVCS Version     : $Revision:   3.9  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.9  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>
@@ -152,7 +152,22 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                                   ,po_work_order_no     OUT work_orders.wor_works_order_no%TYPE
                                   ,po_defects_on_wo     OUT def_rep_list_on_wo_tab
                                   ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab);
-
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION check_daily_auth_limit(pi_user_id   IN hig_users.hus_user_id%TYPE
+                               ,pi_auth_date IN DATE
+                               ,pi_test_cost IN work_orders.wor_est_cost%TYPE)
+  RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE can_user_authorise_wo(pi_user_id          IN     hig_users.hus_user_id%TYPE
+                               ,pi_works_order_no   IN     work_orders.wor_works_order_no%TYPE
+                               ,pi_raise_exceptions IN     BOOLEAN
+                               ,pio_can_authorise   IN OUT BOOLEAN
+                               ,pio_error           IN OUT VARCHAR2);
+--
 -----------------------------------------------------------------------------
 --
 PROCEDURE authorise_work_order(pi_works_order_no  IN  work_orders.wor_works_order_no%TYPE
@@ -278,6 +293,21 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
 --PROCEDURE create_stp_work_order(pi_scheme_id     IN  stp_schemes.ss_id%TYPE
 --                               ,pi_ne_id         IN  stp_scheme_locations_all.ssl_ne_id%TYPE
 --                               ,po_work_order_no OUT work_orders.wor_works_order_no%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_forward_wo_to_user_rg_sql(pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
+                                      ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE
+                                      ,pi_wor_date_raised     IN work_orders.wor_date_raised%TYPE)
+  RETURN VARCHAR2;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_forward_wo_to_user(pi_user_id             IN hig_users.hus_user_id%TYPE
+                                    ,pi_wor_rse_he_id_group IN work_orders.wor_rse_he_id_group%TYPE
+                                    ,pi_wor_con_id          IN work_orders.wor_con_id%TYPE
+                                    ,pi_wor_date_raised     IN work_orders.wor_date_raised%TYPE)
+  RETURN BOOLEAN;
 --
 -----------------------------------------------------------------------------
 --
