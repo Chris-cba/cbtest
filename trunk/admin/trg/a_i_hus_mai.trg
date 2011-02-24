@@ -2,13 +2,16 @@ CREATE OR REPLACE TRIGGER A_I_HUS_MAI
            AFTER INSERT ON HIG_USERS
            FOR EACH ROW
 DECLARE
---   SCCS Identifiers :-
 --
---       sccsid           : @(#)hig_users.trg    1.2 04/10/01
---       Module Name      : hig_users.trg
---       Date into SCCS   : 01/04/10 10:49:54
---       Date fetched Out : 07/06/13 17:02:32
---       SCCS Version     : 1.2
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/a_i_hus_mai.trg-arc   3.1   Feb 24 2011 18:05:14   Mike.Huitson  $
+--       Module Name      : $Workfile:   a_i_hus_mai.trg  $
+--       Date into PVCS   : $Date:   Feb 24 2011 18:05:14  $
+--       Date fetched Out : $Modtime:   Feb 24 2011 18:04:52  $
+--       Version          : $Revision:   3.1  $
+-------------------------------------------------------------------------
 --
 --   TRIGGER A_I_HUS_MAI
 --           AFTER INSERT ON HIG_USERS
