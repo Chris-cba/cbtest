@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.2   Nov 16 2010 13:47:12   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.3   Mar 02 2011 15:38:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_budgets.pkb  $
---       Date into SCCS   : $Date:   Nov 16 2010 13:47:12  $
---       Date fetched Out : $Modtime:   Nov 15 2010 16:46:46  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Mar 02 2011 15:38:02  $
+--       Date fetched Out : $Modtime:   Mar 02 2011 15:34:20  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -557,6 +557,60 @@ FUNCTION  check_budget_contract ( p_bud_id         BUDGETS.bud_id%TYPE,
     END IF;
     RETURN rtrn;
    END;
+-------------------------------------------------------------------------------------
+
+FUNCTION reallocate_budget 
+   ( p_bud_id_old     IN BUDGETS.bud_id%TYPE,
+     p_bud_id_new     IN BUDGETS.bud_id%TYPE,
+     p_bud_actual     IN BUDGETS.bud_actual%TYPE) RETURN BOOLEAN
+IS
+   lv_bud_value       BUDGETS.bud_value%TYPE;
+   lv_bud_committed   BUDGETS.bud_committed%TYPE;
+   lv_bud_actual      BUDGETS.bud_actual%TYPE;
+   lv_temp            NUMBER := 0;
+   
+BEGIN
+   nm_debug.debug_on;
+   
+   -- check if new budget will be exceeded after applying old_budget values
+   OPEN current_budget(p_bud_id_new);
+   FETCH current_budget INTO lv_bud_value,
+                             lv_bud_committed,
+                             lv_bud_actual;
+   CLOSE current_budget;
+      
+   -- only check the budget if doesn't equal -1
+   IF lv_bud_value != -1 
+   THEN
+   
+      lv_temp := lv_bud_value - ( lv_bud_committed + lv_bud_actual + NVL(p_bud_actual,0) );
+
+      
+      IF lv_temp < 0 
+      THEN
+         -- budget blown
+         RETURN FALSE;
+      END IF;
+      
+   END IF;
+   
+   -- Within budget so apply changes
+         
+   -- Add values to new budget
+   UPDATE BUDGETS
+      SET bud_actual = NVL(bud_actual,0) + NVL(p_bud_actual,0)
+    WHERE bud_id = p_bud_id_new;
+
+   -- Subtrazct values from old budget
+   UPDATE BUDGETS
+      SET bud_actual = NVL(bud_actual,0) - NVL(p_bud_actual,0)
+    WHERE bud_id = p_bud_id_old;
+
+   RETURN TRUE;          
+   
+   nm_debug.debug_off;
+    
+END reallocate_budget;
 
 ----------------------------------------------------------------------------------------
 END;
