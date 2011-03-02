@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.31   Dec 09 2010 09:47:04   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.32   Mar 02 2011 15:43:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Dec 09 2010 09:47:04  $
---       Date fetched Out : $Modtime:   Dec 08 2010 16:54:10  $
---       SCCS Version     : $Revision:   2.31  $
+--       Date into SCCS   : $Date:   Mar 02 2011 15:43:02  $
+--       Date fetched Out : $Modtime:   Mar 02 2011 13:51:30  $
+--       SCCS Version     : $Revision:   2.32  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.31  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.32  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -42,7 +42,8 @@ TYPE wol_rec IS RECORD ( r_wol_id        work_order_lines.wol_id%TYPE
                 ,r_schd_id        work_order_lines.wol_schd_id%TYPE
                 ,r_work_code    work_order_lines.wol_icb_work_code%TYPE
                 ,r_road_id        road_segs.rse_unique%TYPE
-                ,r_road_descr    road_segs.rse_descr%TYPE);
+                ,r_road_descr    road_segs.rse_descr%TYPE
+                ,r_wol_descr     work_order_lines.wol_descr%TYPE);
 
 TYPE wol_tab IS TABLE OF wol_rec INDEX BY binary_integer;
 TYPE wor_tab IS TABLE OF interface_wor%ROWTYPE INDEX BY binary_integer;
@@ -378,6 +379,7 @@ end get_fyr_id;
             ,wol_icb_work_code
             ,rse_unique
             ,rse_descr
+            ,wol_descr
       FROM   road_segs
         ,work_order_lines
       WHERE  wol_rse_he_id = rse_he_id
@@ -471,7 +473,8 @@ end get_fyr_id;
         ,iwol_percent_adjust
         ,iwol_percent_adjust_code
         ,iwol_work_cat
-        ,iwol_cost_code)
+        ,iwol_cost_code
+        ,iwol_descr)
       VALUES (
          p_trans_id
         ,l_wol_rec.wol_id
@@ -480,17 +483,18 @@ end get_fyr_id;
         ,REPLACE(SUBSTR(l_wol_rec.rse_descr,1,80),',','~')  -- 719274 REPLACE(l_wol_rec.rse_descr,',','~')
         ,l_wol_rec.wol_def_defect_id
         ,l_wol_rec.wol_schd_id
-            ,REPLACE(l_def_rec.def_locn_descr,',','~')
-            ,REPLACE(l_def_rec.def_defect_descr,',','~')
-            ,REPLACE(l_def_rec.def_special_instr,',','~')
-            ,l_def_rec.def_priority
-            ,l_def_rec.def_defect_code
-            ,l_def_rec.def_st_chain
-            ,l_def_rec.def_x_sect
-            ,NULL
-            ,NULL
-            ,l_wol_rec.wol_icb_work_code
-            ,l_cost_code);
+        ,REPLACE(l_def_rec.def_locn_descr,',','~')
+        ,REPLACE(l_def_rec.def_defect_descr,',','~')
+        ,REPLACE(l_def_rec.def_special_instr,',','~')
+        ,l_def_rec.def_priority
+        ,l_def_rec.def_defect_code
+        ,l_def_rec.def_st_chain
+        ,l_def_rec.def_x_sect
+        ,NULL
+        ,NULL
+        ,l_wol_rec.wol_icb_work_code
+        ,l_cost_code
+        ,REPLACE(l_wol_rec.wol_descr, ',','~'));
 
       IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0') THEN
       FOR boq_rec IN boq(l_wol_rec.wol_id,
@@ -681,6 +685,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
                                      ||NVL(p_filepath, g_filepath)||'  File: '||l_filename;
   --
   l_use_def_x_y      hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('IFUSEDEFXY'),'N');
+  l_add_rmks         hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('CIMINCRMKS'),'N');
   --
   CURSOR wor
       IS
@@ -716,6 +721,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
        ,LTRIM(TO_CHAR(iwor_cost,'9999999990.00')) iwor_cost
        ,iwor_transaction_id
        ,iwor_works_order_no
+       ,Replace(Replace(iwor_remarks,Chr(10),' '),Chr(13),' ') iwor_remarks 
    FROM interface_wor
        ,contracts
        ,org_units
@@ -743,6 +749,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
            ','||DECODE(hig.get_sysopt('LZSUBCODE'), 'Y', iwol_work_cat, DECODE(SUBSTR(iwol_work_cat,1,1),'0',SUBSTR(iwol_work_cat,2,LENGTH(iwol_work_cat)),iwol_work_cat))||','||iwol_cost_code wol_record
         ,iwol_id
         ,iwol_def_defect_id
+        ,Replace(Replace(Replace(REPLACE(iwol_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ') iwol_descr
     FROM interface_wol
    WHERE iwol_transaction_id = c_transaction_id
      AND iwol_works_order_no = c_wor_no
@@ -835,6 +842,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
                                              , TO_CHAR(rep_date_due, g_date_format)
                                              )
          ||DECODE(l_use_def_x_y,'Y',','||TO_CHAR(def_easting)||','||TO_CHAR(def_northing),NULL) details
+         ,Replace(Replace(Replace(REPLACE(iwol_descr,',',':'),Chr(10),' '),Chr(13),' '),Chr(1),' ') iwol_descr
     FROM interface_wol
         ,defects
         ,repairs
@@ -906,6 +914,12 @@ BEGIN
           l_char_pos := l_char_pos + l_descr_length;
           l_no_of_recs := l_no_of_recs + 1;
         END LOOP;
+        IF l_wor_rec.iwor_remarks IS NOT NULL AND
+           l_add_rmks = 'Y'
+         THEN
+            UTL_FILE.PUT_LINE(l_fhand, '07,'||REPLACE(l_wor_rec.iwor_remarks,',','~'));
+            l_no_of_recs := l_no_of_recs + 1;
+        END IF;
         IF hig.get_sysopt('CPAFORMAT') = '1'
          THEN
             FOR l_wol_rec IN woldef(l_wor_rec.iwor_transaction_id
@@ -913,6 +927,15 @@ BEGIN
               l_wol_rec.wol_record := l_wol_rec.wol_record||l_wol_rec.details;
               UTL_FILE.PUT_LINE(l_fhand, l_wol_rec.wol_record);
               l_no_of_recs := l_no_of_recs + 1;
+              --
+              IF l_wol_rec.iwol_descr IS NOT NULL AND
+                 l_add_rmks = 'Y'
+               THEN
+                   --
+                    UTL_FILE.PUT_LINE(l_fhand, '11,'||l_wol_rec.iwol_descr);
+                    l_no_of_recs := l_no_of_recs + 1;
+                    --
+              END IF;                
               --
               IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3','2-4-0')
                THEN
@@ -967,6 +990,15 @@ BEGIN
               UTL_FILE.PUT_LINE(l_fhand, l_wol_rec.wol_record);
               l_no_of_recs := l_no_of_recs + 1;
               --
+              IF l_wol_rec.iwol_descr IS NOT NULL AND
+                 l_add_rmks = 'Y'
+               THEN
+                   --
+                    UTL_FILE.PUT_LINE(l_fhand, '11,'||l_wol_rec.iwol_descr);
+                    l_no_of_recs := l_no_of_recs + 1;
+                    --
+              END IF;
+              --               
               IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0')
                THEN
                   FOR l_boq_rec IN boq(l_wor_rec.iwor_transaction_id
@@ -6584,7 +6616,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
             iwor_date_confirmed <= p_end_date)
     AND    wol_bud_id = bud_id
     AND    wol_id = iwol_id
-    GROUP BY iwor_transaction_type, iwor_date_confirmed
+    GROUP BY iwor_transaction_type, TO_CHAR(iwor_date_confirmed, g_date_format)
         ,iwor_works_order_no, iwol_id, iwol_def_defect_id
         ,iwol_schd_id, iwol_def_priority, oun_unit_code
         ,iwor_con_code, iwol_work_cat
@@ -6922,7 +6954,7 @@ FUNCTION financial_commitment_file(p_seq_no        IN number
     AND    con_contr_org_id = p_contractor_id
     AND    iwor_transaction_type = p_transaction_type
   and    iwor_transaction_id = p_transaction_id
-    GROUP BY iwor_transaction_type, iwor_date_confirmed
+    GROUP BY iwor_transaction_type, TO_CHAR(iwor_date_confirmed, g_date_format)
         ,iwor_works_order_no, iwol_id, iwol_def_defect_id
         ,iwol_schd_id, iwol_def_priority, oun_unit_code
         ,iwor_con_code, iwol_work_cat
@@ -6992,7 +7024,7 @@ CURSOR c2(p_end_date date                                  --KA: added 05/10/200
 --    and    wol_works_order_no = iwol_works_order_no
     AND    con_contr_org_id = p_contractor_id
 --    and    wol_act_cost is null
-    GROUP BY iwor_transaction_type, iwor_date_confirmed
+    GROUP BY iwor_transaction_type, TO_CHAR(iwor_date_confirmed, g_date_format)
         ,iwor_works_order_no, iwol_id, iwol_def_defect_id
         ,iwol_schd_id, iwol_def_priority, oun_unit_code
         ,iwor_con_code, iwol_work_cat
@@ -7038,7 +7070,7 @@ CURSOR get_last_sent_val ( p_wol_id         interface_wol.iwol_id%TYPE
 --    and    wol_works_order_no = iwol_works_order_no
     AND    con_contr_org_id = p_contractor_id
   and iwor_transaction_id < p_transaction_id
-        GROUP BY iwor_transaction_type, iwor_date_confirmed
+        GROUP BY iwor_transaction_type, TO_CHAR(iwor_date_confirmed, g_date_format)
         ,iwor_works_order_no, iwol_id, iwol_def_defect_id
         ,iwol_schd_id, iwol_def_priority, oun_unit_code
         ,iwor_con_code, iwol_work_cat
@@ -7812,7 +7844,7 @@ CURSOR ncc_commitment_2 ( p_wol_id interface_wol.iwol_id%TYPE
     AND    wol_id = iwol_id
     AND    bud_id = wol_bud_id
     AND    con_contr_org_id = p_contractor_id
-    GROUP BY iwor_transaction_type, iwor_date_confirmed
+    GROUP BY iwor_transaction_type, TO_CHAR(iwor_date_confirmed, g_date_format)
         ,iwor_works_order_no, iwol_id, iwol_def_defect_id
         ,iwol_schd_id, iwol_def_priority, oun_unit_code
         ,iwor_con_code, iwol_work_cat
@@ -8154,6 +8186,7 @@ BEGIN
           ,iwol_percent_adjust_code
           ,iwol_work_cat
           ,iwol_cost_code
+          ,iwol_descr
         )
   VALUES(p_trans_id
             ,p_wol_rec.r_wol_id
@@ -8173,6 +8206,7 @@ BEGIN
         ,NULL
         ,p_wol_rec.r_work_code
         ,l_cost_code
+        ,REPLACE(p_wol_rec.r_wol_descr,',','~')
         )
        ;
   --
@@ -8262,7 +8296,7 @@ PROCEDURE add_wor_to_list(p_trans_type    IN interface_wor.iwor_transaction_type
                  ,p_confirmed      IN interface_wor.iwor_date_confirmed%TYPE
                  ,p_est_complete   IN interface_wor.iwor_est_complete%TYPE
                  ,p_est_cost       IN interface_wor.iwor_cost%TYPE
-				 ,p_act_cost       IN interface_wor.iwor_cost%TYPE
+				     ,p_act_cost       IN interface_wor.iwor_cost%TYPE
                  ,p_labour         IN interface_wor.iwor_est_labour%TYPE
                  ,p_ip_flag        IN interface_wor.iwor_interim_payment_flag%TYPE
                  ,p_ra_flag        IN interface_wor.iwor_risk_assessment_flag%TYPE
@@ -8270,7 +8304,8 @@ PROCEDURE add_wor_to_list(p_trans_type    IN interface_wor.iwor_transaction_type
                  ,p_wp_flag        IN interface_wor.iwor_works_programme_flag%TYPE
                  ,p_as_flag        IN interface_wor.iwor_additional_safety_flag%TYPE
                  ,p_commence_by    IN interface_wor.iwor_commence_by%TYPE
-                 ,p_descr          IN interface_wor.iwor_descr%TYPE) IS
+                 ,p_descr          IN interface_wor.iwor_descr%TYPE
+                 ,p_remarks        IN interface_wor.iwor_remarks%TYPE) IS
 
   l_index integer;
 
@@ -8351,6 +8386,7 @@ BEGIN
   g_wor_tab(l_index).iwor_additional_safety_flag := p_as_flag;
   g_wor_tab(l_index).iwor_commence_by := p_commence_by;
   g_wor_tab(l_index).iwor_descr := p_descr;
+  g_wor_tab(l_index).iwor_remarks := p_remarks;
 
   IF l_index = g_wor_index THEN
     g_wor_index := g_wor_index + 1;
@@ -8380,7 +8416,8 @@ PROCEDURE add_wol_to_list(p_wol_id        IN work_order_lines.wol_id%TYPE
                  ,p_schd_id        IN work_order_lines.wol_schd_id%TYPE
                  ,p_work_code    IN work_order_lines.wol_icb_work_code%TYPE
                  ,p_road_id        IN road_segs.rse_unique%TYPE
-                 ,p_road_descr    IN road_segs.rse_descr%TYPE) IS
+                 ,p_road_descr    IN road_segs.rse_descr%TYPE
+                 ,p_wol_descr     IN work_order_lines.wol_descr%TYPE) IS
 
 
   l_index integer;
@@ -8413,6 +8450,7 @@ BEGIN
   g_wol_tab(l_index).r_work_code := p_work_code;
   g_wol_tab(l_index).r_road_id := p_road_id;
   g_wol_tab(l_index).r_road_descr := p_road_descr;
+  g_wol_tab(l_index).r_wol_descr := p_wol_descr;
 
   IF l_index = g_wol_index THEN
     g_wol_index := g_wol_index + 1;
@@ -8473,7 +8511,8 @@ BEGIN
         ,iwor_fyr_id
         ,iwor_descr
         ,iwor_wo_run_number
-        ,iwor_fi_run_number)
+        ,iwor_fi_run_number
+        ,iwor_remarks)
   VALUES  (  l_trans_id
         ,p_wor_rec.iwor_transaction_type
         ,p_wor_rec.iwor_works_order_no
@@ -8494,7 +8533,8 @@ BEGIN
         ,l_bud_fyr_id                        -- TASK 0108810    
         ,p_wor_rec.iwor_descr
         ,''
-        ,'');
+        ,''
+        ,p_wor_rec.iwor_remarks);
 
   RETURN l_trans_id;
 
@@ -8527,6 +8567,7 @@ BEGIN
     g_wor_tab(l_index).iwor_additional_safety_flag := NULL;
     g_wor_tab(l_index).iwor_commence_by := NULL;
     g_wor_tab(l_index).iwor_descr := NULL;
+    g_wor_tab(l_index).iwor_remarks := NULL;
 
   END LOOP;
 
@@ -8539,6 +8580,7 @@ BEGIN
     g_wol_tab(l_index).r_work_code := NULL;
     g_wol_tab(l_index).r_road_id := NULL;
     g_wol_tab(l_index).r_road_descr := NULL;
+    g_wol_tab(l_index).r_wol_descr := NULL;
 
   END LOOP;
 
@@ -8570,6 +8612,7 @@ PROCEDURE copy_data_to_interface IS
         ,wor_additional_safety_flag
         ,wor_commence_by
         ,wor_descr
+        ,wor_remarks
     FROM   contracts
         ,hig_users
         ,work_orders
@@ -8624,7 +8667,8 @@ BEGIN
              ,g_wor_tab(g_wor_index).iwor_works_programme_flag
              ,g_wor_tab(g_wor_index).iwor_additional_safety_flag
              ,g_wor_tab(g_wor_index).iwor_commence_by
-             ,g_wor_tab(g_wor_index).iwor_descr;
+             ,g_wor_tab(g_wor_index).iwor_descr
+             ,g_wor_tab(g_wor_index).iwor_remarks;
     IF c1%FOUND THEN
       g_wor_tab(g_wor_index).iwor_works_order_no := g_wol_tab(l_wol_index).r_wor_no;
       g_wor_tab(g_wor_index).iwor_transaction_type := 'A';
