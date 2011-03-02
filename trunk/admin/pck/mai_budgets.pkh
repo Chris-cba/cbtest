@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkh-arc   2.1   Nov 16 2010 13:45:44   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkh-arc   2.2   Mar 02 2011 15:38:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_budgets.pkh  $
---       Date into SCCS   : $Date:   Nov 16 2010 13:45:44  $
---       Date fetched Out : $Modtime:   Nov 15 2010 16:39:02  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Mar 02 2011 15:38:12  $
+--       Date fetched Out : $Modtime:   Mar 01 2011 10:04:42  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.2  $';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -113,6 +113,15 @@ CREATE OR REPLACE PACKAGE Mai_Budgets AS
                        p_bud_committed2 IN BUDGETS.bud_committed%TYPE,
                        p_bud_actual     IN BUDGETS.bud_actual%TYPE,
                        p_wol_id         IN WORK_ORDER_LINES.wol_id%TYPE DEFAULT NULL) RETURN BOOLEAN ;
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="reallocate_budget">
+     FUNCTION  reallocate_budget 
+                     ( p_bud_id_old     IN BUDGETS.bud_id%TYPE,
+                       p_bud_id_new     IN BUDGETS.bud_id%TYPE,
+                       p_bud_actual     IN BUDGETS.bud_actual%TYPE) RETURN BOOLEAN ;
 --
 -- </PROC>
 -----------------------------------------------------------------------------
