@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.12   Feb 24 2011 18:12:46   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.13   Mar 02 2011 15:35:38   Mike.Huitson  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into PVCS   : $Date:   Feb 24 2011 18:12:46  $
---       Date fetched Out : $Modtime:   Feb 24 2011 18:12:32  $
---       Version          : $Revision:   2.12  $
+--       Date into PVCS   : $Date:   Mar 02 2011 15:35:38  $
+--       Date fetched Out : $Modtime:   Mar 02 2011 15:35:14  $
+--       Version          : $Revision:   2.13  $
 -------------------------------------------------------------------------
 --
 SET echo OFF
@@ -428,8 +428,15 @@ SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&te
 FROM dual
 /
 START '&run_file'
-
 --
+-------------------------------------------------------------------------
+--
+PROMPT mai_insp_load_batches_v
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'mai_insp_load_batches_v.vw' run_file
+FROM dual
+/
+START '&run_file'
 --
 -- new views above this
 --
