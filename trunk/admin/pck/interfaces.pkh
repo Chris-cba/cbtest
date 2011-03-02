@@ -6,11 +6,11 @@ CREATE OR REPLACE PACKAGE interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.4   Nov 16 2010 13:42:30   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.5   Mar 02 2011 15:42:42   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkh  $
---       Date into SCCS   : $Date:   Nov 16 2010 13:42:30  $
---       Date fetched Out : $Modtime:   Nov 16 2010 09:49:26  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Mar 02 2011 15:42:42  $
+--       Date fetched Out : $Modtime:   Feb 22 2011 14:42:20  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.16
 ----
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE interfaces IS
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.4  $"';
+    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.5  $"';
     g_file_handle             utl_file.file_type ;
     extract_filename 		varchar2(2000);
 --</GLOBVAR>
@@ -325,7 +325,8 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 			     ,p_schd_id	   IN work_order_lines.wol_schd_id%TYPE
 			     ,p_work_code  IN work_order_lines.wol_icb_work_code%TYPE
 			     ,p_road_id	   IN road_segs.rse_unique%TYPE
-			     ,p_road_descr IN road_segs.rse_descr%TYPE);
+			     ,p_road_descr IN road_segs.rse_descr%TYPE
+              ,p_wol_descr  IN work_order_lines.wol_descr%TYPE);
 --</PROC>
 --
 -----------------------------------------------------------------------------
@@ -348,7 +349,8 @@ PROCEDURE claim_file_ph3(p_ih_id IN  interface_headers.ih_id%TYPE
 			     ,p_wp_flag	     IN interface_wor.iwor_works_programme_flag%TYPE
 			     ,p_as_flag      IN interface_wor.iwor_additional_safety_flag%TYPE
 			     ,p_commence_by  IN interface_wor.iwor_commence_by%TYPE
-			     ,p_descr	     IN interface_wor.iwor_descr%TYPE);
+			     ,p_descr	     IN interface_wor.iwor_descr%TYPE
+              ,p_remarks     IN interface_wor.iwor_remarks%TYPE);
 --</PROC>
 --
 -----------------------------------------------------------------------------
