@@ -35,6 +35,8 @@ CREATE OR REPLACE FORCE VIEW imf_mai_work_order_lines
   ,remarks
   ,date_created
   ,days_since_created
+  ,target_date
+  ,days_to_target_date
   ,date_repaired
   ,days_since_repaired
   ,date_completed
@@ -51,11 +53,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.7   Jun 29 2010 14:06:38   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.8   Mar 02 2011 16:01:14   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-       --       Date into PVCS   : $Date:   Jun 29 2010 14:06:38  $
-       --       Date fetched Out : $Modtime:   Jun 29 2010 13:54:10  $
-       --       Version          : $Revision:   3.7  $
+       --       Date into PVCS   : $Date:   Mar 02 2011 16:01:14  $
+       --       Date fetched Out : $Modtime:   Mar 02 2011 15:57:20  $
+       --       Version          : $Revision:   3.8  $
        -- Foundation view displaying maintenance manager work order lines
        -------------------------------------------------------------------------
        -- SM 03042009
@@ -153,6 +155,8 @@ SELECT -------------------------------------------------------------------------
       ,wol.wol_descr                                                    remarks
       ,wol.wol_date_created                                             date_created
       ,TRUNC(SYSDATE) - TRUNC(wol.wol_date_created)                     days_since_created
+	  ,wol.wol_target_date                                              target_date
+	  ,TRUNC(wol.wol_target_date) - TRUNC(SYSDATE)                      days_to_target_date
       ,wol.wol_date_repaired                                            date_repaired
       ,TRUNC(SYSDATE) - TRUNC(wol.wol_date_repaired)                    days_since_repaired
       ,wol.wol_date_complete                                            date_completed
@@ -213,6 +217,8 @@ COMMENT ON COLUMN imf_mai_work_order_lines.actual_cost                    IS 'Th
 COMMENT ON COLUMN imf_mai_work_order_lines.remarks                        IS 'General remarks held against the Works Order Line.';
 COMMENT ON COLUMN imf_mai_work_order_lines.date_created                   IS 'The date the Works Order Line was created within the system.';
 COMMENT ON COLUMN imf_mai_work_order_lines.days_since_created             IS 'The number of days since the Works Order Line was created.';
+COMMENT ON COLUMN imf_mai_work_order_lines.target_date                    IS 'The date the Works Order Line is due to be completed.';
+COMMENT ON COLUMN imf_mai_work_order_lines.days_to_date_due               IS 'The number of days until the Work Order Line is due to be completed.';
 COMMENT ON COLUMN imf_mai_work_order_lines.date_repaired                  IS 'Date the Works Order Line was repaired.';
 COMMENT ON COLUMN imf_mai_work_order_lines.days_since_repaired            IS 'The number of days since the Works Order Line was repaired.';
 COMMENT ON COLUMN imf_mai_work_order_lines.date_completed                 IS 'Date the Works Order Line was completed.';
