@@ -69,11 +69,11 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.2   May 19 2010 17:54:06   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.3   Mar 04 2011 11:27:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   May 19 2010 17:54:06  $
---       Date fetched Out : $Modtime:   May 19 2010 17:52:18  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Mar 04 2011 11:27:12  $
+--       Date fetched Out : $Modtime:   Mar 04 2011 08:48:48  $
+--       Version          : $Revision:   3.3  $
 -------------------------------------------------------------------------
 --
        are_date_work_done
@@ -143,7 +143,7 @@ SELECT  /*+ FIRST_ROWS_N */
       ,rep_descr
       ,rep_tre_treat_code
       ,rep_action_cat
-  FROM nm_elements
+  FROM nm_elements_all
       ,repairs
       ,defects def
       ,activities_report
