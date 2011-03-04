@@ -4,6 +4,8 @@ CREATE OR REPLACE FORCE VIEW v_mai3806_def(are_date_work_done
                                           ,hus_initials
                                           ,are_maint_insp_flag
                                           ,rse_admin_unit
+                                          ,rse_start_date
+                                          ,rse_end_date
                                           ,are_st_chain
                                           ,are_end_chain
                                           ,def_defect_id
@@ -69,11 +71,11 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.3   Mar 04 2011 11:27:12   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.4   Mar 04 2011 14:09:10   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   Mar 04 2011 11:27:12  $
---       Date fetched Out : $Modtime:   Mar 04 2011 08:48:48  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Mar 04 2011 14:09:10  $
+--       Date fetched Out : $Modtime:   Mar 04 2011 14:08:18  $
+--       Version          : $Revision:   3.4  $
 -------------------------------------------------------------------------
 --
        are_date_work_done
@@ -84,6 +86,8 @@ SELECT  /*+ FIRST_ROWS_N */
         where  are_peo_person_id_actioned = hus_user_id) hus_initials 
       ,are_maint_insp_flag
       ,ne_admin_unit
+      ,ne_start_date
+      ,ne_end_date
       ,are_st_chain
       ,are_end_chain
       ,def.def_defect_id
@@ -151,3 +155,5 @@ SELECT  /*+ FIRST_ROWS_N */
    AND def_defect_id = rep_def_defect_id
    AND def_rse_he_id = ne_id
 /
+
+road_segments_all
