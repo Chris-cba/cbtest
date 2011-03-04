@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.19   Feb 24 2011 18:21:16   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.20   Mar 04 2011 12:05:08   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Feb 24 2011 18:21:16  $
---       Date fetched Out : $Modtime:   Feb 24 2011 17:42:04  $
---       PVCS Version     : $Revision:   3.19  $
+--       Date into PVCS   : $Date:   Mar 04 2011 12:05:08  $
+--       Date fetched Out : $Modtime:   Mar 04 2011 11:26:26  $
+--       PVCS Version     : $Revision:   3.20  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.20  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2714,10 +2714,10 @@ BEGIN
                                    ,pi_auth_date => SYSDATE
                                    ,pi_test_cost => lv_test_cost)
        THEN
-          raise_application_error(-20049,'Cannot Authorise Works Order, The Cost exceeds the User''s daily limit.');
+          raise_application_error(-20049,'Cannot Authorise Works Order, The Cost exceeds the User daily limit.');
       END IF;
   ELSE
-      raise_application_error(-20049,'Cannot Authorise Works Order, Cost Is Outside User Limits.');
+      raise_application_error(-20049,'Cannot Authorise Works Order, The Cost Is Outside User Limits.');
   END IF;
   /*
   ||Got this far so okay to Authorise.
