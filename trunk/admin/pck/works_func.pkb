@@ -3,11 +3,11 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.3   Jan 05 2011 13:55:12   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.4   Mar 07 2011 10:29:38   Chris.Baugh  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jan 05 2011 13:55:12  $
---       Date fetched Out : $Modtime:   Jan 05 2011 13:54:08  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Mar 07 2011 10:29:38  $
+--       Date fetched Out : $Modtime:   Mar 07 2011 10:28:44  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -1451,7 +1451,7 @@ END;
 ------------------------------------
 function Get_Road_Desc(WorkOrderNo IN VARCHAR2) Return VARCHAR2 IS
 
-	strReturn VARCHAR2(80);
+	strReturn VARCHAR2(240);
 
 	Cursor Road_Desc IS
 		select rse_descr
@@ -1670,7 +1670,7 @@ function Get_Wol_Road_Desc
 (
 WorkOrderLine IN INTEGER
 ) RETURN VARCHAR2 is
-	strReturn VARCHAR2(80);
+	strReturn VARCHAR2(240);
 
 	Cursor c1 is
 		SELECT RSE_DESCR
