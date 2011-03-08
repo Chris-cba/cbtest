@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.21   Feb 16 2011 18:23:16   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.22   Mar 08 2011 13:48:16   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 16 2011 18:23:16  $
---       Date fetched Out : $Modtime:   Feb 16 2011 18:20:30  $
---       PVCS Version     : $Revision:   3.21  $
+--       Date into PVCS   : $Date:   Mar 08 2011 13:48:16  $
+--       Date fetched Out : $Modtime:   Mar 08 2011 11:06:40  $
+--       PVCS Version     : $Revision:   3.22  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.21  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.22  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3855,6 +3855,8 @@ BEGIN
         ||This will lead to the Defect Status Being Set
         ||To Completed By validate_defect_rec.
         */
+        lv_compl_rep_count := 0;
+        --
         FOR i IN 1..lt_repairs.count LOOP
           --
           IF lt_repairs(i).rep_record.rep_date_completed IS NOT NULL
