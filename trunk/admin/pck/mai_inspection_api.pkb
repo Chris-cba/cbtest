@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.22   Mar 08 2011 13:48:16   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.23   Mar 09 2011 18:08:38   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 08 2011 13:48:16  $
---       Date fetched Out : $Modtime:   Mar 08 2011 11:06:40  $
---       PVCS Version     : $Revision:   3.22  $
+--       Date into PVCS   : $Date:   Mar 09 2011 18:08:38  $
+--       Date fetched Out : $Modtime:   Mar 09 2011 11:17:50  $
+--       PVCS Version     : $Revision:   3.23  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.22  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2346,7 +2346,7 @@ BEGIN
          lv_action_cat := lt_rep_tab(i).rep_record.rep_action_cat;
       END IF;
       --
-      mai.rep_date_due(pi_defect_rec.def_created_date
+      mai.rep_date_due(pi_defect_rec.def_inspection_date
                       ,lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                       ,pi_defect_rec.def_priority
                       ,lv_action_cat
