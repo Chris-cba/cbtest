@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix4.sql-arc   3.1   Mar 07 2011 10:42:16   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix4.sql-arc   3.2   Mar 10 2011 16:48:24   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4300_fix4.sql  $
---       Date into PVCS   : $Date:   Mar 07 2011 10:42:16  $
---       Date fetched Out : $Modtime:   Mar 07 2011 10:41:54  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Mar 10 2011 16:48:24  $
+--       Date fetched Out : $Modtime:   Mar 10 2011 16:47:10  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2011
@@ -47,28 +47,51 @@ WHERE hpr_product IN ('HIG','NET','MAI');
 
 WHENEVER SQLERROR EXIT
 
---
--- Check that the user isn't sys or system
---
+DECLARE
+ CURSOR c1 IS
+ SELECT DECODE (COUNT(*), 3, 'Y', NULL) FIX_1_TO_3_APPLIED
+ FROM  (SELECT 'FIX1'
+        FROM   hig_upgrades
+        WHERE  hup_product = 'MAI'
+        AND    remarks     = 'MAI 4300 FIX 1'
+        UNION
+        SELECT 'FIX2'
+        FROM   hig_upgrades
+        WHERE  hup_product = 'MAI'
+        AND    remarks     = 'MAI 4300 FIX 2' 
+        UNION
+        SELECT 'FIX3'
+        FROM   hig_upgrades
+        WHERE  hup_product = 'MAI'
+        AND    remarks     = 'MAI 4300 FIX 3'
+       );
+ l_dummy VARCHAR2(1);
 BEGIN
-   --
-      IF USER IN ('SYS','SYSTEM')
-       THEN
-         RAISE_APPLICATION_ERROR(-20000,'You cannot install this product as ' || USER);
-      END IF;
+  --
+  -- Check that the user isn't sys or system
+  --
+  IF USER IN ('SYS','SYSTEM')
+  THEN
+    RAISE_APPLICATION_ERROR(-20000,'You cannot install this product as ' || USER);
+  END IF;
+
+  --
+  -- Check that MAI has been installed @ v4.3.0.0
+  --
+  hig2.product_exists_at_version (p_product        => 'MAI'
+                                 ,p_VERSION        => '4.3.0.0'
+                                 );
+
+ OPEN c1;
+ FETCH c1 INTO l_dummy;
+ CLOSE c1;
+
+ IF l_dummy IS NULL THEN
+   RAISE_APPLICATION_ERROR(-20001,'"Maintenance Manager 4300 Fixes 1, 2 and 3" must be applied before proceeding - contact exor support for further information');
+ END IF;
+
 END;
 /
-
---
--- Check that MAI has been installed @ v4.3.0.0
---
-BEGIN
- hig2.product_exists_at_version (p_product        => 'MAI'
-                                ,p_VERSION        => '4.3.0.0'
-                                );
-END;
-/
-
 WHENEVER SQLERROR CONTINUE
 --
 --
@@ -116,6 +139,15 @@ SET TERM OFF
 SET FEEDBACK ON
 start mai_insp_load_batches_v.vw
 SET FEEDBACK OFF
+--
+--------------------------------------------------------------------------------
+-- Views
+--------------------------------------------------------------------------------
+--
+Begin
+nm3ddl.create_synonym_for_object('MAI_INSP_LOAD_BATCHES_V');
+End;
+/
 --
 --------------------------------------------------------------------------------
 -- Metadata
