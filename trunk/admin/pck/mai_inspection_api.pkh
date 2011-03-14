@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.10   Oct 28 2010 14:37:52   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.11   Mar 14 2011 12:24:40   mike.huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Oct 28 2010 14:37:52  $
---       Date fetched Out : $Modtime:   Oct 28 2010 13:39:22  $
---       PVCS Version     : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Mar 14 2011 12:24:40  $
+--       Date fetched Out : $Modtime:   Mar 14 2011 11:55:06  $
+--       PVCS Version     : $Revision:   3.11  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.10  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.11  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>
@@ -93,6 +93,27 @@ TYPE matched_defect_rec IS RECORD(def_defect_id defects.def_defect_id%TYPE
 TYPE matched_defects_tab IS TABLE OF matched_defect_rec INDEX BY BINARY_INTEGER;
 --
 TYPE defects_tab IS TABLE OF defects%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE tre_boqs_rec
+  IS RECORD(boq_sta_item_code       boq_items.boq_sta_item_code%TYPE
+           ,sta_item_name           standard_items.sta_item_name%TYPE
+           ,sta_unit                standard_items.sta_unit%TYPE
+           ,sta_dim1_text           standard_items.sta_dim1_text%TYPE
+           ,sta_dim2_text           standard_items.sta_dim2_text%TYPE
+           ,sta_dim3_text           standard_items.sta_dim3_text%TYPE
+           ,sta_min_quantity        standard_items.sta_min_quantity%TYPE
+           ,sta_max_quantity        standard_items.sta_max_quantity%TYPE
+           ,sta_rogue_flag          standard_items.sta_rogue_flag%TYPE
+           ,sta_labour_units        standard_items.sta_labour_units%TYPE
+           ,boq_est_dim1            boq_items.boq_est_dim1%TYPE
+           ,boq_est_dim2            boq_items.boq_est_dim2%TYPE
+           ,boq_est_dim3            boq_items.boq_est_dim3%TYPE
+           ,boq_est_quantity        boq_items.boq_est_quantity%TYPE
+           ,boq_est_rate            boq_items.boq_est_rate%TYPE
+           ,boq_est_cost            boq_items.boq_est_cost%TYPE
+           ,boq_est_labour          boq_items.boq_est_labour%TYPE
+           );
+TYPE tre_boqs_tab IS TABLE OF tre_boqs_rec INDEX BY BINARY_INTEGER;
 --
 --</TYPE>
 --
@@ -196,6 +217,16 @@ PROCEDURE validate_insp_rec(pio_insp_rec IN OUT activities_report%ROWTYPE
 --
 FUNCTION validate_section(pi_rse_he_id IN nm_elements_all.ne_id%TYPE)
   RETURN road_sections%ROWTYPE;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE get_tre_boqs(pi_admin_unit         IN     nm_admin_units_all.nau_admin_unit%TYPE
+                      ,pi_treat_code         IN     treatment_models.tmo_tre_treat_code%TYPE
+                      ,pi_atv_acty_area_code IN     treatment_models.tmo_atv_acty_area_code%TYPE
+                      ,pi_defect_code        IN     treatment_models.tmo_dty_defect_code%TYPE
+                      ,pi_sys_flag           IN     treatment_models.tmo_sys_flag%TYPE
+                      ,pi_attr_value         IN     VARCHAR2
+                      ,po_results            IN OUT tre_boqs_tab);
 --
 -----------------------------------------------------------------------------
 --
