@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.23   Mar 09 2011 18:08:38   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.24   Mar 14 2011 13:12:44   mike.huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 09 2011 18:08:38  $
---       Date fetched Out : $Modtime:   Mar 09 2011 11:17:50  $
---       PVCS Version     : $Revision:   3.23  $
+--       Date into PVCS   : $Date:   Mar 14 2011 13:12:44  $
+--       Date fetched Out : $Modtime:   Mar 14 2011 11:51:40  $
+--       PVCS Version     : $Revision:   3.24  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.24  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2079,6 +2079,88 @@ END validate_defect_rec;
 --
 -----------------------------------------------------------------------------
 --
+PROCEDURE get_tre_boqs(pi_admin_unit         IN     nm_admin_units_all.nau_admin_unit%TYPE
+                      ,pi_treat_code         IN     treatment_models.tmo_tre_treat_code%TYPE
+                      ,pi_atv_acty_area_code IN     treatment_models.tmo_atv_acty_area_code%TYPE
+                      ,pi_defect_code        IN     treatment_models.tmo_dty_defect_code%TYPE
+                      ,pi_sys_flag           IN     treatment_models.tmo_sys_flag%TYPE
+                      ,pi_attr_value         IN     VARCHAR2
+                      ,po_results            IN OUT tre_boqs_tab) IS
+  --
+  lv_tremodlev   hig_options.hop_value%TYPE := hig.get_sysopt('TREMODLEV');
+  lv_attr_value  NUMBER;
+  --
+  lt_retval      tre_boqs_tab;
+  --
+BEGIN
+  /*
+  ||Set the attribute value to be used with the multiplier.
+  */
+  BEGIN
+    lv_attr_value := NVL(TO_NUMBER(pi_attr_value),0);
+  EXCEPTION
+    WHEN value_error
+     THEN
+        lv_attr_value := 0;
+  END;
+  --
+  SELECT sta.sta_item_code                                                   sta_item_code
+        ,sta.sta_item_name                                                   sta_item_name
+        ,sta.sta_unit                                                        sta_unit
+        ,sta.sta_dim1_text                                                   sta_dim1_text
+        ,sta.sta_dim2_text                                                   sta_dim2_text
+        ,sta.sta_dim3_text                                                   sta_dim3_text
+        ,sta.sta_min_quantity                                                sta_min_quantity
+        ,sta.sta_max_quantity                                                sta_max_quantity
+        ,sta.sta_rogue_flag                                                  sta_rogue_flag
+        ,sta.sta_labour_units                                                sta_labour_units
+        ,NVL(tmi.tmi_default_quantity
+            ,NVL(tmi.tmi_multiplier,1) * lv_attr_value)                      boq_est_dim1
+        ,DECODE(sta.sta_dim2_text,NULL,NULL,1)                               boq_est_dim2
+        ,DECODE(sta.sta_dim3_text,NULL,NULL,1)                               boq_est_dim3
+        ,NVL(tmi.tmi_default_quantity
+            ,NVL(tmi.tmi_multiplier,1) * lv_attr_value)                      boq_est_quantity
+        ,sta.sta_rate                                                        boq_est_rate
+        ,ROUND(sta.sta_rate * NVL(tmi.tmi_default_quantity,NVL(tmi.tmi_multiplier,1) * lv_attr_value)
+              ,2)                                                            boq_est_cost
+        ,ROUND(NVL(tmi.tmi_default_quantity,NVL(tmi.tmi_multiplier,1) * lv_attr_value) * NVL(sta_labour_units,1)
+              ,2)                                                            boq_est_labour
+    BULK COLLECT
+    INTO lt_retval
+    FROM standard_items         sta
+        ,treatment_model_items  tmi
+        ,treatment_models       tmo
+        ,def_types              dty
+        ,hig_admin_units        hau
+        ,hig_admin_groups       hag
+   WHERE hag.hag_child_admin_unit   = pi_admin_unit
+     AND hag.hag_parent_admin_unit  = hau.hau_admin_unit
+     AND hau.hau_level              = lv_tremodlev
+     AND hau.hau_admin_unit         = tmo.tmo_oun_org_id
+     AND tmo.tmo_tre_treat_code     = pi_treat_code
+     AND tmo.tmo_atv_acty_area_code = pi_atv_acty_area_code
+     AND tmo.tmo_dty_defect_code    = pi_defect_code
+     AND tmo.tmo_sys_flag           = pi_sys_flag
+     AND tmo.tmo_dty_defect_code    = dty.dty_defect_code
+     AND tmo.tmo_atv_acty_area_code = dty.dty_atv_acty_area_code
+     AND tmo.tmo_sys_flag           = dty.dty_dtp_flag
+     AND tmo.tmo_id                 = tmi.tmi_tmo_id
+     AND tmi.tmi_sta_item_code      = sta.sta_item_code
+   ORDER
+      BY sta.sta_item_code
+       ;
+  --
+  po_results := lt_retval;
+  --
+EXCEPTION
+  WHEN NO_DATA_FOUND
+    THEN po_results := lt_retval;
+  WHEN OTHERS
+    THEN RAISE;
+END get_tre_boqs;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE validate_repair_boqs(pi_def_defect_id      IN     defects.def_defect_id%TYPE
                               ,pi_rep_action_cat     IN     repairs.rep_action_cat%TYPE
                               ,pi_rep_created_date   IN     repairs.rep_created_date%TYPE
@@ -2086,13 +2168,14 @@ PROCEDURE validate_repair_boqs(pi_def_defect_id      IN     defects.def_defect_i
                               ,pi_rep_tre_treat_code IN     treatments.tre_treat_code%TYPE
                               ,pi_atv_acty_area_code IN     activities.atv_acty_area_code%TYPE
                               ,pi_def_defect_code    IN     defects.def_defect_code%TYPE
+                              ,pi_attr_value         IN     VARCHAR2
                               ,pi_sys_flag           IN     VARCHAR2
                               ,po_error_flag            OUT VARCHAR2
                               ,pio_boq_tab           IN OUT boq_tab)
   IS
   --
   lt_boq_tab       boq_tab;
-  lt_tre_boqs_tab  mai.tre_boqs_tab;
+  lt_tre_boqs_tab  tre_boqs_tab;
   --
   lr_sta  standard_items%ROWTYPE;
   --
@@ -2209,12 +2292,13 @@ BEGIN
          (pi_sys_flag = 'L' and lv_usetremodl = 'Y'))
        THEN
           --
-          mai.get_tre_boqs(pi_admin_unit         => pi_admin_unit
-                          ,pi_treat_code         => pi_rep_tre_treat_code
-                          ,pi_atv_acty_area_code => pi_atv_acty_area_code
-                          ,pi_defect_code        => pi_def_defect_code
-                          ,pi_sys_flag           => pi_sys_flag
-                          ,po_results            => lt_tre_boqs_tab);
+          get_tre_boqs(pi_admin_unit         => pi_admin_unit
+                      ,pi_treat_code         => pi_rep_tre_treat_code
+                      ,pi_atv_acty_area_code => pi_atv_acty_area_code
+                      ,pi_defect_code        => pi_def_defect_code
+                      ,pi_sys_flag           => pi_sys_flag
+                      ,pi_attr_value         => pi_attr_value
+                      ,po_results            => lt_tre_boqs_tab);
           --
           FOR i IN 1..lt_tre_boqs_tab.count LOOP
             --
@@ -2249,6 +2333,7 @@ END validate_repair_boqs;
 --
 PROCEDURE validate_repairs(pi_insp_rec    IN     activities_report%ROWTYPE
                           ,pi_defect_rec  IN     defects%ROWTYPE
+                          ,pi_attr_value  IN     VARCHAR2
                           ,pi_admin_unit  IN     hig_admin_units.hau_admin_unit%TYPE
                           ,pio_error_flag IN OUT VARCHAR2
                           ,pio_repair_tab IN OUT rep_tab)
@@ -2397,6 +2482,7 @@ BEGIN
                           ,pi_rep_tre_treat_code => lt_rep_tab(i).rep_record.rep_tre_treat_code
                           ,pi_atv_acty_area_code => lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                           ,pi_def_defect_code    => pi_defect_rec.def_defect_code
+                          ,pi_attr_value         => pi_attr_value
                           ,pi_sys_flag           => lr_rse.rse_sys_flag
                           ,po_error_flag         => lv_boq_error_flag
                           ,pio_boq_tab           => lt_boq_tab);
@@ -3928,6 +4014,7 @@ BEGIN
       nm_debug.debug('Validating Repairs.');
       validate_repairs(pi_insp_rec    => lr_insp_rec
                       ,pi_defect_rec  => lr_defect_rec
+                      ,pi_attr_value  => lt_def_attribs(1)
                       ,pi_admin_unit  => lv_admin_unit
                       ,pio_error_flag => lv_error_flag
                       ,pio_repair_tab => lt_repairs);
