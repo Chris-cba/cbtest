@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.14.1.0   Feb 02 2011 15:26:46   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.14.1.1   Mar 16 2011 14:16:48   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Feb 02 2011 15:26:46  $
---       Date fetched Out : $Modtime:   Feb 02 2011 12:18:54  $
---       PVCS Version     : $Revision:   3.14.1.0  $
+--       Date into PVCS   : $Date:   Mar 16 2011 14:16:48  $
+--       Date fetched Out : $Modtime:   Mar 16 2011 10:36:44  $
+--       PVCS Version     : $Revision:   3.14.1.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14.1.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.14.1.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -2700,7 +2700,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'K'
              THEN
-                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('L','M','N','P','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','L','M','N','P','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9526);
@@ -2708,7 +2708,7 @@ nm_debug.debug('Checking Record Type '||pi_x_rec_counts(i).rec_type||', X rec Co
                 END IF;
             WHEN 'L'
              THEN
-                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('M','N','P','Q','R')
+                IF NVL(lt_records(i).milr_rec_type, '@') NOT IN('I','M','N','P','Q','R')
                  THEN
                     add_error_to_stack(pi_seq_no => lt_records(i).milr_seq_no
                                       ,pi_ner_id => 9527);
