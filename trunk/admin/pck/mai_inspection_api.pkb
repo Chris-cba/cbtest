@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.25   Mar 16 2011 19:02:22   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.26   Mar 16 2011 19:03:38   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 16 2011 19:02:22  $
---       Date fetched Out : $Modtime:   Mar 16 2011 18:58:06  $
---       PVCS Version     : $Revision:   3.25  $
+--       Date into PVCS   : $Date:   Mar 16 2011 19:03:38  $
+--       Date fetched Out : $Modtime:   Mar 16 2011 19:02:50  $
+--       PVCS Version     : $Revision:   3.26  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.25  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.26  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2776,7 +2776,7 @@ BEGIN
               IF TRUNC(lv_last_insp_date) > TRUNC(pi_insp_rec.are_date_work_done)
                THEN
                   lt_arl(i).arl_not_seq_flag := 'A';
-                  /* Inspection date is less than previously loaded*/
+                  /* Inspection date is less than previously loaded */
                   hig.raise_ner(pi_appl => 'MAI'
                                ,pi_id   => 9500);
               ELSE
@@ -2801,7 +2801,7 @@ BEGIN
                THEN
                   lt_arl(i).arl_not_seq_flag := 'A';
                   lt_arl(i).arl_act_status := 'I';
-                  /* Inspection date is less than previously loaded*/
+                  /* Inspection date is less than previously loaded */
                   hig.raise_ner(pi_appl => 'MAI'
                                ,pi_id   => 9500);
               ELSE
