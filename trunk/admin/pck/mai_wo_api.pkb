@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.20   Mar 04 2011 12:05:08   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.21   Mar 18 2011 14:16:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Mar 04 2011 12:05:08  $
---       Date fetched Out : $Modtime:   Mar 04 2011 11:26:26  $
---       PVCS Version     : $Revision:   3.20  $
+--       Date into PVCS   : $Date:   Mar 18 2011 14:16:52  $
+--       Date fetched Out : $Modtime:   Mar 18 2011 11:50:18  $
+--       PVCS Version     : $Revision:   3.21  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.20  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.21  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2661,7 +2661,7 @@ PROCEDURE can_user_authorise_wo(pi_user_id          IN     hig_users.hus_user_id
                                ,pio_error           IN OUT VARCHAR2)
   IS
   --
-  lv_auth_own   hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('AUTH_OWN'),'Y');
+  lv_auth_own   hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('AUTH_OWN'),'Y');
   lv_test_cost  work_orders.wor_est_cost%TYPE;
   --
   lr_user      hig_users%ROWTYPE;
@@ -5503,6 +5503,8 @@ nm_debug.debug('lv_con_id = '||lv_con_id);
     IF pi_instruct
      AND lv_work_order_no IS NOT NULL
      THEN
+        --
+        gt_work_orders(lv_tab_ind).instructed := 'N';
         --
         instruct_work_order(pi_user_id         => lv_user_id
                            ,pi_works_order_no  => lv_work_order_no
