@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.26   Mar 16 2011 19:03:38   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.27   Mar 18 2011 14:14:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 16 2011 19:03:38  $
---       Date fetched Out : $Modtime:   Mar 16 2011 19:02:50  $
---       PVCS Version     : $Revision:   3.26  $
+--       Date into PVCS   : $Date:   Mar 18 2011 14:14:56  $
+--       Date fetched Out : $Modtime:   Mar 17 2011 16:19:38  $
+--       PVCS Version     : $Revision:   3.27  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.26  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.27  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -3657,23 +3657,49 @@ BEGIN
         --
         FOR j IN 1 .. lt_work_orders_tab.count LOOP
           --        
-          IF lt_work_orders_tab(j).error IS NULL 
+          
+          /*
+          || If no errors encountered, or error encountered but 
+          || failed instruction, WO will have been created.
+          */
+          IF lt_work_orders_tab(j).error IS NULL OR
+             NVL(lt_work_orders_tab(j).instructed, '@') = 'N'
            THEN
               hig_process_api.log_it('Created Work Order '||lt_work_orders_tab(j).works_order_no);
-          ELSE
-              hig_process_api.log_it(pi_message      => 'Warning: '||lt_work_orders_tab(j).error
-                                    ,pi_message_type => 'W');
-              --
-              lv_alert_subject := 'Error: Automatic Work Order creation failure for Defect '||lt_insp_defects(i).def_defect_id;
-              lv_alert_body    := 'Automatic Work Order creation failed with: '
-                                   ||chr(10)||lt_work_orders_tab(j).error
-                                   ||chr(10)||'Inspection = '||pi_are_report_id
-                                   ||chr(10)||'Defect     = '||lt_insp_defects(i).def_defect_id;
+          END IF;
+          
+          /*
+          || Errors encounterd in WO Automation
+          */
+          IF lt_work_orders_tab(j).error IS NOT NULL 
+            THEN
+               --
+               IF NVL(lt_work_orders_tab(j).instructed, '@') = 'N'
+                 THEN
+                    hig_process_api.log_it('Failed to instruct Work Order '||lt_work_orders_tab(j).works_order_no);
+                    lv_alert_subject := 'Error: Automatic Work Order instruction failure for Defect '||lt_insp_defects(i).def_defect_id;
+                    lv_alert_body    := 'Automatic Work Order instruction failed with: '
+                                         ||chr(10)||lt_work_orders_tab(j).error
+                                         ||chr(10)||'Inspection = '||pi_are_report_id
+                                         ||chr(10)||'Defect     = '||lt_insp_defects(i).def_defect_id;
+                 --
+               ELSE
+                    hig_process_api.log_it('Failed to create Work Order for Defect '||lt_insp_defects(i).def_defect_id);
+                    lv_alert_subject := 'Error: Automatic Work Order creation failure for Defect '||lt_insp_defects(i).def_defect_id;
+                    lv_alert_body    := 'Automatic Work Order creation failed with: '
+                                         ||chr(10)||lt_work_orders_tab(j).error
+                                         ||chr(10)||'Inspection = '||pi_are_report_id
+                                         ||chr(10)||'Defect     = '||lt_insp_defects(i).def_defect_id;
+               END IF;
+               --
+               hig_process_api.log_it(pi_message      => '   Warning: '||lt_work_orders_tab(j).error
+                                     ,pi_message_type => 'W');
+               --
+          END IF;
               --
               create_wo_failure_alert(pi_subject => lv_alert_subject
                                      ,pi_body    =>lv_alert_body);
               --                          
-          END IF;
         END LOOP;
     ELSE
         hig_process_api.log_it('No Work Orders created for Defect '||lt_insp_defects(i).def_defect_id);
