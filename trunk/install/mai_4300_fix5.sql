@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix5.sql-arc   3.0   Mar 18 2011 11:33:40   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix5.sql-arc   3.1   Mar 18 2011 11:55:14   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4300_fix5.sql  $
---       Date into PVCS   : $Date:   Mar 18 2011 11:33:40  $
---       Date fetched Out : $Modtime:   Mar 18 2011 11:33:18  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Mar 18 2011 11:55:14  $
+--       Date fetched Out : $Modtime:   Mar 18 2011 11:54:40  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2011
@@ -49,7 +49,7 @@ WHENEVER SQLERROR EXIT
 
 DECLARE
  CURSOR c1 IS
- SELECT DECODE (COUNT(*), 3, 'Y', NULL) FIX_1_TO_3_APPLIED
+ SELECT DECODE (COUNT(*), 4, 'Y', NULL) FIX_1_TO_4_APPLIED
  FROM  (SELECT 'FIX1'
         FROM   hig_upgrades
         WHERE  hup_product = 'MAI'
