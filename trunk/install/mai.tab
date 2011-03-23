@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.27   Jan 14 2011 15:42:24   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.28   Mar 23 2011 10:38:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Jan 14 2011 15:42:24  $
---       Date fetched Out : $Modtime:   Jan 14 2011 15:41:14  $
---       PVCS Version     : $Revision:   2.27  $
+--       Date into PVCS   : $Date:   Mar 23 2011 10:38:56  $
+--       Date fetched Out : $Modtime:   Mar 23 2011 10:30:34  $
+--       PVCS Version     : $Revision:   2.28  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Jan 14  15:22:01 2011 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu Sep 16  09:29:14 2010 by Server Generator 10.1.2.9.28
  
 
 
@@ -358,6 +358,7 @@ CREATE TABLE CONTRACTS
  ,CON_REMARKS VARCHAR2(254)
  ,CON_RETENTION_TO_DATE NUMBER(14,2)
  ,CON_YEAR_END_DATE DATE NOT NULL
+ ,CON_RECALC_DUE_DATE VARCHAR2(1)
  )
 /
 
@@ -1574,6 +1575,7 @@ CREATE TABLE INTERFACE_WOL
  ,IWOL_PERCENT_ADJUST_CODE NUMBER(2,0)
  ,IWOL_WORK_CAT VARCHAR2(10)
  ,IWOL_COST_CODE VARCHAR2(60)
+ ,IWOL_DESCR VARCHAR2(1000)
  )
 /
 
@@ -1603,6 +1605,7 @@ CREATE TABLE INTERFACE_WOR
  ,IWOR_DESCR VARCHAR2(2000)
  ,IWOR_WO_RUN_NUMBER NUMBER(6,0)
  ,IWOR_FI_RUN_NUMBER NUMBER(6,0)
+ ,IWOR_REMARKS VARCHAR2(1000)
  )
 /
 
@@ -2238,6 +2241,19 @@ CREATE TABLE MAI_INV_ACTIVITIES
 /
 
 COMMENT ON TABLE MAI_INV_ACTIVITIES IS 'Table To Define Valid Activity Codes For A Given Inventory Item Type And Sys Flag.'
+/
+
+PROMPT Creating Table 'MAI_USERS'
+CREATE TABLE MAI_USERS
+ (MUS_USER_ID NUMBER(9) NOT NULL
+ ,MUS_WOR_FLAG VARCHAR2(1) NOT NULL
+ ,MUS_WOR_VALUE_MIN NUMBER(9)
+ ,MUS_WOR_VALUE_MAX NUMBER(9)
+ ,MUS_WOR_AUR_ALLOWED VARCHAR2(1) NOT NULL
+ ,MUS_WOR_AUR_MIN NUMBER(9)
+ ,MUS_WOR_AUR_MAX NUMBER(9)
+ ,MUS_WOR_AUR_DAILY_MAX NUMBER(9)
+ )
 /
 
 PROMPT Creating Table 'MAI_WO_USERS'
@@ -3401,7 +3417,7 @@ CREATE TABLE WORK_ORDERS
  ,WOR_OUN_ORG_ID NUMBER(8,0)
  ,WOR_PEO_PERSON_ID NUMBER(8,0)
  ,WOR_PRICE_TYPE VARCHAR2(2)
- ,WOR_REMARKS VARCHAR2(70)
+ ,WOR_REMARKS VARCHAR2(1000)
  ,WOR_ROAD_TYPE VARCHAR2(3)
  ,WOR_RSE_HE_ID_LINK NUMBER(9,0)
  ,WOR_SCHEME_REF VARCHAR2(7)
@@ -3631,6 +3647,7 @@ CREATE TABLE WORK_ORDERS
  ,WOR_DATE_ATTRIB178 DATE
  ,WOR_DATE_ATTRIB179 DATE
  ,WOR_DATE_ATTRIB180 DATE
+ ,WOR_DATE_AUTHORISED DATE
  )
 /
 
@@ -4224,7 +4241,7 @@ CREATE TABLE WORK_ORDER_LINES
  ,WOL_DATE_COMPLETE DATE
  ,WOL_DATE_CREATED DATE
  ,WOL_DATE_PAID DATE
- ,WOL_DESCR VARCHAR2(40)
+ ,WOL_DESCR VARCHAR2(1000)
  ,WOL_DISCOUNT NUMBER(6,3)
  ,WOL_EST_COST NUMBER(10,2)
  ,WOL_EST_LABOUR NUMBER(10,2)
@@ -4251,6 +4268,7 @@ CREATE TABLE WORK_ORDER_LINES
  ,WOL_FINAL VARCHAR2(1)
  ,WOL_REGISTER_FLAG VARCHAR2(1) DEFAULT 'N' NOT NULL
  ,WOL_LOCN_DESCR VARCHAR2(1000)
+ ,WOL_TARGET_DATE DATE
  )
 /
 
