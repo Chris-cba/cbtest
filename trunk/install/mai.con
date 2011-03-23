@@ -1,18 +1,18 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.8   Jan 14 2011 15:42:24   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.9   Mar 23 2011 10:40:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   Jan 14 2011 15:42:24  $
---       Date fetched Out : $Modtime:   Jan 14 2011 15:38:06  $
---       PVCS Version     : $Revision:   2.8  $
+--       Date into PVCS   : $Date:   Mar 23 2011 10:40:56  $
+--       Date fetched Out : $Modtime:   Mar 23 2011 10:31:22  $
+--       PVCS Version     : $Revision:   2.9  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2009
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Jan 14  15:22:01 2011 by Server Generator 10.1.2.9.28
-  
+-- Generated for Oracle 10g on Tue Jun 01  10:38:38 2010 by Server Generator 10.1.2.9.28
+
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
  ADD (CONSTRAINT ATV_PK PRIMARY KEY 
@@ -157,6 +157,12 @@ ALTER TABLE MAI_INV_ACTIVITIES
   ,MIA_ATV_ACTY_AREA_CODE))
 /
 
+PROMPT Creating Primary Key on 'MAI_USERS'
+ALTER TABLE MAI_USERS
+ ADD (CONSTRAINT MUS_PK PRIMARY KEY 
+  (MUS_USER_ID))
+/
+
 PROMPT Creating Primary Key on 'MAI_WO_USERS'
 ALTER TABLE MAI_WO_USERS
  ADD (CONSTRAINT MWU_PK PRIMARY KEY 
@@ -262,7 +268,7 @@ PROMPT Creating Check Constraint on 'MAI_GMIS_LOAD_BATCHES'
 ALTER TABLE MAI_GMIS_LOAD_BATCHES
  ADD (CONSTRAINT GLB_LOAD_ERR_CHK1 CHECK (glb_load_errors IN ('Y', 'N')))
 /
-            
+             
 PROMPT Creating Check Constraint on 'MAI_WO_USERS'
 ALTER TABLE MAI_WO_USERS
  ADD (CONSTRAINT MWU_RECEIVE_ALERTS_CHK CHECK (mwu_receive_alerts IN ('Y','N')))
@@ -447,6 +453,13 @@ ALTER TABLE MAI_INV_ACTIVITIES ADD (CONSTRAINT
  MIA_NIT_FK FOREIGN KEY 
   (MIA_NIT_INV_TYPE) REFERENCES NM_INV_TYPES_ALL
   (NIT_INV_TYPE))
+/
+
+PROMPT Creating Foreign Key on 'MAI_USERS'
+ALTER TABLE MAI_USERS ADD (CONSTRAINT
+ MUS_HUS_FK FOREIGN KEY 
+  (MUS_USER_ID) REFERENCES HIG_USERS
+  (HUS_USER_ID) ON DELETE CASCADE)
 /
 
 PROMPT Creating Foreign Key on 'MAI_WO_USERS'
