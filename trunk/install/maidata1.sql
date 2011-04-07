@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.26   Apr 07 2011 10:28:42   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.27   Apr 07 2011 15:37:14   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
---       Date fetched Out : $Modtime:   Apr 07 2011 10:25:20  $
---       Version          : $Revision:   2.26  $
+--       Date into PVCS   : $Date:   Apr 07 2011 15:37:14  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 15:26:02  $
+--       Version          : $Revision:   2.27  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 07-APR-2011 10:25
+--       Generation Date  : 07-APR-2011 15:25
 --
 --   Product metadata script
 --   As at Release 4.4.0.0
@@ -18535,7 +18535,7 @@ SELECT
        ,'MAI3620'
        ,'Budget Reallocation'
        ,'M'
-       ,5 FROM DUAL
+       ,6 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3620');
@@ -18586,7 +18586,7 @@ SELECT
        ,'MAI3840'
        ,'Payment Run'
        ,'M'
-       ,6 FROM DUAL
+       ,7 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3840');
@@ -18620,7 +18620,7 @@ SELECT
        ,'MAI3940'
        ,'Query Payment Run Details'
        ,'M'
-       ,7 FROM DUAL
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3940');
