@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4300_mai4400_metadata_upg.sql-arc   3.0   Apr 07 2011 10:26:36   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4300_mai4400_metadata_upg.sql-arc   3.1   Apr 07 2011 14:50:26   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4300_mai4400_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 10:26:36  $
---       Date fetched Out : $Modtime:   Apr 07 2011 09:27:44  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 07 2011 14:50:26  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 14:49:54  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -353,6 +353,7 @@ BEGIN
        
    END LOOP;
 END;
+/
 
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
