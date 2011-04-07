@@ -71,11 +71,11 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.4   Mar 04 2011 14:09:10   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.5   Apr 07 2011 11:33:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   Mar 04 2011 14:09:10  $
---       Date fetched Out : $Modtime:   Mar 04 2011 14:08:18  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Apr 07 2011 11:33:14  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 11:32:40  $
+--       Version          : $Revision:   3.5  $
 -------------------------------------------------------------------------
 --
        are_date_work_done
@@ -155,5 +155,3 @@ SELECT  /*+ FIRST_ROWS_N */
    AND def_defect_id = rep_def_defect_id
    AND def_rse_he_id = ne_id
 /
-
-road_segments_all
