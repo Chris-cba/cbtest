@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.16   Jan 20 2011 16:51:40   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.17   Apr 07 2011 11:59:14   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Jan 20 2011 16:51:40  $
---       Date fetched Out : $Modtime:   Jan 20 2011 16:51:22  $
---       PVCS Version     : $Revision:   2.16  $
+--       Date into PVCS   : $Date:   Apr 07 2011 11:59:14  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 11:59:14  $
+--       PVCS Version     : $Revision:   2.17  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) Exor Corporation Ltd, 2011
@@ -327,6 +327,46 @@ start '&&run_file'
 SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
+--                        ****************   ROLES  *******************
+SET TERM ON
+PROMPT Roles...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mairoles.sql' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+--
+SET TERM ON
+PROMPT User Roles...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'mai_user_roles.sql' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+--
+SET TERM ON
+Prompt Updating HIG_USER_ROLES...
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'nm3'||'&terminator'||'install'||
+        '&terminator'||'hig_user_roles.sql' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
 --                        ****************   META-DATA  *******************
 --
 SET TERM ON
@@ -385,46 +425,6 @@ SET TERM ON
 Prompt Creating Synonyms That Do Not Exist...
 SET TERM OFF
 EXECUTE nm3ddl.refresh_all_synonyms;
---
----------------------------------------------------------------------------------------------------
---                        ****************   ROLES  *******************
-SET TERM ON
-PROMPT Roles...
-SET TERM OFF
-SET DEFINE ON
-select '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mairoles.sql' run_file
-from dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
---
-SET TERM ON
-PROMPT User Roles...
-SET TERM OFF
-SET DEFINE ON
-select '&exor_base'||'mai'||'&terminator'||'install'||
-        '&terminator'||'mai_user_roles.sql' run_file
-from dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
---
---
-SET TERM ON
-Prompt Updating HIG_USER_ROLES...
-SET TERM OFF
-SET DEFINE ON
-select '&exor_base'||'nm3'||'&terminator'||'install'||
-        '&terminator'||'hig_user_roles.sql' run_file
-from dual
-/
-SET FEEDBACK ON
-start &&run_file
-SET FEEDBACK OFF
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   VERSION NUMBER   *******************
