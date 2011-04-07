@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.14   Oct 13 2010 16:31:34   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.15   Apr 07 2011 10:28:42   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Oct 13 2010 16:31:34  $
---       Date fetched Out : $Modtime:   Oct 13 2010 16:25:34  $
---       Version          : $Revision:   2.14  $
+--       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 10:25:24  $
+--       Version          : $Revision:   2.15  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 13-OCT-2010 16:25
+--       Generation Date  : 07-APR-2011 10:25
 --
 --   Product metadata script
---   As at Release 4.3.0.0
+--   As at Release 4.4.0.0
 --
---   Copyright (c) exor corporation ltd, 2010
+--   Copyright (c) exor corporation ltd, 2011
 --
 --   TABLES PROCESSED
 --   ================

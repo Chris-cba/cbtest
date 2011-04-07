@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.25   Oct 13 2010 16:31:36   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.26   Apr 07 2011 10:28:42   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Oct 13 2010 16:31:36  $
---       Date fetched Out : $Modtime:   Oct 13 2010 16:25:32  $
---       Version          : $Revision:   2.25  $
+--       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 10:25:20  $
+--       Version          : $Revision:   2.26  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 13-OCT-2010 16:25
+--       Generation Date  : 07-APR-2011 10:25
 --
 --   Product metadata script
---   As at Release 4.3.0.0
+--   As at Release 4.4.0.0
 --
---   Copyright (c) exor corporation ltd, 2010
+--   Copyright (c) exor corporation ltd, 2011
 --
 --   TABLES PROCESSED
 --   ================
@@ -593,6 +593,91 @@ INSERT INTO NM_ERRORS
        )
 SELECT 
         'MAI'
+       ,928
+       ,null
+       ,'Please use the Instruct button to Instruct the Works Order.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 928);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,929
+       ,null
+       ,'Target Date should not be before Date Instructed.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 929);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,930
+       ,null
+       ,'The selected User is not able to Authorise this Works Order.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 930);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,931
+       ,null
+       ,'Please enter Road Group and Contract.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 931);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,932
+       ,null
+       ,'Target Date should not be before Date Raised.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 932);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
        ,9000
        ,null
        ,'ERROR: error in outputing previous error condition.'
@@ -935,7 +1020,7 @@ SELECT
         'MAI'
        ,9202
        ,null
-       ,'Error : Initiation nmeonic is not recognised. : Correct the initiation nmeonic code.'
+       ,'Error : Initiation Type is not recognised. : Correct the Initiation Type code.'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -969,7 +1054,7 @@ SELECT
         'MAI'
        ,9204
        ,null
-       ,'Error : Invalid inspection initiation time. : Correct the Inspection time in the G record.'
+       ,'Error : Chainage on P record exceeds required chainage for section. : Correct the section chainage.'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -2176,7 +2261,7 @@ SELECT
         'MAI'
        ,9526
        ,null
-       ,'L, M, N, P or R record must follow a K record'
+       ,'I, L, M, N, P or R record must follow a K record'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -2193,7 +2278,7 @@ SELECT
         'MAI'
        ,9527
        ,null
-       ,'M, N, P, Q or R record must follow a L Record'
+       ,'I, M, N, P, Q or R record must follow a L Record'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -2453,6 +2538,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
                     AND  NER_ID = 9546);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,9547
+       ,null
+       ,'Please Select An Inspection To Be Re-Submitted.'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 9547);
 --
 INSERT INTO NM_ERRORS
        (NER_APPL
@@ -3025,7 +3127,7 @@ SELECT
         'INITIATION_TYPE'
        ,'MAI'
        ,'Activity Reports Initiation Types'
-       ,3 FROM DUAL
+       ,10 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
                    WHERE HDO_DOMAIN = 'INITIATION_TYPE');
 --
@@ -3308,6 +3410,20 @@ SELECT
        ,1 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
                    WHERE HDO_DOMAIN = 'WOR_REGISTER_STATUS');
+--
+INSERT INTO HIG_DOMAINS
+       (HDO_DOMAIN
+       ,HDO_PRODUCT
+       ,HDO_TITLE
+       ,HDO_CODE_LENGTH
+       )
+SELECT 
+        'WOR_VALUE_CHECK'
+       ,'MAI'
+       ,'Check Works Order value'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_DOMAINS
+                   WHERE HDO_DOMAIN = 'WOR_VALUE_CHECK');
 --
 INSERT INTO HIG_DOMAINS
        (HDO_DOMAIN
@@ -7446,6 +7562,69 @@ INSERT INTO HIG_CODES
        ,HCO_END_DATE
        )
 SELECT 
+        'WOR_VALUE_CHECK'
+       ,'0'
+       ,'Not Enabled'
+       ,'Y'
+       ,1
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'WOR_VALUE_CHECK'
+                    AND  HCO_CODE = '0');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'WOR_VALUE_CHECK'
+       ,'1'
+       ,'Raise a warning'
+       ,'Y'
+       ,2
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'WOR_VALUE_CHECK'
+                    AND  HCO_CODE = '1');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
+        'WOR_VALUE_CHECK'
+       ,'2'
+       ,'Raise an error'
+       ,'Y'
+       ,3
+       ,null
+       ,null FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_CODES
+                   WHERE HCO_DOMAIN = 'WOR_VALUE_CHECK'
+                    AND  HCO_CODE = '2');
+--
+INSERT INTO HIG_CODES
+       (HCO_DOMAIN
+       ,HCO_CODE
+       ,HCO_MEANING
+       ,HCO_SYSTEM
+       ,HCO_SEQ
+       ,HCO_START_DATE
+       ,HCO_END_DATE
+       )
+SELECT 
         'XSP_TYPE'
        ,'B'
        ,'Both CWay and FWay'
@@ -9376,6 +9555,30 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
+        'MAI3620'
+       ,'Budget Reallocation'
+       ,'mai3620'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI3620');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
         'MAI3624'
        ,'Discount Groups'
        ,'mai3624'
@@ -10840,30 +11043,6 @@ INSERT INTO HIG_MODULES
        ,HMO_MENU
        )
 SELECT 
-        'MAI3890'
-       ,'Purge Historical Data'
-       ,'mai3890'
-       ,'FMX'
-       ,''
-       ,'N'
-       ,'N'
-       ,'MAI'
-       ,'FORM' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
-                   WHERE HMO_MODULE = 'MAI3890');
---
-INSERT INTO HIG_MODULES
-       (HMO_MODULE
-       ,HMO_TITLE
-       ,HMO_FILENAME
-       ,HMO_MODULE_TYPE
-       ,HMO_FASTPATH_OPTS
-       ,HMO_FASTPATH_INVALID
-       ,HMO_USE_GRI
-       ,HMO_APPLICATION
-       ,HMO_MENU
-       )
-SELECT 
         'MAI3899'
        ,'Inspections by Group'
        ,'mai3899'
@@ -11873,7 +12052,7 @@ INSERT INTO HIG_MODULES
        )
 SELECT 
         'MAI4405'
-       ,'Maintenance Inspection Error Correction'
+       ,'Maintenance Inspection Summary/Error Correction'
        ,'mai4405'
        ,'FMX'
        ,''
@@ -11907,6 +12086,30 @@ SELECT
        ,'FORM' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
                    WHERE HMO_MODULE = 'MAI4406');
+--
+INSERT INTO HIG_MODULES
+       (HMO_MODULE
+       ,HMO_TITLE
+       ,HMO_FILENAME
+       ,HMO_MODULE_TYPE
+       ,HMO_FASTPATH_OPTS
+       ,HMO_FASTPATH_INVALID
+       ,HMO_USE_GRI
+       ,HMO_APPLICATION
+       ,HMO_MENU
+       )
+SELECT 
+        'MAI4410'
+       ,'Maintenance Manager User Data'
+       ,'mai4410'
+       ,'FMX'
+       ,''
+       ,'N'
+       ,'N'
+       ,'MAI'
+       ,'FORM' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_MODULES
+                   WHERE HMO_MODULE = 'MAI4410');
 --
 INSERT INTO HIG_MODULES
        (HMO_MODULE
@@ -13344,7 +13547,7 @@ SELECT
        ,'If this option is set to Y then it is possible for a user who raised a works order to authorise (instruct) the works order.'||CHR(10)||'Otherwise another user will have to authorise a raised WO.'
        ,''
        ,'VARCHAR2'
-       ,'Y'
+       ,'N'
        ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'AUTH_OWN');
@@ -13458,6 +13661,28 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'CIMALLEST');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'CIMINCRMKS'
+       ,'MAI'
+       ,'Include remarks in WO file'
+       ,'If set to Y, WO file will include Work Order and Work Order Lines remarks '
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'CIMINCRMKS');
 --
 INSERT INTO HIG_OPTION_LIST
        (HOL_ID
@@ -15651,6 +15876,16 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'CIMALLEST');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'CIMINCRMKS'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'CIMINCRMKS');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
@@ -18283,7 +18518,7 @@ SELECT
        ,'MAI1930'
        ,'IHMS Allocated Amounts'
        ,'M'
-       ,6 FROM DUAL
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI1930');
@@ -18297,10 +18532,27 @@ INSERT INTO HIG_STANDARD_FAVOURITES
        )
 SELECT 
         'MAI_FINANCIAL'
+       ,'MAI3620'
+       ,'Budget Reallocation'
+       ,'M'
+       ,5 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_FINANCIAL'
+                    AND  HSTF_CHILD = 'MAI3620');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_FINANCIAL'
        ,'MAI3660'
        ,'Budgets'
        ,'M'
-       ,4 FROM DUAL
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3660');
@@ -18317,7 +18569,7 @@ SELECT
        ,'MAI3662'
        ,'Generate Budgets for Next Year'
        ,'M'
-       ,5 FROM DUAL
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3662');
@@ -18334,7 +18586,7 @@ SELECT
        ,'MAI3840'
        ,'Payment Run'
        ,'M'
-       ,2 FROM DUAL
+       ,6 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3840');
@@ -18368,7 +18620,7 @@ SELECT
        ,'MAI3940'
        ,'Query Payment Run Details'
        ,'M'
-       ,3 FROM DUAL
+       ,7 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI3940');
@@ -18385,7 +18637,7 @@ SELECT
        ,'MAI_FINANCIAL_REPORTS'
        ,'Reports'
        ,'F'
-       ,7 FROM DUAL
+       ,8 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_FINANCIAL'
                     AND  HSTF_CHILD = 'MAI_FINANCIAL_REPORTS');
@@ -19590,7 +19842,7 @@ INSERT INTO HIG_STANDARD_FAVOURITES
 SELECT 
         'MAI_LOADERS_INSPECTIONS'
        ,'MAI4405'
-       ,'Maintenance Inspection Error Correction'
+       ,'Maintenance Inspection Summary/Error Correction'
        ,'M'
        ,20 FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
@@ -19783,6 +20035,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_REF'
                     AND  HSTF_CHILD = 'MAI_REF_MAINTENANCE');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF'
+       ,'MAI_REF_USERS'
+       ,'Users'
+       ,'F'
+       ,5 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF'
+                    AND  HSTF_CHILD = 'MAI_REF_USERS');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT
@@ -20667,6 +20936,23 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
                    WHERE HSTF_PARENT = 'MAI_REF_MAINTENANCE_REPORTS'
                     AND  HSTF_CHILD = 'MAI5225');
+--
+INSERT INTO HIG_STANDARD_FAVOURITES
+       (HSTF_PARENT
+       ,HSTF_CHILD
+       ,HSTF_DESCR
+       ,HSTF_TYPE
+       ,HSTF_ORDER
+       )
+SELECT 
+        'MAI_REF_USERS'
+       ,'MAI4410'
+       ,'Maintenance Manager User Data'
+       ,'M'
+       ,1 FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_STANDARD_FAVOURITES
+                   WHERE HSTF_PARENT = 'MAI_REF_USERS'
+                    AND  HSTF_CHILD = 'MAI4410');
 --
 INSERT INTO HIG_STANDARD_FAVOURITES
        (HSTF_PARENT

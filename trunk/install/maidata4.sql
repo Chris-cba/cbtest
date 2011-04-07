@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.14   Oct 13 2010 16:31:38   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.15   Apr 07 2011 10:28:42   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Oct 13 2010 16:31:38  $
---       Date fetched Out : $Modtime:   Oct 13 2010 16:25:46  $
---       Version          : $Revision:   2.14  $
+--       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
+--       Date fetched Out : $Modtime:   Apr 07 2011 10:25:32  $
+--       Version          : $Revision:   2.15  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 13-OCT-2010 16:25
+--       Generation Date  : 07-APR-2011 10:25
 --
 --   Product metadata script
---   As at Release 4.3.0.0
+--   As at Release 4.4.0.0
 --
---   Copyright (c) exor corporation ltd, 2010
+--   Copyright (c) exor corporation ltd, 2011
 --
 --   TABLES PROCESSED
 --   ================
@@ -18517,7 +18517,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100422095449','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'AST' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-AST');
 --
@@ -18555,7 +18555,7 @@ INSERT INTO HIG_NAVIGATOR
        )
 SELECT 
         'Works Orders'
-       ,'WOR_ORDER_LINES'
+       ,'WORK_ORDER_LINES'
        ,'wol_bud_id'
        ,'budgets'
        ,'bud_id'
@@ -18583,7 +18583,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100419163511','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-BUD');
 --
@@ -18649,7 +18649,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100421133555','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'AST' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-DAST');
 --
@@ -18715,7 +18715,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100422095436','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-DBUD');
 --
@@ -18781,141 +18781,9 @@ SELECT
        ,'DORSET'
        ,to_date('20100330144956','YYYYMMDDHH24MISS')
        ,'DORSET'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-DEF');
---
-INSERT INTO HIG_NAVIGATOR
-       (HNV_HIERARCHY_TYPE
-       ,HNV_PARENT_TABLE
-       ,HNV_PARENT_COLUMN
-       ,HNV_CHILD_TABLE
-       ,HNV_CHILD_COLUMN
-       ,HNV_HIERARCHY_LEVEL
-       ,HNV_HIERARCHY_LABEL
-       ,HNV_PARENT_ID
-       ,HNV_CHILD_ID
-       ,HNV_PARENT_ALIAS
-       ,HNV_CHILD_ALIAS
-       ,HNV_ICON_NAME
-       ,HNV_ADDITIONAL_COND
-       ,HNV_PRIMARY_HIERARCHY
-       ,HNV_HIER_LABEL_1
-       ,HNV_HIER_LABEL_2
-       ,HNV_HIER_LABEL_3
-       ,HNV_HIER_LABEL_4
-       ,HNV_HIER_LABEL_5
-       ,HNV_HIER_LABEL_6
-       ,HNV_HIER_LABEL_7
-       ,HNV_HIER_LABEL_8
-       ,HNV_HIER_LABEL_9
-       ,HNV_HIER_LABEL_10
-       ,HNV_HIERARCHY_SEQ
-       ,HNV_DATE_CREATED
-       ,HNV_CREATED_BY
-       ,HNV_DATE_MODIFIED
-       ,HNV_MODIFIED_BY
-       ,HNV_HPR_PRODUCT
-       )
-SELECT 
-        'Works Orders'
-       ,'defects'
-       ,'To_char(def_defect_id)'
-       ,'docs,doc_assocs'
-       ,'das_rec_id'
-       ,5
-       ,'Enquiry'
-       ,'def_defect_id'
-       ,'das_doc_id'
-       ,'-INST'
-       ,'-DOC'
-       ,'enquiry'
-       ,'AND das_doc_id = docs.doc_id  '||CHR(10)||'AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')'||CHR(10)||'AND (das_table_name IN (select dgs_table_syn from DOC_GATE_SYNS where dgs_dgt_table_name = ''DEFECTS'') or das_table_name = ''DEFECTS'')'||CHR(10)||''
-       ,''
-       ,'das_doc_id'
-       ,'hig_nav.concate_label(hig_nav.get_doc_status_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_dtp_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_dcl_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_compl_type(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_descr(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_compl_location(das_doc_id))'
-       ,''
-       ,''
-       ,''
-       ,null
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100422095500','YYYYMMDDHH24MISS')
-       ,'HIGHWAYS'
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
-                   WHERE HNV_CHILD_ALIAS = '-DOC');
---
-INSERT INTO HIG_NAVIGATOR
-       (HNV_HIERARCHY_TYPE
-       ,HNV_PARENT_TABLE
-       ,HNV_PARENT_COLUMN
-       ,HNV_CHILD_TABLE
-       ,HNV_CHILD_COLUMN
-       ,HNV_HIERARCHY_LEVEL
-       ,HNV_HIERARCHY_LABEL
-       ,HNV_PARENT_ID
-       ,HNV_CHILD_ID
-       ,HNV_PARENT_ALIAS
-       ,HNV_CHILD_ALIAS
-       ,HNV_ICON_NAME
-       ,HNV_ADDITIONAL_COND
-       ,HNV_PRIMARY_HIERARCHY
-       ,HNV_HIER_LABEL_1
-       ,HNV_HIER_LABEL_2
-       ,HNV_HIER_LABEL_3
-       ,HNV_HIER_LABEL_4
-       ,HNV_HIER_LABEL_5
-       ,HNV_HIER_LABEL_6
-       ,HNV_HIER_LABEL_7
-       ,HNV_HIER_LABEL_8
-       ,HNV_HIER_LABEL_9
-       ,HNV_HIER_LABEL_10
-       ,HNV_HIERARCHY_SEQ
-       ,HNV_DATE_CREATED
-       ,HNV_CREATED_BY
-       ,HNV_DATE_MODIFIED
-       ,HNV_MODIFIED_BY
-       ,HNV_HPR_PRODUCT
-       )
-SELECT 
-        'Defects'
-       ,'work_order_lines'
-       ,'wol_id'
-       ,'tma_id_mapping'
-       ,'tidm_primary_key_value'
-       ,4
-       ,'Notice'
-       ,'wol_id'
-       ,'TIDM_RESULTANT_WORKS_ID'
-       ,'-DWOL'
-       ,'-DTMA'
-       ,'tma'
-       ,'AND TIDM_ORIGIN = ''WOL'''
-       ,''
-       ,'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,null
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100422095424','YYYYMMDDHH24MISS')
-       ,'HIGHWAYS'
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
-                   WHERE HNV_CHILD_ALIAS = '-DTMA');
 --
 INSERT INTO HIG_NAVIGATOR
        (HNV_HIERARCHY_TYPE
@@ -18979,7 +18847,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100422105206','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-DWOL');
 --
@@ -19045,75 +18913,9 @@ SELECT
        ,'DORSET'
        ,to_date('20100422095439','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-DWOR');
---
-INSERT INTO HIG_NAVIGATOR
-       (HNV_HIERARCHY_TYPE
-       ,HNV_PARENT_TABLE
-       ,HNV_PARENT_COLUMN
-       ,HNV_CHILD_TABLE
-       ,HNV_CHILD_COLUMN
-       ,HNV_HIERARCHY_LEVEL
-       ,HNV_HIERARCHY_LABEL
-       ,HNV_PARENT_ID
-       ,HNV_CHILD_ID
-       ,HNV_PARENT_ALIAS
-       ,HNV_CHILD_ALIAS
-       ,HNV_ICON_NAME
-       ,HNV_ADDITIONAL_COND
-       ,HNV_PRIMARY_HIERARCHY
-       ,HNV_HIER_LABEL_1
-       ,HNV_HIER_LABEL_2
-       ,HNV_HIER_LABEL_3
-       ,HNV_HIER_LABEL_4
-       ,HNV_HIER_LABEL_5
-       ,HNV_HIER_LABEL_6
-       ,HNV_HIER_LABEL_7
-       ,HNV_HIER_LABEL_8
-       ,HNV_HIER_LABEL_9
-       ,HNV_HIER_LABEL_10
-       ,HNV_HIERARCHY_SEQ
-       ,HNV_DATE_CREATED
-       ,HNV_CREATED_BY
-       ,HNV_DATE_MODIFIED
-       ,HNV_MODIFIED_BY
-       ,HNV_HPR_PRODUCT
-       )
-SELECT 
-        'Defects'
-       ,'defects'
-       ,'To_Char(def_defect_id)'
-       ,'docs,doc_assocs'
-       ,'das_rec_id'
-       ,2
-       ,'Enquiry'
-       ,'def_defect_id'
-       ,'das_doc_id'
-       ,'-DEF'
-       ,'-ENQ'
-       ,'enquiry'
-       ,'AND das_doc_id = docs.doc_id  '||CHR(10)||'AND  doc_dtp_code IN (select dtp_code from doc_types WHERE dtp_allow_complaints = ''Y'')'||CHR(10)||'AND (das_table_name IN (select dgs_table_syn from DOC_GATE_SYNS where dgs_dgt_table_name = ''DEFECTS'') or das_table_name = ''DEFECTS'')'||CHR(10)||'  '
-       ,''
-       ,'das_doc_id'
-       ,'hig_nav.concate_label(hig_nav.get_doc_status_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_dtp_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_dcl_code(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_compl_type(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_descr(das_doc_id))'
-       ,'hig_nav.concate_label(hig_nav.get_doc_compl_location(das_doc_id))'
-       ,''
-       ,''
-       ,''
-       ,null
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100419222834','YYYYMMDDHH24MISS')
-       ,'HIGHWAYS'
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
-                   WHERE HNV_CHILD_ALIAS = '-ENQ');
 --
 INSERT INTO HIG_NAVIGATOR
        (HNV_HIERARCHY_TYPE
@@ -19177,7 +18979,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100422095452','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-INS1');
 --
@@ -19243,7 +19045,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100330145112','YYYYMMDDHH24MISS')
        ,'DORSET'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-INSP');
 --
@@ -19309,7 +19111,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100419163521','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-INST');
 --
@@ -19375,75 +19177,9 @@ SELECT
        ,'DORSET'
        ,to_date('20100419215104','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-REP');
---
-INSERT INTO HIG_NAVIGATOR
-       (HNV_HIERARCHY_TYPE
-       ,HNV_PARENT_TABLE
-       ,HNV_PARENT_COLUMN
-       ,HNV_CHILD_TABLE
-       ,HNV_CHILD_COLUMN
-       ,HNV_HIERARCHY_LEVEL
-       ,HNV_HIERARCHY_LABEL
-       ,HNV_PARENT_ID
-       ,HNV_CHILD_ID
-       ,HNV_PARENT_ALIAS
-       ,HNV_CHILD_ALIAS
-       ,HNV_ICON_NAME
-       ,HNV_ADDITIONAL_COND
-       ,HNV_PRIMARY_HIERARCHY
-       ,HNV_HIER_LABEL_1
-       ,HNV_HIER_LABEL_2
-       ,HNV_HIER_LABEL_3
-       ,HNV_HIER_LABEL_4
-       ,HNV_HIER_LABEL_5
-       ,HNV_HIER_LABEL_6
-       ,HNV_HIER_LABEL_7
-       ,HNV_HIER_LABEL_8
-       ,HNV_HIER_LABEL_9
-       ,HNV_HIER_LABEL_10
-       ,HNV_HIERARCHY_SEQ
-       ,HNV_DATE_CREATED
-       ,HNV_CREATED_BY
-       ,HNV_DATE_MODIFIED
-       ,HNV_MODIFIED_BY
-       ,HNV_HPR_PRODUCT
-       )
-SELECT 
-        'Works Orders'
-       ,'WORK_ORDER_LINES'
-       ,'wol_id'
-       ,'tma_id_mapping'
-       ,'TIDM_PRIMARY_KEY_VALUE'
-       ,3
-       ,'Notice'
-       ,'wol_id'
-       ,'TIDM_RESULTANT_WORKS_ID'
-       ,'-WOL'
-       ,'-TMID'
-       ,'tma'
-       ,'AND TIDM_ORIGIN = ''WOL'''
-       ,''
-       ,'hig_nav.tma_notice_details(TIDM_RESULTANT_WORKS_ID)'
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,''
-       ,2
-       ,to_date('20100222165343','YYYYMMDDHH24MISS')
-       ,'DORSET'
-       ,to_date('20100422093916','YYYYMMDDHH24MISS')
-       ,'HIGHWAYS'
-       ,'' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
-                   WHERE HNV_CHILD_ALIAS = '-TMID');
 --
 INSERT INTO HIG_NAVIGATOR
        (HNV_HIERARCHY_TYPE
@@ -19507,7 +19243,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100419163507','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-WOL');
 --
@@ -19573,7 +19309,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100330144631','YYYYMMDDHH24MISS')
        ,'DORSET'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-WOR');
 --
@@ -19639,7 +19375,7 @@ SELECT
        ,'DORSET'
        ,to_date('20100422105145','YYYYMMDDHH24MISS')
        ,'HIGHWAYS'
-       ,'' FROM DUAL
+       ,'MAI' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-WREP');
 --
@@ -20258,32 +19994,6 @@ SELECT
        ,'NORMAL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
                    WHERE ITR_INV_TYPE = 'DEF$'
-                    AND  ITR_HRO_ROLE = 'MAI_USER');
---
-INSERT INTO NM_INV_TYPE_ROLES
-       (ITR_INV_TYPE
-       ,ITR_HRO_ROLE
-       ,ITR_MODE
-       )
-SELECT 
-        'PRO$'
-       ,'HIG_USER'
-       ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
-                   WHERE ITR_INV_TYPE = 'PRO$'
-                    AND  ITR_HRO_ROLE = 'HIG_USER');
---
-INSERT INTO NM_INV_TYPE_ROLES
-       (ITR_INV_TYPE
-       ,ITR_HRO_ROLE
-       ,ITR_MODE
-       )
-SELECT 
-        'PRO$'
-       ,'MAI_USER'
-       ,'NORMAL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
-                   WHERE ITR_INV_TYPE = 'PRO$'
                     AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
