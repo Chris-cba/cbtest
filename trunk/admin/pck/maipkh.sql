@@ -2,11 +2,11 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkh.sql-arc   2.8   Feb 24 2011 18:00:46   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkh.sql-arc   2.9   Apr 08 2011 10:55:02   Mike.Alexander  $
 --       Module Name      : $Workfile:   maipkh.sql  $
---       Date into SCCS   : $Date:   Feb 24 2011 18:00:46  $
---       Date fetched Out : $Modtime:   Feb 24 2011 17:59:16  $
---       SCCS Version     : $Revision:   2.8  $
+--       Date into SCCS   : $Date:   Apr 08 2011 10:55:02  $
+--       Date fetched Out : $Modtime:   Apr 08 2011 10:54:26  $
+--       SCCS Version     : $Revision:   2.9  $
 --       based on SCCS Version     : 1.10
 --
 -----------------------------------------------------------------------------
@@ -418,6 +418,8 @@ SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
 '&terminator'||'pck'||'&terminator'||'mai_cim_automation.pkh' run_file
 FROM dual
 /
+--
+START '&run_file'
 -----------------------------------------------------------------------------
 -- mai_users package
 -----------------------------------------------------------------------------
