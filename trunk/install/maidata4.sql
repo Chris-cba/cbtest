@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.15   Apr 07 2011 10:28:42   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.16   Apr 13 2011 09:39:24   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
---       Date fetched Out : $Modtime:   Apr 07 2011 10:25:32  $
---       Version          : $Revision:   2.15  $
+--       Date into PVCS   : $Date:   Apr 13 2011 09:39:24  $
+--       Date fetched Out : $Modtime:   Apr 13 2011 09:35:24  $
+--       Version          : $Revision:   2.16  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 07-APR-2011 10:25
+--       Generation Date  : 13-APR-2011 09:35
 --
 --   Product metadata script
 --   As at Release 4.4.0.0
@@ -19994,6 +19994,19 @@ SELECT
        ,'NORMAL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
                    WHERE ITR_INV_TYPE = 'DEF$'
+                    AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+INSERT INTO NM_INV_TYPE_ROLES
+       (ITR_INV_TYPE
+       ,ITR_HRO_ROLE
+       ,ITR_MODE
+       )
+SELECT 
+        'PRO$'
+       ,'MAI_USER'
+       ,'NORMAL' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
+                   WHERE ITR_INV_TYPE = 'PRO$'
                     AND  ITR_HRO_ROLE = 'MAI_USER');
 --
 INSERT INTO NM_INV_TYPE_ROLES
