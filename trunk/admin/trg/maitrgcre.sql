@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.8   Feb 24 2011 18:06:28   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.9   Apr 14 2011 09:51:42   Mike.Alexander  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into PVCS   : $Date:   Feb 24 2011 18:06:28  $
---       Date fetched Out : $Modtime:   Feb 24 2011 18:06:06  $
---       Version          : $Revision:   2.8  $
+--       Date into PVCS   : $Date:   Apr 14 2011 09:51:42  $
+--       Date fetched Out : $Modtime:   Apr 14 2011 09:51:14  $
+--       Version          : $Revision:   2.9  $
 -------------------------------------------------------------------------
 --
 --
@@ -243,6 +243,14 @@ START '&run_file'
 --
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'trg'||'&terminator'||'a_i_hus_mai.trg' run_file
+FROM dual
+/
+START '&run_file'
+--
+-------------------------------------------------------------------------
+--
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'trg'||'&terminator'||'action_wor_status.trg' run_file
 FROM dual
 /
 START '&run_file'
