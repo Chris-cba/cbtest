@@ -8,11 +8,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/def_update_doc_status.trg-arc   3.1   Jan 21 2011 11:25:28   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/def_update_doc_status.trg-arc   3.2   Apr 14 2011 09:41:08   Chris.Baugh  $
 --       Module Name      : $Workfile:   def_update_doc_status.trg  $
---       Date into PVCS   : $Date:   Jan 21 2011 11:25:28  $
---       Date fetched Out : $Modtime:   Jan 18 2011 14:40:50  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Apr 14 2011 09:41:08  $
+--       Date fetched Out : $Modtime:   Apr 14 2011 09:33:56  $
+--       Version          : $Revision:   3.2  $
 --
 --
 -----------------------------------------------------------------------------
@@ -60,40 +60,37 @@ BEGIN
 
          IF lv_row_found
          THEN
-            INSERT INTO doc_assocs
-            (das_table_name, das_rec_id, das_doc_id)
-            SELECT 'WORK_ORDERS', :new.def_works_order_no, d.doc_id
-            FROM   docs d
-            WHERE  d.doc_id IN (SELECT das_doc_id
+            IF lv_feature10 = 'Y' -- Defect SELECTED onto WO
+            THEN
+            
+               INSERT INTO doc_assocs
+               (das_table_name, das_rec_id, das_doc_id)
+               SELECT 'WORK_ORDERS', :new.def_works_order_no, d.doc_id
+               FROM   docs d
+               WHERE  d.doc_id IN (SELECT das_doc_id
+                                   FROM   doc_assocs
+                                   WHERE  das_rec_id = TO_CHAR(:new.def_defect_id)
+                                   AND  das_table_name = 'DEFECTS')
+               AND NOT EXISTS (SELECT 1 FROM doc_assocs
+                               WHERE das_table_name = 'WORK_ORDERS'
+                               AND   das_rec_id = :new.def_works_order_no
+                               AND   das_doc_id = d.doc_id);
+           ELSE
+              UPDATE docs
+              SET  doc_status_code = lv_status,
+                   doc_reason      = 'Work Order Instructed : '||:new.def_works_order_no
+              WHERE  doc_id IN (SELECT das_doc_id
                                 FROM   doc_assocs
                                 WHERE  das_rec_id = TO_CHAR(:new.def_defect_id)
                                 AND  das_table_name = 'DEFECTS')
-            AND  d.doc_status_code IN (SELECT hsc_status_code
+              AND  doc_status_code IN (SELECT hsc_status_code
                                        FROM   hig_status_codes
                                        WHERE  hsc_domain_code = 'COMPLAINTS'
-            AND  (hsc_allow_feature6 = lv_feature10
-               OR hsc_allow_feature5 = 'Y')
-            AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
-            AND nvl(hsc_end_date, sysdate))
-            AND NOT EXISTS (SELECT 1 FROM doc_assocs
-                            WHERE das_table_name = 'WORK_ORDERS'
-                            AND   das_rec_id = :new.def_works_order_no
-                            AND   das_doc_id = d.doc_id);
+                                       AND  hsc_allow_feature6 = 'Y'
+                                       AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
+                                                                AND nvl(hsc_end_date, sysdate));
 
-           UPDATE docs
-           SET  doc_status_code = lv_status,
-                doc_reason      = DECODE(lv_feature10, 'Y','Work Order Raised : ', 'Work Order Instructed : ')||:new.def_works_order_no
-           WHERE  doc_id IN (SELECT das_doc_id
-                             FROM   doc_assocs
-                             WHERE  das_rec_id = TO_CHAR(:new.def_defect_id)
-                             AND  das_table_name = 'DEFECTS')
-           AND  doc_status_code IN (SELECT hsc_status_code
-                                    FROM   hig_status_codes
-                                    WHERE  hsc_domain_code = 'COMPLAINTS'
-                                    AND  hsc_allow_feature6 = 'Y'
-                                    AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
-           AND nvl(hsc_end_date, sysdate));
-
+           END IF;
         END IF;
 
      END IF;
