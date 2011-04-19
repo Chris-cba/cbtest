@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.21   Mar 18 2011 14:16:52   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.22   Apr 19 2011 15:54:08   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Mar 18 2011 14:16:52  $
---       Date fetched Out : $Modtime:   Mar 18 2011 11:50:18  $
---       PVCS Version     : $Revision:   3.21  $
+--       Date into PVCS   : $Date:   Apr 19 2011 15:54:08  $
+--       Date fetched Out : $Modtime:   Apr 19 2011 15:53:00  $
+--       PVCS Version     : $Revision:   3.22  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.21  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.22  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -5348,8 +5348,8 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
             ,def_rse_he_id
             ,def_atv_acty_area_code
             ,def_defect_code
-            ,def_siss_id
             ,def_priority
+            ,def_siss_id
             ,rep_tre_treat_code
             ,rep_action_cat
             ,rep_date_due
