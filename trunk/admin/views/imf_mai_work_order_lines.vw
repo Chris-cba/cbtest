@@ -53,11 +53,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.8   Mar 02 2011 16:01:14   Chris.Baugh  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.9   Apr 20 2011 16:55:20   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-       --       Date into PVCS   : $Date:   Mar 02 2011 16:01:14  $
-       --       Date fetched Out : $Modtime:   Mar 02 2011 15:57:20  $
-       --       Version          : $Revision:   3.8  $
+       --       Date into PVCS   : $Date:   Apr 20 2011 16:55:20  $
+       --       Date fetched Out : $Modtime:   Apr 20 2011 16:54:22  $
+       --       Version          : $Revision:   3.9  $
        -- Foundation view displaying maintenance manager work order lines
        -------------------------------------------------------------------------
        -- SM 03042009
@@ -218,7 +218,7 @@ COMMENT ON COLUMN imf_mai_work_order_lines.remarks                        IS 'Ge
 COMMENT ON COLUMN imf_mai_work_order_lines.date_created                   IS 'The date the Works Order Line was created within the system.';
 COMMENT ON COLUMN imf_mai_work_order_lines.days_since_created             IS 'The number of days since the Works Order Line was created.';
 COMMENT ON COLUMN imf_mai_work_order_lines.target_date                    IS 'The date the Works Order Line is due to be completed.';
-COMMENT ON COLUMN imf_mai_work_order_lines.days_to_date_due               IS 'The number of days until the Work Order Line is due to be completed.';
+COMMENT ON COLUMN imf_mai_work_order_lines.days_to_target_date            IS 'The number of days until the Work Order Line is due to be completed.';
 COMMENT ON COLUMN imf_mai_work_order_lines.date_repaired                  IS 'Date the Works Order Line was repaired.';
 COMMENT ON COLUMN imf_mai_work_order_lines.days_since_repaired            IS 'The number of days since the Works Order Line was repaired.';
 COMMENT ON COLUMN imf_mai_work_order_lines.date_completed                 IS 'Date the Works Order Line was completed.';
