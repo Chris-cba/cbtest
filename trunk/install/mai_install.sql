@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.18   Apr 07 2011 16:19:30   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.19   May 06 2011 11:49:28   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 16:19:30  $
---       Date fetched Out : $Modtime:   Apr 07 2011 16:19:06  $
---       PVCS Version     : $Revision:   2.18  $
+--       Date into PVCS   : $Date:   May 06 2011 11:49:28  $
+--       Date fetched Out : $Modtime:   May 06 2011 11:47:38  $
+--       PVCS Version     : $Revision:   2.19  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) Exor Corporation Ltd, 2011
@@ -334,6 +334,21 @@ SET TERM OFF
 SET DEFINE ON
 select '&exor_base'||'mai'||'&terminator'||'install'||
         '&terminator'||'mairoles.sql' run_file
+from dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   MAI USERS  *******************
+--
+SET TERM ON
+Prompt Meta-Data
+SET TERM OFF
+SET DEFINE ON
+select '&exor_base'||'mai'||'&terminator'||'install'||
+        '&terminator'||'insert_mai_users.sql' run_file
 from dual
 /
 SET FEEDBACK ON
