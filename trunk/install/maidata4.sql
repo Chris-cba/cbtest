@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.16   Apr 13 2011 09:39:24   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.17   May 09 2011 15:48:58   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Apr 13 2011 09:39:24  $
---       Date fetched Out : $Modtime:   Apr 13 2011 09:35:24  $
---       Version          : $Revision:   2.16  $
+--       Date into PVCS   : $Date:   May 09 2011 15:48:58  $
+--       Date fetched Out : $Modtime:   May 09 2011 15:45:24  $
+--       Version          : $Revision:   2.17  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 13-APR-2011 09:35
+--       Generation Date  : 09-MAY-2011 15:45
 --
 --   Product metadata script
 --   As at Release 4.4.0.0
