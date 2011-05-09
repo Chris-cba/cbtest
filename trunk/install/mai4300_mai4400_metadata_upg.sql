@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4300_mai4400_metadata_upg.sql-arc   3.1   Apr 07 2011 14:50:26   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4300_mai4400_metadata_upg.sql-arc   3.2   May 09 2011 14:09:18   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4300_mai4400_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 14:50:26  $
---       Date fetched Out : $Modtime:   Apr 07 2011 14:49:54  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 09 2011 14:09:18  $
+--       Date fetched Out : $Modtime:   May 09 2011 12:32:10  $
+--       Version          : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2010
@@ -284,7 +284,7 @@ SET TERM OFF
 -- 110504
 -- 
 -- TASK DETAILS
--- Set all shipped processes to be non-restartable by default.
+-- To avoid problems when restarting the server we now set all our standard processes to be non-restartable by default. Customers are advised that setting a large number of processes to restartable could cause issues when restarting the server as they could all start simultaneously
 -- 
 -- 
 -- DEVELOPMENT COMMENTS (CHRIS STRETTLE)
@@ -710,7 +710,7 @@ UPDATE hig_standard_favourites
 
 ------------------------------------------------------------------
 SET TERM ON
-PROMPT Modification to AUTH_OWN product option
+PROMPT Modification to AUTH_OWN produc/usert options
 SET TERM OFF
 
 ------------------------------------------------------------------
@@ -732,6 +732,14 @@ UPDATE hig_option_values
 UPDATE hig_option_list
    SET hol_mixed_case = 'N'
  WHERE hol_id = 'AUTH_OWN';
+--
+UPDATE hig_user_options
+   SET huo_value = UPPER(huo_value)
+ WHERE huo_id = 'AUTH_OWN';
+--
+UPDATE hig_user_option_list
+   SET huol_mixed_case = 'N'
+ WHERE huol_id = 'AUTH_OWN';
 
 ------------------------------------------------------------------
 
