@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.3   Mar 02 2011 15:38:02   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.4   May 19 2011 10:13:52   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_budgets.pkb  $
---       Date into SCCS   : $Date:   Mar 02 2011 15:38:02  $
---       Date fetched Out : $Modtime:   Mar 02 2011 15:34:20  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   May 19 2011 10:13:52  $
+--       Date fetched Out : $Modtime:   May 19 2011 10:11:54  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
@@ -15,7 +15,18 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 -----------------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2002
 -----------------------------------------------------------------------------
+--
+--all global package variables here
 
+  -----------
+  --constants
+  -----------
+  --g_body_sccsid is the SCCS ID for the package body
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.4  $';
+
+--
+-----------------------------------------------------------------------------
+--
    CURSOR current_budget(v_bud_id BUDGETS.bud_id%TYPE) IS
       SELECT bud_value,
              bud_committed,
@@ -28,12 +39,21 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
       FROM WORK_ORDER_LINES
       WHERE wol_id = p_wol_id;
 
-----------------------------------------------------------------------------------------
-  FUNCTION   get_version RETURN VARCHAR2 IS
-  BEGIN
-    RETURN  g_sccsid;
-  END;
-----------------------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN varchar2 IS
+BEGIN
+   RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
    -- updates the specified budgets committed values
    -- returns TRUE if value is applied and does not go over budget
    FUNCTION update_budget_committed ( p_wol_id         WORK_ORDER_LINES.wol_id%TYPE,
