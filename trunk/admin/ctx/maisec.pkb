@@ -2,11 +2,11 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.1   Apr 22 2010 17:05:00   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.2   May 27 2011 09:45:22   Steve.Cooper  $
 --       Module Name      : $Workfile:   maisec.pkb  $
---       Date into PVCS   : $Date:   Apr 22 2010 17:05:00  $
---       Date fetched Out : $Modtime:   Apr 22 2010 17:01:50  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   May 27 2011 09:45:22  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:14:44  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 --   Author : Mike Huitson
 --
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --	Copyright (c) exor corporation ltd, 2009
 ------------------------------------------------------------------------------------
 --
-  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
+  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
   --
   g_package_name  CONSTANT varchar2(30) := 'maisec';
   --
@@ -103,7 +103,7 @@ FUNCTION con_predicate_read(schema_in VARCHAR2
   --
   lv_retval             VARCHAR2(2000);
   lv_con_sec_mode       hig_option_values.hov_value%TYPE := hig.get_sysopt(p_option_id => 'CONSECMODE');
-  lv_user_unrestricted  CONSTANT BOOLEAN := nm3context.get_context(pi_attribute => 'UNRESTRICTED_INVENTORY') = nm3context.c_true;
+  lv_user_unrestricted  CONSTANT BOOLEAN := Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE';
   --
 BEGIN
   --
@@ -161,7 +161,7 @@ FUNCTION wo_predicate_read(schema_in VARCHAR2
   --
   lv_retval             VARCHAR2(2000);
   lv_con_sec_mode       hig_option_values.hov_value%TYPE := hig.get_sysopt(p_option_id => 'CONSECMODE');
-  lv_user_unrestricted  CONSTANT BOOLEAN := nm3context.get_context(pi_attribute => 'UNRESTRICTED_INVENTORY') = nm3context.c_true;
+  lv_user_unrestricted  CONSTANT BOOLEAN := Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE';
   --
 BEGIN
   --
@@ -231,7 +231,7 @@ FUNCTION boq_predicate_read(schema_in VARCHAR2
   --
   lv_retval             VARCHAR2(2000);
   lv_con_sec_mode       hig_option_values.hov_value%TYPE := hig.get_sysopt(p_option_id => 'CONSECMODE');
-  lv_user_unrestricted  CONSTANT BOOLEAN := nm3context.get_context(pi_attribute => 'UNRESTRICTED_INVENTORY') = nm3context.c_true;
+  lv_user_unrestricted  CONSTANT BOOLEAN := Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE';
   --
 BEGIN
   --
@@ -290,7 +290,7 @@ FUNCTION cni_predicate_read(schema_in VARCHAR2
   --
   lv_retval             VARCHAR2(2000);
   lv_con_sec_mode       hig_option_values.hov_value%TYPE := hig.get_sysopt(p_option_id => 'CONSECMODE');
-  lv_user_unrestricted  CONSTANT BOOLEAN := nm3context.get_context(pi_attribute => 'UNRESTRICTED_INVENTORY') = nm3context.c_true;
+  lv_user_unrestricted  CONSTANT BOOLEAN := Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE';
   --
 BEGIN
   --
