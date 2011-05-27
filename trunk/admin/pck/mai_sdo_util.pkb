@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.7   Oct 12 2010 13:48:34   mike.huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.8   May 27 2011 09:45:42   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   Oct 12 2010 13:48:34  $
---       Date fetched Out : $Modtime:   Oct 12 2010 13:45:28  $
---       SCCS Version     : $Revision:   2.7  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:12:34  $
+--       SCCS Version     : $Revision:   2.8  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.7  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.8  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -327,7 +327,7 @@ BEGIN
     VALUES(l_tab_nw(i)
           ,pi_asset_type
           ,'N'
-          ,nm3user.get_effective_date
+          ,To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY')
           );
     --
   END LOOP;
@@ -1771,7 +1771,7 @@ BEGIN
       INSERT INTO nm_inv_domains
         (id_domain, id_title, id_start_date, id_datatype)
       VALUES
-        (l_lookup_list(i), l_lookup_list(i), nm3user.get_effective_date, 'VARCHAR2');
+        (l_lookup_list(i), l_lookup_list(i), To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY'), 'VARCHAR2');
       --
       EXECUTE IMMEDIATE l_lookup_sql(i) BULK COLLECT INTO l_tab_code, l_tab_meaning;
       --
@@ -1785,10 +1785,10 @@ BEGIN
           l_tab_ial(j).ial_domain     := l_lookup_list(i);
           l_tab_ial(j).ial_value      := l_tab_code(j);
           l_tab_ial(j).ial_meaning    := l_tab_meaning(j);
-          l_tab_ial(j).ial_start_date := nm3user.get_effective_date;
+          l_tab_ial(j).ial_start_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
           l_tab_ial(j).ial_seq        := j;
         --
-          nm_debug.debug('Inserting '||l_lookup_list(i)||' - '||l_tab_code(j)||' - '||l_tab_meaning(j)||' - '||nm3user.get_effective_date);
+          nm_debug.debug('Inserting '||l_lookup_list(i)||' - '||l_tab_code(j)||' - '||l_tab_meaning(j)||' - '||Sys_Context('NM3CORE','EFFECTIVE_DATE'));
         END LOOP;
       END IF;
       --
@@ -1884,7 +1884,7 @@ BEGIN
       INSERT INTO nm_inv_domains
         (id_domain, id_title, id_start_date, id_datatype)
       VALUES
-        (l_lookup_list(i), l_lookup_list(i), nm3user.get_effective_date, l_lookup_datatype(i));
+        (l_lookup_list(i), l_lookup_list(i),To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY'), l_lookup_datatype(i));
       /*
       ||Now create the lookup values.
       */
@@ -1900,10 +1900,10 @@ BEGIN
           l_tab_ial(j).ial_domain     := l_lookup_list(i);
           l_tab_ial(j).ial_value      := l_tab_code(j);
           l_tab_ial(j).ial_meaning    := l_tab_meaning(j);
-          l_tab_ial(j).ial_start_date := nm3user.get_effective_date;
+          l_tab_ial(j).ial_start_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
           l_tab_ial(j).ial_seq        := j;
         --
-          nm_debug.debug('Inserting '||l_lookup_list(i)||' - '||l_tab_code(j)||' - '||l_tab_meaning(j)||' - '||nm3user.get_effective_date);
+          nm_debug.debug('Inserting '||l_lookup_list(i)||' - '||l_tab_code(j)||' - '||l_tab_meaning(j)||' - '||To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY'));
         END LOOP;
       END IF;
       --

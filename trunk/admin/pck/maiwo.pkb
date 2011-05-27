@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.10   Feb 24 2011 18:16:18   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.11   May 27 2011 09:45:42   Steve.Cooper  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Feb 24 2011 18:16:18  $
---       Date fetched Out : $Modtime:   Feb 22 2011 18:16:32  $
---       SCCS Version     : $Revision:   2.10  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:16:16  $
+--       SCCS Version     : $Revision:   2.11  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.10  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.11  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -856,7 +856,7 @@ BEGIN
   /*
   ||Get User Limits.
   */
-   lr_user := nm3user.get_hus(pi_hus_user_id => nm3user.get_user_id);
+   lr_user := nm3user.get_hus(pi_hus_user_id => To_Number(Sys_Context('NM3CORE','USER_ID')));
   /*
   ||Loop through the nominated parent items.
   */
@@ -2347,7 +2347,7 @@ END process_payment_run;
    CURSOR c1 IS
       SELECT nvl(mus_wor_aur_min,0)
       FROM mai_users
-      WHERE mus_user_id = nm3user.get_user_id;
+      WHERE mus_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'));
    BEGIN
       OPEN c1;
       FETCH c1 INTO rtrn;
@@ -2363,7 +2363,7 @@ END process_payment_run;
    CURSOR c1 IS
       SELECT nvl(mus_wor_aur_max,999999999)
       FROM mai_users
-      WHERE mus_user_id = nm3user.get_user_id;
+      WHERE mus_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'));
    BEGIN
       OPEN c1;
       FETCH c1 INTO rtrn;

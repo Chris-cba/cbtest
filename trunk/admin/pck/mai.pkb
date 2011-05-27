@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.22   Jan 14 2011 17:42:00   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.23   May 27 2011 09:45:42   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jan 14 2011 17:42:00  $
---       Date fetched Out : $Modtime:   Jan 12 2011 11:09:34  $
---       SCCS Version     : $Revision:   2.22  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:08:22  $
+--       SCCS Version     : $Revision:   2.23  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.22  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.23  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -82,7 +82,7 @@ END get_wo_no;
   begin
     if p_ne_id is not null then
       if l_user is null then
-        l_user := nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
+        l_user := Sys_Context('NM3_SECURITY_CTX','USERNAME');
       end if;
       -- the criteria taken from the road_segments_all view
       select 'x' dummy
@@ -1028,7 +1028,7 @@ PROCEDURE create_view ( view_name      IN inv_item_types.ity_view_name%TYPE
    IS SELECT table_owner
       FROM dba_synonyms
       WHERE synonym_name = 'HIG_OPTIONS'
-      AND owner = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
+      AND owner = Sys_Context('NM3_SECURITY_CTX','USERNAME');
    --
    l_top_user dba_synonyms.table_owner%TYPE;
    invalid_item_type EXCEPTION;
@@ -1188,7 +1188,7 @@ BEGIN
        FETCH top_user INTO l_top_user;
        IF top_user%NOTFOUND THEN
          CLOSE top_user;
-         l_top_user := nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'));
+         l_top_user := Sys_Context('NM3_SECURITY_CTX','USERNAME');
        ELSE
          CLOSE top_user;
                END IF;
@@ -1666,7 +1666,7 @@ FUNCTION create_defect(p_rse_he_id         IN defects.def_rse_he_id%TYPE
 BEGIN
   --SM 29082008 714910
   check_rse_admin_unit(p_ne_id  => p_rse_he_id
-                      ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID')));
+                      ,p_user   => Sys_Context('NM3_SECURITY_CTX','USERNAME'));
   /*
   ||Get The Inspection Date.
   */
@@ -1848,7 +1848,7 @@ FUNCTION create_defect(p_rse_he_id         IN defects.def_rse_he_id%TYPE
 BEGIN
   --SM 29082008 714910
   check_rse_admin_unit(p_ne_id  => p_rse_he_id
-                      ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID')));
+                      ,p_user   => Sys_Context('NM3_SECURITY_CTX','USERNAME'));
   /*
   ||Get The Inspection Date.
   */
@@ -2246,7 +2246,7 @@ BEGIN
   --SM 29082008 714910
   check_rse_admin_unit(
      p_ne_id  => pi_insp_rec.are_rse_he_id
-    ,p_user   => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+    ,p_user   => Sys_Context('NM3_SECURITY_CTX','USERNAME')
   );
   --
   -- Create Inspection.
@@ -3023,7 +3023,7 @@ END;
     CURSOR c_uo IS
       SELECT owner
         FROM all_objects
-       WHERE owner = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+       WHERE owner = Sys_Context('NM3_SECURITY_CTX','USERNAME')
          AND object_name = UPPER(a_object_name)
          AND object_type <> 'SYNONYM';
 
@@ -3507,7 +3507,7 @@ FUNCTION GET_ICB_FGAC_CONTEXT(Top       BOOLEAN
    WHERE hau_level = 2
      AND hag_parent_admin_unit = hau_admin_unit
      AND hag_child_admin_unit = hus_admin_unit
-     AND hus_username = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+     AND hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME')
        ;
   --
   CURSOR C3
@@ -3530,7 +3530,7 @@ BEGIN
   IF NOT top
    THEN
       IF hig.get_sysopt('ICBFGAC') = 'Y'
-       AND hig.get_application_owner != nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+       AND Sys_Context('NM3CORE','APPLICATION_OWNER') != Sys_Context('NM3_SECURITY_CTX','USERNAME')
        THEN
           IF lc_agency IS NULL
            THEN
@@ -4647,7 +4647,7 @@ BEGIN
   IF (lv_dumconcode IS NOT NULL AND lv_dumconcode = lv_con_code)
    OR NVL(lv_worrefuser,'N') = 'Y'
    THEN
-      lv_admin_unit := nm3get.get_hus(pi_hus_username => nm3user.get_username(nm3context.get_context(nm3context.get_namespace,'USER_ID'))
+      lv_admin_unit := nm3get.get_hus(pi_hus_username => Sys_Context('NM3_SECURITY_CTX','USERNAME')
                                      ,pi_raise_not_found => FALSE).hus_admin_unit;
   END IF;
   --
@@ -6844,8 +6844,7 @@ BEGIN  /* mai - automatic variables */
     return the Oracle user who is owner of the MAI application
     (use 'DEFECTS' as the sample HIGHWAYS object)
   */
-  g_application_owner := hig.get_application_owner;--get_owner( 'DEFECTS');
-  IF    (g_application_owner IS NULL) THEN
+  IF    (Sys_Context('NM3CORE','APPLICATION_OWNER') IS NULL) THEN
     RAISE_APPLICATION_ERROR( -20000 ,'MAI.G_APPLICATION_OWNER is null.');
   END IF;
 
