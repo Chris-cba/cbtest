@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.32   Mar 02 2011 15:43:02   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.33   May 27 2011 09:45:40   Steve.Cooper  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Mar 02 2011 15:43:02  $
---       Date fetched Out : $Modtime:   Mar 02 2011 13:51:30  $
---       SCCS Version     : $Revision:   2.32  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:40  $
+--       Date fetched Out : $Modtime:   May 25 2011 13:29:58  $
+--       SCCS Version     : $Revision:   2.33  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.32  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.33  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2953,7 +2953,7 @@ PROCEDURE email_errors (p_ih_id IN interface_headers.ih_id%TYPE
                        ) IS
 
    l_details_ok varchar2(1);
-   l_from_user_id number := nm3user.get_user_id;
+   l_from_user_id number := To_Number(Sys_Context('NM3CORE','USER_ID'));
    l_tab_to nm3mail.tab_recipient;
    l_tab_cc nm3mail.tab_recipient;
    l_tab_bcc nm3mail.tab_recipient;

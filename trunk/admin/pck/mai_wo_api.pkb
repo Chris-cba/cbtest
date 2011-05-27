@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23   May 25 2011 10:00:36   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.24   May 27 2011 09:45:40   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 25 2011 10:00:36  $
---       Date fetched Out : $Modtime:   May 25 2011 09:41:14  $
---       PVCS Version     : $Revision:   3.23  $
+--       Date into PVCS   : $Date:   May 27 2011 09:45:40  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:13:30  $
+--       PVCS Version     : $Revision:   3.24  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.24  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2787,7 +2787,7 @@ PROCEDURE authorise_work_order(pi_works_order_no  IN  work_orders.wor_works_orde
                               ,po_error_text      OUT VARCHAR2)
   IS
   --
-  lv_user_id  hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  lv_user_id  hig_users.hus_user_id%TYPE := To_Number(Sys_Context('NM3CORE','USER_ID'));
   --
 BEGIN
   --
@@ -3293,7 +3293,7 @@ PROCEDURE instruct_work_order(pi_works_order_no  IN  work_orders.wor_works_order
                              ,po_error_text      OUT VARCHAR2)
   IS
   --
-  lv_user_id  hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  lv_user_id  hig_users.hus_user_id%TYPE := To_Number(Sys_Context('NM3CORE','USER_ID'));
   --
 BEGIN
   --
@@ -3316,7 +3316,7 @@ PROCEDURE instruct_work_orders(pi_date_instructed  IN     work_orders.wor_date_c
                               ,pio_works_order_tab IN OUT instruct_wo_tab)
   IS
   --
-  lv_user_id     hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  lv_user_id     hig_users.hus_user_id%TYPE := To_Number(Sys_Context('NM3CORE','USER_ID'));
   lv_error_flag  VARCHAR2(1) := 'N';
   --
   lt_wo instruct_wo_tab;
@@ -5310,7 +5310,7 @@ PROCEDURE create_auto_defect_wo(pi_defect_id         IN     defects.def_defect_i
                                ,po_work_order_tab       OUT works_order_tab)
   IS
   --
-  lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
+  lv_user_id           hig_users.hus_user_id%TYPE := To_Number(Sys_Context('NM3CORE','USER_ID'));
   lv_wo_descr          work_orders.wor_descr%TYPE := 'Auto Work Order For Defect '||TO_CHAR(pi_defect_id)||
                                                      ' created on '||TO_CHAR(TRUNC(SYSDATE),'DD-MON-YYYY');
   lv_rule_id           mai_auto_wo_rules.mawr_id%TYPE;
@@ -7249,7 +7249,7 @@ BEGIN
   --
   UPDATE work_orders
      SET wor_forwarded_to = pi_forward_to_user_id
-        ,wor_forwarded_by = nm3user.get_user_id
+        ,wor_forwarded_by = To_Number(Sys_Context('NM3CORE','USER_ID'))
    WHERE wor_works_order_no = pi_works_order_no
        ;
   --

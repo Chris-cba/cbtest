@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.27   Mar 18 2011 14:14:56   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.28   May 27 2011 09:45:40   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 18 2011 14:14:56  $
---       Date fetched Out : $Modtime:   Mar 17 2011 16:19:38  $
---       PVCS Version     : $Revision:   3.27  $
+--       Date into PVCS   : $Date:   May 27 2011 09:45:40  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:11:16  $
+--       PVCS Version     : $Revision:   3.28  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.27  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.28  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1774,7 +1774,7 @@ PROCEDURE validate_defect_rec(pi_are_report_id       IN     activities_report.ar
         FROM all_tab_columns
        WHERE table_name  = 'DEFECTS'
          AND column_name = pi_column
-         AND owner = hig.get_application_owner
+         AND owner = Sys_Context('NM3CORE','APPLICATION_OWNER')
            ;
       /*
       ||Set The Value.
@@ -4485,7 +4485,7 @@ BEGIN
         FROM all_tab_columns
        WHERE table_name  = 'DEFECTS'
          AND column_name = pi_column
-         AND owner = hig.get_application_owner
+         AND owner = Sys_Context('NM3CORE','APPLICATION_OWNER')
            ;
       /*
       ||Set The Value.
