@@ -4,11 +4,11 @@ REM
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.1   Jul 30 2009 17:24:22   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.2   May 27 2011 09:45:44   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_transviews.sql  $
---       Date into SCCS   : $Date:   Jul 30 2009 17:24:22  $
---       Date fetched Out : $Modtime:   Jul 30 2009 16:43:08  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:44  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:02:00  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ DECLARE
 --
 BEGIN
 --
-   l_effective_date := nm3user.get_effective_date;
+   l_effective_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
    nm3user.set_effective_date(:NEW.IIT_CRE_DATE);
 
 --
@@ -321,7 +321,7 @@ BEGIN
 --
    IF l_rec_iit.iit_start_date IS NULL
     THEN
-      l_rec_iit.iit_start_date := nm3user.get_effective_date;
+      l_rec_iit.iit_start_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
    END IF;
 --
    IF l_rec_iit.iit_primary_key IS NULL

@@ -39,11 +39,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_wo_instruct.vw-arc   3.2   Jun 28 2010 13:33:46   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_wo_instruct.vw-arc   3.3   May 27 2011 09:45:44   Steve.Cooper  $
        --       Module Name      : $Workfile:   imf_mai_wo_instruct.vw  $
-       --       Date into PVCS   : $Date:   Jun 28 2010 13:33:46  $
-       --       Date fetched Out : $Modtime:   Jun 18 2010 16:15:10  $
-       --       Version          : $Revision:   3.2  $
+       --       Date into PVCS   : $Date:   May 27 2011 09:45:44  $
+       --       Date fetched Out : $Modtime:   May 25 2011 13:21:22  $
+       --       Version          : $Revision:   3.3  $
        -- Foundation view displaying maintenance manager work orders
        -------------------------------------------------------------------------
        wor.works_order_number                              works_order_number
@@ -93,27 +93,27 @@ SELECT -------------------------------------------------------------------------
    AND wor.network_element_id = ne.ne_id(+)
    AND (NOT EXISTS(SELECT 1
                      FROM mai_wo_users
-                    WHERE mwu_user_id = nm3user.get_user_id)
+                    WHERE mwu_user_id = To_Number(Sys_Context('NM3CORE','USER_ID')))
         OR wor.works_order_number IN (SELECT wor_works_order_no
                                         FROM work_orders
-                                       WHERE wor_forwarded_to = nm3user.get_user_id
+                                       WHERE wor_forwarded_to = To_Number(Sys_Context('NM3CORE','USER_ID'))
                                       UNION
                                       SELECT wol_works_order_no
                                         FROM work_order_lines wol
                                        WHERE (EXISTS(SELECT 1
                                                        FROM mai_wo_users
-                                                      WHERE mwu_user_id = nm3user.get_user_id
+                                                      WHERE mwu_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'))
                                                         AND mwu_restrict_by_workcode = 'N')
                                               OR wol.wol_bud_id IN (SELECT bud_id
                                                                       FROM budgets
                                                                           ,mai_wo_user_work_codes
-                                                                     WHERE mwuw_user_id = nm3user.get_user_id
+                                                                     WHERE mwuw_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'))
                                                                        AND mwuw_icb_item_code = bud_icb_item_code
                                                                        AND NVL(mwuw_icb_sub_item_code,bud_icb_sub_item_code) = bud_icb_sub_item_code
                                                                       AND NVL(mwuw_icb_sub_sub_item_code,bud_icb_sub_sub_item_code) = bud_icb_sub_sub_item_code))
                                          AND (EXISTS(SELECT 1
                                                        FROM mai_wo_users
-                                                      WHERE mwu_user_id = nm3user.get_user_id
+                                                      WHERE mwu_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'))
                                                         AND mwu_restrict_by_road_group = 'N')
                                               OR wol_rse_he_id IN(SELECT nm_ne_id_of
                                                                     FROM nm_members
@@ -121,11 +121,11 @@ SELECT -------------------------------------------------------------------------
                                                                  CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in
                                                                    START WITH nm_ne_id_in IN(SELECT mwur_road_group_id
                                                                                                FROM mai_wo_user_road_groups
-                                                                                              WHERE mwur_user_id = nm3user.get_user_id)
+                                                                                              WHERE mwur_user_id = To_Number(Sys_Context('NM3CORE','USER_ID')))
                                                                   UNION
                                                                   SELECT mwur_road_group_id
                                                                     FROM mai_wo_user_road_groups
-                                                                   WHERE mwur_user_id = nm3user.get_user_id))))
+                                                                   WHERE mwur_user_id = To_Number(Sys_Context('NM3CORE','USER_ID'))))))
 /
 
 COMMENT ON TABLE imf_mai_wo_instruct IS 'Maintenance Manager Foundation view of Works Orders awaiting Instruction. This view is intended to be used as the basis of the Instruct Work Order Work Tray and is therefore restricted by the Work Order User criteria that can be specified as an administrative function of the Work Order Work Tray.';

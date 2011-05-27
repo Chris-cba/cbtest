@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.1   Dec 05 2007 15:33:56   ptanava  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.2   May 27 2011 09:45:44   Steve.Cooper  $
 --       Module Name      : $Workfile:   mairecal.pkb  $
---       Date into SCCS   : $Date:   Dec 05 2007 15:33:56  $
---       Date fetched Out : $Modtime:   Dec 05 2007 15:28:36  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:44  $
+--       Date fetched Out : $Modtime:   May 25 2011 13:09:00  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.3
 --
 --	This package contains procedures and functions which are required by
@@ -30,7 +30,7 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
                 this fixes the bug that start point was not considered in recalibrate
 */
 
-   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.1  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.2  $';
    g_package_name    CONSTANT  varchar2(30)   := 'mairecal';
 --
    l_rmmsflag                  hig_options.hop_value%TYPE := hig.get_sysopt('RMMSFLAG');
@@ -529,7 +529,7 @@ END get_body_version;
 --
 ---------------------------------------------------------------------------------
 --
-PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT nm3context.get_effective_date) IS
+PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY')) IS
 -- This procedure will create new MAI objects
 -- after a reversal has been done on a route.
 -- the nm_reversal table needs to be populated

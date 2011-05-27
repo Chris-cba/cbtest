@@ -3,11 +3,11 @@ create or replace package mairecal as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.1   Dec 05 2007 15:34:42   ptanava  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.2   May 27 2011 09:45:44   Steve.Cooper  $
 --       Module Name      : $Workfile:   mairecal.pkh  $
---       Date into SCCS   : $Date:   Dec 05 2007 15:34:42  $
---       Date fetched Out : $Modtime:   Dec 05 2007 12:25:46  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   May 27 2011 09:45:44  $
+--       Date fetched Out : $Modtime:   May 25 2011 13:08:48  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ create or replace package mairecal as
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.2  $"';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -93,7 +93,7 @@ FUNCTION get_body_version RETURN varchar2;
 -----------------------------------------------------------------------------
 --
 --<PROC NAME="mai_reversal">
-PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT nm3context.get_effective_date);
+PROCEDURE mai_reversal ( p_effective_date DATE DEFAULT To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY'));
 --</PROC>
 --
 -----------------------------------------------------------------------------

@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.5   Jan 15 2010 15:42:34   drawat  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.6   May 27 2011 09:45:44   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Jan 15 2010 15:42:34  $
---       Date fetched Out : $Modtime:   Jan 15 2010 15:35:30  $
---       PVCS Version     : $Revision:   2.5  $
+--       Date into PVCS   : $Date:   May 27 2011 09:45:44  $
+--       Date fetched Out : $Modtime:   May 25 2011 14:13:52  $
+--       PVCS Version     : $Revision:   2.6  $
 --       Based on SCCS version :
 --
 --
@@ -27,7 +27,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.5  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.6  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -392,7 +392,7 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
     --
     IF pi_iit_rec.iit_start_date IS NULL
      THEN
-        pi_iit_rec.iit_start_date := nm3user.get_effective_date;
+        pi_iit_rec.iit_start_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
     END IF;
     --
     IF pi_iit_rec.iit_primary_key IS NULL
@@ -405,7 +405,7 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
         pi_iit_rec.iit_admin_unit := g_admin_unit;
     END IF;
     --
-    lv_effective_date := nm3user.get_effective_date;
+    lv_effective_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
     nm3user.set_effective_date(pi_iit_rec.iit_start_date);
     --
     /*
