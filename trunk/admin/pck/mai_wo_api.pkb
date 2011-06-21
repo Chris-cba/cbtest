@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.24   May 27 2011 09:45:40   Steve.Cooper  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.25   Jun 21 2011 16:14:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   May 27 2011 09:45:40  $
---       Date fetched Out : $Modtime:   May 25 2011 14:13:30  $
---       PVCS Version     : $Revision:   3.24  $
+--       Date into PVCS   : $Date:   Jun 21 2011 16:14:20  $
+--       Date fetched Out : $Modtime:   Jun 21 2011 16:11:34  $
+--       PVCS Version     : $Revision:   3.25  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.24  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.25  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1248,6 +1248,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   lv_bud_rse_he_id      nm_elements_all.ne_id%TYPE;
   lv_icb_id             item_code_breakdowns.icb_id%TYPE;
   lv_date_raised        work_orders.wor_date_raised%TYPE;
+  lv_est_complete       work_orders.wor_est_complete%TYPE;
   --
   lv_wor_est_cost          work_orders.wor_est_cost%TYPE := NULL;
   lv_wor_est_labour        work_orders.wor_est_labour%TYPE := 0;
@@ -1276,8 +1277,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                         ,wol_date_created    work_order_lines.wol_date_created%TYPE
                         ,wol_bud_id          work_order_lines.wol_bud_id%TYPE
                         ,wol_est_cost        work_order_lines.wol_est_cost%TYPE
-                        ,wol_est_labour      work_order_lines.wol_est_labour%TYPE);
-  TYPE wol_tab IS TABLE OF wol_rec INDEX BY BINARY_INTEGER;
+                        ,wol_est_labour      work_order_lines.wol_est_labour%TYPE
+						,wol_target_date     work_order_lines.wol_target_date%TYPE);  TYPE wol_tab IS TABLE OF wol_rec INDEX BY BINARY_INTEGER;
   lt_wol wol_tab;
   --
   lt_boq boq_tab;
@@ -1290,7 +1291,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                                      ,rep_def_defect_id      repairs.rep_def_defect_id%TYPE
                                      ,rep_action_cat         repairs.rep_action_cat%TYPE
                                      ,bud_id                 budgets.bud_id%TYPE
-                                     ,work_code              item_code_breakdowns.icb_work_code%TYPE);
+                                     ,work_code              item_code_breakdowns.icb_work_code%TYPE
+									 ,rep_date_due           repairs.rep_date_due%TYPE);
   TYPE selected_repairs_tab IS TABLE OF selected_repairs_rec INDEX BY BINARY_INTEGER;
   lt_selected_repairs selected_repairs_tab;
   --
@@ -2151,7 +2153,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                 ,rep_action_cat
                 ,pi_budget_id
                 ,pi_work_code
-            INTO lr_selected_repair
+ 				,rep_date_due
+			INTO lr_selected_repair
             FROM repairs
                 ,defects
            WHERE def_defect_id  = pi_defect_id
@@ -2231,7 +2234,16 @@ nm_debug.debug('generate WOLs');
     FOR i IN 1..lt_selected_repairs.count LOOP
       nm_debug.debug('Setting WOL Fields');
       /*
-      ||Set The Work Order Line Columns.
+	|| Check WOL rep_due_date
+	*/
+	if NVL(lt_selected_repairs(i).rep_date_due, TO_DATE('01011900', 'DDMMYYYY')) >
+	   NVL(lv_est_complete, TO_DATE('01011900', 'DDMMYYYY'))
+	   then
+	      lv_est_complete := lt_selected_repairs(i).rep_date_due;
+	end if;
+	
+    /*
+	||Set The Work Order Line Columns.
       */
       lt_wol(i).wol_works_order_no := lv_work_order_no;
       lt_wol(i).wol_rse_he_id      := lt_selected_repairs(i).rep_rse_he_id;
