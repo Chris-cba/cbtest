@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.0   Jun 21 2011 15:58:36   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.1   Jun 21 2011 16:08:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 21 2011 15:58:36  $
---       Date fetched Out : $Modtime:   Jun 21 2011 15:00:22  $
---       PVCS Version     : $Revision:   3.23.1.0  $
+--       Date into PVCS   : $Date:   Jun 21 2011 16:08:22  $
+--       Date fetched Out : $Modtime:   Jun 21 2011 16:06:28  $
+--       PVCS Version     : $Revision:   3.23.1.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.0  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.1  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2229,22 +2229,22 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
       --
     END LOOP;
 nm_debug.debug('generate WOLs');
-    /*
-	|| Check WOL rep_due_date
-	*/
-	if NVL(lt_selected_repairs(i).rep_date_due, TO_DATE('01011900', 'DDMMYYYY')) >
-	   NVL(lv_est_complete, TO_DATE('01011900', 'DDMMYYYY'))
-	   then
-	      lv_est_complete := lt_selected_repairs(i).rep_date_due;
-	end if;
-	
+ 	
     /*
     ||Generate The Work Order Lines For The Selected Defects.
     */
     FOR i IN 1..lt_selected_repairs.count LOOP
       nm_debug.debug('Setting WOL Fields');
+       /*
+        || Check WOL rep_due_date
+        */
+        if NVL(lt_selected_repairs(i).rep_date_due, TO_DATE('01011900', 'DDMMYYYY')) >
+           NVL(lv_est_complete, TO_DATE('01011900', 'DDMMYYYY'))
+           then
+              lv_est_complete := lt_selected_repairs(i).rep_date_due;
+        end if;
       /*
-      ||Set The Work Order Line Columns.
+      ||Set The Work Order Line Columns. 
       */
       lt_wol(i).wol_works_order_no := lv_work_order_no;
       lt_wol(i).wol_rse_he_id      := lt_selected_repairs(i).rep_rse_he_id;
