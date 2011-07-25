@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.13   Mar 02 2011 15:35:38   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.14   Jul 25 2011 09:24:10   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into PVCS   : $Date:   Mar 02 2011 15:35:38  $
---       Date fetched Out : $Modtime:   Mar 02 2011 15:35:14  $
---       Version          : $Revision:   2.13  $
+--       Date into PVCS   : $Date:   Jul 25 2011 09:24:10  $
+--       Date fetched Out : $Modtime:   Jul 25 2011 09:24:44  $
+--       Version          : $Revision:   2.14  $
 -------------------------------------------------------------------------
 --
 SET echo OFF
@@ -434,6 +434,24 @@ START '&run_file'
 PROMPT mai_insp_load_batches_v
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'mai_insp_load_batches_v.vw' run_file
+FROM dual
+/
+START '&run_file'
+--
+-------------------------------------------------------------------------
+--
+PROMPT v_mai3856_woc
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v_mai3856_woc.vw' run_file
+FROM dual
+/
+START '&run_file'
+--
+-------------------------------------------------------------------------
+--
+PROMPT v_mai3856_wol
+SET define ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v_mai3856_wol.vw' run_file
 FROM dual
 /
 START '&run_file'
