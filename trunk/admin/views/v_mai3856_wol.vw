@@ -19,11 +19,11 @@ SELECT
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3856_wol.vw-arc   3.0   Jul 25 2011 09:17:20   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3856_wol.vw-arc   3.1   Aug 12 2011 13:49:36   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3856_wol.vw  $
---       Date into PVCS   : $Date:   Jul 25 2011 09:17:20  $
---       Date fetched Out : $Modtime:   Jul 25 2011 09:15:14  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Aug 12 2011 13:49:36  $
+--       Date fetched Out : $Modtime:   Aug 12 2011 13:43:52  $
+--       Version          : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2011
@@ -43,11 +43,12 @@ SELECT
        ,wol_est_cost
        ,wor_peo_person_id
        ,wor_mod_by_id
-from  claim_payments cp
-       ,road_segments_all rsa
+from road_segments_all rsa
        ,work_orders wor
        ,work_order_lines wol
 where  wol.wol_rse_he_id = rsa.rse_he_id
 and    wol.wol_works_order_no = wor.wor_works_order_no
-and    cp.cp_wol_id =wol.wol_id
+and exists (select 1
+                   from  claim_payments cp
+                 where  cp.cp_wol_id =wol.wol_id)
 /
