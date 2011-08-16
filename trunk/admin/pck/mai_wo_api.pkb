@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.26   Jun 21 2011 16:21:36   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.27   Aug 16 2011 14:14:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 21 2011 16:21:36  $
---       Date fetched Out : $Modtime:   Jun 21 2011 16:20:06  $
---       PVCS Version     : $Revision:   3.26  $
+--       Date into PVCS   : $Date:   Aug 16 2011 14:14:54  $
+--       Date fetched Out : $Modtime:   Aug 15 2011 12:03:54  $
+--       PVCS Version     : $Revision:   3.27  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.26  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.27  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1263,37 +1263,44 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   lv_wol_null_boq_exists BOOLEAN := FALSE;
   lv_wor_null_boq_exists BOOLEAN := FALSE;
   --
-  TYPE wol_rec IS RECORD(wol_id              work_order_lines.wol_id%TYPE
-                        ,wol_works_order_no  work_order_lines.wol_works_order_no%TYPE
-                        ,wol_rse_he_id       work_order_lines.wol_rse_he_id%TYPE
-                        ,wol_siss_id         work_order_lines.wol_siss_id%TYPE
-                        ,wol_icb_work_code   work_order_lines.wol_icb_work_code%TYPE
-                        ,wol_act_area_code   work_order_lines.wol_act_area_code%TYPE
-                        ,wol_def_defect_id   work_order_lines.wol_def_defect_id%TYPE
-                        ,wol_rep_action_cat  work_order_lines.wol_rep_action_cat%TYPE
-                        ,wol_flag            work_order_lines.wol_flag%TYPE
-                        ,wol_status_code     work_order_lines.wol_status_code%TYPE
-                        ,wol_wor_flag        work_order_lines.wol_wor_flag%TYPE
-                        ,wol_date_created    work_order_lines.wol_date_created%TYPE
-                        ,wol_bud_id          work_order_lines.wol_bud_id%TYPE
-                        ,wol_est_cost        work_order_lines.wol_est_cost%TYPE
-                        ,wol_est_labour      work_order_lines.wol_est_labour%TYPE
-						,wol_target_date     work_order_lines.wol_target_date%TYPE);
+  lv_wol_act_cost      work_order_lines.wol_act_cost%TYPE;
+  lv_wol_est_labour    work_order_lines.wol_est_labour%TYPE;
+  --
+  TYPE wol_rec IS RECORD(wol_id              	  work_order_lines.wol_id%TYPE
+                        ,wol_works_order_no  	  work_order_lines.wol_works_order_no%TYPE
+                        ,wol_rse_he_id       	  work_order_lines.wol_rse_he_id%TYPE
+                        ,wol_siss_id         	  work_order_lines.wol_siss_id%TYPE
+                        ,wol_icb_work_code   	  work_order_lines.wol_icb_work_code%TYPE
+                        ,wol_act_area_code   	  work_order_lines.wol_act_area_code%TYPE
+                        ,wol_def_defect_id   	  work_order_lines.wol_def_defect_id%TYPE
+                        ,wol_rep_action_cat  	  work_order_lines.wol_rep_action_cat%TYPE
+                        ,wol_flag            	  work_order_lines.wol_flag%TYPE
+                        ,wol_status_code     	  work_order_lines.wol_status_code%TYPE
+                        ,wol_wor_flag        	  work_order_lines.wol_wor_flag%TYPE
+                        ,wol_date_created    	  work_order_lines.wol_date_created%TYPE
+                        ,wol_bud_id          	  work_order_lines.wol_bud_id%TYPE
+                        ,wol_est_cost        	  work_order_lines.wol_est_cost%TYPE
+                        ,wol_est_labour      	  work_order_lines.wol_est_labour%TYPE
+						,wol_target_date     	  work_order_lines.wol_target_date%TYPE
+						,wol_boq_perc_item_code   work_order_lines.wol_boq_perc_item_code%TYPE
+						,wol_wol_perc_item_code   work_order_lines.wol_wol_perc_item_code%TYPE);
   TYPE wol_tab IS TABLE OF wol_rec INDEX BY BINARY_INTEGER;
   lt_wol wol_tab;
   --
   lt_boq boq_tab;
   lv_boq_tab_ind PLS_INTEGER := 1;
   --
-  TYPE selected_repairs_rec IS RECORD(rep_rse_he_id          repairs.rep_rse_he_id%TYPE
-                                     ,def_siss_id            defects.def_siss_id%TYPE
-                                     ,def_priority           defects.def_priority%TYPE
-                                     ,rep_atv_acty_area_code repairs.rep_atv_acty_area_code%TYPE
-                                     ,rep_def_defect_id      repairs.rep_def_defect_id%TYPE
-                                     ,rep_action_cat         repairs.rep_action_cat%TYPE
-                                     ,bud_id                 budgets.bud_id%TYPE
-                                     ,work_code              item_code_breakdowns.icb_work_code%TYPE
-									 ,rep_date_due           repairs.rep_date_due%TYPE);
+  TYPE selected_repairs_rec IS RECORD(rep_rse_he_id            repairs.rep_rse_he_id%TYPE
+                                     ,def_siss_id              defects.def_siss_id%TYPE
+                                     ,def_priority             defects.def_priority%TYPE
+                                     ,rep_atv_acty_area_code   repairs.rep_atv_acty_area_code%TYPE
+                                     ,rep_def_defect_id        repairs.rep_def_defect_id%TYPE
+                                     ,rep_action_cat           repairs.rep_action_cat%TYPE
+                                     ,bud_id                   budgets.bud_id%TYPE
+                                     ,work_code                item_code_breakdowns.icb_work_code%TYPE
+									 ,rep_date_due             repairs.rep_date_due%TYPE
+									 ,rep_boq_perc_item_code   repairs.rep_boq_perc_item_code%TYPE
+									 ,rep_wol_perc_item_code   repairs.rep_wol_perc_item_code%TYPE);
   TYPE selected_repairs_tab IS TABLE OF selected_repairs_rec INDEX BY BINARY_INTEGER;
   lt_selected_repairs selected_repairs_tab;
   --
@@ -2155,6 +2162,8 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                 ,pi_budget_id
                 ,pi_work_code
  				,rep_date_due
+				,rep_boq_perc_item_code
+				,rep_wol_perc_item_code 
 			INTO lr_selected_repair
             FROM repairs
                 ,defects
@@ -2246,21 +2255,23 @@ nm_debug.debug('generate WOLs');
 	  /*
 	  ||Set The Work Order Line Columns.
       */
-      lt_wol(i).wol_works_order_no := lv_work_order_no;
-      lt_wol(i).wol_rse_he_id      := lt_selected_repairs(i).rep_rse_he_id;
-      lt_wol(i).wol_siss_id        := lt_selected_repairs(i).def_siss_id;
-      lt_wol(i).wol_icb_work_code  := lt_selected_repairs(i).work_code;
-      lt_wol(i).wol_act_area_code  := lt_selected_repairs(i).rep_atv_acty_area_code;
-      lt_wol(i).wol_def_defect_id  := lt_selected_repairs(i).rep_def_defect_id;
-      lt_wol(i).wol_rep_action_cat := lt_selected_repairs(i).rep_action_cat;
-      lt_wol(i).wol_flag           := 'D';
-      lt_wol(i).wol_status_code    := lv_wol_draft;
-      lt_wol(i).wol_wor_flag       := 'D';
-      lt_wol(i).wol_date_created   := SYSDATE;
-      lt_wol(i).wol_bud_id         := lt_selected_repairs(i).bud_id;
-      lt_wol(i).wol_est_cost       := NULL;
-      lt_wol(i).wol_est_labour     := 0;
-	  lt_wol(i).wol_target_date    := lt_selected_repairs(i).rep_date_due;
+      lt_wol(i).wol_works_order_no       := lv_work_order_no;
+      lt_wol(i).wol_rse_he_id            := lt_selected_repairs(i).rep_rse_he_id;
+      lt_wol(i).wol_siss_id              := lt_selected_repairs(i).def_siss_id;
+      lt_wol(i).wol_icb_work_code        := lt_selected_repairs(i).work_code;
+      lt_wol(i).wol_act_area_code        := lt_selected_repairs(i).rep_atv_acty_area_code;
+      lt_wol(i).wol_def_defect_id        := lt_selected_repairs(i).rep_def_defect_id;
+      lt_wol(i).wol_rep_action_cat       := lt_selected_repairs(i).rep_action_cat;
+      lt_wol(i).wol_flag                 := 'D';
+      lt_wol(i).wol_status_code          := lv_wol_draft;
+      lt_wol(i).wol_wor_flag             := 'D';
+      lt_wol(i).wol_date_created         := SYSDATE;
+      lt_wol(i).wol_bud_id               := lt_selected_repairs(i).bud_id;
+      lt_wol(i).wol_est_cost             := NULL;
+      lt_wol(i).wol_est_labour           := 0;
+	  lt_wol(i).wol_target_date          := lt_selected_repairs(i).rep_date_due;
+	  lt_wol(i).wol_boq_perc_item_code   := lt_selected_repairs(i).rep_boq_perc_item_code;
+	  lt_wol(i).wol_wol_perc_item_code   := lt_selected_repairs(i).rep_wol_perc_item_code;
       /*
       ||Reset The Null BOQ Cost WOL Level Flag.
       */
@@ -2426,7 +2437,7 @@ nm_debug.debug('generate WOLs');
        THEN
           lt_wol(i).wol_est_cost := NULL;
       END IF;
-      --
+	  
     END LOOP; --lt_selected_repairs
     /*
     ||If Null BOQ Estimated Cost Detected
@@ -2541,6 +2552,7 @@ BEGIN
             ,lv_wor_est_balancing_sum
             )
             ;
+
       /*
       ||Insert The Work Order Lines.
       */
@@ -2562,6 +2574,8 @@ BEGIN
                    ,wol_est_cost
                    ,wol_est_labour
 				   ,wol_target_date
+				   ,wol_boq_perc_item_code
+				   ,wol_wol_perc_item_code
                FROM work_order_lines)
       VALUES lt_wol(i)
            ;
@@ -2588,6 +2602,31 @@ BEGIN
          WHERE boq_id = lt_boq(i).boq_id
              ;
       END LOOP;
+      
+	  FOR i IN 1..lt_wol.count LOOP
+		  
+		  IF lt_wol(i).wol_boq_perc_item_code IS NOT NULL OR
+		     lt_wol(i).wol_wol_perc_item_code IS NOT NULL
+			THEN
+			  /*
+			  || Apply any % uplifts against the wol costs
+			  */
+			  nm_debug.debug('##> before='||lt_wol(i).wol_id||'/'||lt_wol(i).wol_est_cost);
+			  mai.calc_wol_totals(p_wol_id                  => lt_wol(i).wol_id
+								 ,p_wol_boq_perc_item_code  => lt_wol(i).wol_boq_perc_item_code
+								 ,p_wol_wol_perc_item_code  => lt_wol(i).wol_wol_perc_item_code
+								 ,p_wol_est_cost            => lt_wol(i).wol_est_cost
+								 ,p_wol_act_cost            => lv_wol_act_cost
+								 ,p_wol_est_labour          => lv_wol_est_labour);
+			  nm_debug.debug('##> after='||lt_wol(i).wol_id||'/'||lt_wol(i).wol_est_cost);
+			  
+			  UPDATE work_order_lines
+				 SET wol_est_cost = lt_wol(i).wol_est_cost
+			   WHERE wol_id = lt_wol(i).wol_id;
+          END IF;
+		  
+	  END LOOP;
+	  
       /*
       ||Set The Output Parameters.
       */
@@ -2870,6 +2909,76 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
         RAISE;
   END get_wols;
   --
+  PROCEDURE validate_percent_uplift
+    IS
+    --
+    CURSOR c_boq_uplift (p_boq_perc_item_code  work_order_lines.wol_boq_perc_item_code%TYPE) 
+	IS
+	SELECT 1
+	  FROM standard_items,
+		   contract_items,
+		   contracts 
+	 WHERE cni_sta_item_code = sta_item_code
+	   AND cni_con_id = con_id
+	   AND con_code = lr_wo.wor_con_id
+	   AND sta_boq_perc_uplift = 'Y'
+	   AND con_allow_perc_uplift = 'Y'
+	   AND TO_DATE(TO_CHAR(lr_wo.wor_date_raised)) BETWEEN NVL(sta_start_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised))) 
+												       AND NVL(sta_end_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised)))
+	   AND sta_item_code = p_boq_perc_item_code;
+    --
+    CURSOR c_wol_uplift (p_wol_perc_item_code  work_order_lines.wol_wol_perc_item_code%TYPE) 
+	IS
+	SELECT 1
+	  FROM standard_items,
+		   contract_items,
+		   contracts 
+	 WHERE cni_sta_item_code = sta_item_code
+	   AND cni_con_id = con_id
+	   AND con_code = lr_wo.wor_con_id
+	   AND sta_wol_perc_uplift = 'Y'
+	   AND con_allow_perc_uplift = 'Y'
+	   AND TO_DATE(TO_CHAR(lr_wo.wor_date_raised)) BETWEEN NVL(sta_start_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised))) 
+												       AND NVL(sta_end_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised)))
+	   AND sta_item_code = p_wol_perc_item_code;
+    --
+	lv_dummy       PLS_INTEGER;
+	lv_row_found   BOOLEAN;
+  BEGIN
+    FOR i IN 1..lt_wols.count LOOP
+      --
+      IF lt_wols(i).wol_boq_perc_item_code IS NOT NULL
+       THEN
+          OPEN c_boq_uplift(lt_wols(i).wol_boq_perc_item_code);
+		  FETCH c_boq_uplift INTO lv_dummy;
+		  lv_row_found := c_boq_uplift%FOUND;
+		  CLOSE c_boq_uplift;
+		  
+          IF NOT lv_row_found
+           THEN
+              hig.raise_ner(pi_appl => 'MAI'
+                           ,pi_id   => 934);
+  	      END IF;
+	  END IF;
+      --
+      IF lt_wols(i).wol_wol_perc_item_code IS NOT NULL
+       THEN
+          OPEN c_wol_uplift(lt_wols(i).wol_wol_perc_item_code);
+		  FETCH c_wol_uplift INTO lv_dummy;
+		  lv_row_found := c_wol_uplift%FOUND;
+		  CLOSE c_wol_uplift;
+		  
+          IF NOT lv_row_found
+           THEN
+              hig.raise_ner(pi_appl => 'MAI'
+                           ,pi_id   => 934); 
+          END IF;
+	  END IF;
+      --
+    END LOOP;
+    --
+  END validate_percent_uplift;
+  --
   FUNCTION all_lines_priced
     RETURN BOOLEAN IS
     --
@@ -3096,6 +3205,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
     --
     FOR i IN 1..lt_wols.count LOOP
       --
+					   
       IF within_budget(pi_bud_id => lt_wols(i).wol_bud_id
                       ,pi_con_id => lr_wo.wor_con_id
                       ,pi_est    => lt_wols(i).wol_est_cost
@@ -3226,6 +3336,11 @@ BEGIN
   ||Check The Contract.
   */
   check_contract;
+  /*
+  || Validate any % uplift assignments.
+  */
+  validate_percent_uplift;
+
   /*
   ||Make Sure All Lines Are Priced.
   */
