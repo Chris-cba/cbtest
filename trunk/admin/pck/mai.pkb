@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.23   May 27 2011 09:45:42   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.24   Aug 16 2011 14:14:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
---       Date fetched Out : $Modtime:   May 25 2011 14:08:22  $
---       SCCS Version     : $Revision:   2.23  $
+--       Date into SCCS   : $Date:   Aug 16 2011 14:14:04  $
+--       Date fetched Out : $Modtime:   Aug 11 2011 16:12:30  $
+--       SCCS Version     : $Revision:   2.24  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.23  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.24  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -2404,7 +2404,9 @@ BEGIN
             ,rep_date_completed
             ,rep_descr
             ,rep_local_date_due
-            ,rep_old_due_date)
+            ,rep_old_due_date
+            ,rep_boq_perc_item_code
+            ,rep_wol_perc_item_code)
       VALUES(lv_defect_id
             ,lr_repair_rec.rep_action_cat
             ,pi_insp_rec.are_rse_he_id
@@ -2419,7 +2421,9 @@ BEGIN
             ,lr_repair_rec.rep_date_completed
             ,lr_repair_rec.rep_descr
             ,lv_date_due
-            ,NULL)
+            ,NULL
+            ,lr_repair_rec.rep_boq_perc_item_code
+            ,lr_repair_rec.rep_wol_perc_item_code)
             ;
       --
       IF SQL%rowcount != 1
@@ -4973,6 +4977,8 @@ PROCEDURE create_wol(p_old_wol_id             IN     work_order_lines.wol_id%TYP
                     ,p_wol_iit_item_id        IN     work_order_lines.wol_iit_item_id%TYPE default null
                     ,p_wol_gang               IN     work_order_lines.wol_gang%TYPE default null
                     ,p_wol_register_flag      IN     work_order_lines.wol_register_flag%TYPE default 'N'
+					,p_wol_boq_perc_item      IN     work_order_lines.wol_boq_perc_item_code%TYPE default null
+					,p_wol_wol_perc_item      IN     work_order_lines.wol_wol_perc_item_code%TYPE default null
                     ,pi_zeroize               IN     BOOLEAN DEFAULT FALSE
                     ,pi_copy_boqs             IN     BOOLEAN DEFAULT TRUE)
   IS
@@ -5161,7 +5167,9 @@ BEGIN
         ,wol_unposted_est
         ,wol_iit_item_id
         ,wol_gang
-        ,wol_register_flag)
+        ,wol_register_flag
+        ,wol_boq_perc_item_code
+        ,wol_wol_perc_item_code)
   VALUES(lv_wol_id
         ,p_wol_works_order_no
         ,p_wol_rse_he_id
@@ -5210,7 +5218,9 @@ BEGIN
         ,lv_wol_est_cost
         ,p_wol_iit_item_id
         ,p_wol_gang
-        ,p_wol_register_flag)
+        ,p_wol_register_flag
+        ,p_wol_boq_perc_item
+        ,p_wol_wol_perc_item)
        ;
   /*
   ||Copy the BOQs if required.
@@ -5618,6 +5628,8 @@ BEGIN
               ,p_wol_iit_item_id        => c1rec.wol_iit_item_id
               ,p_wol_gang               => c1rec.wol_gang
               ,p_wol_register_flag      => c1rec.wol_register_flag
+			  ,p_wol_boq_perc_item      => c1rec.wol_boq_perc_item_code
+			  ,p_wol_wol_perc_item      => c1rec.wol_wol_perc_item_code
               ,pi_zeroize               => pi_zeroize
               ,pi_copy_boqs             => pi_copy_boqs);
   END LOOP;
@@ -5708,6 +5720,8 @@ BEGIN
             ,p_wol_iit_item_id        => l_wol_rec.wol_iit_item_id
             ,p_wol_gang               => l_wol_rec.wol_gang
             ,p_wol_register_flag      => l_wol_rec.wol_register_flag
+			,p_wol_boq_perc_item      => l_wol_rec.wol_boq_perc_item_code
+			,p_wol_wol_perc_item      => l_wol_rec.wol_wol_perc_item_code
             ,pi_zeroize               => pi_zeroize
             ,pi_copy_boqs             => pi_copy_boqs);
   --
@@ -6836,6 +6850,143 @@ BEGIN
   RETURN lt_defects.COUNT;
   --
 END select_defects_for_wo;
+--
+---------------------------------------------------------------------------------------------------
+--
+PROCEDURE calc_wol_totals
+   (p_wol_id                              IN    work_order_lines.wol_id%TYPE
+   ,p_wol_boq_perc_item_code   IN  work_order_lines.wol_boq_perc_item_code%TYPE
+   ,p_wol_wol_perc_item_code   IN work_order_lines.wol_wol_perc_item_code%TYPE
+   ,p_wol_est_cost                     OUT work_order_lines.wol_est_cost%TYPE
+   ,p_wol_act_cost                     OUT work_order_lines.wol_act_cost%TYPE
+   ,p_wol_est_labour                  OUT work_order_lines.wol_est_labour%TYPE)
+   
+  IS
+  --
+  cursor boq_uplift_rate(p_sta_item_code   standard_items.sta_item_code%TYPE) is
+    select sta_rate
+      from standard_items
+    where sta_item_code = p_sta_item_code;
+  --
+  cursor wol_totals is
+    select sum(nvl(boq_est_labour,0)),
+             decode(count(0), count(boq_est_cost), sum(boq_est_cost), null) ,
+             sum(boq_act_cost)
+      from boq_items
+    where boq_wol_id = p_wol_id;
+--
+  cursor wol_boq_uplift_totals(p_boq_uplift_rate   standard_items.sta_rate%TYPE) is
+   select NVL(sum(boq_est_cost) * (p_boq_uplift_rate / 100),0)
+           ,NVL(sum(boq_act_cost) * (p_boq_uplift_rate / 100),0)
+     from standard_items,
+             boq_items
+    where boq_sta_item_code = sta_item_code
+      and NVL(sta_allow_percent, 'Y') = 'Y'
+      and boq_wol_id = p_wol_id;
+--
+  lv_boq_uplift_rate                  standard_items.sta_rate%TYPE;
+  lv_wol_uplift_rate                  standard_items.sta_rate%TYPE;
+  --
+  lv_wol_est_cost      work_order_lines.wol_est_cost%TYPE;
+  lv_wol_act_cost      work_order_lines.wol_act_cost%TYPE;
+  lv_wol_est_labour    work_order_lines.wol_est_labour%TYPE;
+--
+  lv_wol_est_uplift    NUMBER := 0;
+  lv_wol_act_uplift    NUMBER := 0;
+--
+begin
+  /*
+  || Get WOL percent Uplift Item Codes rates
+  */
+  if p_wol_boq_perc_item_code IS NOT NULL
+  then
+    open boq_uplift_rate(p_wol_boq_perc_item_code);
+    fetch boq_uplift_rate into lv_boq_uplift_rate;
+    close boq_uplift_rate;
+  end if;
+  
+  if p_wol_wol_perc_item_code IS NOT NULL
+  then
+    open boq_uplift_rate(p_wol_wol_perc_item_code);
+    fetch boq_uplift_rate into lv_wol_uplift_rate;
+    close boq_uplift_rate;
+  end if;
+ 
+   /*
+  || Get WOL totals
+  */
+  open  wol_totals;
+  fetch wol_totals into lv_wol_est_labour
+                               ,lv_wol_est_cost
+                               ,lv_wol_act_cost;
+  close wol_totals;
+  
+  if p_wol_boq_perc_item_code IS NOT NULL
+      then
+         open wol_boq_uplift_totals(lv_boq_uplift_rate);
+         fetch wol_boq_uplift_totals into lv_wol_est_uplift,
+                                                       lv_wol_act_uplift;
+         close wol_boq_uplift_totals;
+       
+         lv_wol_est_cost := lv_wol_est_cost + lv_wol_est_uplift;
+         lv_wol_act_cost := lv_wol_act_cost + lv_wol_act_uplift;
+       
+  end if;
+  
+  if p_wol_wol_perc_item_code IS NOT NULL
+      then
+        lv_wol_est_cost := lv_wol_est_cost + (lv_wol_est_cost * (lv_wol_uplift_rate / 100));
+        lv_wol_act_cost := lv_wol_act_cost + (lv_wol_act_cost * (lv_wol_uplift_rate / 100));
+  end if;
+
+  p_wol_est_labour := lv_wol_est_labour;
+  p_wol_est_cost    := lv_wol_est_cost;
+  p_wol_act_cost    := lv_wol_act_cost;
+  
+end calc_wol_totals;
+--
+---------------------------------------------------------------------------------------------------
+--
+PROCEDURE get_wor_uplift_costs
+   (p_wor_works_order_no   IN    work_orders.wor_works_order_no%TYPE,
+    p_wor_est_cost               IN    work_orders.wor_est_cost%TYPE,
+    p_wor_act_cost               IN    work_orders.wor_act_cost%TYPE,
+    p_wor_est_uplift_cost      OUT NUMBER,
+    p_wor_act_uplift_cost      OUT NUMBER)
+   
+  IS
+  --
+  cursor c_wol is
+  select wol_id,
+            wol_boq_perc_item_code,
+            wol_wol_perc_item_code
+    from work_order_lines
+  where wol_works_order_no = p_wor_works_order_no;
+  --
+  lv_wol_est_cost        work_order_lines.wol_est_cost%TYPE;
+  lv_wol_act_cost        work_order_lines.wol_act_cost%TYPE;
+  lv_wol_est_labour     work_order_lines.wol_est_labour%TYPE;
+  lv_tot_est_cost         work_order_lines.wol_est_cost%TYPE := 0;
+  lv_tot_act_cost         work_order_lines.wol_act_cost%TYPE := 0;
+  --
+begin
+  for wol_rec in c_wol loop
+  
+       calc_wol_totals(p_wol_id                             => wol_rec.wol_id
+                             ,p_wol_boq_perc_item_code  => wol_rec.wol_boq_perc_item_code
+                             ,p_wol_wol_perc_item_code  => wol_rec.wol_wol_perc_item_code
+                             ,p_wol_est_cost                    => lv_wol_est_cost
+                             ,p_wol_act_cost                    => lv_wol_act_cost
+                             ,p_wol_est_labour                 => lv_wol_est_labour);
+
+        lv_tot_est_cost := lv_tot_est_cost + lv_wol_est_cost;
+        lv_tot_act_cost := lv_tot_act_cost + lv_wol_act_cost;
+  end loop;
+
+  p_wor_est_uplift_cost := lv_tot_est_cost - NVL(p_wor_est_cost,0);
+  p_wor_act_uplift_cost := lv_tot_act_cost - NVL(p_wor_act_cost,0);
+  
+end get_wor_uplift_costs;
 --
 ---------------------------------------------------------------------------------------------------
 --
