@@ -35,11 +35,11 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.1   Feb 21 2011 12:22:58   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.2   Aug 16 2011 14:19:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def2.vw  $
---       Date into PVCS   : $Date:   Feb 21 2011 12:22:58  $
---       Date fetched Out : $Modtime:   Feb 21 2011 12:22:00  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Aug 16 2011 14:19:02  $
+--       Date fetched Out : $Modtime:   Aug 04 2011 16:00:20  $
+--       Version          : $Revision:   3.2  $
 -------------------------------------------------------------------------
 --
        wol.wol_works_order_no
@@ -76,6 +76,8 @@ SELECT  /*+ FIRST_ROWS_N */
       ,rep.rep_completed_hrs
       ,rep.rep_completed_mins
       ,rep.rep_rse_he_id
+      ,rep_boq_perc_item_code
+      ,rep_wol_perc_item_code
   FROM repairs rep
       ,work_order_lines wol
       ,work_orders wor
