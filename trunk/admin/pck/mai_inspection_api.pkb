@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.28   May 27 2011 09:45:40   Steve.Cooper  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.29   Aug 16 2011 14:16:16   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   May 27 2011 09:45:40  $
---       Date fetched Out : $Modtime:   May 25 2011 14:11:16  $
---       PVCS Version     : $Revision:   3.28  $
+--       Date into PVCS   : $Date:   Aug 16 2011 14:16:16  $
+--       Date fetched Out : $Modtime:   Aug 08 2011 14:07:48  $
+--       PVCS Version     : $Revision:   3.29  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.28  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.29  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2344,6 +2344,7 @@ PROCEDURE validate_repairs(pi_insp_rec    IN     activities_report%ROWTYPE
   --
   lr_defect_priorities  defect_priorities%ROWTYPE;
   lr_rse                road_sections%ROWTYPE;
+  lr_sta                standard_items%ROWTYPE;
   --
   lv_action_cat  repairs.rep_action_cat%TYPE;
   lv_repsetperd  hig_options.hop_value%TYPE := hig.GET_SYSOPT('REPSETPERD');
@@ -2417,6 +2418,17 @@ BEGIN
               raise_application_error(-20031,'Invalid Treatment Specified.');
           END IF;
       END IF;
+      /*
+      || Validate % Uplift codes
+      */
+      IF lt_rep_tab(i).rep_record.rep_boq_perc_item_code IS NOT NULL
+       THEN
+         lr_sta := get_sta(pi_sta_item_code => lt_rep_tab(i).rep_record.rep_boq_perc_item_code);
+      END IF;
+      IF lt_rep_tab(i).rep_record.rep_wol_perc_item_code IS NOT NULL
+       THEN
+         lr_sta := get_sta(pi_sta_item_code => lt_rep_tab(i).rep_record.rep_wol_perc_item_code);
+     END IF;
       /*
       ||Calculate Date Due.
       */
