@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.33   May 27 2011 09:45:40   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.34   Aug 16 2011 14:16:58   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:40  $
---       Date fetched Out : $Modtime:   May 25 2011 13:29:58  $
---       SCCS Version     : $Revision:   2.33  $
+--       Date into SCCS   : $Date:   Aug 16 2011 14:16:58  $
+--       Date fetched Out : $Modtime:   Aug 15 2011 09:19:40  $
+--       SCCS Version     : $Revision:   2.34  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.33  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.34  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -722,6 +722,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
        ,iwor_transaction_id
        ,iwor_works_order_no
        ,Replace(Replace(iwor_remarks,Chr(10),' '),Chr(13),' ') iwor_remarks 
+       ,NVL(con_include_in_cim, 'N') con_include_in_cim
    FROM interface_wor
        ,contracts
        ,org_units
@@ -885,6 +886,27 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
   WHERE   oun_contractor_id = p_contractor_id ;
   l_oun_rec org_units%ROWTYPE;
   --
+  CURSOR c_boq_perc_uplift(c_wol_id work_order_lines.wol_id%TYPE)
+      IS
+  SELECT ','||wol_boq_perc_item_code||','||sta_item_name
+    FROM work_order_lines
+            ,standard_items
+   WHERE  wol_id = c_wol_id
+       AND sta_item_code = wol_boq_perc_item_code
+       ;
+   --
+  CURSOR c_wol_perc_uplift(c_wol_id work_order_lines.wol_id%TYPE)
+      IS
+  SELECT ','||wol_wol_perc_item_code||','||sta_item_name
+    FROM work_order_lines
+            ,standard_items
+   WHERE  wol_id = c_wol_id
+       AND sta_item_code = wol_wol_perc_item_code
+       ;
+   --
+   lv_wol_boq_perc_item_code   varchar2(300);
+   lv_wol_wol_perc_item_code   varchar2(300);
+  --
 BEGIN
   --
   nm3ctx.set_context('CIM_ERROR_TEXT',Null);
@@ -925,6 +947,20 @@ BEGIN
             FOR l_wol_rec IN woldef(l_wor_rec.iwor_transaction_id
                                    ,l_wor_rec.iwor_works_order_no) LOOP
               l_wol_rec.wol_record := l_wol_rec.wol_record||l_wol_rec.details;
+              
+              IF l_wor_rec.con_include_in_cim = 'Y'
+               THEN
+                  open c_boq_perc_uplift(l_wol_rec.iwol_id);
+                  fetch c_boq_perc_uplift into lv_wol_boq_perc_item_code;
+                  close c_boq_perc_uplift;
+                  
+                   open c_wol_perc_uplift(l_wol_rec.iwol_id);
+                  fetch c_wol_perc_uplift into lv_wol_wol_perc_item_code;
+                  close c_wol_perc_uplift;
+                  
+                  l_wol_rec.wol_record := l_wol_rec.wol_record||lv_wol_boq_perc_item_code||lv_wol_wol_perc_item_code;
+             END IF;
+              
               UTL_FILE.PUT_LINE(l_fhand, l_wol_rec.wol_record);
               l_no_of_recs := l_no_of_recs + 1;
               --
@@ -987,6 +1023,19 @@ BEGIN
                   l_wol_rec.wol_record := l_wol_rec.wol_record||l_bud_bid;
               END IF;
               --
+             IF l_wor_rec.con_include_in_cim = 'Y'
+               THEN
+                  open c_boq_perc_uplift(l_wol_rec.iwol_id);
+                  fetch c_boq_perc_uplift into lv_wol_boq_perc_item_code;
+                  close c_boq_perc_uplift;
+                  
+                   open c_wol_perc_uplift(l_wol_rec.iwol_id);
+                  fetch c_wol_perc_uplift into lv_wol_wol_perc_item_code;
+                  close c_wol_perc_uplift;
+                  
+                  l_wol_rec.wol_record := l_wol_rec.wol_record||lv_wol_boq_perc_item_code||lv_wol_wol_perc_item_code;
+             END IF;
+
               UTL_FILE.PUT_LINE(l_fhand, l_wol_rec.wol_record);
               l_no_of_recs := l_no_of_recs + 1;
               --
@@ -4419,44 +4468,208 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
   l_fyr_id                 financial_years.fyr_id%TYPE; 
   l_wol_date_complete      work_order_lines.wol_date_complete%TYPE;
   lv_row_found             BOOLEAN;
+  lv_claim_value           work_order_lines.wol_act_cost%TYPE;
   
   TYPE wol_over_budget_tab IS TABLE OF work_order_lines.wol_id%type INDEX BY BINARY_INTEGER;
   
   lt_wol_over_budget   wol_over_budget_tab;
   
-   FUNCTION update_budget_actual ( p_wol_id         WORK_ORDER_LINES.wol_id%TYPE,
-                                   p_bud_id         BUDGETS.bud_id%TYPE,
-                                   p_bud_actual     BUDGETS.bud_actual%TYPE,
-                                   p_claim_type     VARCHAR2 DEFAULT NULL
-                                 ) RETURN BOOLEAN
-   IS
-   rtrn               BOOLEAN := TRUE;
+  /*---------------------------------------------------
+  || Apply any % uplifts 
+  ----------------------------------------------------*/
+  FUNCTION apply_perc_uplift(p_ih_id       interface_headers.ih_id%TYPE
+                            ,p_wol_id      work_order_lines.wol_id%TYPE
+							,p_claim_ref   interface_claims_boq_all.icboq_con_claim_ref%TYPE
+							,p_num         work_order_lines.wol_act_cost%TYPE)
+    RETURN NUMBER IS
+    --
+    CURSOR c1 IS
+    SELECT wol_boq_perc_item_code,
+	       wol_wol_perc_item_code
+	  FROM work_order_lines
+     WHERE wol_id = p_wol_id;
+    --
+    CURSOR boq_uplift_rate(p_sta_item_code   standard_items.sta_item_code%TYPE) IS
+    SELECT sta_rate
+      FROM standard_items
+     WHERE sta_item_code = p_sta_item_code;
+    --
+	CURSOR wol_boq_uplift_totals(p_boq_uplift_rate   standard_items.sta_rate%TYPE) is
+    SELECT NVL(sum(icboq_cost) * (p_boq_uplift_rate / 100),0)
+     FROM standard_items,
+          interface_claims_boq_all
+    WHERE icboq_sta_item_code = sta_item_code
+      AND NVL(sta_allow_percent, 'Y') = 'Y'
+      AND icboq_ih_id = p_ih_id
+	  AND icboq_con_claim_ref = p_claim_ref
+	  AND icboq_wol_id = p_wol_id;
 
-   cursor c_wol (lp_wol_id WORK_ORDER_LINES.wol_id%TYPE) is
-     select  NVL(wol_est_cost,0) wol_est_cost
-            ,NVL(wol_act_cost,0) wol_act_cost
-            ,NVL(wol_unposted_est,0) wol_unposted_est
-     from   work_order_lines
+	lv_retval                   NUMBER;
+    lv_wol_boq_perc_item_code   work_order_lines.wol_boq_perc_item_code%TYPE := NULL;
+    lv_wol_wol_perc_item_code   work_order_lines.wol_wol_perc_item_code%TYPE := NULL;
+    lv_boq_uplift_rate          standard_items.sta_rate%TYPE;
+    lv_wol_uplift_rate          standard_items.sta_rate%TYPE;
+	lv_wol_act_uplift           NUMBER := 0;
+	lv_wol_act_cost             work_order_lines.wol_act_cost%TYPE;
+    --
+  BEGIN
+	nm_debug.debug_on;
+	--
+	nm_debug.debug('-->p_ih_id='||p_ih_id||' p_claim_ref='||p_claim_ref||' p_wol_id='||p_wol_id);
+	--
+	OPEN  c1;
+	FETCH c1 INTO lv_wol_boq_perc_item_code,
+	              lv_wol_wol_perc_item_code;
+	CLOSE c1;
+	--
+    nm_debug.debug('--> boq_uplift='||lv_wol_boq_perc_item_code||' wol_uplift='||lv_wol_wol_perc_item_code);
+
+	--
+	IF lv_wol_boq_perc_item_code IS NULL AND
+	   lv_wol_wol_perc_item_code IS NULL
+	THEN
+	  lv_retval :=  p_num;
+	ELSE
+	  /*
+	  || Get WOL percent Uplift Item Codes rates
+	  */
+	  lv_wol_act_cost := p_num;
+	  --
+	  IF lv_wol_boq_perc_item_code IS NOT NULL
+	  THEN
+		OPEN boq_uplift_rate(lv_wol_boq_perc_item_code);
+		FETCH boq_uplift_rate into lv_boq_uplift_rate;
+		CLOSE boq_uplift_rate;
+		--
+		nm_debug.debug('-->BOQ Uplift rate ='||lv_boq_uplift_rate);
+		--
+        OPEN wol_boq_uplift_totals(lv_boq_uplift_rate);
+        FETCH wol_boq_uplift_totals into lv_wol_act_uplift;
+		if wol_boq_uplift_totals%NOTFOUND
+		then
+		   nm_debug.debug('--> NOTFOUND');
+		end if;
+        CLOSE wol_boq_uplift_totals;
+        --
+		nm_debug.debug('-->BOQ Uplift total ='||lv_wol_act_uplift);
+		--
+        lv_wol_act_cost := lv_wol_act_cost + lv_wol_act_uplift;
+		--
+		nm_debug.debug('-->Act cost ='||lv_wol_act_cost);
+		
+	  END IF;
+	  
+	  IF lv_wol_wol_perc_item_code IS NOT NULL
+	  THEN
+		OPEN boq_uplift_rate(lv_wol_wol_perc_item_code);
+		FETCH boq_uplift_rate into lv_wol_uplift_rate;
+		CLOSE boq_uplift_rate;
+		--
+		nm_debug.debug('-->WOL Uplift rate ='||lv_wol_uplift_rate);
+		--
+		lv_wol_act_cost := lv_wol_act_cost + (lv_wol_act_cost * (lv_wol_uplift_rate / 100));
+		--
+		nm_debug.debug('-->Act cost ='||lv_wol_act_cost);
+		
+	  END IF;
+	  --
+      nm_debug.debug('-->Return Value ='||lv_wol_act_cost);
+
+	  lv_retval := lv_wol_act_cost;
+
+	END IF;
+	--
+	RETURN lv_retval;
+	--
+  END apply_perc_uplift;
+
+  /*---------------------------------------------------
+  || Apply any discount group values 
+  ----------------------------------------------------*/
+  FUNCTION apply_balancing_sum(p_con_id            contracts.con_id%TYPE 
+                              ,p_wor_date_raised   work_orders.wor_date_raised%TYPE
+                              ,p_num               work_order_lines.wol_act_cost%TYPE)
+    RETURN NUMBER IS
+    --
+    CURSOR c1 IS
+    SELECT oun_cng_disc_group
+	  FROM org_units
+		  ,contracts
+     WHERE con_contr_org_id = oun_org_id
+	   AND con_id = p_con_id
+	   AND (p_wor_date_raised BETWEEN NVL(con_start_date,p_wor_date_raised)
+		   					      AND NVL(con_end_date,  p_wor_date_raised));
+    --
+    lv_retval     NUMBER;
+    l_disc_group  org_units.oun_cng_disc_group%type;
+          --
+  BEGIN
+	--
+	OPEN  c1;
+	FETCH c1 INTO l_disc_group;
+	CLOSE c1;
+	--
+	IF l_disc_group IS NULL
+	THEN
+	  lv_retval :=  p_num;
+	ELSE
+	  IF p_num < 0
+	   THEN
+		  lv_retval := p_num - maiwo.bal_sum(abs(p_num), l_disc_group);
+	  ELSE
+		  lv_retval := p_num + maiwo.bal_sum(abs(p_num), l_disc_group);
+	  END IF;
+	END IF;
+	--
+	RETURN lv_retval;
+	--
+  END apply_balancing_sum;
+  
+  /*---------------------------------------------------
+  || Update Budget Actual details 
+  ----------------------------------------------------*/
+  FUNCTION update_budget_actual(p_wol_id         work_order_lines.wol_id%TYPE,
+                                p_bud_id         budgets.bud_id%TYPE,
+                                p_bud_actual     budgets.bud_actual%TYPE,
+                                p_claim_type     VARCHAR2 DEFAULT NULL) 
+	RETURN BOOLEAN IS
+    --   
+    rtrn               BOOLEAN := TRUE;
+
+    cursor c_wol (lp_wol_id WORK_ORDER_LINES.wol_id%TYPE) is
+    select  NVL(wol_est_cost,0) wol_est_cost
+           ,NVL(wol_act_cost,0) wol_act_cost
+           ,NVL(wol_unposted_est,0) wol_unposted_est
+      from  work_order_lines
      where  wol_id = lp_wol_id;
 
-   cursor c_bud (lp_bud_id BUDGETS.bud_id%TYPE) is
-     select  bud_value
+    cursor c_bud (lp_bud_id budgets.bud_id%TYPE) is
+    select  bud_value
            ,bud_actual
-         ,bud_committed
+           ,bud_committed
      from   budgets
      where  bud_id = lp_bud_id;
-
-   lv_wol_rec       c_wol%ROWTYPE;
+     
+    cursor c_discount_group(lp_wol_id WORK_ORDER_LINES.wol_id%TYPE) is
+    select wor_con_id,
+           wor_date_raised
+      from work_orders,
+           work_order_lines
+     where wor_works_order_no = wol_works_order_no
+       and wol_Id = lp_wol_id;
+    
+    lv_wol_rec       c_wol%ROWTYPE;
       
-   lv_committed      BUDGETS.bud_actual%TYPE;
-   lv_actual         BUDGETS.bud_actual%TYPE;
-   lv_unposted       work_order_lines.wol_unposted_est%TYPE;
-   lv_bud_value      BUDGETS.bud_value%TYPE;
-   lv_bud_actual     BUDGETS.bud_actual%TYPE;
-   lv_bud_committed  BUDGETS.bud_committed%TYPE;
+    lv_committed         budgets.bud_actual%TYPE;
+    lv_actual            budgets.bud_actual%TYPE;
+    lv_unposted          work_order_lines.wol_unposted_est%TYPE;
+    lv_bud_value         budgets.bud_value%TYPE;
+    lv_bud_actual        budgets.bud_actual%TYPE;
+    lv_bud_committed     budgets.bud_committed%TYPE;
+    lv_con_id            contracts.con_id%TYPE;
+    lv_wor_date_raised   work_orders.wor_date_raised%TYPE;
    
-   BEGIN
-     nm_debug.debug_on;
+  BEGIN
 
      /*
      || Get current WOL details (ie before update due to Invoice)
@@ -4479,8 +4692,15 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
      /*
      || Value to add to Budget Actual = Invoice value - WOL actual cost
      */
-     lv_actual   := p_bud_actual - lv_wol_rec.wol_act_cost;
-     
+     OPEN c_discount_group(p_wol_id);
+     FETCH c_discount_group INTO lv_con_id,
+                                                  lv_wor_date_raised;
+     CLOSE c_discount_group;
+
+     lv_actual   := apply_balancing_sum(lv_con_id,
+                                        lv_wor_date_raised,
+                                        p_bud_actual - lv_wol_rec.wol_act_cost);
+
      /*
      || If not allowing over budget, check the budget hasn't been blown
      */
@@ -4525,7 +4745,7 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
 
        UPDATE BUDGETS
        SET bud_committed = DECODE(p_claim_type, 'F', NVL(bud_committed,0) - lv_wol_rec.wol_unposted_est, NVL(bud_committed,0) - NVL(lv_committed,0)),
-           bud_actual = NVL(bud_actual,0) + NVL(lv_actual,0)
+              bud_actual = NVL(bud_actual,0) + NVL(lv_actual,0)
        WHERE bud_id = p_bud_id;
 
        UPDATE WORK_ORDER_LINES
@@ -4538,11 +4758,10 @@ PROCEDURE claim_file_ph2(p_ih_id IN  interface_headers.ih_id%TYPE
 
    END update_budget_actual;
    
-   
-   PROCEDURE add_to_budget (v_wol_id      IN work_order_lines.wol_id%type
-                           ,v_bud_id      IN work_order_lines.wol_bud_id%type
-                           ,v_act         IN work_order_lines.wol_act_cost%type default 0
-                           ,v_claim_type  IN VARCHAR2 DEFAULT NULL)
+  PROCEDURE add_to_budget (v_wol_id        IN work_order_lines.wol_id%type
+                          ,v_bud_id        IN work_order_lines.wol_bud_id%type
+                          ,v_act           IN work_order_lines.wol_act_cost%type default 0
+                          ,v_claim_type    IN VARCHAR2 DEFAULT NULL)
    IS
       CURSOR c1 (p_wol_id WORK_ORDER_LINES.wol_id%TYPE) is 
       SELECT wol_status_code
@@ -4625,7 +4844,8 @@ BEGIN
 
   END;
 
-  /*---------------------------------------------------
+  nm_debug.debug_on;
+ /*---------------------------------------------------
   || Update Budget details, and check for over budget
   ----------------------------------------------------*/
   FOR c2rec IN (SELECT icwor_works_order_no, 
@@ -4646,17 +4866,21 @@ BEGIN
                             ,NVL(wol_est_cost,0) wol_est_cost
                             ,wol_bud_id
                             ,icwol_claim_value
-                      FROM   interface_claims_wol_all,
-                             work_order_lines
-                      WHERE  icwol_wol_id = wol_id
+                      FROM  work_order_lines,
+					        interface_claims_wol_all
+                    WHERE  icwol_wol_id = wol_id
                         AND  icwol_ih_id = p_ih_id
                         AND  icwol_con_claim_ref = c2rec.icwor_con_claim_ref
                         AND  wol_works_order_no = c2rec.icwor_works_order_no ) 
       LOOP
+	      lv_claim_value := apply_perc_uplift(p_ih_id
+											 ,wol_rec.wol_id
+											 ,c2rec.icwor_con_claim_ref
+											 ,wol_rec.icwol_claim_value);
+		  --				   
           add_to_budget(wol_rec.wol_id
                        ,wol_rec.wol_bud_id
-                       ,wol_rec.icwol_claim_value
-                       ,c2rec.icwor_claim_type);  
+                       ,lv_claim_value);  
       END LOOP;
       
       IF lt_wol_over_budget.count > 0 
@@ -5160,17 +5384,24 @@ ELSE
   l_wol_date_complete := null;  --SM 15042998 - 707188 - Resetting the l_wol_date_complete to null should mean that the completion date doesn't get updated if the file contains both I and F files.
 END IF;
 
+	  /*
+	  || apply any percent uplifts to wol_act_cost
+	  */
+	  lv_claim_value := apply_perc_uplift(p_ih_id
+									     ,wol_rec.icwol_wol_id
+									     ,wol_rec.icwor_con_claim_ref
+									     ,wol_rec.icwol_claim_value);
+
       UPDATE work_order_lines
       SET    wol_status_code = DECODE(wol_rec.icwor_claim_type, 'F',
                           g_wol_comp_status, 'I',
                           l_wol_interim_status, wol_status_code)
             ,wol_date_complete = DECODE(wol_rec.icwor_claim_type, 'P',TO_DATE(TO_CHAR(wol_date_complete, 'DD-MON-YYYY HH24:MI:SS'),'DD-MON-YYYY HH24:MI:SS')
                                        ,l_wol_date_complete/*Decode(wol_rec.icwor_claim_type,'I',null,to_date(to_char(wol_rec.icwol_date_complete, 'DD-MON-YYYY HH:MI:SS'),'DD-MON-YYYY HH:MI:SS'))*/)
-          ,(wol_act_cost
-          ,wol_est_labour) = (SELECT SUM(boq_act_cost)
-                          ,SUM(boq_act_labour)
-                      FROM   boq_items
-                        WHERE  boq_wol_id = wol_id)
+          ,wol_act_cost = lv_claim_value
+          ,wol_est_labour = (SELECT  SUM(boq_act_labour)
+                               FROM  boq_items
+                              WHERE  boq_wol_id = wol_id)
           ,wol_invoice_status = maiwo.wol_invoice_status(wol_id)
       WHERE  wol_id = wol_rec.icwol_wol_id;
 
