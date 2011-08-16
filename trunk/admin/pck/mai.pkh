@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.11   May 27 2011 09:45:42   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.12   Aug 16 2011 14:13:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
---       Date fetched Out : $Modtime:   May 25 2011 14:10:22  $
---       SCCS Version     : $Revision:   2.11  $
+--       Date into SCCS   : $Date:   Aug 16 2011 14:13:12  $
+--       Date fetched Out : $Modtime:   Aug 11 2011 16:05:58  $
+--       SCCS Version     : $Revision:   2.12  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.11  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.12  $';
     g_language              VARCHAR2(30);
     g_thing_already_exists  VARCHAR2(2000);
     g_thing_does_not_exist  VARCHAR2(2000);
@@ -885,6 +885,8 @@ PROCEDURE create_wol(p_old_wol_id             IN     work_order_lines.wol_id%TYP
                     ,p_wol_iit_item_id        IN     work_order_lines.wol_iit_item_id%TYPE default null
                     ,p_wol_gang               IN     work_order_lines.wol_gang%TYPE default null
                     ,p_wol_register_flag      IN     work_order_lines.wol_register_flag%TYPE default 'N'
+					,p_wol_boq_perc_item      IN     work_order_lines.wol_boq_perc_item_code%TYPE default null
+					,p_wol_wol_perc_item      IN     work_order_lines.wol_wol_perc_item_code%TYPE default null
                     ,pi_zeroize               IN     BOOLEAN DEFAULT FALSE
                     ,pi_copy_boqs             IN     BOOLEAN DEFAULT TRUE);
 --
@@ -1109,6 +1111,25 @@ FUNCTION select_defects_for_wo(pi_defect_id           IN defects.def_defect_id%T
                               ,pi_include_permanent   IN VARCHAR2
                               ,pi_include_temporary   IN VARCHAR2)
   RETURN NUMBER;
+--
+---------------------------------------------------------------------------------------------------
+--
+PROCEDURE calc_wol_totals
+   (p_wol_id                              IN    work_order_lines.wol_id%TYPE
+   ,p_wol_boq_perc_item_code   IN  work_order_lines.wol_boq_perc_item_code%TYPE
+   ,p_wol_wol_perc_item_code   IN work_order_lines.wol_wol_perc_item_code%TYPE
+   ,p_wol_est_cost                     OUT work_order_lines.wol_est_cost%TYPE
+   ,p_wol_act_cost                     OUT work_order_lines.wol_act_cost%TYPE
+   ,p_wol_est_labour                  OUT work_order_lines.wol_est_labour%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE get_wor_uplift_costs
+   (p_wor_works_order_no   IN    work_orders.wor_works_order_no%TYPE,
+    p_wor_est_cost               IN    work_orders.wor_est_cost%TYPE,
+    p_wor_act_cost               IN    work_orders.wor_act_cost%TYPE,
+    p_wor_est_uplift_cost      OUT NUMBER,
+    p_wor_act_uplift_cost      OUT NUMBER);
 --
 -----------------------------------------------------------------------------
 --
