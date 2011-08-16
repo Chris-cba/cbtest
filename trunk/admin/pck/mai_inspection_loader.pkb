@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.17   Mar 16 2011 14:21:34   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.18   Aug 16 2011 14:15:34   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Mar 16 2011 14:21:34  $
---       Date fetched Out : $Modtime:   Mar 16 2011 14:19:10  $
---       PVCS Version     : $Revision:   3.17  $
+--       Date into PVCS   : $Date:   Aug 16 2011 14:15:34  $
+--       Date fetched Out : $Modtime:   Aug 08 2011 13:48:50  $
+--       PVCS Version     : $Revision:   3.18  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.17  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1964,6 +1964,8 @@ nm_debug.debug('File inspdate = '||lv_token);
     lv_priority         defects.def_priority%TYPE;
     lv_dflt_treat_code  repairs.rep_tre_treat_code%TYPE;
     lv_file_date        VARCHAR2(10);
+    lv_uplift_pos       PLS_INTEGER := 4;
+    --
     j                   PLS_INTEGER;
     --
     lr_rep      repairs%ROWTYPE;
@@ -2103,6 +2105,46 @@ nm_debug.debug('File inspdate = '||lv_token);
                   END IF;
               END IF;
           END IF;
+          
+          /*
+          || Check for % Uplift item code details
+          */
+          IF lv_rec_type IN ('L', 'M', 'N')
+           THEN
+              IF lv_rec_type != 'N'
+               THEN
+                  lv_uplift_pos := lv_uplift_pos + 1;
+              END IF;
+              
+              lv_token := get_token_value(pi_tokens   => lt_tokens
+                                         ,pi_position => lv_uplift_pos);
+              IF lv_token IS NOT NULL
+               THEN
+                  IF NOT set_varchar2(pi_value   => lv_token
+                                     ,pio_target => lr_rep.rep_boq_perc_item_code)
+                   THEN
+                      add_error_to_stack(pi_seq_no => lv_seq_no
+                                  ,pi_ner_id => 9512);
+                      RAISE invalid_record;
+                  END IF;
+              END IF;
+              
+              lv_uplift_pos := lv_uplift_pos + 1;
+              lv_token := get_token_value(pi_tokens   => lt_tokens
+                                         ,pi_position => lv_uplift_pos);
+              IF lv_token IS NOT NULL
+               THEN
+                  IF NOT set_varchar2(pi_value   => lv_token
+                                     ,pio_target => lr_rep.rep_wol_perc_item_code)
+                   THEN
+                      add_error_to_stack(pi_seq_no => lv_seq_no
+                                  ,pi_ner_id => 9512);
+                      RAISE invalid_record;
+                  END IF;
+              END IF;
+              
+          END IF;
+      
           /*
           ||If Not An Enhanced Format File Set The Defect
           ||Priority Based On The Type Of Repair.
@@ -3153,6 +3195,8 @@ BEGIN
             ,rep_descr             
             ,rep_local_date_due    
             ,rep_old_due_date      
+            ,rep_boq_perc_item_code
+            ,rep_wol_perc_item_code
             ,rep_error)
       VALUES(pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_def_defect_id     
             ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_action_cat        
@@ -3169,6 +3213,8 @@ BEGIN
             ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_descr             
             ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_local_date_due    
             ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_old_due_date      
+            ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_boq_perc_item_code      
+            ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_wol_perc_item_code      
             ,pi_insp_rec.insp_defects(i).def_repairs(j).rep_error)
            ;
       /*
@@ -4157,6 +4203,8 @@ PROCEDURE resubmit_inspection(pi_inspection_id IN mai_insp_load_error_are.are_re
           lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_descr              := lt_repairs(j).rep_descr;
           lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_local_date_due     := lt_repairs(j).rep_local_date_due;
           lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_old_due_date       := lt_repairs(j).rep_old_due_date;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_boq_perc_item_code       := lt_repairs(j).rep_boq_perc_item_code;
+          lt_insp_rec.insp_defects(i).def_repairs(j).rep_record.rep_wol_perc_item_code       := lt_repairs(j).rep_wol_perc_item_code;
           lt_insp_rec.insp_defects(i).def_repairs(j).rep_error                         := NULL;
 
           SELECT *
