@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.1   Sep 29 2010 15:16:18   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.2   Aug 16 2011 14:12:34   Chris.Baugh  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Sep 29 2010 15:16:18  $
---       Date fetched Out : $Modtime:   Sep 27 2010 12:11:14  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Aug 16 2011 14:12:34  $
+--       Date fetched Out : $Modtime:   Aug 15 2011 09:56:26  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -982,6 +982,10 @@ FUNCTION processpedif(job_id IN NUMBER)
              || sta_dim2_text
              || ','
              || sta_dim3_text
+             || ','
+             || sta_boq_perc_uplift
+             || ','
+             || sta_wol_perc_uplift
                rec
         FROM standard_items
        WHERE NVL(sta_dcd_flag, 'Y') = 'Y'
