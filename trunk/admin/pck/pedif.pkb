@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.2   Aug 16 2011 14:12:34   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.3   Aug 19 2011 10:22:46   Chris.Baugh  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Aug 16 2011 14:12:34  $
---       Date fetched Out : $Modtime:   Aug 15 2011 09:56:26  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Aug 19 2011 10:22:46  $
+--       Date fetched Out : $Modtime:   Aug 18 2011 15:34:26  $
+--       Version          : $Revision:   3.3  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -35,7 +35,7 @@ g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 -- run time should you wish, but the parameter will need to be set to
 -- visible.
 --
-debug         BOOLEAN := FALSE;
+-- debug         BOOLEAN := FALSE; 
 v_module      VARCHAR2(7) := 'MAI3863';
 --
 file_handle   utl_file.file_type;                    -- File handle
@@ -121,59 +121,54 @@ BEGIN
   fxsp        := higgrirp.get_parameter_value(job_id,'XSP');
   ffile       := higgrirp.get_parameter_value(job_id,'PEDFILE');
   faunit      := higgrirp.get_parameter_value(job_id,'ANSWER2');
+
   --
-  -- Factivity is used for display when in debug mode only
+  -- The parameters for this module may include upto 6 activity codes.
+  -- For this reason we need to ensure that we obtain any number of activity
+  -- parameters.
   --
-  IF debug
-   THEN
-      --
-      -- The parameters for this module may include upto 6 activity codes.
-      -- For this reason we need to ensure that we obtain any number of activity
-      -- parameters.
-      --
-      FOR each_activity IN all_param_values(job_id,'ACTIVITY') LOOP
-        IF each_activity.item_value IS NOT NULL
-         THEN
-            factivity := factivity||''''||each_activity.item_value||''''||',';
-        END IF;
-      END LOOP;
-      --
-      factivity := SUBSTR(factivity,1,LENGTH(factivity)-1);
-      --
-      FOR each_inv_item IN all_param_values(job_id,'INVENTORY_ITEM') LOOP
-        IF each_inv_item.item_value IS NOT NULL
-         THEN
-            fasset := fasset||''''||each_inv_item.item_value||''''||',';
-        END IF;
-      END LOOP;
-      --
-      fasset := SUBSTR(fasset,1,LENGTH(fasset)-1);
-      --
-      FOR each_inv_item IN all_param_values(job_id,'XSP') LOOP
-        IF each_inv_item.item_value IS NOT NULL
-         THEN
-            fxsp := fxsp||''''||each_inv_item.item_value||''''||',';
-        END IF;
-      END LOOP;
-      --
-      fxsp := SUBSTR(fxsp,1,LENGTH(fxsp)-1);
-      --
-      dbms_output.put_line('');
-      dbms_output.put_line('Parameter Discipline    : ' || fdiscipline);
-      dbms_output.put_line('Parameter Output Seq.   : ' || TO_CHAR(fseq));
-      dbms_output.put_line('Parameter Destination   : ' || fdest);
-      dbms_output.put_line('Parameter Group Type    : ' || fgtype);
-      dbms_output.put_line('Parameter Group         : ' || TO_CHAR(fgroup));
-      dbms_output.put_line('Parameter Activities    : ' || factivity);
-      dbms_output.put_line('Parameter Asset         : ' || fasset);
-      dbms_output.put_line('Parameter Act Group     : ' || factgroup);
-      dbms_output.put_line('Parameter Use Hierarchy : ' || fheir);
-      dbms_output.put_line('Parameter Inventory XSP : ' || fxsp);
-      dbms_output.put_line('Parameter Output Dir    : ' || fdest);
-      dbms_output.put_line('Parameter Output File   : ' || ffile);
-      dbms_output.put_line('Parameter Restrict AU   : ' || faunit);
-      dbms_output.put_line('');
-  END IF;
+  FOR each_activity IN all_param_values(job_id,'ACTIVITY') LOOP
+	IF each_activity.item_value IS NOT NULL
+	 THEN
+		factivity := factivity||''''||each_activity.item_value||''''||',';
+	END IF;
+  END LOOP;
+  --
+  factivity := SUBSTR(factivity,1,LENGTH(factivity)-1);
+  --
+  FOR each_inv_item IN all_param_values(job_id,'INVENTORY_ITEM') LOOP
+	IF each_inv_item.item_value IS NOT NULL
+	 THEN
+		fasset := fasset||''''||each_inv_item.item_value||''''||',';
+	END IF;
+  END LOOP;
+  --
+  fasset := SUBSTR(fasset,1,LENGTH(fasset)-1);
+  --
+  FOR each_inv_item IN all_param_values(job_id,'XSP') LOOP
+	IF each_inv_item.item_value IS NOT NULL
+	 THEN
+		fxsp := fxsp||''''||each_inv_item.item_value||''''||',';
+	END IF;
+  END LOOP;
+  --
+  fxsp := SUBSTR(fxsp,1,LENGTH(fxsp)-1);
+  --
+  nm_debug.debug('');
+  nm_debug.debug('Parameter Discipline    : ' || fdiscipline);
+  nm_debug.debug('Parameter Output Seq.   : ' || TO_CHAR(fseq));
+  nm_debug.debug('Parameter Destination   : ' || fdest);
+  nm_debug.debug('Parameter Group Type    : ' || fgtype);
+  nm_debug.debug('Parameter Group         : ' || TO_CHAR(fgroup));
+  nm_debug.debug('Parameter Activities    : ' || factivity);
+  nm_debug.debug('Parameter Asset         : ' || fasset);
+  nm_debug.debug('Parameter Act Group     : ' || factgroup);
+  nm_debug.debug('Parameter Use Hierarchy : ' || fheir);
+  nm_debug.debug('Parameter Inventory XSP : ' || fxsp);
+  nm_debug.debug('Parameter Output Dir    : ' || fdest);
+  nm_debug.debug('Parameter Output File   : ' || ffile);
+  nm_debug.debug('Parameter Restrict AU   : ' || faunit);
+  nm_debug.debug('');
   --
 END;
 --
@@ -203,7 +198,7 @@ BEGIN
 EXCEPTION
   WHEN others
    THEN
-      dbms_output.put_line('Error: Sequence does not exist - {GetFileSeq}');
+      nm_debug.debug('Error: Sequence does not exist - {GetFileSeq}');
       RETURN 0;
 END;
 --
@@ -216,13 +211,10 @@ PROCEDURE create_file(loc_in  IN VARCHAR2
   IS
 BEGIN
   -- Open the specified file for writing
-  IF debug
-   THEN
-      dbms_output.put_line('{ Function - Create File }');
-      dbms_output.put_line('Location : ' || loc_in);
-      dbms_output.put_line('File     : ' || file_in);
-      dbms_output.put_line('Line     : ' || line_in);
-  END IF;
+  nm_debug.debug('{ Function - Create File }');
+  nm_debug.debug('Location : ' || loc_in);
+  nm_debug.debug('File     : ' || file_in);
+  nm_debug.debug('Line     : ' || line_in);
   --
   file_handle := nm3file.fopen(location     => loc_in
                               ,filename     => file_in
@@ -241,7 +233,7 @@ BEGIN
 EXCEPTION
   WHEN others
    THEN
-      dbms_output.put_line('Error: An error occured - {Create_File}');
+      nm_debug.debug('Error: An error occured - {Create_File}');
       RAISE;
 END;
 --
@@ -253,17 +245,14 @@ FUNCTION fileexists(loc_in  IN VARCHAR2
   RETURN BOOLEAN IS
 BEGIN
   -- Open the file
-  IF debug
-   THEN
-      dbms_output.put_line('Path   : ' || loc_in);
-      dbms_output.put_line('File   : ' || file_in);
-  END IF;
+  nm_debug.debug('Path   : ' || loc_in);
+  nm_debug.debug('File   : ' || file_in);
   --
   IF NOT is_open(file_handle)
    THEN
       IF NOT close_file(file_handle)
        THEN
-          dbms_output.put_line('Info: Unable to close open file.');
+          nm_debug.debug('Info: Unable to close open file.');
       END IF;
       --
       file_handle := utl_file.fopen(loc_in
@@ -271,10 +260,7 @@ BEGIN
                                    ,fread);
   END IF;
   --
-  IF debug
-   THEN
-      dbms_output.put_line('Info: Handle Obtained - {FileExists}');
-  END IF;
+  nm_debug.debug('Info: Handle Obtained - {FileExists}');
   --
   -- Return the result of a check with IS_OPEN
   utl_file.fclose(file_handle);
@@ -394,7 +380,11 @@ FUNCTION processpedif(job_id IN NUMBER)
   -- Activity Type Descripiton
   CURSOR c2
       IS
-  SELECT '2,*,'||atv.atv_maint_insp_flag||','||atv.atv_acty_area_code||','|| REPLACE(atv.atv_descr,',',':') rec
+  SELECT '2,'||
+         atv_dtp_flag||','||
+		 atv.atv_maint_insp_flag||','||
+		 atv.atv_acty_area_code||','|| 
+		 REPLACE(atv.atv_descr,',',':') rec
     FROM activities atv
    WHERE atv.atv_end_date IS NULL
      AND atv.atv_acty_area_code IN(SELECT DECODE(a.atv_maint_insp_flag,'S',atv.atv_acty_area_code
@@ -411,14 +401,19 @@ FUNCTION processpedif(job_id IN NUMBER)
                                              ,act_group_membs
                                         WHERE acg_group_code = factgroup
                                           AND agm_group_code = acg_group_code))
-   ORDER BY 1
+     AND INSTR(sysflags,atv_dtp_flag)>0
+	ORDER BY 1
        ;
   -- Defect Type Description
   CURSOR c3
       IS
-  SELECT DISTINCT '3,*,'||dty_defect_code||','||REPLACE(dty_descr1,',',':')||REPLACE(dty_descr2,',',':') rec
+  SELECT DISTINCT '3,'||
+                  dty_dtp_flag||','||
+				  dty_defect_code||','||
+				  REPLACE(dty_descr1,',',':')||REPLACE(dty_descr2,',',':') rec
     FROM def_types
    WHERE dty_end_date IS NULL
+     AND INSTR(sysflags,dty_dtp_flag)>0
    ORDER BY 1
        ;
   -- Treatment Type Description
@@ -432,7 +427,10 @@ FUNCTION processpedif(job_id IN NUMBER)
   --
   CURSOR c6
       IS
-  SELECT '6,*,'||dty_atv_acty_area_code||','||dty_defect_code||','     rec
+  SELECT '6,'||
+         dty_dtp_flag||','||
+		 dty_atv_acty_area_code||','||
+		 dty_defect_code||','     rec
         ,dty_hh_attribute_1||','||REPLACE(dty_hh_attri_text_1,',',':') attr_1
         ,dty_hh_attribute_2||','||REPLACE(dty_hh_attri_text_2,',',':') attr_2
         ,dty_hh_attribute_3||','||REPLACE(dty_hh_attri_text_3,',',':') attr_3
@@ -454,12 +452,16 @@ FUNCTION processpedif(job_id IN NUMBER)
                                               ,act_group_membs
                                          WHERE acg_group_code = factgroup
                                            AND agm_group_code = acg_group_code))
-   ORDER BY 1
+     AND INSTR(sysflags,dty_dtp_flag)>0
+    ORDER BY 1
        ;
   --
   CURSOR c7
       IS
-  SELECT DISTINCT '7,*,'||afr_atv_acty_area_code||','||afr_ity_inv_code rec
+  SELECT DISTINCT '7,'||
+                  ity_sys_flag||','||
+				  afr_atv_acty_area_code||','||
+				  afr_ity_inv_code rec
     FROM act_freqs
         ,inv_item_types
    WHERE afr_atv_acty_area_code IN(SELECT DECODE(a.atv_maint_insp_flag,'S',afr_atv_acty_area_code
@@ -484,6 +486,7 @@ FUNCTION processpedif(job_id IN NUMBER)
                                 FROM gri_run_parameters
                                WHERE grp_param = 'INVENTORY_ITEM'
                                  AND grp_job_id = job_id))
+     AND afr_ity_sys_flag = ity_sys_flag
      AND INSTR(sysflags,ity_sys_flag) > 0
      AND ity_end_date IS NULL
    ORDER BY 1
@@ -491,7 +494,10 @@ FUNCTION processpedif(job_id IN NUMBER)
   --
   CURSOR c8
       IS
-  SELECT '8,*,'|| dtr_dty_acty_area_code||','||dtr_dty_defect_code||','||RPAD(dtr_tre_treat_code,4) rec
+  SELECT '8,'||
+         dtr_sys_flag||','|| 
+		 dtr_dty_acty_area_code||','||
+		 dtr_dty_defect_code||','||RPAD(dtr_tre_treat_code,4) rec
     FROM treatments
         ,def_treats
    WHERE dtr_tre_treat_code = tre_treat_code
@@ -510,6 +516,7 @@ FUNCTION processpedif(job_id IN NUMBER)
                                               ,act_group_membs
                                          WHERE acg_group_code = factgroup
                                            AND agm_group_code = acg_group_code))
+     AND INSTR(sysflags,dtr_sys_flag) > 0
    ORDER BY 1
        ;
   --
@@ -754,7 +761,9 @@ FUNCTION processpedif(job_id IN NUMBER)
     ORDER BY 1;
   CURSOR c24
   IS
-      SELECT DISTINCT    '24,*,'
+      SELECT DISTINCT    '24,'
+	                  ||i.ity_sys_flag
+					  ||','
                       || d.dpr_priority
                       || ','
                       || REPLACE(hig.hco_meaning
@@ -777,7 +786,9 @@ FUNCTION processpedif(job_id IN NUMBER)
                   ,i.ity_sys_flag) > 0
          AND i.ity_road_characteristic = 'I'
          AND i.ity_elec_drain_carr = NVL(fdiscipline, i.ity_elec_drain_carr)
-    ORDER BY 1;
+         AND a.afr_ity_sys_flag = i.ity_sys_flag
+		 AND INSTR(sysflags,i.ity_sys_flag) > 0
+		 ORDER BY 1;
   CURSOR c25
   IS
       SELECT    '25,*,'
@@ -996,7 +1007,9 @@ FUNCTION processpedif(job_id IN NUMBER)
   -- Changed cursor 35, 36 and 37 to use v3 tables rather than translation views.
   CURSOR c35
   IS
-      SELECT    '35,*,'
+      SELECT    '35,'
+	         || ity_sys_flag
+			 || ','
              || LPAD(TO_CHAR(iit_item_id)
                     ,iit_id_pad)
              || ','
@@ -1050,6 +1063,8 @@ FUNCTION processpedif(job_id IN NUMBER)
                    WHERE grp_value = NVL(iit_x_sect, grp_value)
                      AND grp_param = 'XSP'
                      AND grp_job_id = job_id))
+         AND iit_ity_sys_flag = ity_sys_flag
+		 AND INSTR(sysflags,ity_sys_flag) > 0
     ORDER BY 1;
   -- Inspection Network details
   CURSOR c36(
@@ -1114,7 +1129,10 @@ FUNCTION processpedif(job_id IN NUMBER)
   -- Section Id and Activity details
   CURSOR c37
   IS
-      SELECT '37,*,' || TO_CHAR(ne.ne_id) || ',' || afr.afr_atv_acty_area_code
+      SELECT '37,'
+	         ||afr_ity_sys_flag||',' 
+			 || TO_CHAR(ne.ne_id) || ',' 
+			 || afr.afr_atv_acty_area_code
                rec
         FROM nm_elements_all ne
             ,act_freqs afr
@@ -1159,6 +1177,7 @@ FUNCTION processpedif(job_id IN NUMBER)
          AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
          AND nad.nad_primary_ad(+) = 'Y'
          AND ne.ne_name_2 = linkcode.ne_unique(+)
+		 AND INSTR(sysflags,afr_ity_sys_flag) > 0
     ORDER BY 1;
   --
   CURSOR c38
@@ -1255,7 +1274,7 @@ FUNCTION processpedif(job_id IN NUMBER)
     /*
     ||Report The Error.
     */
-    dbms_output.put_line(pi_error_msg);
+    nm_debug.debug(pi_error_msg);
     higgrirp.write_gri_spool(job_id,SUBSTR(pi_error_msg,1,2000));
     higgrirp.write_gri_spool(job_id,NULL);
     /*
@@ -1337,7 +1356,7 @@ BEGIN
     -- See top of package body code for problem description
     v_filename := NVL(ffile, TO_CHAR(job_id) || '.' || ffileext);
     -- end of sscanlon fix 709407 12SEP2007
-    dbms_output.put_line('filename = ' || fdest || ' ' || v_filename);
+    nm_debug.debug('filename = ' || fdest || ' ' || v_filename);
     /*
     ||Open The File.
     */
@@ -1624,10 +1643,7 @@ BEGIN
     cursor_recs(rec_count) := i_rec.rec;
   END LOOP;
   /* all records in the table now write them out to the file */
-  IF (debug)
-   THEN
-      dbms_output.put_line(rec_count || ' record(s) loaded');
-  END IF;
+  nm_debug.debug(rec_count || ' record(s) loaded');
   --
   FOR i IN 1 .. rec_count LOOP
     IF NOT writeln(file_handle
@@ -1694,20 +1710,18 @@ IS
   trace_on    BOOLEAN := FALSE;
   --
 BEGIN
+  nm_debug.debug_on;
+  
   IF trace_on
    THEN
       dbms_session.set_sql_trace(trace_on);
   END IF;
   -- [HB]: Display the current version of the module
-  dbms_output.put_line('Version: ' || g_sccsid);
-  dbms_output.put_line('.');
+  nm_debug.debug('Version: ' || g_sccsid);
+  nm_debug.debug('.');
   --
-  IF debug
-   THEN
-      dbms_output.enable(1000000);
-      start_time := dbms_utility.get_time;
-      dbms_output.put_line('Start Time : '||TO_CHAR(start_time));
-  END IF;
+  start_time := dbms_utility.get_time;
+  nm_debug.debug('Start Time : '||TO_CHAR(start_time));
   --
   get_params(job_id);
   --
@@ -1728,6 +1742,8 @@ BEGIN
    THEN
       dbms_session.set_sql_trace(trace_on);
   END IF;
+  
+  nm_debug.debug_off;
 END main;
 --
 -----------------------------------------------------------------------------
