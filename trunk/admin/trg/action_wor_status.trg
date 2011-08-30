@@ -7,11 +7,11 @@ DECLARE
   --
   --   PVCS Identifiers :-
   --
-  --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.2   Apr 14 2011 09:40:18   Chris.Baugh  $
+  --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.3   Aug 30 2011 11:17:20   Chris.Baugh  $
   --       Module Name      : $Workfile:   action_wor_status.trg  $
-  --       Date into PVCS   : $Date:   Apr 14 2011 09:40:18  $
-  --       Date fetched Out : $Modtime:   Apr 14 2011 09:33:38  $
-  --       Version          : $Revision:   3.2  $
+  --       Date into PVCS   : $Date:   Aug 30 2011 11:17:20  $
+  --       Date fetched Out : $Modtime:   Aug 30 2011 11:07:16  $
+  --       Version          : $Revision:   3.3  $
   --
   --
   -----------------------------------------------------------------------------
@@ -20,7 +20,9 @@ DECLARE
   --
   CURSOR c_actioned_wol(cp_wol_status_code  work_order_lines.wol_status_code%TYPE)
       IS
-  SELECT hsc_allow_feature7
+  SELECT hsc_allow_feature1,
+         hsc_allow_feature7,
+		 hsc_allow_feature10
     FROM hig_status_codes
    WHERE hsc_domain_code = 'WORK_ORDER_LINES'
      AND hsc_status_code = cp_wol_status_code
@@ -38,7 +40,9 @@ DECLARE
                      AND NVL(hsc_end_date, SYSDATE);  
 
   --
+  lv_feature1   hig_status_codes.hsc_allow_feature1%TYPE;
   lv_feature7   hig_status_codes.hsc_allow_feature7%TYPE;
+  lv_feature10  hig_status_codes.hsc_allow_feature10%TYPE;
   lv_status     hig_status_codes.hsc_status_code%TYPE;
   --
 BEGIN
@@ -46,7 +50,9 @@ BEGIN
    THEN
       -- Check if WOL has been actioned
       OPEN c_actioned_wol(:new.wol_status_code);
-      FETCH c_actioned_wol INTO lv_feature7;
+      FETCH c_actioned_wol INTO lv_feature1,
+	                            lv_feature7,
+								lv_feature10;
       CLOSE c_actioned_wol;
       
       /*-----------------------
@@ -59,19 +65,41 @@ BEGIN
       FETCH c_status_code INTO lv_status;
       CLOSE c_status_code;
         
-      UPDATE docs
-      SET  doc_status_code = lv_status,
-           doc_reason      = DECODE(lv_feature7, 'Y','Work Order Actioned : ', 'Work Order Instructed : ')||:new.wol_works_order_no
-      WHERE  doc_id IN (SELECT das_doc_id
-                        FROM   doc_assocs
-                        WHERE  das_rec_id = TO_CHAR(:new.wol_def_defect_id)
-                        AND  das_table_name = 'DEFECTS')
-      AND  doc_status_code IN (SELECT hsc_status_code
-                               FROM   hig_status_codes
-                               WHERE  hsc_domain_code = 'COMPLAINTS'
-                               AND  hsc_allow_feature5 = 'Y'
-                               AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
-                                                      AND nvl(hsc_end_date, sysdate));
+	  IF lv_feature7 = 'Y' -- WO Actioned
+		THEN 		  
+
+		UPDATE docs
+		  SET  doc_status_code = lv_status,
+			   doc_reason      = 'Work Order Actioned : '||:new.wol_works_order_no
+		  WHERE  doc_id IN (SELECT das_doc_id
+							FROM   doc_assocs
+							WHERE  das_rec_id = TO_CHAR(:new.wol_def_defect_id)
+							AND  das_table_name = 'DEFECTS')
+		  AND  doc_status_code IN (SELECT hsc_status_code
+								   FROM   hig_status_codes
+								   WHERE  hsc_domain_code = 'COMPLAINTS'
+								   AND  hsc_allow_feature5 = 'Y'
+								   AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
+														  AND nvl(hsc_end_date, sysdate));
+	  ELSIF lv_feature1 = 'Y' AND -- WO Instructed
+	        lv_feature10 = 'N'
+		THEN
+		
+		  UPDATE docs 
+		  SET  doc_status_code = lv_status,
+			   doc_reason      = 'Work Order Instructed : '||:new.wol_works_order_no
+		  WHERE  doc_id IN (SELECT das_doc_id
+							FROM   doc_assocs
+							WHERE  das_rec_id = TO_CHAR(:new.wol_def_defect_id)
+							AND  das_table_name = 'DEFECTS')
+		  AND  doc_status_code IN (SELECT hsc_status_code
+								   FROM   hig_status_codes
+								   WHERE  hsc_domain_code = 'COMPLAINTS'
+								   AND hsc_allow_feature5 = 'N' -- only update if status not 'WA'
+								   AND hsc_allow_feature6 = 'Y'
+								   AND  sysdate BETWEEN nvl(hsc_start_date, sysdate)
+														  AND nvl(hsc_end_date, sysdate));
+	  END IF;
 
   END IF;
   
