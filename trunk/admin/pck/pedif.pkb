@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.3   Aug 19 2011 10:22:46   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.4   Aug 31 2011 12:04:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Aug 19 2011 10:22:46  $
---       Date fetched Out : $Modtime:   Aug 18 2011 15:34:26  $
---       Version          : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Aug 31 2011 12:04:02  $
+--       Date fetched Out : $Modtime:   Aug 31 2011 12:01:50  $
+--       Version          : $Revision:   3.4  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -587,7 +587,7 @@ FUNCTION processpedif(job_id IN NUMBER)
             ,inv_type_translations t
        WHERE n.ita_inspectable = 'Y'
          AND n.ita_attrib_name = i.ita_attrib_name
-         AND n.ita_inv_type = i.ita_iit_inv_code
+         AND n.ita_inv_type =  t.nit_inv_type
          AND i.ita_iit_inv_code = t.ity_inv_code
          AND t.ity_sys_flag = ita_ity_sys_flag
          AND INSTR(sysflags
