@@ -61,16 +61,20 @@ CREATE OR REPLACE FORCE VIEW imf_mai_defect_repairs
   ,hours_completed_before_due
   ,days_since_inspected
   ,hours_since_inspected
-  ,works_order_number)
+  ,works_order_number
+  ,boq_percent_uplift_code
+  ,boq_percent_uplift_description
+  ,wol_percent_uplift_code
+  ,wol_percent_uplift_description)
 AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.3   Jul 07 2010 01:54:18   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.4   Sep 01 2011 08:48:00   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_defect_repairs.vw  $
-       --       Date into PVCS   : $Date:   Jul 07 2010 01:54:18  $
-       --       Date fetched Out : $Modtime:   Jul 07 2010 01:50:28  $
-       --       Version          : $Revision:   3.3  $
+       --       Date into PVCS   : $Date:   Sep 01 2011 08:48:00  $
+       --       Date fetched Out : $Modtime:   Aug 31 2011 16:03:32  $
+       --       Version          : $Revision:   3.4  $
        -- Foundation view displaying maintenance defect repairs
        -------------------------------------------------------------------------
        def_defect_id                                     defect_id
@@ -197,6 +201,14 @@ SELECT -------------------------------------------------------------------------
                                         FROM hig_status_codes
                                        WHERE hsc_domain_code = 'WORK_ORDER_LINES'
                                          AND hsc_allow_feature5 = 'Y'))  works_order_number
+	  ,rep_boq_perc_item_code                          boq_percent_uplift_code
+	  ,(SELECT sta_item_name 
+	      FROM standard_items 
+		 WHERE sta_item_code = rep_boq_perc_item_code) boq_percent_uplift_description
+	  ,rep_wol_perc_item_code                          wol_percent_uplift_code
+	  ,(SELECT sta_item_name 
+	      FROM standard_items 
+		 WHERE sta_item_code = rep_wol_perc_item_code) wol_percent_uplift_description
   FROM repairs
       ,defects
       ,activities_report
@@ -270,3 +282,7 @@ COMMENT ON COLUMN imf_mai_defect_repairs.hours_completed_before_due     IS 'The 
 COMMENT ON COLUMN imf_mai_defect_repairs.days_since_inspected           IS 'Days since an inspection took place';
 COMMENT ON COLUMN imf_mai_defect_repairs.hours_since_inspected          IS 'Hours since an inspection took place';
 COMMENT ON COLUMN imf_mai_defect_repairs.works_order_number             IS 'The Works Order Number associated with the Repair.';
+COMMENT ON COLUMN imf_mai_defect_repairs.boq_percent_uplift_code        IS 'The BOQ percent uplift Standard Item Code associated with the Repair';
+COMMENT ON COLUMN imf_mai_defect_repairs.boq_percent_uplift_description IS 'The BOQ percent uplift description';
+COMMENT ON COLUMN imf_mai_defect_repairs.wol_percent_uplift_code        IS 'The Work Order Line percent uplift Standard Item Code associated with the Repair';
+COMMENT ON COLUMN imf_mai_defect_repairs.wol_percent_uplift_description IS 'The Work Order Line percent uplift description';
