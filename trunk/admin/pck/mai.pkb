@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.24   Aug 16 2011 14:14:04   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.25   Sep 07 2011 11:28:38   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Aug 16 2011 14:14:04  $
---       Date fetched Out : $Modtime:   Aug 11 2011 16:12:30  $
---       SCCS Version     : $Revision:   2.24  $
+--       Date into SCCS   : $Date:   Sep 07 2011 11:28:38  $
+--       Date fetched Out : $Modtime:   Sep 07 2011 11:26:12  $
+--       SCCS Version     : $Revision:   2.25  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.24  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.25  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -6553,7 +6553,7 @@ BEGIN
                ||'AND def_defect_id = rep_def_defect_id '
                ||'AND rep_date_completed IS NULL '
                ||'AND NVL(rep_superseded_flag,''N'') = ''N'' '
-               ||'AND TRUNC(rep_created_date) <= nm3user.get_effective_date '
+               ||'AND TRUNC(rep_created_date) <= To_Date(Sys_Context(''NM3CORE'',''EFFECTIVE_DATE''),''DD-MON-YYYY'') '
                ||'AND NOT EXISTS(SELECT 1 '
                                 ||'FROM work_order_lines '
                                ||'WHERE wol_def_defect_id = rep_def_defect_id '
