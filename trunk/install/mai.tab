@@ -1,17 +1,6 @@
------------------------------------------------------------------------------
---   PVCS Identifiers :-
+-- Z:\chris_b\Designer\mai.tab
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.28   Mar 23 2011 10:38:56   Chris.Baugh  $
---       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Mar 23 2011 10:38:56  $
---       Date fetched Out : $Modtime:   Mar 23 2011 10:30:34  $
---       PVCS Version     : $Revision:   2.28  $
---
------------------------------------------------------------------------------
--- Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
---
--- Generated for Oracle 10g on Thu Sep 16  09:29:14 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Thu Sep 15  10:59:42 2011 by Server Generator 10.1.2.9.28
  
 
 
@@ -359,6 +348,8 @@ CREATE TABLE CONTRACTS
  ,CON_RETENTION_TO_DATE NUMBER(14,2)
  ,CON_YEAR_END_DATE DATE NOT NULL
  ,CON_RECALC_DUE_DATE VARCHAR2(1)
+ ,CON_ALLOW_PERC_UPLIFT VARCHAR2(1)
+ ,CON_INCLUDE_IN_CIM VARCHAR2(1)
  )
 /
 
@@ -2217,6 +2208,8 @@ CREATE TABLE MAI_INSP_LOAD_ERROR_REP
  ,REP_LOCAL_DATE_DUE DATE
  ,REP_OLD_DUE_DATE DATE
  ,REP_ERROR VARCHAR2(4000)
+ ,REP_BOQ_PERC_ITEM_CODE VARCHAR2(10)
+ ,REP_WOL_PERC_ITEM_CODE VARCHAR2(10)
  )
 /
 
@@ -2579,6 +2572,8 @@ CREATE TABLE REPAIRS
  ,REP_DESCR VARCHAR2(240)
  ,REP_LOCAL_DATE_DUE DATE
  ,REP_OLD_DUE_DATE DATE
+ ,REP_BOQ_PERC_ITEM_CODE VARCHAR2(10)
+ ,REP_WOL_PERC_ITEM_CODE VARCHAR2(10)
  )
 /
 
@@ -2851,6 +2846,8 @@ CREATE TABLE STANDARD_ITEMS
  ,STA_END_DATE DATE
  ,STA_ALLOW_PERCENT VARCHAR2(1)
  ,STA_GANG_WORK_TYPE VARCHAR2(4)
+ ,STA_BOQ_PERC_UPLIFT VARCHAR2(1)
+ ,STA_WOL_PERC_UPLIFT VARCHAR2(1)
  )
 /
 
@@ -4269,6 +4266,8 @@ CREATE TABLE WORK_ORDER_LINES
  ,WOL_REGISTER_FLAG VARCHAR2(1) DEFAULT 'N' NOT NULL
  ,WOL_LOCN_DESCR VARCHAR2(1000)
  ,WOL_TARGET_DATE DATE
+ ,WOL_BOQ_PERC_ITEM_CODE VARCHAR2(10)
+ ,WOL_WOL_PERC_ITEM_CODE VARCHAR2(10)
  )
 /
 
