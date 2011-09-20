@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.19   May 06 2011 11:49:28   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.20   Sep 20 2011 15:50:22   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   May 06 2011 11:49:28  $
---       Date fetched Out : $Modtime:   May 06 2011 11:47:38  $
---       PVCS Version     : $Revision:   2.19  $
+--       Date into PVCS   : $Date:   Sep 20 2011 15:50:22  $
+--       Date fetched Out : $Modtime:   Sep 20 2011 15:48:02  $
+--       PVCS Version     : $Revision:   2.20  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) Exor Corporation Ltd, 2011
@@ -80,7 +80,7 @@ WHENEVER SQLERROR CONTINUE
 --
 ---------------------------------------------------------------------------------------------------
 --                                     ********** CHECKS  ***********
-select 'Installation Date ' || to_char(sysdate, 'DD-MON-YYYY HH24:MM:SS') from dual;
+select 'Installation Date ' || to_char(sysdate, 'DD-MON-YYYY HH24:MI:SS') from dual;
 
 SELECT 'Install Running on ' ||LOWER(USER||'@'||instance_name||'.'||host_name)||' - DB ver : '||version
 FROM v$instance;
@@ -121,11 +121,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.4.0.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.5.0.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.4.0.0'
+                                ,p_VERSION        => '4.5.0.0'
                                 );
 END;
 /
@@ -388,24 +388,44 @@ spool &logfile2
 
 START compile_all.sql
 --
-alter view network_node compile;
---
-alter synonym road_seg_membs_partial compile;
+Declare
+  view_not_exist Exception;
+  Pragma Exception_Init( view_not_exist, -942);
+Begin
+  Execute Immediate 'alter view network_node compile';
+Exception When view_not_exist
+  Then
+    Null;
+End;
+/
+
+Declare
+  view_not_exist Exception;
+  Pragma Exception_Init( view_not_exist, -942);
+Begin
+  Execute Immediate 'alter synonym road_seg_membs_partial compile';
+Exception When view_not_exist
+  Then
+    Null;
+End;
+/
 --
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   CONTEXT   *******************
 --The compile_all will have reset the user context so we must reinitialise it
 --
-SET FEEDBACK OFF
-
+--
+---------------------------------------------------------------------------------------------------
+--                        ****************   INIT CONTEXT *******************
 SET TERM ON
-PROMPT Reinitialising Context...
+prompt Set Context Values...
 SET TERM OFF
-BEGIN
-  nm3context.initialise_context;
-  nm3user.instantiate_user;
-END;
+SET DEFINE ON
+exec nm3security.set_user;
+exec nm3context.initialise_context;
+
+commit;
 /
 --
 ---------------------------------------------------------------------------------------------------
@@ -449,8 +469,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.4.0.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.4.0.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.5.0.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.5.0.0');
 END;
 /
 COMMIT;
