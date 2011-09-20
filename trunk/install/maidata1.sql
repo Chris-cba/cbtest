@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.27   Apr 07 2011 15:37:14   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.28   Sep 20 2011 15:57:08   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 15:37:14  $
---       Date fetched Out : $Modtime:   Apr 07 2011 15:26:02  $
---       Version          : $Revision:   2.27  $
+--       Date into PVCS   : $Date:   Sep 20 2011 15:57:08  $
+--       Date fetched Out : $Modtime:   Sep 20 2011 15:54:10  $
+--       Version          : $Revision:   2.28  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 07-APR-2011 15:25
+--       Generation Date  : 20-SEP-2011 15:54
 --
 --   Product metadata script
 --   As at Release 4.4.0.0
@@ -678,6 +678,40 @@ INSERT INTO NM_ERRORS
        )
 SELECT 
         'MAI'
+       ,933
+       ,null
+       ,'Percent Uplift Standard Item has been assigned to a Work Order Line .'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 933);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
+       ,934
+       ,null
+       ,'Contract does not allow Percent Uplift assignments, or Work Order contains invalid Percent Uplift items .'
+       ,'' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
+                   WHERE NER_APPL = 'MAI'
+                    AND  NER_ID = 934);
+--
+INSERT INTO NM_ERRORS
+       (NER_APPL
+       ,NER_ID
+       ,NER_HER_NO
+       ,NER_DESCR
+       ,NER_CAUSE
+       )
+SELECT 
+        'MAI'
        ,9000
        ,null
        ,'ERROR: error in outputing previous error condition.'
@@ -1054,7 +1088,7 @@ SELECT
         'MAI'
        ,9204
        ,null
-       ,'Error : Chainage on P record exceeds required chainage for section. : Correct the section chainage.'
+       ,'Error : Invalid inspection initiation time. : Correct the Inspection time in the G record.'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
@@ -1989,7 +2023,7 @@ SELECT
         'MAI'
        ,9402
        ,null
-       ,'Error : Incorrect start chainage value ( chainage is null ) : Correct the start chainage value.'
+       ,'Error : Chainage on P record exceeds required chainage for section. : Correct the section chainage.'
        ,'' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM NM_ERRORS
                    WHERE NER_APPL = 'MAI'
