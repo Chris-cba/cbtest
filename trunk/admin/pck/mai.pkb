@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.25   Sep 07 2011 11:28:38   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.26   Sep 22 2011 11:27:10   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 07 2011 11:28:38  $
---       Date fetched Out : $Modtime:   Sep 07 2011 11:26:12  $
---       SCCS Version     : $Revision:   2.25  $
+--       Date into SCCS   : $Date:   Sep 22 2011 11:27:10  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 11:21:22  $
+--       SCCS Version     : $Revision:   2.26  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.25  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.26  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -5368,9 +5368,17 @@ FUNCTION copy_works_order(pi_wor_works_order_no  IN work_orders.wor_works_order_
      AND wol_flag != 'D' -- exclude any defect lines
        ;
   --
+  CURSOR c_user
+      IS
+  SELECT hus_user_id
+    FROM hig_users
+   WHERE hus_username = user
+       ;
+  --
   l_wor_rec      work_orders%ROWTYPE;
   l_error        NUMBER;
   lv_new_wol_id  work_order_lines.wol_id%TYPE;
+  lv_user_id     hig_users.hus_user_id%TYPE;
   l_retval       work_orders.wor_works_order_no%TYPE;
   --
   PROCEDURE update_wor_totals(pi_wo_no  IN work_orders.wor_works_order_no%TYPE
@@ -5483,6 +5491,10 @@ BEGIN
   l_wor_rec.wor_late_cost_certified_by := null;
   l_wor_rec.wor_late_cost_certified_date := null;
   --
+  OPEN c_user;
+  FETCH c_user into lv_user_id;
+  CLOSE c_user;
+  -- 
   l_error := create_wo_header(p_wor_works_order_no             => l_wor_rec.wor_works_order_no
                              ,p_wor_sys_flag                   => l_wor_rec.wor_sys_flag
                              ,p_wor_rse_he_id_group            => l_wor_rec.wor_rse_he_id_group
@@ -5517,7 +5529,7 @@ BEGIN
                              ,p_wor_la_expend_code             => l_wor_rec.wor_la_expend_code
                              ,p_wor_mod_by_id                  => l_wor_rec.wor_mod_by_id
                              ,p_wor_oun_org_id                 => l_wor_rec.wor_oun_org_id
-                             ,p_wor_peo_person_id              => l_wor_rec.wor_peo_person_id
+                             ,p_wor_peo_person_id              => lv_user_id     
                              ,p_wor_price_type                 => l_wor_rec.wor_price_type
                              ,p_wor_remarks                    => l_wor_rec.wor_remarks
                              ,p_wor_road_type                  => l_wor_rec.wor_road_type
