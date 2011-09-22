@@ -5,11 +5,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/mai_policy.sql-arc   3.0   Jul 17 2009 16:24:02   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/mai_policy.sql-arc   3.1   Sep 22 2011 12:32:42   Rob.Coupe  $
 --       Module Name      : $Workfile:   mai_policy.sql  $
---       Date into PVCS   : $Date:   Jul 17 2009 16:24:02  $
---       Date fetched Out : $Modtime:   Jul 17 2009 10:36:42  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 22 2011 12:32:42  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 12:30:58  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --   Create MAI security policies
 --
@@ -25,7 +25,7 @@ DECLARE
   l_tab_enable          nm3type.tab_boolean;
   l_tab_static_policy   nm3type.tab_boolean;
   --
-  c_application_owner   CONSTANT VARCHAR2(30) := nm3context.get_context(pi_attribute=>'APPLICATION_OWNER');
+  c_application_owner   CONSTANT VARCHAR2(30) := Sys_Context('NM3CORE', 'APPLICATION_OWNER' ); 
   --
   l_no_fine_grained_security EXCEPTION;
   PRAGMA EXCEPTION_INIT (l_no_fine_grained_security,-439);
