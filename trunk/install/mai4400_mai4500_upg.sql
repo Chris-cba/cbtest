@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4400_mai4500_upg.sql-arc   3.0   Sep 20 2011 15:43:32   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4400_mai4500_upg.sql-arc   3.1   Sep 22 2011 10:31:44   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4400_mai4500_upg.sql  $
---       Date into PVCS   : $Date:   Sep 20 2011 15:43:32  $
---       Date fetched Out : $Modtime:   Sep 20 2011 15:40:02  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 22 2011 10:31:44  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 10:29:30  $
+--       Version          : $Revision:   3.1  $
 --
 --   Product upgrade script
 --
@@ -179,45 +179,7 @@ start '&run_file'
 spool &logfile2
 SET TERM ON
 start compile_all.sql
---	   
-Declare
-  view_not_exist Exception;
-  Pragma Exception_Init( view_not_exist, -942);
-Begin
-  Execute Immediate 'alter view network_node compile';
-Exception When view_not_exist
-  Then
-    Null;
-End;
-/
-
-Declare
-  view_not_exist Exception;
-  Pragma Exception_Init( view_not_exist, -942);
-Begin
-  Execute Immediate 'alter synonym road_seg_membs_partial compile';
-Exception When view_not_exist
-  Then
-    Null;
-End;
-/
 --
----------------------------------------------------------------------------------------------------
---                        ****************   CONTEXT   *******************
---The compile_all will have reset the user context so we must reinitialise it
---
---
----------------------------------------------------------------------------------------------------
---                        ****************   INIT CONTEXT *******************
-SET TERM ON
-prompt Set Context Values...
-SET TERM OFF
-SET DEFINE ON
-exec nm3security.set_user;
-exec nm3context.initialise_context;
-
-commit;
-/
 ---------------------------------------------------------------------------------------------------
 --                        ****************   POLICIES  ********************
 SET TERM ON
