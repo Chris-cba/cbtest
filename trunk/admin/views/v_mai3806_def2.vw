@@ -28,18 +28,20 @@ CREATE OR REPLACE FORCE VIEW v_mai3806_def2
 , rep_atv_acty_area_code
 , rep_completed_hrs
 , rep_completed_mins
-, rep_rse_he_id)
+, rep_rse_he_id
+, rep_boq_perc_item_code
+, rep_wol_perc_item_code)
 AS
 SELECT  /*+ FIRST_ROWS_N */
 --
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.2   Aug 16 2011 14:19:02   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def2.vw-arc   3.3   Sep 22 2011 12:12:58   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_mai3806_def2.vw  $
---       Date into PVCS   : $Date:   Aug 16 2011 14:19:02  $
---       Date fetched Out : $Modtime:   Aug 04 2011 16:00:20  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Sep 22 2011 12:12:58  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 12:14:46  $
+--       Version          : $Revision:   3.3  $
 -------------------------------------------------------------------------
 --
        wol.wol_works_order_no
