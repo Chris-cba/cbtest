@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.20   Sep 20 2011 15:50:22   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_install.sql-arc   2.21   Sep 22 2011 10:33:48   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Sep 20 2011 15:50:22  $
---       Date fetched Out : $Modtime:   Sep 20 2011 15:48:02  $
---       PVCS Version     : $Revision:   2.20  $
+--       Date into PVCS   : $Date:   Sep 22 2011 10:33:48  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 10:31:44  $
+--       PVCS Version     : $Revision:   2.21  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) Exor Corporation Ltd, 2011
@@ -387,46 +387,6 @@ START '&run_file'
 spool &logfile2
 
 START compile_all.sql
---
-Declare
-  view_not_exist Exception;
-  Pragma Exception_Init( view_not_exist, -942);
-Begin
-  Execute Immediate 'alter view network_node compile';
-Exception When view_not_exist
-  Then
-    Null;
-End;
-/
-
-Declare
-  view_not_exist Exception;
-  Pragma Exception_Init( view_not_exist, -942);
-Begin
-  Execute Immediate 'alter synonym road_seg_membs_partial compile';
-Exception When view_not_exist
-  Then
-    Null;
-End;
-/
---
---
----------------------------------------------------------------------------------------------------
---                        ****************   CONTEXT   *******************
---The compile_all will have reset the user context so we must reinitialise it
---
---
----------------------------------------------------------------------------------------------------
---                        ****************   INIT CONTEXT *******************
-SET TERM ON
-prompt Set Context Values...
-SET TERM OFF
-SET DEFINE ON
-exec nm3security.set_user;
-exec nm3context.initialise_context;
-
-commit;
-/
 --
 ---------------------------------------------------------------------------------------------------
 --                        ****************   SYNONYMS   *******************
