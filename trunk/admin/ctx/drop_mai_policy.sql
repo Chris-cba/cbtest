@@ -5,11 +5,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_mai_policy.sql-arc   3.0   Jul 17 2009 16:24:02   mhuitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_mai_policy.sql-arc   3.1   Sep 22 2011 12:34:58   Rob.Coupe  $
 --       Module Name      : $Workfile:   drop_mai_policy.sql  $
---       Date into PVCS   : $Date:   Jul 17 2009 16:24:02  $
---       Date fetched Out : $Modtime:   Jul 17 2009 10:37:06  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Sep 22 2011 12:34:58  $
+--       Date fetched Out : $Modtime:   Sep 22 2011 12:34:08  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --   Drop MAI security policies
 --
@@ -29,7 +29,7 @@ DECLARE
                        ,'BOQ_ITEMS'
                        ,'CONTRACT_ITEMS');
   --
-  c_application_owner CONSTANT VARCHAR2(30) := nm3context.get_context(pi_attribute=>'APPLICATION_OWNER');
+  c_application_owner CONSTANT VARCHAR2(30) := Sys_Context('NM3CORE', 'APPLICATION_OWNER');
   --
 BEGIN
   --
