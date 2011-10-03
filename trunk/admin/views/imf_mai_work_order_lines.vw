@@ -51,17 +51,19 @@ CREATE OR REPLACE FORCE VIEW imf_mai_work_order_lines
   ,budget_id
   ,boq_percent_uplift_code
   ,boq_percent_uplift_description
+  ,boq_percent_uplift_rate
   ,wol_percent_uplift_code
-  ,wol_percent_uplift_description)
+  ,wol_percent_uplift_description
+  ,wol_percent_uplift_rate)
 AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.10   Sep 01 2011 08:46:14   Chris.Baugh  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.11   Oct 03 2011 10:54:06   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-       --       Date into PVCS   : $Date:   Sep 01 2011 08:46:14  $
-       --       Date fetched Out : $Modtime:   Aug 31 2011 16:23:28  $
-       --       Version          : $Revision:   3.10  $
+       --       Date into PVCS   : $Date:   Oct 03 2011 10:54:06  $
+       --       Date fetched Out : $Modtime:   Oct 03 2011 10:44:32  $
+       --       Version          : $Revision:   3.11  $
        -- Foundation view displaying maintenance manager work order lines
        -------------------------------------------------------------------------
        -- SM 03042009
@@ -183,10 +185,16 @@ SELECT -------------------------------------------------------------------------
 	  ,(SELECT sta_item_name 
 	      FROM standard_items 
 		 WHERE sta_item_code = wol_boq_perc_item_code) boq_percent_uplift_description
+	  ,(SELECT sta_rate 
+	      FROM standard_items 
+		 WHERE sta_item_code = wol_boq_perc_item_code) boq_percent_uplift_rate
 	  ,wol_wol_perc_item_code                          wol_percent_uplift_code
 	  ,(SELECT sta_item_name 
 	      FROM standard_items 
 		 WHERE sta_item_code = wol_wol_perc_item_code) wol_percent_uplift_description
+	  ,(SELECT sta_rate 
+	      FROM standard_items 
+		 WHERE sta_item_code = wol_wol_perc_item_code) wol_percent_uplift_rate
   FROM defects def 
       ,work_order_lines wol
  WHERE wol.wol_def_defect_id = def.def_defect_id(+);
@@ -245,5 +253,7 @@ COMMENT ON COLUMN imf_mai_work_order_lines.invoice_status_description     IS 'Th
 COMMENT ON COLUMN imf_mai_work_order_lines.budget_id                      IS 'The internal id of the Budget that the Works Order Line is associated with.';
 COMMENT ON COLUMN imf_mai_work_order_lines.boq_percent_uplift_code        IS 'The BOQ percent uplift Standard Item Code associated with the Work Order Line';
 COMMENT ON COLUMN imf_mai_work_order_lines.boq_percent_uplift_description IS 'The BOQ percent uplift description';
+COMMENT ON COLUMN imf_mai_work_order_lines.boq_percent_uplift_rate        IS 'The BOQ percent uplift rate';
 COMMENT ON COLUMN imf_mai_work_order_lines.wol_percent_uplift_code        IS 'The Work Order Line percent uplift Standard Item Code associated with the Work Order Line';
 COMMENT ON COLUMN imf_mai_work_order_lines.wol_percent_uplift_description IS 'The Work Order Line percent uplift description';
+COMMENT ON COLUMN imf_mai_work_order_lines.wol_percent_uplift_rate        IS 'The Work Order Line percent uplift rate';
