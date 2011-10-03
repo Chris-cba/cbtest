@@ -7,6 +7,7 @@ CREATE OR REPLACE FORCE VIEW imf_mai_bill_of_quantities
   ,standard_item_name
   ,standard_item_sub_section_id
   ,standard_item_sub_section_name
+  ,standard_item_allow_percent
   ,repair_category
   ,repair_category_description
   ,date_created
@@ -23,11 +24,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.7   Jun 28 2010 13:33:18   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.8   Oct 03 2011 10:55:12   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
-       --       Date into PVCS   : $Date:   Jun 28 2010 13:33:18  $
-       --       Date fetched Out : $Modtime:   Jun 28 2010 10:50:28  $
-       --       Version          : $Revision:   3.7  $
+       --       Date into PVCS   : $Date:   Oct 03 2011 10:55:12  $
+       --       Date fetched Out : $Modtime:   Oct 03 2011 10:51:50  $
+       --       Version          : $Revision:   3.8  $
        -- Foundation view displaying bill of quantities for a defect
        -------------------------------------------------------------------------
        -- SM 03042009
@@ -44,6 +45,7 @@ SELECT -------------------------------------------------------------------------
       ,( SELECT siss.siss_name 
            FROM standard_item_sub_sections siss 
           WHERE siss.siss_id = si.sta_siss_id)                                    standard_item_sub_section_name
+	  ,NVL(sta_allow_percent, 'N')												  standard_item_allow_percent
       ,bi.boq_rep_action_cat                                                      repair_category
       ,( SELECT hco.hco_meaning
            FROM hig_codes hco
@@ -77,6 +79,7 @@ COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_CODE IS 'The Standard
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_NAME IS 'The Standard Item Name associated with the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_ID IS 'The Standard Item Sub Section Id associated with the Bill Of Quantities Item';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_SUB_SECTION_NAME IS 'The Standard Item Sub Section Name associated with the Bill Of Quantities Item';
+COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.STANDARD_ITEM_ALLOW_PERCENT IS 'The Standard Item associated with the Bill Of Quantities Item will allow assignment of percentage items';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY IS 'The Action Category of the Repair that the Bill Of Quantities Item is associated with';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.REPAIR_CATEGORY_DESCRIPTION IS 'The Description of the Action Category of the Repair that the Bill Of Quantities Item is associated with';
 COMMENT ON COLUMN IMF_MAI_BILL_OF_QUANTITIES.DATE_CREATED IS 'The date the Bill Of Quantities Item was created';
