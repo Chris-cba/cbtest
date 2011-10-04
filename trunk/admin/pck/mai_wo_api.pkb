@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.27   Aug 16 2011 14:14:54   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.28   Oct 04 2011 12:11:48   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Aug 16 2011 14:14:54  $
---       Date fetched Out : $Modtime:   Aug 15 2011 12:03:54  $
---       PVCS Version     : $Revision:   3.27  $
+--       Date into PVCS   : $Date:   Oct 04 2011 12:11:48  $
+--       Date fetched Out : $Modtime:   Oct 04 2011 12:10:52  $
+--       PVCS Version     : $Revision:   3.28  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.27  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.28  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -6889,7 +6889,6 @@ END get_wol_target_date;
 --                               ,po_work_order_no OUT work_orders.wor_works_order_no%TYPE)
 --  IS
 --  --
---  lv_user_id           hig_users.hus_user_id%TYPE := nm3user.get_user_id;
 --  lv_wo_descr          work_orders.wor_descr%TYPE;
 --  lv_scheme_type       work_orders.wor_scheme_type%TYPE := 'LR';
 --  lv_con_id            contracts.con_id%TYPE;
@@ -7174,7 +7173,7 @@ BEGIN
   ||Initial Query Based On The Admin Unit Of The Road Group
   ||Associsted With The Works Order (As In MAI3800).
   */
-  lv_retval := ' WHERE hus_user_id != nm3user.get_user_id'
+  lv_retval := ' WHERE hus_user_id != To_Number(Sys_Context(''NM3CORE'',''USER_ID''))'
     ||CHR(10)||'   AND hus_user_id IN(SELECT mus_user_id'
     ||CHR(10)||'                        FROM mai_users'
     ||CHR(10)||'                       WHERE mus_wor_aur_allowed = ''Y'')'
