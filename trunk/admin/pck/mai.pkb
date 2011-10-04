@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.26   Sep 22 2011 11:27:10   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.27   Oct 04 2011 12:05:06   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 22 2011 11:27:10  $
---       Date fetched Out : $Modtime:   Sep 22 2011 11:21:22  $
---       SCCS Version     : $Revision:   2.26  $
+--       Date into SCCS   : $Date:   Oct 04 2011 12:05:06  $
+--       Date fetched Out : $Modtime:   Oct 04 2011 12:04:12  $
+--       SCCS Version     : $Revision:   2.27  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.26  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.27  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4158,7 +4158,7 @@ END get_gis_sys_flag;
                       '               , HIG_USERS h  '||nl||
                       '               , hig_admin_groups a  '||nl||
                       '               , road_sections rse1  '||nl||
-                      '           WHERE h.hus_username = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,''USER_ID''))  '||nl||
+                      '           WHERE h.hus_username = Sys_Context(''NM3_SECURITY_CTX'', ''USERNAME'')  '||nl||
                       '             AND a.hag_parent_admin_unit = h.hus_admin_unit '||nl||
                       '             AND a.hag_child_admin_unit = o.hau_admin_unit  '||nl||
                       '             AND a.hag_direct_link = '||Nm3flx.string('N')||'  '||nl||
@@ -6626,7 +6626,7 @@ BEGIN
       lv_query := lv_query||'AND def_iit_item_id IN(SELECT pbi_item_id '
                                                    ||'FROM pbi_results_inv '
                                                   ||'WHERE pbi_qry_id = '||pi_qry_id||' '
-                                                    ||'AND pbi_user_name = nm3user.get_username(nm3context.get_context(nm3context.get_namespace,''USER_ID''))) '
+                                                    ||'AND pbi_user_name = Sys_Context(''NM3_SECURITY_CTX'', ''USERNAME'')) '
       ;
   END IF;
   /*
