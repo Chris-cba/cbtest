@@ -4,11 +4,11 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.8   May 27 2011 09:45:42   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkb-arc   2.9   Oct 06 2011 14:38:02   Steve.Cooper  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkb  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:42  $
---       Date fetched Out : $Modtime:   May 25 2011 14:12:34  $
---       SCCS Version     : $Revision:   2.8  $
+--       Date into SCCS   : $Date:   Oct 06 2011 14:38:02  $
+--       Date fetched Out : $Modtime:   Oct 06 2011 14:36:56  $
+--       SCCS Version     : $Revision:   2.9  $
 --       Based on SCCS Version     : 1.8
 --
 --   Author : A. Edwards
@@ -17,7 +17,7 @@ IS
 --   Copyright (c) exor corporation ltd, 2006
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.8  $';
+  g_body_sccsid      CONSTANT VARCHAR2 (2000) := '$Revision:   2.9  $';
   g_package_name     CONSTANT VARCHAR2 (30)   := 'MAI_SDO_UTIL';
   nl                 CONSTANT VARCHAR2 (5)    := chr(10);
   --
@@ -657,8 +657,10 @@ BEGIN
                                       ||l_rec_nth.nth_feature_pk_column||' ) ';
     --
     BEGIN
-      EXECUTE IMMEDIATE l_mai_sdo_view_sql;
-      nm3ddl.create_views_for_object(l_rec_nth_v.nth_feature_table); 
+      EXECUTE IMMEDIATE l_mai_sdo_view_sql; 
+      Nm3ddl.Create_Synonym_For_Object  (
+                                        p_Object_Name => l_Rec_Nth_v.Nth_Feature_Table
+                                        );
     EXCEPTION
       WHEN OTHERS
        THEN RAISE;
@@ -1108,7 +1110,9 @@ PROCEDURE make_base_wol_sdo_layer(pi_theme_name  IN  nm_themes_all.nth_theme_nam
         --
         EXECUTE IMMEDIATE 'ALTER TABLE '||g_wol_feature_tab||' ADD(CONSTRAINT '||g_wol_feature_tab||'_PK PRIMARY KEY('||g_wol_sdo_pk||'))';
         --
-        nm3ddl.create_views_for_object(g_wol_feature_tab);
+        Nm3ddl.Create_Synonym_For_Object  (
+                                          p_Object_Name => g_wol_feature_tab
+                                          );
         --
     END IF;
   END create_wol_sdo_table;
@@ -1310,7 +1314,10 @@ BEGIN
   --
   BEGIN
     EXECUTE IMMEDIATE l_mai_sdo_view_sql;
-    nm3ddl.create_views_for_object(l_rec_nth_v.nth_feature_table);
+    Nm3ddl.Create_Synonym_For_Object  (
+                                      p_Object_Name => l_Rec_Nth_V.Nth_Feature_Table
+                                      );
+    
   EXCEPTION
     WHEN OTHERS
      THEN
@@ -1439,7 +1446,9 @@ BEGIN
   --
   EXECUTE IMMEDIATE lv_str;
   --                     
-  nm3ddl.create_views_for_object(g_view_name);  
+  Nm3ddl.Create_Synonym_For_Object  (
+                                    p_Object_Name => g_view_name
+                                    );  
   --
 END make_defect_secure_view;
 --
@@ -1494,7 +1503,10 @@ BEGIN
               ||nl||'   AND rep.rep_def_defect_id  = def.def_defect_id(+)'
                   ;
   --
-  nm3ddl.create_views_for_object(g_wol_view_name);
+  Nm3ddl.Create_Synonym_For_Object  (
+                                    p_Object_Name => g_wol_view_name
+                                    );  
+  
   --
 END make_wol_secure_view;
 --
