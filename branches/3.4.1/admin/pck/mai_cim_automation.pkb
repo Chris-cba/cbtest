@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.4.1.0   Dec 14 2010 10:29:52   Linesh.Sorathia  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.4.1.1   Oct 12 2011 15:22:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Dec 14 2010 10:29:52  $
---       Date fetched Out : $Modtime:   Dec 14 2010 10:05:44  $
---       Version          : $Revision:   3.4.1.0  $
+--       Date into PVCS   : $Date:   Oct 12 2011 15:22:02  $
+--       Date fetched Out : $Modtime:   Oct 12 2011 15:10:20  $
+--       Version          : $Revision:   3.4.1.1  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.4.1.0  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.4.1.1  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -97,6 +97,7 @@ IS
    --
       l_ih_id     interface_headers.ih_id%TYPE;
       l_error     Varchar2(32767);
+	  l_continue  boolean := TRUE;
       l_er_error  interface_erroneous_records.ier_error%TYPE;
    --
    BEGIN
@@ -156,15 +157,29 @@ IS
       hig_process_api.log_it(pi_process_id   => l_process_id
                             ,pi_message      => l_msg
                             ,pi_summary_flag => 'Y' );
-      nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
-      IF l_error IS NOT NULL
-      THEN
-          l_failed    := 'Y' ;
-          hig_process_api.log_it(pi_process_id   => l_process_id
-                                ,pi_message      => 'Following error occurred while archiving the WC file '||pi_file_name||' '||l_error
-                                ,pi_message_type => 'E'
-                                ,pi_summary_flag => 'Y' );                                     
-      ELSE
+      -- clb 12102011 Task 0111508 nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+	  BEGIN
+		  nm3file.copy_file( pi_source_dir => 'CIM_DIR' 
+						   , pi_source_file => pi_file_name 
+						   , pi_destination_dir => 'CIM_ARC' 
+						   , pi_destination_file => pi_file_name 
+						   , pi_overwrite => TRUE 
+						   , pi_leave_original => TRUE );
+
+	      nm3file.delete_file (nm3file.get_path('CIM_DIR'),pi_file_name); 
+
+	  EXCEPTION
+		  WHEN OTHERS THEN
+			  l_continue  := FALSE ;	  
+			  l_failed    := 'Y' ;
+			  hig_process_api.log_it(pi_process_id   => l_process_id
+									,pi_message      => 'Following error occurred while archiving the WC file '||pi_file_name||' '||sqlerrm
+									,pi_message_type => 'E'
+									,pi_summary_flag => 'Y' );  
+      END;
+	  
+      IF l_continue
+	  THEN
           hig_process_api.log_it(pi_process_id => l_process_id
                                 ,pi_message    => 'WC file '||pi_file_name||' archived on the Database server');
       END IF ;
@@ -187,6 +202,7 @@ IS
       lv_wol_act             work_order_lines.wol_act_cost%TYPE;
       lv_icwol_claim_value   interface_claims_wor_all.icwor_works_order_no%TYPE;
       l_error                Varchar2(32767);
+	  l_continue             boolean := TRUE;
       l_fd_file              Varchar2(200) ;   
    --
    BEGIN
@@ -248,15 +264,28 @@ IS
       hig_process_api.log_it(pi_process_id   => l_process_id
                             ,pi_message      => l_msg
                             ,pi_summary_flag => 'Y' ); 
-      nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
-      IF l_error IS NOT NULL
-      THEN
-          l_failed    := 'Y' ;
-          hig_process_api.log_it(pi_process_id   => l_process_id
-                                ,pi_message      => 'Following error occurred while archiving the WI file '||pi_file_name||' '||l_error
-                                ,pi_message_type => 'E'
-                                ,pi_summary_flag => 'Y' );                                     
-      ELSE
+      -- clb 12102011 Task 0111508 nm3file.move_file(pi_file_name,'CIM_DIR',pi_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+	  BEGIN
+		  nm3file.copy_file( pi_source_dir => 'CIM_DIR' 
+						   , pi_source_file => pi_file_name 
+						   , pi_destination_dir => 'CIM_ARC' 
+						   , pi_destination_file => pi_file_name 
+						   , pi_overwrite => TRUE 
+						   , pi_leave_original => TRUE );
+
+	      nm3file.delete_file (nm3file.get_path('CIM_DIR'),pi_file_name); 
+	  EXCEPTION
+		  WHEN OTHERS THEN
+			  l_continue  := FALSE ;	  
+			  l_failed    := 'Y' ;
+			  hig_process_api.log_it(pi_process_id   => l_process_id
+									,pi_message      => 'Following error occurred while archiving the WI file '||pi_file_name||' '||sqlerrm
+									,pi_message_type => 'E'
+									,pi_summary_flag => 'Y' );                                     
+      END;
+	  
+	  IF l_continue
+	  THEN
           hig_process_api.log_it(pi_process_id => l_process_id
                                 ,pi_message    => 'WI file '||pi_file_name||' archived on the Database server');
       END IF ;
@@ -371,20 +400,34 @@ BEGIN
                                 THEN
                                     BEGIN
                                        --                                       
-                                       nm3file.move_file(l_file_name,'CIM_DIR',l_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
-                                       IF l_error IS NOT NULL
-                                       THEN
-                                            l_failed    := 'Y' ;
-                                            hig_process_api.log_it(pi_process_id   => l_process_id
-                                                                  ,pi_message      => 'Following error occurred while archiving the WO file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||l_error
-                                                                  ,pi_message_type => 'E'
-                                                                  ,pi_summary_flag => 'Y' );                                     
-                                       ELSE
+                                       -- clb 12102011 Task 0111508 nm3file.move_file(l_file_name,'CIM_DIR',l_file_name,'CIM_ARC',null,TRUE,l_err_no,l_error);
+									   BEGIN
+										  nm3file.copy_file( pi_source_dir => 'CIM_DIR' 
+														   , pi_source_file => l_file_name 
+														   , pi_destination_dir => 'CIM_ARC' 
+														   , pi_destination_file => l_file_name 
+														   , pi_overwrite => TRUE 
+														   , pi_leave_original => TRUE );
+
+	                                      nm3file.delete_file (nm3file.get_path('CIM_DIR'),l_file_name); 
+										EXCEPTION
+										  WHEN OTHERS THEN
+											  l_continue  := FALSE ;	  
+											  l_failed    := 'Y' ;
+											  hig_process_api.log_it(pi_process_id   => l_process_id
+												  				    ,pi_message      => 'Following error occurred while archiving the WO file '||
+																	                     l_file_name||' for Contractor '||oun.oun_contractor_id||' '||sqlerrm
+																    ,pi_message_type => 'E'
+																    ,pi_summary_flag => 'Y' );                                     
+										END;
+										
+										IF l_continue
+										THEN
                                            hig_process_api.log_it(pi_process_id => l_process_id
                                                                  ,pi_message    => 'Work Order Extract file '||l_file_name||' archived');
-                                       END IF ;
-                                       nm3ftp.logout(l_conn);
-                                       --
+                                        END IF ;
+                                        nm3ftp.logout(l_conn);
+                                        --
                                      EXCEPTION
                                         WHEN OTHERS THEN
                                             l_failed := 'Y' ;
