@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.28   Oct 04 2011 12:11:48   Steve.Cooper  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.29   Nov 01 2011 16:06:32   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Oct 04 2011 12:11:48  $
---       Date fetched Out : $Modtime:   Oct 04 2011 12:10:52  $
---       PVCS Version     : $Revision:   3.28  $
+--       Date into PVCS   : $Date:   Nov 01 2011 16:06:32  $
+--       Date fetched Out : $Modtime:   Nov 01 2011 16:06:54  $
+--       PVCS Version     : $Revision:   3.29  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.28  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.29  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2920,7 +2920,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
 		   contracts 
 	 WHERE cni_sta_item_code = sta_item_code
 	   AND cni_con_id = con_id
-	   AND con_code = lr_wo.wor_con_id
+	   AND con_id = lr_wo.wor_con_id
 	   AND sta_boq_perc_uplift = 'Y'
 	   AND con_allow_perc_uplift = 'Y'
 	   AND TO_DATE(TO_CHAR(lr_wo.wor_date_raised)) BETWEEN NVL(sta_start_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised))) 
@@ -2935,7 +2935,7 @@ PROCEDURE instruct_work_order(pi_user_id         IN hig_users.hus_user_id%TYPE
 		   contracts 
 	 WHERE cni_sta_item_code = sta_item_code
 	   AND cni_con_id = con_id
-	   AND con_code = lr_wo.wor_con_id
+	   AND con_id = lr_wo.wor_con_id
 	   AND sta_wol_perc_uplift = 'Y'
 	   AND con_allow_perc_uplift = 'Y'
 	   AND TO_DATE(TO_CHAR(lr_wo.wor_date_raised)) BETWEEN NVL(sta_start_date,TO_DATE(TO_CHAR(lr_wo.wor_date_raised))) 
