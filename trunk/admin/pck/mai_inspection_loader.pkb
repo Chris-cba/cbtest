@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.18   Aug 16 2011 14:15:34   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.19   Nov 07 2011 16:29:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Aug 16 2011 14:15:34  $
---       Date fetched Out : $Modtime:   Aug 08 2011 13:48:50  $
---       PVCS Version     : $Revision:   3.18  $
+--       Date into PVCS   : $Date:   Nov 07 2011 16:29:20  $
+--       Date fetched Out : $Modtime:   Nov 07 2011 16:28:38  $
+--       PVCS Version     : $Revision:   3.19  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.18  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -1964,7 +1964,7 @@ nm_debug.debug('File inspdate = '||lv_token);
     lv_priority         defects.def_priority%TYPE;
     lv_dflt_treat_code  repairs.rep_tre_treat_code%TYPE;
     lv_file_date        VARCHAR2(10);
-    lv_uplift_pos       PLS_INTEGER := 4;
+    lv_uplift_pos       PLS_INTEGER;
     --
     j                   PLS_INTEGER;
     --
@@ -2111,6 +2111,7 @@ nm_debug.debug('File inspdate = '||lv_token);
           */
           IF lv_rec_type IN ('L', 'M', 'N')
            THEN
+              lv_uplift_pos := 4;
               IF lv_rec_type != 'N'
                THEN
                   lv_uplift_pos := lv_uplift_pos + 1;
