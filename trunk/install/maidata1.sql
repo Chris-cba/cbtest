@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.28   Sep 20 2011 15:57:08   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.29   Nov 09 2011 15:40:58   Mike.Alexander  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Sep 20 2011 15:57:08  $
---       Date fetched Out : $Modtime:   Sep 20 2011 15:54:10  $
---       Version          : $Revision:   2.28  $
+--       Date into PVCS   : $Date:   Nov 09 2011 15:40:58  $
+--       Date fetched Out : $Modtime:   Nov 09 2011 15:34:04  $
+--       Version          : $Revision:   2.29  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 20-SEP-2011 15:54
+--       Generation Date  : 09-NOV-2011 15:34
 --
 --   Product metadata script
 --   As at Release 4.4.0.0
@@ -15313,6 +15313,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'UPDWOTGT'
+       ,'MAI'
+       ,'Allow update to WO Target Date'
+       ,'If set to Y, the WO Target Date will allow manual update '
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'UPDWOTGT');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'USECYCGRPD'
        ,'MAI'
        ,'Use Groups For Dot Cyclic'
@@ -16600,6 +16622,16 @@ SELECT
        ,'N' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'UPDCOSTCTR');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'UPDWOTGT'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'UPDWOTGT');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
