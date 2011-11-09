@@ -8,11 +8,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4400_mai4500_metadata_upg.sql-arc   3.0   Sep 20 2011 15:43:34   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4400_mai4500_metadata_upg.sql-arc   3.1   Nov 09 2011 15:41:00   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai4400_mai4500_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Sep 20 2011 15:43:34  $
---       Date fetched Out : $Modtime:   Sep 20 2011 15:24:08  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Nov 09 2011 15:41:00  $
+--       Date fetched Out : $Modtime:   Nov 09 2011 15:31:56  $
+--       Version          : $Revision:   3.1  $
 --
 ------------------------------------------------------------------
 --	Copyright (c) exor corporation ltd, 2011
@@ -123,6 +123,58 @@ UPDATE nm_errors
 SET ner_descr = 'Error : Invalid inspection initiation time. : Correct the Inspection time in the G record.'
 WHERE ner_appl = 'MAI'
 AND ner_id = 9204
+/
+------------------------------------------------------------------
+
+
+------------------------------------------------------------------
+SET TERM ON
+PROMPT New Product Option UPDWOTGT
+SET TERM OFF
+
+------------------------------------------------------------------
+-- ASSOCIATED DEVELOPMENT TASK
+-- 111604
+-- 
+-- TASK DETAILS
+-- No details supplied
+-- 
+-- 
+-- DEVELOPMENT COMMENTS (CHRIS BAUGH)
+-- Product option to allow for manual update of WO target date
+-- 
+------------------------------------------------------------------
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'UPDWOTGT'
+      ,'MAI'
+      ,'Allow update to WO Target Date'      
+      ,'If set to Y, the WO Target Date will allow manual update '
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'UPDWOTGT');
+
+insert into hig_option_values
+      (hov_id
+      ,hov_value)
+select 'UPDWOTGT'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_values
+                    where hov_id = 'UPDWOTGT')
 /
 ------------------------------------------------------------------
 
