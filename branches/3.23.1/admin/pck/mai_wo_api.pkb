@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.1   Jun 21 2011 16:08:22   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.2   Nov 30 2011 16:14:38   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 21 2011 16:08:22  $
---       Date fetched Out : $Modtime:   Jun 21 2011 16:06:28  $
---       PVCS Version     : $Revision:   3.23.1.1  $
+--       Date into PVCS   : $Date:   Nov 30 2011 16:14:38  $
+--       Date fetched Out : $Modtime:   Nov 30 2011 15:32:42  $
+--       PVCS Version     : $Revision:   3.23.1.2  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.1  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.2  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -2239,7 +2239,8 @@ nm_debug.debug('generate WOLs');
         || Check WOL rep_due_date
         */
         if NVL(lt_selected_repairs(i).rep_date_due, TO_DATE('01011900', 'DDMMYYYY')) >
-           NVL(lv_est_complete, TO_DATE('01011900', 'DDMMYYYY'))
+           NVL(lv_est_complete, TO_DATE('01011900', 'DDMMYYYY')) AND
+		   NVL(hig.get_user_or_sys_opt('UPDWOTGT'),'N') != 'Y'
            then
               lv_est_complete := lt_selected_repairs(i).rep_date_due;
         end if;
