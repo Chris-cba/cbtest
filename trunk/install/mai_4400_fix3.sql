@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix3.sql-arc   3.0   Dec 09 2011 10:44:50   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix3.sql-arc   3.1   Dec 15 2011 11:19:42   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4400_fix3.sql  $
---       Date into PVCS   : $Date:   Dec 09 2011 10:44:50  $
---       Date fetched Out : $Modtime:   Dec 09 2011 10:40:48  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Dec 15 2011 11:19:42  $
+--       Date fetched Out : $Modtime:   Dec 15 2011 11:15:20  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2011
@@ -65,6 +65,27 @@ BEGIN
 
 END;
 /
+
+-- Check that mai 4400 fix 1 has been applied before proceeeding
+Declare
+   Cursor c_mai_4400_fix1 Is 
+   Select 'Y' 
+   From hig_upgrades
+   Where remarks = 'MAI 4400 FIX 1';
+   --
+   l_mai_4400_fix1 Varchar2(1) := 'N';
+Begin
+   Open c_mai_4400_fix1;
+   Fetch c_mai_4400_fix1 Into l_mai_4400_fix1;
+   Close c_mai_4400_fix1;
+   --
+   If Not l_mai_4400_fix1 = 'Y'
+   Then
+     RAISE_APPLICATION_ERROR(-20000,'This fix is dependent upon Maintenance Manager 4400 FIX 1 being applied. Please apply MAI 4400 FIX 1 before proceeding.');
+   End If;
+End;
+/
+
 WHENEVER SQLERROR CONTINUE
 --
 --
@@ -80,6 +101,54 @@ SET FEEDBACK ON
 start mai_wo_api.pkw
 SET FEEDBACK OFF
 --
+--------------------------------------------------------------------------------
+-- Metadata
+--------------------------------------------------------------------------------
+--
+SET TERM ON 
+PROMPT mai_wo_api.pkw
+SET TERM OFF
+--
+SET FEEDBACK ON
+--
+insert into hig_option_list
+      (hol_id
+      ,hol_product
+      ,hol_name
+      ,hol_remarks
+      ,hol_domain
+      ,hol_datatype
+      ,hol_mixed_case
+      ,hol_user_option) 
+select 'UPDWOTGT'
+      ,'MAI'
+      ,'Allow update to WO Target Date'      
+      ,'If set to Y, the WO Target Date will allow manual update '
+      ,null
+      ,'VARCHAR2'
+      ,'N'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_list
+                    where hol_id = 'UPDWOTGT')
+/
+
+insert into hig_option_values
+      (hov_id
+      ,hov_value)
+select 'UPDWOTGT'
+      ,'N'
+  from dual
+ where not exists (select 1
+                     from hig_option_values
+                    where hov_id = 'UPDWOTGT')
+/
+
+commit
+/
+--
+SET FEEDBACK OFF
 --
 --------------------------------------------------------------------------------
 -- Update hig_upgrades with fix ID
