@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix3.sql-arc   3.1   Dec 15 2011 11:19:42   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix3.sql-arc   3.2   Dec 20 2011 16:09:08   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4400_fix3.sql  $
---       Date into PVCS   : $Date:   Dec 15 2011 11:19:42  $
---       Date fetched Out : $Modtime:   Dec 15 2011 11:15:20  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Dec 20 2011 16:09:08  $
+--       Date fetched Out : $Modtime:   Dec 20 2011 16:02:46  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2011
@@ -101,12 +101,21 @@ SET FEEDBACK ON
 start mai_wo_api.pkw
 SET FEEDBACK OFF
 --
+--
+SET TERM ON 
+PROMPT mai.pkw
+SET TERM OFF
+--
+SET FEEDBACK ON
+start mai.pkw
+SET FEEDBACK OFF
+--
 --------------------------------------------------------------------------------
 -- Metadata
 --------------------------------------------------------------------------------
 --
 SET TERM ON 
-PROMPT mai_wo_api.pkw
+PROMPT metadata
 SET TERM OFF
 --
 SET FEEDBACK ON
