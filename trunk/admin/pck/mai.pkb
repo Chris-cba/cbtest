@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.27   Oct 04 2011 12:05:06   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.28   Dec 20 2011 11:37:24   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Oct 04 2011 12:05:06  $
---       Date fetched Out : $Modtime:   Oct 04 2011 12:04:12  $
---       SCCS Version     : $Revision:   2.27  $
+--       Date into SCCS   : $Date:   Dec 20 2011 11:37:24  $
+--       Date fetched Out : $Modtime:   Dec 20 2011 11:41:32  $
+--       SCCS Version     : $Revision:   2.28  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.27  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.28  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -6598,7 +6598,7 @@ BEGIN
   */
   IF pi_sys_flag != 'L'
    THEN
-      lv_query := lv_query||'AND EXISTS(SELECT 1'
+      lv_query := lv_query||'AND EXISTS(SELECT 1 '
                                        ||'FROM road_segments_all '
                                            ||',item_code_breakdowns '
                                       ||'WHERE rse_road_environment = DECODE(icb_rse_road_environment,NULL,rse_road_environment '
