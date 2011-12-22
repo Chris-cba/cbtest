@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix1.sql-arc   3.0   Aug 22 2011 09:29:28   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix1.sql-arc   3.1   Dec 22 2011 11:02:02   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4400_fix1.sql  $
---       Date into PVCS   : $Date:   Aug 22 2011 09:29:28  $
---       Date fetched Out : $Modtime:   Aug 22 2011 09:28:10  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Dec 22 2011 11:02:02  $
+--       Date fetched Out : $Modtime:   Dec 22 2011 10:57:44  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) exor corporation ltd, 2011
@@ -89,6 +89,14 @@ SET FEEDBACK ON
 start v_mai3856_wol.vw
 SET FEEDBACK OFF
 --
+--------------------------------------------------------------------------------
+-- Refresh Synonyms
+--------------------------------------------------------------------------------
+--
+SET TERM ON
+Prompt Creating Synonyms That Do Not Exist...
+SET TERM OFF
+EXECUTE nm3ddl.refresh_all_synonyms;
 --
 --------------------------------------------------------------------------------
 -- Update hig_upgrades with fix ID
