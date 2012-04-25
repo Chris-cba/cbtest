@@ -4,11 +4,11 @@ REM
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.2   May 27 2011 09:45:44   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.3   Apr 25 2012 15:26:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_transviews.sql  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:44  $
---       Date fetched Out : $Modtime:   May 25 2011 14:02:00  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Apr 25 2012 15:26:40  $
+--       Date fetched Out : $Modtime:   Apr 25 2012 15:16:00  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -43,7 +43,13 @@ CREATE OR REPLACE FORCE VIEW INV_ITEMS_ALL
  IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77, IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80, 
  IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83, IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, 
  IIT_DATE_ATTRIB86, IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89, IIT_DATE_ATTRIB90, 
- IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92, IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95)
+ IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92, IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95,
+ IIT_NUM_ATTRIB96, IIT_NUM_ATTRIB97,  IIT_NUM_ATTRIB98, IIT_NUM_ATTRIB99,IIT_NUM_ATTRIB100,
+ IIT_NUM_ATTRIB101, IIT_NUM_ATTRIB102, IIT_NUM_ATTRIB103, IIT_NUM_ATTRIB104, IIT_NUM_ATTRIB105,
+IIT_NUM_ATTRIB106, IIT_NUM_ATTRIB107, IIT_NUM_ATTRIB108, IIT_NUM_ATTRIB109, IIT_NUM_ATTRIB110,
+IIT_NUM_ATTRIB111, IIT_NUM_ATTRIB112, IIT_NUM_ATTRIB113, IIT_NUM_ATTRIB114, IIT_NUM_ATTRIB115,
+IIT_POSITION, IIT_X_COORD, IIT_Y_COORD, IIT_X, IIT_Y, IIT_Z
+)
 AS 
 SELECT
 -----------------------------------------------------------------------------
@@ -103,7 +109,15 @@ SELECT
         , iit_num_attrib85, iit_date_attrib86, iit_date_attrib87
         , iit_date_attrib88, iit_date_attrib89, iit_date_attrib90
         , iit_date_attrib91, iit_date_attrib92, iit_date_attrib93
-        , iit_date_attrib94, iit_date_attrib95
+        , iit_date_attrib94, iit_date_attrib95, iit_num_attrib96
+        , iit_num_attrib97, iit_num_attrib98, iit_num_attrib99
+        , iit_num_attrib100, iit_num_attrib101, iit_num_attrib102
+        , iit_num_attrib103, iit_num_attrib104, iit_num_attrib105
+        , iit_num_attrib106, iit_num_attrib107, iit_num_attrib108
+        , iit_num_attrib109, iit_num_attrib110, iit_num_attrib111
+        , iit_num_attrib112, iit_num_attrib113, iit_num_attrib114
+        , iit_num_attrib115, iit_position, iit_x_coord, iit_y_coord
+        , iit_x, iit_y, iit_z
      FROM nm_inv_items_all inv
         , nm_members_all   mem
         , inv_type_translations itt
@@ -318,6 +332,32 @@ BEGIN
    l_rec_iit.iit_DATE_ATTRIB93 := :NEW.IIT_DATE_ATTRIB93;
    l_rec_iit.iit_DATE_ATTRIB94 := :NEW.IIT_DATE_ATTRIB94;
    l_rec_iit.iit_DATE_ATTRIB95 := :NEW.IIT_DATE_ATTRIB95;
+   l_rec_iit.iit_NUM_ATTRIB96 := :NEW.IIT_NUM_ATTRIB96;
+   l_rec_iit.iit_NUM_ATTRIB97 := :NEW.IIT_NUM_ATTRIB97;
+   l_rec_iit.iit_NUM_ATTRIB98 := :NEW.IIT_NUM_ATTRIB98;
+   l_rec_iit.iit_NUM_ATTRIB99 := :NEW.IIT_NUM_ATTRIB99;
+   l_rec_iit.IIT_NUM_ATTRIB100 := :NEW.IIT_NUM_ATTRIB100;
+   l_rec_iit.IIT_NUM_ATTRIB101 := :NEW.IIT_NUM_ATTRIB101;
+   l_rec_iit.IIT_NUM_ATTRIB102 := :NEW.IIT_NUM_ATTRIB102;
+   l_rec_iit.IIT_NUM_ATTRIB103 := :NEW.IIT_NUM_ATTRIB103;
+   l_rec_iit.IIT_NUM_ATTRIB104 := :NEW.IIT_NUM_ATTRIB104;
+   l_rec_iit.IIT_NUM_ATTRIB105 := :NEW.IIT_NUM_ATTRIB105;
+   l_rec_iit.IIT_NUM_ATTRIB106 := :NEW.IIT_NUM_ATTRIB106;
+   l_rec_iit.IIT_NUM_ATTRIB107 := :NEW.IIT_NUM_ATTRIB107;
+   l_rec_iit.IIT_NUM_ATTRIB108 := :NEW.IIT_NUM_ATTRIB108;
+   l_rec_iit.IIT_NUM_ATTRIB109 := :NEW.IIT_NUM_ATTRIB109;
+   l_rec_iit.IIT_NUM_ATTRIB110 := :NEW.IIT_NUM_ATTRIB110;
+   l_rec_iit.IIT_NUM_ATTRIB111 := :NEW.IIT_NUM_ATTRIB111;
+   l_rec_iit.IIT_NUM_ATTRIB112 := :NEW.IIT_NUM_ATTRIB112;
+   l_rec_iit.IIT_NUM_ATTRIB113 := :NEW.IIT_NUM_ATTRIB113;
+   l_rec_iit.IIT_NUM_ATTRIB114 := :NEW.IIT_NUM_ATTRIB114;
+   l_rec_iit.IIT_NUM_ATTRIB115 := :NEW.IIT_NUM_ATTRIB115;
+   l_rec_iit.IIT_POSITION := :NEW.IIT_POSITION;
+   l_rec_iit.IIT_X_COORD := :NEW.IIT_X_COORD;
+   l_rec_iit.IIT_Y_COORD := :NEW.IIT_Y_COORD;
+   l_rec_iit.IIT_X := :NEW.IIT_X;
+   l_rec_iit.IIT_Y := :NEW.IIT_Y;
+   l_rec_iit.IIT_Z := :NEW.IIT_Z;
 --
    IF l_rec_iit.iit_start_date IS NULL
     THEN
@@ -598,6 +638,33 @@ BEGIN
    l_rec_iit.iit_date_attrib93 := :NEW.iit_date_attrib93;
    l_rec_iit.iit_date_attrib94 := :NEW.iit_date_attrib94;
    l_rec_iit.iit_date_attrib95 := :NEW.iit_date_attrib95;
+   l_rec_iit.iit_num_attrib96 := :NEW.iit_num_attrib96;
+   l_rec_iit.iit_num_attrib97 := :NEW.iit_num_attrib97;
+   l_rec_iit.iit_num_attrib98 := :NEW.iit_num_attrib98;
+   l_rec_iit.iit_num_attrib99 := :NEW.iit_num_attrib99;
+   l_rec_iit.iit_num_attrib100 := :NEW.iit_num_attrib100;
+   l_rec_iit.iit_num_attrib101 := :NEW.iit_num_attrib101;
+   l_rec_iit.iit_num_attrib102 := :NEW.iit_num_attrib102;
+   l_rec_iit.iit_num_attrib103 := :NEW.iit_num_attrib103;
+   l_rec_iit.iit_num_attrib104 := :NEW.iit_num_attrib104;
+   l_rec_iit.iit_num_attrib105 := :NEW.iit_num_attrib105;
+   l_rec_iit.iit_num_attrib106 := :NEW.iit_num_attrib106;
+   l_rec_iit.iit_num_attrib107 := :NEW.iit_num_attrib107;
+   l_rec_iit.iit_num_attrib108 := :NEW.iit_num_attrib108;
+   l_rec_iit.iit_num_attrib109 := :NEW.iit_num_attrib109;
+   l_rec_iit.iit_num_attrib110 := :NEW.iit_num_attrib110;
+   l_rec_iit.iit_num_attrib111 := :NEW.iit_num_attrib111;
+   l_rec_iit.iit_num_attrib112 := :NEW.iit_num_attrib112;
+   l_rec_iit.iit_num_attrib113 := :NEW.iit_num_attrib113;
+   l_rec_iit.iit_num_attrib114 := :NEW.iit_num_attrib114;
+   l_rec_iit.iit_num_attrib115 := :NEW.iit_num_attrib115;
+   l_rec_iit.iit_position := :NEW.iit_position;
+   l_rec_iit.iit_x_coord := :NEW.iit_x_coord;
+   l_rec_iit.iit_y_coord := :NEW.iit_y_coord;
+   l_rec_iit.iit_x := :NEW.iit_x;
+   l_rec_iit.iit_y := :NEW.iit_y;
+   l_rec_iit.iit_z := :NEW.iit_z;
+
 --
    IF l_rec_iit.iit_primary_key IS NULL THEN
       l_rec_iit.iit_primary_key := l_rec_iit.iit_ne_id;
@@ -766,6 +833,32 @@ BEGIN
          ,iit_date_attrib93 = :NEW.iit_date_attrib93
          ,iit_date_attrib94 = :NEW.iit_date_attrib94
          ,iit_date_attrib95 = :NEW.iit_date_attrib95
+         ,iit_num_attrib96 = :NEW.iit_num_attrib96
+         ,iit_num_attrib97 = :NEW.iit_num_attrib97
+         ,iit_num_attrib98 = :NEW.iit_num_attrib98
+         ,iit_num_attrib99 = :NEW.iit_num_attrib99
+         ,iit_num_attrib100 = :NEW.iit_num_attrib100
+         ,iit_num_attrib101 = :NEW.iit_num_attrib101
+         ,iit_num_attrib102 = :NEW.iit_num_attrib102
+         ,iit_num_attrib103 = :NEW.iit_num_attrib103
+         ,iit_num_attrib104 = :NEW.iit_num_attrib104
+         ,iit_num_attrib105 = :NEW.iit_num_attrib105
+         ,iit_num_attrib106 = :NEW.iit_num_attrib106
+         ,iit_num_attrib107 = :NEW.iit_num_attrib107
+         ,iit_num_attrib108 = :NEW.iit_num_attrib108
+         ,iit_num_attrib109 = :NEW.iit_num_attrib109
+         ,iit_num_attrib110 = :NEW.iit_num_attrib110
+         ,iit_num_attrib111 = :NEW.iit_num_attrib111
+         ,iit_num_attrib112 = :NEW.iit_num_attrib112
+         ,iit_num_attrib113 = :NEW.iit_num_attrib113
+         ,iit_num_attrib114 = :NEW.iit_num_attrib114
+         ,iit_num_attrib115 = :NEW.iit_num_attrib115
+         ,iit_position = :NEW.iit_position
+         ,iit_x_coord = :NEW.iit_x_coord
+         ,iit_y_coord = :NEW.iit_y_coord
+         ,iit_x = :NEW.iit_x
+         ,iit_y = :NEW.iit_y
+         ,iit_z = :NEW.iit_z
        WHERE iit_ne_id         = :NEW.iit_item_id;
 
 END inv_items_u_trg;
@@ -815,10 +908,15 @@ CREATE OR REPLACE FORCE VIEW INV_ITEMS
  IIT_NUM_ATTRIB76, IIT_NUM_ATTRIB77, IIT_NUM_ATTRIB78, IIT_NUM_ATTRIB79, IIT_NUM_ATTRIB80, 
  IIT_NUM_ATTRIB81, IIT_NUM_ATTRIB82, IIT_NUM_ATTRIB83, IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, 
  IIT_DATE_ATTRIB86, IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89, IIT_DATE_ATTRIB90, 
- IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92, IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95)
+ IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92, IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95,
+ IIT_NUM_ATTRIB96, IIT_NUM_ATTRIB97,  IIT_NUM_ATTRIB98, IIT_NUM_ATTRIB99,IIT_NUM_ATTRIB100,
+ IIT_NUM_ATTRIB101, IIT_NUM_ATTRIB102, IIT_NUM_ATTRIB103, IIT_NUM_ATTRIB104, IIT_NUM_ATTRIB105,
+IIT_NUM_ATTRIB106, IIT_NUM_ATTRIB107, IIT_NUM_ATTRIB108, IIT_NUM_ATTRIB109, IIT_NUM_ATTRIB110,
+IIT_NUM_ATTRIB111, IIT_NUM_ATTRIB112, IIT_NUM_ATTRIB113, IIT_NUM_ATTRIB114, IIT_NUM_ATTRIB115,
+IIT_POSITION, IIT_X_COORD, IIT_Y_COORD, IIT_X, IIT_Y, IIT_Z)
 AS 
 SELECT iit_created_date,
-       iit_cre_date,
+       iit_cre_date, 
        iit_item_id,
        iit_ity_inv_code,
        iit_ity_sys_flag,
@@ -956,7 +1054,33 @@ SELECT iit_created_date,
        iit_date_attrib92,
        iit_date_attrib93,
        iit_date_attrib94,
-       iit_date_attrib95
+       iit_date_attrib95,
+       iit_num_attrib96, 
+       iit_num_attrib97, 
+       iit_num_attrib98, 
+       iit_num_attrib99, 
+       iit_num_attrib100, 
+       iit_num_attrib101, 
+       iit_num_attrib102, 
+       iit_num_attrib103, 
+       iit_num_attrib104, 
+       iit_num_attrib105, 
+       iit_num_attrib106, 
+       iit_num_attrib107, 
+       iit_num_attrib108, 
+       iit_num_attrib109, 
+       iit_num_attrib110, 
+       iit_num_attrib111, 
+       iit_num_attrib112, 
+       iit_num_attrib113, 
+       iit_num_attrib114, 
+       iit_num_attrib115, 
+       iit_position, 
+       iit_x_coord, 
+       iit_y_coord, 
+       iit_x, 
+       iit_y, 
+       iit_z
 FROM   inv_items_all
 WHERE  iit_end_date IS NULL 
 AND    iit_prov_flag IS NULL;
@@ -1020,7 +1144,15 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
   IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
   IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
   IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
-  IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95)
+  IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95,
+  IIT_NUM_ATTRIB96, IIT_NUM_ATTRIB97,  IIT_NUM_ATTRIB98, 
+  IIT_NUM_ATTRIB99,IIT_NUM_ATTRIB100, IIT_NUM_ATTRIB101, 
+  IIT_NUM_ATTRIB102, IIT_NUM_ATTRIB103, IIT_NUM_ATTRIB104, 
+  IIT_NUM_ATTRIB105, IIT_NUM_ATTRIB106, IIT_NUM_ATTRIB107, 
+  IIT_NUM_ATTRIB108, IIT_NUM_ATTRIB109, IIT_NUM_ATTRIB110,
+  IIT_NUM_ATTRIB111, IIT_NUM_ATTRIB112, IIT_NUM_ATTRIB113, 
+  IIT_NUM_ATTRIB114, IIT_NUM_ATTRIB115, IIT_POSITION, 
+  IIT_X_COORD, IIT_Y_COORD, IIT_X, IIT_Y, IIT_Z)
 AS
 SELECT IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
        IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,
@@ -1064,7 +1196,15 @@ SELECT IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
        IIT_NUM_ATTRIB84, IIT_NUM_ATTRIB85, IIT_DATE_ATTRIB86,
        IIT_DATE_ATTRIB87, IIT_DATE_ATTRIB88, IIT_DATE_ATTRIB89,
        IIT_DATE_ATTRIB90, IIT_DATE_ATTRIB91, IIT_DATE_ATTRIB92,
-       IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95
+       IIT_DATE_ATTRIB93, IIT_DATE_ATTRIB94, IIT_DATE_ATTRIB95,
+       IIT_NUM_ATTRIB96, IIT_NUM_ATTRIB97,  IIT_NUM_ATTRIB98, 
+       IIT_NUM_ATTRIB99,IIT_NUM_ATTRIB100, IIT_NUM_ATTRIB101, 
+       IIT_NUM_ATTRIB102, IIT_NUM_ATTRIB103, IIT_NUM_ATTRIB104, 
+       IIT_NUM_ATTRIB105, IIT_NUM_ATTRIB106, IIT_NUM_ATTRIB107, 
+       IIT_NUM_ATTRIB108, IIT_NUM_ATTRIB109, IIT_NUM_ATTRIB110,
+       IIT_NUM_ATTRIB111, IIT_NUM_ATTRIB112, IIT_NUM_ATTRIB113, 
+       IIT_NUM_ATTRIB114, IIT_NUM_ATTRIB115, IIT_POSITION, 
+       IIT_X_COORD, IIT_Y_COORD, IIT_X, IIT_Y, IIT_Z
   FROM inv_items_all
 ;
 
