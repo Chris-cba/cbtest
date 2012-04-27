@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.22.1.0   Dec 20 2011 11:19:56   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.22.1.1   Apr 27 2012 18:18:06   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Dec 20 2011 11:19:56  $
---       Date fetched Out : $Modtime:   Dec 20 2011 11:22:48  $
---       SCCS Version     : $Revision:   2.22.1.0  $
+--       Date into SCCS   : $Date:   Apr 27 2012 18:18:06  $
+--       Date fetched Out : $Modtime:   Apr 27 2012 13:44:16  $
+--       SCCS Version     : $Revision:   2.22.1.1  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.22.1.0  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.22.1.1  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -626,39 +626,52 @@ PROCEDURE upd_schedule_quantity_assets(pi_schd_id   IN schedules.schd_id%TYPE
   || This Procedure Was Created To Move The Bulk Of The Program
   || Unit pop_schd_items_assets From mai3860 To The Server.
   */
-  lv_item_code schedule_items.schi_sta_item_code%type;
-  lv_calc_type standard_items.sta_calc_type%type:='N';
   lv_item_id   inv_items_all.iit_item_id%type;
   lv_quantity  number:=0;
-  lv_tot       number:=0;
   --
-  CURSOR c1(cp_schd_id schedules.schd_id%TYPE)
-      IS
-  SELECT schi_sta_item_code
-        ,sta_calc_type
-    FROM related_inventory
-        ,standard_items
-        ,schedules
-        ,schedule_items
-   WHERE schd_id            = cp_schd_id
-     AND schi_schd_id       = schd_id
-     AND rel_sta_item_code  = sta_item_code
-     AND sta_item_code      = schi_sta_item_code
-       ;
+  TYPE items_tab IS TABLE of schedule_items.schi_sta_item_code%TYPE;
+  lt_items items_tab;
   --
   TYPE roads_tab IS TABLE of nm_elements_all.ne_id%TYPE;
   lt_roads roads_tab;
+  --
+  PROCEDURE get_items
+    IS
+  BEGIN
+    --
+    SELECT schi_sta_item_code
+      BULK COLLECT
+      INTO lt_items
+      FROM schedule_items
+          ,schedules
+     WHERE schd_id = pi_schd_id
+       AND schd_id = schi_schd_id
+       AND EXISTS(SELECT 1
+                    FROM related_inventory
+                   WHERE rel_sta_item_code = schi_sta_item_code)
+         ;
+    --
+  EXCEPTION
+    WHEN no_data_found
+     THEN
+        NULL;
+    WHEN others
+     THEN
+        RAISE;
+  END get_items;
   --
   PROCEDURE get_network
     IS
   BEGIN
     --
-    SELECT schr_rse_he_id
+    SELECT rsm_rse_he_id_of
       BULK COLLECT
       INTO lt_roads
-      FROM schedule_roads
-     WHERE schr_schd_id = pi_schd_id
-       AND schr_sta_item_code = pi_item_code
+      FROM road_seg_membs
+     WHERE rsm_type = 'S'
+       AND rsm_end_date is null
+   CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
+     START WITH rsm_rse_he_id_in = pi_group_id
          ;
   EXCEPTION
     WHEN no_data_found
@@ -675,25 +688,18 @@ BEGIN
     FROM schedule_roads
    WHERE schr_schd_id=pi_schd_id
        ;
-
-  --
-  -- NM 04-AUG-2005: Changes made to replicate those done by SM for v2.
-  --
-  pop_schd_roads(pi_schd_id
-                ,pi_group_id
-                ,pi_item_code);
-
   --
   get_network;
+  get_items;
   --
   FOR i IN 1..lt_roads.count LOOP
     --
-    FOR j IN c1(pi_schd_id) LOOP
+    FOR j IN 1..lt_items.count LOOP
       --
       calculate_inv_quantity_assets(pi_schd_id
                                    ,lt_roads(i)
-                                   ,lv_calc_type
-                                   ,j.schi_sta_item_code
+                                   ,'N'
+                                   ,lt_items(j)
                                    ,lv_item_id
                                    ,lv_quantity);
       --
@@ -702,11 +708,16 @@ BEGIN
   END LOOP;
   --
   UPDATE schedule_items schi
-     SET schi.schi_calc_quantity =(SELECT NVL(SUM(schr_calc_quantity),0)
-                                     FROM schedule_roads schr
-                                    WHERE schr.schr_schd_id=schi.schi_schd_id
-                                      AND schr.schr_sta_item_code = schi.schi_sta_item_code)
+     SET schi.schi_calc_quantity = (SELECT NVL(SUM(schr_calc_quantity),0)
+                                      FROM schedule_roads schr
+                                     WHERE schr.schr_schd_id=schi.schi_schd_id
+                                       AND schr.schr_sta_item_code = schi.schi_sta_item_code)
         ,schi.schi_last_updated = SYSDATE
+   WHERE schi.schi_schd_id=pi_schd_id
+       ;
+  --
+  UPDATE schedule_items schi
+     SET schi.schi_act_quantity = schi.schi_calc_quantity
    WHERE schi.schi_schd_id=pi_schd_id
        ;
   --
@@ -766,7 +777,7 @@ BEGIN
   --
   FOR i IN 1..lt_query.count LOOP
     --
-    nm_debug.debug(lt_query(i));
+    --nm_debug.debug(lt_query(i));
     BEGIN
       EXECUTE IMMEDIATE lt_query(i) BULK COLLECT INTO lt_iit_item_id
                                                      ,lt_count
@@ -787,7 +798,7 @@ BEGIN
               ,item_code
               ,he_id
               ,lt_count(j)
-              ,0
+              ,lt_count(j)
               ,SYSDATE
               ,lt_iit_item_id(j))
              ;
