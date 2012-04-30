@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix5.sql-arc   3.0   Apr 30 2012 10:41:28   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4400_fix5.sql-arc   3.1   Apr 30 2012 10:57:58   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4400_fix5.sql  $
---       Date into PVCS   : $Date:   Apr 30 2012 10:41:28  $
---       Date fetched Out : $Modtime:   Apr 30 2012 10:34:14  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Apr 30 2012 10:57:58  $
+--       Date fetched Out : $Modtime:   Apr 30 2012 10:51:20  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated
@@ -142,6 +142,36 @@ SET TERM OFF
 SET FEEDBACK ON
 start mai_transviews.sql
 SET FEEDBACK OFF
+--
+--
+--------------------------------------------------------------------------------
+-- Recompile invalid objects
+--------------------------------------------------------------------------------
+--
+--
+SET TERM ON 
+PROMPT Recompile invalid objects
+SET TERM OFF
+--
+Spool recompile.sql
+
+Select 'alter '||object_type||' '||object_name||' compile;'
+From user_objects
+Where status <> 'VALID'
+And object_type IN ('VIEW','SYNONYM','PROCEDURE','FUNCTION','PACKAGE','TRIGGER');
+
+Spool off
+@recompile.sql
+--
+Spool recomp_body.sql
+
+Select 'alter '||replace(object_type, ' BODY', '')||' '||object_name||' compile body;'
+From user_objects
+Where status <> 'VALID'
+And object_type IN ('PACKAGE BODY','TYPE BODY');
+
+Spool off
+@recomp_body.sql
 --
 --------------------------------------------------------------------------------
 -- Update hig_upgrades with fix ID
