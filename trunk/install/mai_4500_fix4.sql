@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix4.sql-arc   3.0   May 10 2012 17:20:32   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix4.sql-arc   3.1   May 10 2012 17:23:58   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4500_fix4.sql  $
---       Date into PVCS   : $Date:   May 10 2012 17:20:32  $
---       Date fetched Out : $Modtime:   May 10 2012 17:13:48  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   May 10 2012 17:23:58  $
+--       Date fetched Out : $Modtime:   May 10 2012 17:17:34  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -31,7 +31,7 @@ set term on
 --
 -- Spool to Logfile
 --
-define logfile1='mai_4500_fix2_&log_extension'
+define logfile1='mai_4500_fix4_&log_extension'
 spool &logfile1
 --
 --------------------------------------------------------------------------------
