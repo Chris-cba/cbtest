@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.7   Oct 07 2011 12:11:26   Steve.Cooper  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.8   May 10 2012 13:56:54   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   Oct 07 2011 12:11:26  $
---       Date fetched Out : $Modtime:   Oct 07 2011 12:11:12  $
---       PVCS Version     : $Revision:   2.7  $
+--       Date into PVCS   : $Date:   May 10 2012 13:56:54  $
+--       Date fetched Out : $Modtime:   May 10 2012 12:20:08  $
+--       PVCS Version     : $Revision:   2.8  $
 --       Based on SCCS version :
 --
 --
@@ -22,12 +22,11 @@ AS
 -----------------------------------------------------------------------------
 --
 --all global package variables here
-
   -----------
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.7  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.8  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
@@ -49,17 +48,6 @@ END get_body_version;
 --
 -----------------------------------------------------------------------------
 --
-/*
-function get_npa ( p_pl nm_placement_array ) return nm_placement_array_type;
--- pragma restrict_references( get_npa, WNDS, WNPS, TRUST );
-
-  FUNCTION get_npa ( p_pl nm_placement_array ) return nm_placement_array_type is
-begin
-  return p_pl.npa_placement_array;
-end; 
-
-*/
-
 PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
   --
   lt_attr_recs attr_rec_tab;
@@ -173,7 +161,6 @@ PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
       ||CHR(10)||'       ;'
       ||CHR(10)||'END;'
     ;
-    --nm_debug.debug('string : '||lv_string);
     EXECUTE IMMEDIATE lv_string;
     --
   END upd_char_attr;
@@ -196,8 +183,6 @@ PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER) is
   END flag_attr_error;
   --
 BEGIN
-  --nm_debug.debug_on;
-  --nm_debug.debug('Starting Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
   /*
   || Initialise Output Error Indicator.
   */
@@ -247,8 +232,6 @@ BEGIN
     --
   END LOOP;
   --
-  --nm_debug.debug('Finished Attributes '||to_char(sysdate,'DD/MM/YYYY HH24:MI:SS'));
-  --nm_debug.debug_off;
 END set_attrib_values;
 --
 -----------------------------------------------------------------------------
@@ -288,7 +271,9 @@ BEGIN
                                                    END) det_xsp
                                          FROM hhinv_load_3
                                         WHERE attribute IN('CHR_ATTRIB26','DET_XSP')
-                                          AND inv_code IN('CV','DV')
+                                          AND inv_code IN(SELECT uvd_inv_code
+                                                            FROM ukpms_view_definitions
+                                                           WHERE uvd_ukpms_code in ('CVI','DVI') )
                                         GROUP
                                            BY rec_seq_no
                                              ,he_id
@@ -308,7 +293,9 @@ BEGIN
                                                    END) det_xsp
                                          FROM hhinv_load_3
                                         WHERE attribute IN('CHR_ATTRIB26','DET_XSP')
-                                          AND inv_code IN('CV','DV')
+                                          AND inv_code IN(SELECT uvd_inv_code
+                                                            FROM ukpms_view_definitions
+                                                           WHERE uvd_ukpms_code in ('CVI','DVI') )
                                         GROUP
                                            BY rec_seq_no
                                              ,he_id
@@ -319,16 +306,14 @@ BEGIN
                                   AND v1.defect_type != v2.defect_type
                                   AND v1.he_id = v2.he_id
                                   AND v1.det_xsp = v2.det_xsp
-                                  AND ( (
-                                       (v1.st_chain = v2.st_chain and v1.end_chain = v2.end_chain)
+                                  AND ((v1.st_chain = v2.st_chain and v1.end_chain = v2.end_chain)
                                        or
                                        (v1.st_chain > v2.st_chain and v1.st_chain < v2.end_chain)
                                        or
                                        (v1.end_chain > v2.st_chain and v1.end_chain < v2.end_chain)
                                        or
-                                       (v1.st_chain <= v2.st_chain and v1.end_chain >= v2.end_chain)
-                                      ) ) ) inv_view
-  		,(SELECT level level_col
+                                       (v1.st_chain <= v2.st_chain and v1.end_chain >= v2.end_chain))) inv_view
+  		                       ,(SELECT level level_col
                                  FROM dual
                               CONNECT
                                    BY level <= 2) count_view)
@@ -529,15 +514,9 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
               ,0
               ,NULL
               ,NULL
-          FROM  TABLE(  cast ( mai2110c.get_inv_location( pi_ne_id
-                                              ,pi_st_chain
-                                              ,pi_end_chain).npa_placement_array as nm_placement_array_type )) p;
-/*
-          FROM TABLE(mai2110c.get_inv_location(pi_ne_id
-                                              ,pi_st_chain
-                                              ,pi_end_chain).npa_placement_array) p
-*/
-             
+          FROM TABLE(cast(mai2110c.get_inv_location(pi_ne_id
+                                                   ,pi_st_chain
+                                                   ,pi_end_chain).npa_placement_array as nm_placement_array_type)) p;
     END IF;
     --
     nm3user.set_effective_date(lv_effective_date);
@@ -853,7 +832,6 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
                             WHERE uvd_feature_or_survey IN('F','S')
                               AND uvd_inv_code = nit_inv_type
                               AND nit_table_name IS NOT NULL)
-
          ;
     --
     FOR j IN 1 .. lt_ins2_recs.count LOOP
@@ -864,7 +842,6 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
          THEN
             lt_ins2_recs(j).rec_seq_no := nm3net.get_next_ne_id;
         END IF;
-        --nm_debug.debug('Asset Id : '||to_char(lt_ins2_recs(j).rec_seq_no));
         --
         lr_rec2_iit.iit_ne_id            := lt_ins2_recs(j).rec_seq_no;
         lr_rec2_iit.iit_start_date       := TRUNC(lt_ins2_recs(j).iit_start_date);
@@ -901,8 +878,6 @@ PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
   END pro_hhinv_load_2;
   --
 BEGIN
-  --nm_debug.debug_on;
-  --nm_debug.debug('Ins_assets');
   /*
   || Initialise Section Error Indicator.
   */
@@ -917,14 +892,12 @@ BEGIN
     FROM hhinv_sect_log
    WHERE lst_run_num = pi_run_num
      AND he_id != -9999999
---     AND error_msg IS NULL
        ;
   /*
   || Loop Through The Elements Found
   || And Attempt To Create The Assets.
   */
   FOR i IN 1 .. lt_he_id.count LOOP
-    --nm_debug.debug('Sect he_id : '||to_char(lt_he_id(i)));
     /*
     || Initialise Internal Section Error Indicator.
     */
@@ -954,7 +927,6 @@ BEGIN
     --
   END LOOP;
   --
-  --nm_debug.debug_off;
 EXCEPTION
   WHEN OTHERS
   THEN
@@ -1012,8 +984,6 @@ BEGIN
   CLOSE c1;
   --
   FOR i IN 1..lt_ne_id.COUNT LOOP
-    --
-    --Nm_Debug.DEBUG('Loop '||TO_CHAR(i)||' S_SLK = '||TO_CHAR( lt_s_slk(i) )||' E_SLK = '||TO_CHAR( lt_s_slk(i) )||' Dir = '||TO_CHAR(lt_card(i)));
     --
     IF lt_s_slk(i) >= pi_start
      AND lt_e_slk(i) <= pi_end
