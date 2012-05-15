@@ -2,11 +2,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix3.sql-arc   3.0   May 14 2012 12:08:56   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix3.sql-arc   3.1   May 15 2012 09:57:40   Mike.Alexander  $
 --       Module Name      : $Workfile:   mai_4500_fix3.sql  $
---       Date into PVCS   : $Date:   May 14 2012 12:08:56  $
---       Date fetched Out : $Modtime:   May 14 2012 12:02:06  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   May 15 2012 09:57:40  $
+--       Date fetched Out : $Modtime:   May 15 2012 09:51:12  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -98,20 +98,20 @@ SET FEEDBACK OFF
 --------------------------------------------------------------------------------
 --
 SET TERM ON 
-PROMPT mai_cyclic_wo.pkb
+PROMPT mai_cyclic_wo.pkw
 SET TERM OFF
 --
 SET FEEDBACK ON
-start mai_cyclic_wo.pkb
+start mai_cyclic_wo.pkw
 SET FEEDBACK OFF
 --
 --
 SET TERM ON 
-PROMPT mai.pkb
+PROMPT mai.pkw
 SET TERM OFF
 --
 SET FEEDBACK ON
-start mai.pkb
+start mai.pkw
 SET FEEDBACK OFF
 --
 --------------------------------------------------------------------------------
