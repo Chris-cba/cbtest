@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.2   Nov 30 2011 16:14:38   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.23.1.3   Jun 07 2012 13:03:24   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 30 2011 16:14:38  $
---       Date fetched Out : $Modtime:   Nov 30 2011 15:32:42  $
---       PVCS Version     : $Revision:   3.23.1.2  $
+--       Date into PVCS   : $Date:   Jun 07 2012 13:03:24  $
+--       Date fetched Out : $Modtime:   Jun 07 2012 13:01:46  $
+--       PVCS Version     : $Revision:   3.23.1.3  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.2  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.23.1.3  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -5269,34 +5269,37 @@ BEGIN
 		 
 		 po_create_wo := 'N';
      ELSE
-         FOR i IN 1 .. lt_criteria.count LOOP
+         FOR i IN 1 .. lt_criteria.LAST LOOP
+           IF lt_criteria.EXISTS(i) THEN
+           
+                /*
+                || If mawr_id does not match previous non-null value, got
+                || multiple matching rules
+                */
+                IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id
+                  THEN
+                   lv_multiple_criteria := TRUE;
+                   EXIT;
+                END IF;
 
-            /*
-            || If mawr_id does not match previous non-null value, got
-            || multiple matching rules
-            */
-            IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id
-              THEN
-               lv_multiple_criteria := TRUE;
-               EXIT;
+                /*
+                || Check if any auto instruct = 'Y' for any matching criteria
+                */
+                IF lt_criteria(i).mawc_auto_instruct = 'Y'
+                  THEN
+                   po_auto_instruct := 'Y';
+
+                END IF;
+
+                po_rule_id      := lt_criteria(i).mawr_id;
+                po_scheme_type  := lt_criteria(i).mawr_scheme_type;
+                po_bud_id       := lt_criteria(i).mawr_bud_id;
+                po_con_id       := lt_criteria(i).mawr_con_id;
+                po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
+
+                lv_mawr_id := lt_criteria(i).mawr_id;
+
             END IF;
-
-            /*
-            || Check if any auto instruct = 'Y' for any matching criteria
-            */
-            IF lt_criteria(i).mawc_auto_instruct = 'Y'
-              THEN
-               po_auto_instruct := 'Y';
-
-            END IF;
-
-            po_rule_id      := lt_criteria(i).mawr_id;
-            po_scheme_type  := lt_criteria(i).mawr_scheme_type;
-            po_bud_id       := lt_criteria(i).mawr_bud_id;
-            po_con_id       := lt_criteria(i).mawr_con_id;
-            po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
-
-            lv_mawr_id := lt_criteria(i).mawr_id;
 
          END LOOP;
          --
