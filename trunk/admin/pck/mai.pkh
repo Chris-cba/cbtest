@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.12   Aug 16 2011 14:13:12   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.13   Jun 20 2012 14:01:30   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Aug 16 2011 14:13:12  $
---       Date fetched Out : $Modtime:   Aug 11 2011 16:05:58  $
---       SCCS Version     : $Revision:   2.12  $
+--       Date into SCCS   : $Date:   Jun 20 2012 14:01:30  $
+--       Date fetched Out : $Modtime:   Jun 15 2012 17:29:44  $
+--       SCCS Version     : $Revision:   2.13  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE mai AS
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.12  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.13  $';
     g_language              VARCHAR2(30);
     g_thing_already_exists  VARCHAR2(2000);
     g_thing_does_not_exist  VARCHAR2(2000);
@@ -113,7 +113,8 @@ TYPE child_asset_rec IS RECORD(parent_inv_type nm_inv_types_all.nit_inv_type%TYP
                               ,child_item_id   nm_inv_items_all.iit_ne_id%TYPE
                               ,child_inv_type  nm_inv_types_all.nit_inv_type%TYPE
                               ,child_primary   nm_inv_items_all.iit_primary_key%TYPE
-                              ,child_descr     nm_inv_items_all.iit_descr%TYPE);
+                              ,child_descr     nm_inv_items_all.iit_descr%TYPE
+                              ,child_xsp       nm_inv_items_all.iit_x_sect%TYPE);
 TYPE child_asset_tab IS TABLE OF child_asset_rec INDEX BY BINARY_INTEGER;
 --
 TYPE wol_id_tab IS TABLE OF work_order_lines.wol_id%TYPE INDEX BY BINARY_INTEGER;

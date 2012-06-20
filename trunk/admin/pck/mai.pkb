@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.29   May 04 2012 16:36:40   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.30   Jun 20 2012 14:01:30   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   May 04 2012 16:36:40  $
---       Date fetched Out : $Modtime:   May 03 2012 22:23:02  $
---       SCCS Version     : $Revision:   2.29  $
+--       Date into SCCS   : $Date:   Jun 20 2012 14:01:30  $
+--       Date fetched Out : $Modtime:   Jun 18 2012 10:18:10  $
+--       SCCS Version     : $Revision:   2.30  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.29  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.30  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -6162,7 +6162,9 @@ PROCEDURE get_child_assets(po_child_assets IN OUT child_asset_tab) IS
   TYPE child_fetch_rec IS RECORD(child_item_id   nm_inv_items_all.iit_ne_id%TYPE
                                 ,child_inv_type  nm_inv_types_all.nit_inv_type%TYPE
                                 ,child_primary   nm_inv_items_all.iit_primary_key%TYPE
-                                ,child_descr     nm_inv_items_all.iit_descr%TYPE);
+                                ,child_descr     nm_inv_items_all.iit_descr%TYPE
+                                ,child_xsp       nm_inv_items_all.iit_x_sect%TYPE
+       );
 
 
   TYPE child_fetch_tab IS TABLE OF child_fetch_rec INDEX BY BINARY_INTEGER;
@@ -6179,6 +6181,7 @@ PROCEDURE get_child_assets(po_child_assets IN OUT child_asset_tab) IS
           ,iit_inv_type
           ,iit_primary_key
           ,iit_descr
+          ,iit_x_sect
       BULK COLLECT
       INTO lt_child_fetch
       FROM nm_inv_items
@@ -6626,7 +6629,7 @@ BEGIN
   */
   IF pi_xsp IS NOT NULL
    THEN
-      lv_query := lv_query||'AND NVL(def_x_sect,''@'') = '||pi_xsp||' ';
+       lv_query := lv_query||'AND NVL(def_x_sect,''@'') = '||nm3flx.string(pi_xsp)||' ';
   END IF;
   /*
   ||Check the PBI Query Id parameter.
