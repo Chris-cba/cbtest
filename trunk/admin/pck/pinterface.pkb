@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.1   Jan 05 2011 09:34:52   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.2   Jun 20 2012 15:34:50   Mike.Huitson  $
 --       Module Name      : $Workfile:   pinterface.pkb  $
---       Date into SCCS   : $Date:   Jan 05 2011 09:34:52  $
---       Date fetched Out : $Modtime:   Jan 05 2011 09:34:18  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 20 2012 15:34:50  $
+--       Date fetched Out : $Modtime:   Jun 14 2012 16:35:26  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
@@ -824,52 +824,52 @@ is
    --
    -- Define the three record types.
    --
-   type wor_rec is record (  IWOR_TRANSACTION_TYPE      VARCHAR2(1)
-                         , IWOR_WORKS_ORDER_NO          VARCHAR2(16)
-						 , IWOR_SCHEME_TYPE             VARCHAR2(2)
-						 , IWOR_CON_CODE                VARCHAR2(10)
-						 , IWOR_ORIGINATOR              VARCHAR2(40)
-	                     , IWOR_DATE_CONFIRMED          DATE
-                         , IWOR_EST_COMPLETE            DATE
-						 , IWOR_COST                    NUMBER(11,2)
-						 , IWOR_EST_LABOUR              NUMBER(11,2)
-						 , IWOR_INTERIM_PAYMENT_FLAG    VARCHAR2(1)
-                         , IWOR_RISK_ASSESSMENT_FLAG    VARCHAR2(1)
-                         , IWOR_METHOD_STATEMENT_FLAG   VARCHAR2(1)
-                         , IWOR_WORKS_PROGRAMME_FLAG    VARCHAR2(1)
-                         , IWOR_ADDITIONAL_SAFETY_FLAG  VARCHAR2(1)
-						 , IWOR_COMMENCE_BY             DATE
-                         , IWOR_FYR_ID                  VARCHAR2(5));
+   type wor_rec is record (iwor_transaction_type      vARCHAR2(1)
+                          ,iwor_works_order_no          VARCHAR2(16)
+						              ,iwor_scheme_type             VARCHAR2(2)
+						              ,iwor_con_code                VARCHAR2(10)
+						              ,iwor_originator              VARCHAR2(40)
+	                        ,iwor_date_confirmed          DATE
+                          ,iwor_est_complete            DATE
+						              ,iwor_cost                    NUMBER(11,2)
+						              ,iwor_est_labour              NUMBER(11,2)
+						              ,iwor_interim_payment_flag    VARCHAR2(1)
+                          ,iwor_risk_assessment_flag    VARCHAR2(1)
+                          ,iwor_method_statement_flag   VARCHAR2(1)
+                          ,iwor_works_programme_flag    VARCHAR2(1)
+                          ,iwor_additional_safety_flag  VARCHAR2(1)
+						              ,iwor_commence_by             DATE
+                          ,iwor_fyr_id                  VARCHAR2(5));
    --
    type wor_descr_rec is record ( wor_descr varchar2(80));
    --
-   type wol_rec is record (   IWOL_ID                   NUMBER(9)
-                             ,IWOL_DEF_DEFECT_ID        NUMBER(8)
-							 ,IWOL_SCHD_ID              NUMBER(9)
-							 ,IWOL_ROAD_ID              VARCHAR2(20)
-                             ,IWOL_ROAD_DESCR           VARCHAR2(80)
-							 ,IWOL_DEF_LOCN_DESCR       VARCHAR2(1000) -- clb 05012011 Task 0107258
-                             ,IWOL_DEF_DEFECT_DESCR     VARCHAR2(254)
-							 ,IWOL_DEF_SPECIAL_INSTR    VARCHAR2(254)
-                             ,IWOL_DEF_PRIORITY         VARCHAR2(4)
-							 ,IWOL_DEF_DEFECT_CODE      VARCHAR2(4)
-                             ,IWOL_DEF_ST_CHAIN         NUMBER(6)
-							 ,IWOL_DEF_X_SECT           VARCHAR2(1)
-                             ,IWOL_PERCENT_ADJUST       NUMBER(4,2)
-                             ,IWOL_PERCENT_ADJUST_CODE  NUMBER(2)
-							 ,iwol_wor                  number(4));
+   type wol_rec is record (iwol_id                   NUMBER(9)
+                          ,iwol_def_defect_id        NUMBER(8)
+							            ,iwol_schd_id              NUMBER(9)
+							            ,iwol_road_id              VARCHAR2(20)
+                          ,iwol_road_descr           VARCHAR2(80)
+							            ,iwol_def_locn_descr       VARCHAR2(1000) -- clb 05012011 Task 0107258
+                          ,iwol_def_defect_descr     VARCHAR2(254)
+							            ,iwol_def_special_instr    VARCHAR2(254)
+                          ,iwol_def_priority         VARCHAR2(4)
+							            ,iwol_def_defect_code      VARCHAR2(4)
+                          ,iwol_def_st_chain         NUMBER(6)
+							            ,iwol_def_x_sect           VARCHAR2(4)
+                          ,iwol_percent_adjust       NUMBER(4,2)
+                          ,iwol_percent_adjust_code  NUMBER(2)
+							            ,iwol_wor                  number(4));
    --
 
-     type boq_rec is record ( IBOQ_WOL_ID               NUMBER(9)
-                             ,IBOQ_STA_ITEM_CODE        VARCHAR2(10)
-                             ,IBOQ_DIM1                 NUMBER(10,2)
-                             ,IBOQ_DIM2                 NUMBER(10,2)
-                             ,IBOQ_DIM3                 NUMBER(10,2)
-                             ,IBOQ_QUANTITY             NUMBER(10,2)
-                             ,IBOQ_RATE                 NUMBER(10,2)
-                             ,IBOQ_COST                 NUMBER(10,2)
-                             ,IBOQ_PERCENT_ADJUST       NUMBER(4,2)
-                             ,IBOQ_PERCENT_ADJUST_CODE  NUMBER(2));
+     type boq_rec is record (iboq_wol_id               NUMBER(9)
+                            ,iboq_sta_item_code        VARCHAR2(10)
+                            ,iboq_dim1                 NUMBER(10,2)
+                            ,iboq_dim2                 NUMBER(10,2)
+                            ,iboq_dim3                 NUMBER(10,2)
+                            ,iboq_quantity             NUMBER(10,2)
+                            ,iboq_rate                 NUMBER(10,2)
+                            ,iboq_cost                 NUMBER(10,2)
+                            ,iboq_percent_adjust       NUMBER(4,2)
+                            ,iboq_percent_adjust_code  NUMBER(2));
    --
    type wor_table       is table of wor_rec index by       binary_integer;
    type wor_descr_table is table of wor_descr_rec index by binary_integer;
