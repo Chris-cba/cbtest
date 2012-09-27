@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.29   Nov 09 2011 15:40:58   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.30   Sep 27 2012 11:15:58   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Nov 09 2011 15:40:58  $
---       Date fetched Out : $Modtime:   Nov 09 2011 15:34:04  $
---       Version          : $Revision:   2.29  $
+--       Date into PVCS   : $Date:   Sep 27 2012 11:15:58  $
+--       Date fetched Out : $Modtime:   Sep 27 2012 11:00:22  $
+--       Version          : $Revision:   2.30  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 09-NOV-2011 15:34
+--       Generation Date  : 27-SEP-2012 11:00
 --
 --   Product metadata script
---   As at Release 4.4.0.0
+--   As at Release 4.6.0.0
 --
---   Copyright (c) exor corporation ltd, 2011
+--   Copyright (c) exor corporation ltd, 2012
 --
 --   TABLES PROCESSED
 --   ================
@@ -14549,8 +14549,8 @@ SELECT
        ,'This must be a valid Road Group.  It will be automatically placed on the header of all DoT work orders created from the GIS.'
        ,''
        ,'VARCHAR2'
-       ,'Y'
-       ,'N' FROM DUAL
+       ,'N'
+       ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'GISGRPD');
 --
@@ -14571,8 +14571,8 @@ SELECT
        ,'This must be a valid Road Group.  It will be automatically placed on the header of all local work orders created from the GIS.'
        ,''
        ,'VARCHAR2'
-       ,'Y'
-       ,'N' FROM DUAL
+       ,'N'
+       ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'GISGRPL');
 --
@@ -14593,8 +14593,8 @@ SELECT
        ,'This must be a valid Road Group Type.  It must correspond to the road groups named in the GISGRPD and GISGRPL options.'
        ,''
        ,'VARCHAR2'
-       ,'Y'
-       ,'N' FROM DUAL
+       ,'N'
+       ,'Y' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
                    WHERE HOL_ID = 'GISGRPTYP');
 --
