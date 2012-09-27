@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.15   Apr 07 2011 10:28:42   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata2.sql-arc   2.16   Sep 27 2012 11:16:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata2.sql  $
---       Date into PVCS   : $Date:   Apr 07 2011 10:28:42  $
---       Date fetched Out : $Modtime:   Apr 07 2011 10:25:24  $
---       Version          : $Revision:   2.15  $
+--       Date into PVCS   : $Date:   Sep 27 2012 11:16:40  $
+--       Date fetched Out : $Modtime:   Sep 27 2012 11:00:26  $
+--       Version          : $Revision:   2.16  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 07-APR-2011 10:25
+--       Generation Date  : 27-SEP-2012 11:00
 --
 --   Product metadata script
---   As at Release 4.4.0.0
+--   As at Release 4.6.0.0
 --
---   Copyright (c) exor corporation ltd, 2011
+--   Copyright (c) exor corporation ltd, 2012
 --
 --   TABLES PROCESSED
 --   ================
@@ -10574,7 +10574,7 @@ SELECT
        ,'Road Id'
        ,'Y'
        ,1
-       ,'RSE_END_DATE IS NULL'
+       ,''
        ,'N'
        ,''
        ,''
