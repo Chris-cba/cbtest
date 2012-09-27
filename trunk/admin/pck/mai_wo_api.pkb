@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.31   Jun 11 2012 11:57:38   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.32   Sep 27 2012 12:00:46   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jun 11 2012 11:57:38  $
---       Date fetched Out : $Modtime:   Jun 11 2012 11:05:22  $
---       PVCS Version     : $Revision:   3.31  $
+--       Date into PVCS   : $Date:   Sep 27 2012 12:00:46  $
+--       Date fetched Out : $Modtime:   Sep 27 2012 11:58:50  $
+--       PVCS Version     : $Revision:   3.32  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.31  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.32  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1229,9 +1229,9 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   --
   lv_sys_flag           VARCHAR2(1);
   lv_worrefgen          hig_option_values.hov_value%TYPE := hig.get_sysopt('WORREFGEN');
-  lv_gisgrptyp          hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPTYP');
-  lv_gisgrpl            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPL');
-  lv_gisgrpd            hig_option_values.hov_value%TYPE := hig.get_sysopt('GISGRPD');
+  lv_gisgrptyp          hig_option_values.hov_value%TYPE := hig.get_user_or_sys_opt('GISGRPTYP');
+  lv_gisgrpl            hig_option_values.hov_value%TYPE := hig.get_user_or_sys_opt('GISGRPL');
+  lv_gisgrpd            hig_option_values.hov_value%TYPE := hig.get_user_or_sys_opt('GISGRPD');
   lv_dumconcode         hig_option_values.hov_value%TYPE := NVL(hig.get_sysopt('DUMCONCODE'),'DEFAULT');
   lv_scheme_type_upd    hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPU'),'Y');
   lv_def_scheme_type_l  hig_option_values.hov_value%TYPE := NVL(hig.get_user_or_sys_opt('DEFSCHTYPL'),'LR');
