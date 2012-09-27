@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.17   May 09 2011 15:48:58   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.18   Sep 27 2012 11:19:30   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   May 09 2011 15:48:58  $
---       Date fetched Out : $Modtime:   May 09 2011 15:45:24  $
---       Version          : $Revision:   2.17  $
+--       Date into PVCS   : $Date:   Sep 27 2012 11:19:30  $
+--       Date fetched Out : $Modtime:   Sep 27 2012 11:00:34  $
+--       Version          : $Revision:   2.18  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 09-MAY-2011 15:45
+--       Generation Date  : 27-SEP-2012 11:00
 --
 --   Product metadata script
---   As at Release 4.4.0.0
+--   As at Release 4.6.0.0
 --
---   Copyright (c) exor corporation ltd, 2011
+--   Copyright (c) exor corporation ltd, 2012
 --
 --   TABLES PROCESSED
 --   ================
@@ -18488,6 +18488,468 @@ INSERT INTO HIG_NAVIGATOR
        ,HNV_HPR_PRODUCT
        )
 SELECT 
+        'Assets'
+       ,'work_order_lines'
+       ,'wol_bud_id'
+       ,'budgets'
+       ,'bud_id'
+       ,5
+       ,'Budget'
+       ,'wol_id'
+       ,'bud_id'
+       ,'-AWOL'
+       ,'-ABUD'
+       ,'budget'
+       ,''
+       ,'N'
+       ,'BUD_ICB_ITEM_CODE||BUD_ICB_SUB_ITEM_CODE||BUD_ICB_SUB_SUB_ITEM_CODE'
+       ,'hig_nav.concate_label(hig_nav.get_budget_descr(bud_sys_flag,bud_icb_item_code,bud_icb_sub_item_code,bud_icb_sub_sub_item_code,bud_agency))'
+       ,'hig_nav.concate_label(''Budget : ''||bud_value)'
+       ,'hig_nav.concate_label(''Committed : ''||BUD_COMMITTED)'
+       ,'hig_nav.concate_label(''Actual : ''||BUD_ACTUAL)'
+       ,'hig_nav.concate_label(''Balance : ''||hig_nav.get_bud_balance(bud_value,bud_committed,bud_actual))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ABUD');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'nm_inv_items_all'
+       ,'iit_ne_id'
+       ,'defects'
+       ,'def_iit_item_id'
+       ,2
+       ,'Defect'
+       ,'iit_ne_id'
+       ,'def_defect_id'
+       ,'-AST1'
+       ,'-ADEF'
+       ,'defect'
+       ,''
+       ,'N'
+       ,'def_defect_id'
+       ,'hig_nav.concate_label(def_status_code)'
+       ,'hig_nav.concate_label(DEF_ATV_ACTY_AREA_CODE)'
+       ,'hig_nav.concate_label(DEF_DEFECT_CODE)'
+       ,'hig_nav.concate_label(DEF_PRIORITY)'
+       ,'hig_nav.concate_label(DEF_LOCN_DESCR)'
+       ,'hig_nav.concate_label(DEF_DEFECT_DESCR)'
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ADEF');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'defects'
+       ,'def_are_report_id'
+       ,'activities_report'
+       ,'are_report_id'
+       ,3
+       ,'Inspection'
+       ,'def_defect_id'
+       ,'are_report_id'
+       ,'-ADEF'
+       ,'-AINSP'
+       ,'inspection'
+       ,''
+       ,'Y'
+       ,'ARE_REPORT_ID'
+       ,'hig_nav.concate_label(hig_nav.get_hig_code_meaning(''MAINT_INSP_FLAG'',ARE_MAINT_INSP_FLAG))'
+       ,'hig_nav.concate_label(ARE_INITIATION_TYPE)'
+       ,'hig_nav.concate_label(ARE_SURFACE_CONDITION)'
+       ,'hig_nav.concate_label(hig_nav.get_hig_user_initials(ARE_PEO_PERSON_ID_ACTIONED))'
+       ,'hig_nav.concate_label(ARE_BATCH_ID)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-AINSP');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'defects'
+       ,'def_defect_id'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,3
+       ,'Repair'
+       ,'def_defect_id'
+       ,'rep_def_defect_id||REP_ACTION_CAT'
+       ,'-ADEF'
+       ,'-AREP'
+       ,'repair'
+       ,''
+       ,'N'
+       ,'hig_nav.get_hig_code_meaning(''REPAIR_TYPE'',REP_ACTION_CAT)'
+       ,'hig_nav.concate_label(REP_TRE_TREAT_CODE)'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-AREP');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'nm_inv_items_all'
+       ,'iit_ne_id'
+       ,'schedule_roads'
+       ,'schr_iit_item_id'
+       ,2
+       ,'Cyclic Schedule'
+       ,'iit_ne_id'
+       ,'schr_schd_id'
+       ,'-AST1'
+       ,'-ASCH'
+       ,'works_order'
+       ,''
+       ,'N'
+       ,'schr_schd_id'
+       ,'hig_nav.concate_label(hig_nav.get_schedule_name(schr_schd_id))'
+       ,'hig_nav.concate_label(hig_nav.get_schedule_work_category(schr_schd_id))'
+       ,'hig_nav.concate_label(hig_nav.get_schedule_road_group_id(schr_schd_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ASCH');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'schedule_roads'
+       ,'schr_schd_id'
+       ,'work_order_lines'
+       ,'wol_schd_id'
+       ,3
+       ,'Work Order Line'
+       ,'schr_schd_id'
+       ,'wol_id'
+       ,'-ASCH'
+       ,'-ASCWOL'
+       ,'work_order_line'
+       ,' And wol_iit_item_id = schr_iit_item_id '
+       ,'N'
+       ,'wol_id'
+       ,'hig_nav.concate_label(wol_status_code)'
+       ,'hig_nav.concate_label(hig_nav.get_road_unique(wol_rse_he_id))'
+       ,'hig_nav.concate_label(hig_nav.get_road_descr(wol_rse_he_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ASCWOL');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'work_order_lines'
+       ,'wol_works_order_no'
+       ,'work_orders'
+       ,'wor_works_order_no'
+       ,4
+       ,'Work Order'
+       ,'wol_id'
+       ,'wor_works_order_no'
+       ,'-ASCWOL'
+       ,'-ASCWOR'
+       ,'works_order'
+       ,''
+       ,'N'
+       ,'wor_works_order_no'
+       ,'hig_nav.concate_label(wor_descr)'
+       ,'hig_nav.concate_label(wor_scheme_type)'
+       ,'hig_nav.concate_label(hig_nav.get_contract_det(wor_con_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-ASCWOR');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
         'Works Orders'
        ,'defects'
        ,'def_iit_item_id'
@@ -18520,6 +18982,138 @@ SELECT
        ,'AST' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
                    WHERE HNV_CHILD_ALIAS = '-AST');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'repairs'
+       ,'rep_def_defect_id'
+       ,'work_order_lines'
+       ,'wol_def_defect_id'
+       ,4
+       ,'Work Order Line'
+       ,'rep_def_defect_id||REP_ACTION_CAT'
+       ,'wol_id'
+       ,'-AREP'
+       ,'-AWOL'
+       ,'work_order_line'
+       ,'AND REP_ACTION_CAT = WOL_REP_ACTION_CAT'
+       ,'N'
+       ,'wol_id'
+       ,'hig_nav.concate_label(wol_status_code)'
+       ,'hig_nav.concate_label(hig_nav.get_road_unique(wol_rse_he_id))'
+       ,'hig_nav.concate_label(hig_nav.get_road_descr(wol_rse_he_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-AWOL');
+--
+INSERT INTO HIG_NAVIGATOR
+       (HNV_HIERARCHY_TYPE
+       ,HNV_PARENT_TABLE
+       ,HNV_PARENT_COLUMN
+       ,HNV_CHILD_TABLE
+       ,HNV_CHILD_COLUMN
+       ,HNV_HIERARCHY_LEVEL
+       ,HNV_HIERARCHY_LABEL
+       ,HNV_PARENT_ID
+       ,HNV_CHILD_ID
+       ,HNV_PARENT_ALIAS
+       ,HNV_CHILD_ALIAS
+       ,HNV_ICON_NAME
+       ,HNV_ADDITIONAL_COND
+       ,HNV_PRIMARY_HIERARCHY
+       ,HNV_HIER_LABEL_1
+       ,HNV_HIER_LABEL_2
+       ,HNV_HIER_LABEL_3
+       ,HNV_HIER_LABEL_4
+       ,HNV_HIER_LABEL_5
+       ,HNV_HIER_LABEL_6
+       ,HNV_HIER_LABEL_7
+       ,HNV_HIER_LABEL_8
+       ,HNV_HIER_LABEL_9
+       ,HNV_HIER_LABEL_10
+       ,HNV_HIERARCHY_SEQ
+       ,HNV_DATE_CREATED
+       ,HNV_CREATED_BY
+       ,HNV_DATE_MODIFIED
+       ,HNV_MODIFIED_BY
+       ,HNV_HPR_PRODUCT
+       )
+SELECT 
+        'Assets'
+       ,'work_order_lines'
+       ,'wol_works_order_no'
+       ,'work_orders'
+       ,'wor_works_order_no'
+       ,5
+       ,'Work Order'
+       ,'wol_id'
+       ,'wor_works_order_no'
+       ,'-AWOL'
+       ,'-AWOR'
+       ,'works_order'
+       ,''
+       ,'N'
+       ,'wor_works_order_no'
+       ,'hig_nav.concate_label(wor_descr)'
+       ,'hig_nav.concate_label(wor_scheme_type)'
+       ,'hig_nav.concate_label(hig_nav.get_contract_det(wor_con_id))'
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,''
+       ,null
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120518104105','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,'MAI' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR
+                   WHERE HNV_CHILD_ALIAS = '-AWOR');
 --
 INSERT INTO HIG_NAVIGATOR
        (HNV_HIERARCHY_TYPE
@@ -19637,6 +20231,36 @@ SELECT
                    WHERE HNM_MODULE_NAME = 'MAI3808'
                     AND  HNM_MODULE_PARAM = 'nav_defect_id'
                     AND  HNM_HIERARCHY_LABEL = 'Repair');
+--
+INSERT INTO HIG_NAVIGATOR_MODULES
+       (HNM_MODULE_NAME
+       ,HNM_MODULE_PARAM
+       ,HNM_PRIMARY_MODULE
+       ,HNM_SEQUENCE
+       ,HNM_TABLE_NAME
+       ,HNM_FIELD_NAME
+       ,HNM_HIERARCHY_LABEL
+       ,HNM_DATE_CREATED
+       ,HNM_CREATED_BY
+       ,HNM_DATE_MODIFIED
+       ,HNM_MODIFIED_BY
+       )
+SELECT 
+        'MAI3860'
+       ,'SCHD_ID'
+       ,'Y'
+       ,1
+       ,''
+       ,''
+       ,'Cyclic Schedule'
+       ,to_date('20120509105635','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS'
+       ,to_date('20120509105635','YYYYMMDDHH24MISS')
+       ,'HIGHWAYS' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_NAVIGATOR_MODULES
+                   WHERE HNM_MODULE_NAME = 'MAI3860'
+                    AND  HNM_MODULE_PARAM = 'SCHD_ID'
+                    AND  HNM_HIERARCHY_LABEL = 'Cyclic Schedule');
 --
 --
 --
