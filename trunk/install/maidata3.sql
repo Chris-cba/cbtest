@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.14   Sep 27 2012 11:18:48   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.15   Sep 28 2012 11:27:02   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   Sep 27 2012 11:18:48  $
---       Date fetched Out : $Modtime:   Sep 27 2012 11:00:28  $
---       Version          : $Revision:   2.14  $
+--       Date into PVCS   : $Date:   Sep 28 2012 11:27:02  $
+--       Date fetched Out : $Modtime:   Sep 28 2012 11:14:20  $
+--       Version          : $Revision:   2.15  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 27-SEP-2012 11:00
+--       Generation Date  : 28-SEP-2012 11:14
 --
 --   Product metadata script
 --   As at Release 4.6.0.0
@@ -5337,32 +5337,10 @@ INSERT INTO DOC_GATE_SYNS
        )
 SELECT 
         'INV_ITEMS_ALL'
-       ,'INV_ITEMS_ALL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM DOC_GATE_SYNS
-                   WHERE DGS_DGT_TABLE_NAME = 'INV_ITEMS_ALL'
-                    AND  DGS_TABLE_SYN = 'INV_ITEMS_ALL');
---
-INSERT INTO DOC_GATE_SYNS
-       (DGS_DGT_TABLE_NAME
-       ,DGS_TABLE_SYN
-       )
-SELECT 
-        'INV_ITEMS_ALL'
        ,'INV_ON_ROADS' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM DOC_GATE_SYNS
                    WHERE DGS_DGT_TABLE_NAME = 'INV_ITEMS_ALL'
                     AND  DGS_TABLE_SYN = 'INV_ON_ROADS');
---
-INSERT INTO DOC_GATE_SYNS
-       (DGS_DGT_TABLE_NAME
-       ,DGS_TABLE_SYN
-       )
-SELECT 
-        'NM_INV_ITEMS_ALL'
-       ,'NM_INV_ITEMS_ALL' FROM DUAL
- WHERE NOT EXISTS (SELECT 1 FROM DOC_GATE_SYNS
-                   WHERE DGS_DGT_TABLE_NAME = 'NM_INV_ITEMS_ALL'
-                    AND  DGS_TABLE_SYN = 'NM_INV_ITEMS_ALL');
 --
 --
 --
