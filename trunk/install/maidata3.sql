@@ -2,13 +2,13 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.15   Sep 28 2012 11:27:02   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata3.sql-arc   2.16   Sep 28 2012 13:46:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata3.sql  $
---       Date into PVCS   : $Date:   Sep 28 2012 11:27:02  $
---       Date fetched Out : $Modtime:   Sep 28 2012 11:14:20  $
---       Version          : $Revision:   2.15  $
+--       Date into PVCS   : $Date:   Sep 28 2012 13:46:22  $
+--       Date fetched Out : $Modtime:   Sep 28 2012 13:34:24  $
+--       Version          : $Revision:   2.16  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 28-SEP-2012 11:14
+--       Generation Date  : 28-SEP-2012 13:34
 --
 --   Product metadata script
 --   As at Release 4.6.0.0
@@ -5135,7 +5135,7 @@ INSERT INTO DOC_GATEWAYS
        ,DGT_END_DATE
        )
 SELECT 
-        'NM_INV_ITEMS_ALL'
+        'NM_INV_ITEMS'
        ,'Asset items all'
        ,'IIT_NE_ID'
        ,'IIT_INV_TYPE||''-''||DECODE(IIT_X_SECT,Null,Null,IIT_X_SECT||''-'')||IIT_PRIMARY_KEY'
@@ -5145,7 +5145,7 @@ SELECT
        ,null
        ,null FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM DOC_GATEWAYS
-                   WHERE DGT_TABLE_NAME = 'NM_INV_ITEMS_ALL');
+                   WHERE DGT_TABLE_NAME = 'NM_INV_ITEMS');
 --
 INSERT INTO DOC_GATEWAYS
        (DGT_TABLE_NAME
