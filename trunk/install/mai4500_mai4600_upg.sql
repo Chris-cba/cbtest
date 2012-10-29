@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4500_mai4600_upg.sql-arc   1.0   Sep 27 2012 12:10:46   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4500_mai4600_upg.sql-arc   1.1   Oct 29 2012 09:42:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai4500_mai4600_upg.sql  $
---       Date into PVCS   : $Date:   Sep 27 2012 12:10:46  $
---       Date fetched Out : $Modtime:   Sep 27 2012 12:08:44  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Oct 29 2012 09:42:22  $
+--       Date fetched Out : $Modtime:   Oct 29 2012 09:41:14  $
+--       Version          : $Revision:   1.1  $
 --
 --   Product upgrade script
 --
@@ -43,6 +43,7 @@ begin
    hig2.pre_upgrade_check (p_product               => 'MAI'
                           ,p_new_version           => '4.6.0.0'
                           ,p_allowed_old_version_1 => '4.5.0.0'
+                          ,p_allowed_old_version_2 => '4.5.2.0'
                           );
 
  hig2.product_exists_at_version (p_product        => 'HIG'
