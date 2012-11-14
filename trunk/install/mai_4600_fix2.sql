@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.1   Nov 14 2012 11:57:52   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.2   Nov 14 2012 12:05:38   Rob.Coupe  $
 --       Module Name      : $Workfile:   mai_4600_fix2.sql  $
---       Date into PVCS   : $Date:   Nov 14 2012 11:57:52  $
---       Date fetched Out : $Modtime:   Nov 14 2012 11:57:14  $
---       PVCS Version     : $Revision:   1.1  $
+--       Date into PVCS   : $Date:   Nov 14 2012 12:05:38  $
+--       Date fetched Out : $Modtime:   Nov 14 2012 12:05:00  $
+--       PVCS Version     : $Revision:   1.2  $
 --
 ----------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -56,7 +56,7 @@ BEGIN
  END IF;
 
  --
- -- Check that HIG has been installed @ v4.4.0.0
+ -- Check that HIG has been installed @ v4.6.0.0
  --
  hig2.product_exists_at_version (p_product        => 'MAI'
                                 ,p_VERSION        => '4.6.0.0'
@@ -114,6 +114,7 @@ SET FEEDBACK ON
 begin
   nm3ddl.create_synonym_for_object('MAIAUSEC');
 end;  
+/
 SET FEEDBACK OFF
 --
 SET TERM ON 
@@ -124,6 +125,7 @@ SET FEEDBACK ON
 begin
   nm3ddl.create_synonym_for_object('GET_ADMIN_UNIT');
 end;  
+/
 SET FEEDBACK OFF
 
 --------------------------------------------------------------------------------
