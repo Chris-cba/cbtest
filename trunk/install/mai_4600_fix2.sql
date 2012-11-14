@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.0   Nov 14 2012 11:08:58   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.1   Nov 14 2012 11:57:52   Rob.Coupe  $
 --       Module Name      : $Workfile:   mai_4600_fix2.sql  $
---       Date into PVCS   : $Date:   Nov 14 2012 11:08:58  $
---       Date fetched Out : $Modtime:   Nov 14 2012 11:06:28  $
---       PVCS Version     : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Nov 14 2012 11:57:52  $
+--       Date fetched Out : $Modtime:   Nov 14 2012 11:57:14  $
+--       PVCS Version     : $Revision:   1.1  $
 --
 ----------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -91,9 +91,19 @@ SET FEEDBACK ON
 start maiausec.pkw
 SET FEEDBACK OFF
 --
-
 --------------------------------------------------------------------------------
--- Synonym for package
+-- Function
+--------------------------------------------------------------------------------
+--
+SET TERM ON 
+PROMPT get_admin_unit.fnw
+SET TERM OFF
+--
+SET FEEDBACK ON
+start get_admin_unit.fnw
+SET FEEDBACK OFF
+--------------------------------------------------------------------------------
+-- Synonyms for package and function
 --------------------------------------------------------------------------------
 --
 SET TERM ON 
@@ -105,6 +115,29 @@ begin
   nm3ddl.create_synonym_for_object('MAIAUSEC');
 end;  
 SET FEEDBACK OFF
+--
+SET TERM ON 
+PROMPT Creating synonym for get_admin_unit
+SET TERM OFF
+--
+SET FEEDBACK ON
+begin
+  nm3ddl.create_synonym_for_object('GET_ADMIN_UNIT');
+end;  
+SET FEEDBACK OFF
+
+--------------------------------------------------------------------------------
+-- Apply the security policies
+--------------------------------------------------------------------------------
+--
+SET TERM ON 
+PROMPT Creating security policies
+SET TERM OFF
+--
+SET FEEDBACK ON
+start add_maiausec_policy.sql
+SET FEEDBACK OFF
+
 --------------------------------------------------------------------------------
 -- Update hig_upgrades with fix ID
 --------------------------------------------------------------------------------
