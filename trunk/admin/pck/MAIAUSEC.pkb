@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.1   Nov 19 2012 14:36:34   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.2   Nov 19 2012 14:40:04   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 19 2012 14:36:34  $
---       Date fetched Out : $Modtime:   Nov 19 2012 14:36:18  $
---       SCCS Version     : $Revision:   1.1  $
+--       Date into SCCS   : $Date:   Nov 19 2012 14:40:04  $
+--       Date fetched Out : $Modtime:   Nov 19 2012 14:39:38  $
+--       SCCS Version     : $Revision:   1.2  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.1  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.2  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -368,6 +368,15 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN get_string('NAU_ADMIN_UNIT')||' OR '||get_up_string('NAU_ADMIN_UNIT');
+    END IF; 
+ END; 
+function NAU_56_predicate_DML( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
+BEGIN 
+    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
+     THEN 
+       RETURN NULL; 
+    ELSE 
+       RETURN get_string('NAU_ADMIN_UNIT');
     END IF; 
  END; 
 function TT1_59_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
