@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.2   Nov 14 2012 12:05:38   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4600_fix2.sql-arc   1.3   Nov 19 2012 15:19:06   Rob.Coupe  $
 --       Module Name      : $Workfile:   mai_4600_fix2.sql  $
---       Date into PVCS   : $Date:   Nov 14 2012 12:05:38  $
---       Date fetched Out : $Modtime:   Nov 14 2012 12:05:00  $
---       PVCS Version     : $Revision:   1.2  $
+--       Date into PVCS   : $Date:   Nov 19 2012 15:19:06  $
+--       Date fetched Out : $Modtime:   Nov 19 2012 15:18:38  $
+--       PVCS Version     : $Revision:   1.3  $
 --
 ----------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -66,6 +66,20 @@ END;
 /
 WHENEVER SQLERROR CONTINUE
 --
+--------------------------------------------------------------------------------
+-- Drop the security policies
+--------------------------------------------------------------------------------
+--
+SET TERM ON 
+PROMPT Remove existing security policies
+SET TERM OFF
+--
+SET FEEDBACK ON
+start drop_maiausec_policy.sql
+SET FEEDBACK OFF
+
+
+
 --------------------------------------------------------------------------------
 -- Package Headers
 --------------------------------------------------------------------------------
