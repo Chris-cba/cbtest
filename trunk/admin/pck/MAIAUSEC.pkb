@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.3   Nov 21 2012 11:29:16   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.4   Nov 21 2012 13:22:48   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 21 2012 11:29:16  $
---       Date fetched Out : $Modtime:   Nov 21 2012 11:28:08  $
---       SCCS Version     : $Revision:   1.3  $
+--       Date into SCCS   : $Date:   Nov 21 2012 13:22:48  $
+--       Date fetched Out : $Modtime:   Nov 21 2012 13:21:48  $
+--       SCCS Version     : $Revision:   1.4  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.3  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.4  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -442,8 +442,8 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
-                'where oun_org_id = con_contr_org_id ) or oun_admin_org_id is null ';
+       RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
+                'where oun_org_id = con_contr_org_id )'||')' ; -- or oun_admin_org_id is null ';
     END IF; 
  END;
 FUNCTION NE_predicate_READ( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
