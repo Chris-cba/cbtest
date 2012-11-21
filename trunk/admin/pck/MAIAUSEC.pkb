@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.4   Nov 21 2012 13:22:48   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.5   Nov 21 2012 15:12:52   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 21 2012 13:22:48  $
---       Date fetched Out : $Modtime:   Nov 21 2012 13:21:48  $
---       SCCS Version     : $Revision:   1.4  $
+--       Date into SCCS   : $Date:   Nov 21 2012 15:12:52  $
+--       Date fetched Out : $Modtime:   Nov 21 2012 15:10:58  $
+--       SCCS Version     : $Revision:   1.5  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.4  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.5  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -443,7 +443,19 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
+                'where oun_org_id = con_contr_org_id )'||')'||
+                ' or exists ( select 1 from contractor_users where cou_oun_org_id = oun_org_id '||
+                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||							
+                ' and cou_hus_user_id = Sys_Context('||''''||'NM3CORE'||''''||','||''''||'USER_ID'||''''||') )'||CHR(10)|| 
+                ' or exists ( select 1 from contractor_roles, hig_user_roles '||
+                ' where cor_oun_org_id = oun_org_id and cor_role = hur_role '||
+                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'A'||''''||				
+                ' and hur_username = Sys_Context('||''''||'NM3_SECURITY_CTX'||''''||','||''''||'USERNAME'||''''||') ) ';
+/*
+
+	RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
                 'where oun_org_id = con_contr_org_id )'||')' ; -- or oun_admin_org_id is null ';
+*/				
     END IF; 
  END;
 FUNCTION NE_predicate_READ( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
@@ -494,6 +506,7 @@ BEGIN
      select hus_admin_unit into luser_au
      from hig_users where hus_user_id =  sys_context('NM3CORE', 'USER_ID');
      NM3CTX.SET_CORE_CONTEXT('USER_ADMIN_UNIT', luser_au );
+     NM3CTX.SET_CONTEXT('CONSECMODE', hig.get_sysopt('CONSECMODE') ); 
    end;
    select nua_admin_unit 
    bulk collect into au_list.ia 
