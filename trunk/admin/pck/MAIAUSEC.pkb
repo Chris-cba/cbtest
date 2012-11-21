@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.2   Nov 19 2012 14:40:04   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.3   Nov 21 2012 11:29:16   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 19 2012 14:40:04  $
---       Date fetched Out : $Modtime:   Nov 19 2012 14:39:38  $
---       SCCS Version     : $Revision:   1.2  $
+--       Date into SCCS   : $Date:   Nov 21 2012 11:29:16  $
+--       Date fetched Out : $Modtime:   Nov 21 2012 11:28:08  $
+--       SCCS Version     : $Revision:   1.3  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.2  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.3  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -472,7 +472,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('nm_admin_unit')||' OR '||get_up_string('nm_admin_unit');--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
+       RETURN '('||get_string('nm_admin_unit')||' OR '||get_up_string('nm_admin_unit')||')';--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
     END IF; 
  END;
 
