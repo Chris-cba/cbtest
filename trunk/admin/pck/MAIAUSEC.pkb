@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.5   Nov 21 2012 15:12:52   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.6   Nov 22 2012 12:33:08   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 21 2012 15:12:52  $
---       Date fetched Out : $Modtime:   Nov 21 2012 15:10:58  $
---       SCCS Version     : $Revision:   1.5  $
+--       Date into SCCS   : $Date:   Nov 22 2012 12:33:08  $
+--       Date fetched Out : $Modtime:   Nov 22 2012 12:29:12  $
+--       SCCS Version     : $Revision:   1.6  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.5  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.6  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -449,7 +449,7 @@ BEGIN
                 ' and cou_hus_user_id = Sys_Context('||''''||'NM3CORE'||''''||','||''''||'USER_ID'||''''||') )'||CHR(10)|| 
                 ' or exists ( select 1 from contractor_roles, hig_user_roles '||
                 ' where cor_oun_org_id = oun_org_id and cor_role = hur_role '||
-                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'A'||''''||				
+                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||				
                 ' and hur_username = Sys_Context('||''''||'NM3_SECURITY_CTX'||''''||','||''''||'USERNAME'||''''||') ) ';
 /*
 
