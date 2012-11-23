@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/ROAD_SEG_MEMBS_ALL.vw-arc   1.0   Nov 23 2012 18:21:54   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/ROAD_SEG_MEMBS_ALL.vw-arc   1.1   Nov 23 2012 18:24:24   Rob.Coupe  $
 --       Module Name      : $Workfile:   ROAD_SEG_MEMBS_ALL.vw  $
---       Date into PVCS   : $Date:   Nov 23 2012 18:21:54  $
---       Date fetched Out : $Modtime:   Nov 23 2012 18:12:20  $
---       PVCS Version     : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Nov 23 2012 18:24:24  $
+--       Date fetched Out : $Modtime:   Nov 23 2012 18:23:42  $
+--       PVCS Version     : $Revision:   1.1  $
 --
 ----------------------------------------------------------------------------
 --   Copyright (c) 2012 Bentley Systems Incorporated.
@@ -25,19 +25,8 @@ CREATE OR REPLACE FORCE VIEW HIGHWAYS.ROAD_SEG_MEMBS_ALL
 )
 AS
    SELECT -----------------------------------------------------------------------------
-                                                      --   SCCS Identifiers :-
-                                                                            --
-                 --       sccsid           : @(#)translation.sql 1.37 06/23/05
-                                   --       Module Name      : translation.sql
-                                 --       Date into SCCS   : 05/06/23 16:09:28
-                                 --       Date fetched Out : 05/06/23 16:10:34
-                                              --       SCCS Version     : 1.37
-                                                                            --
-                                                           -- Translation View
-                                                                            --
- -----------------------------------------------------------------------------
-                                   -- Copyright (c) exor corporation ltd, 2005
- -----------------------------------------------------------------------------
+   -- changed in mai4600 fix 5
+   ---------------------------------------------------------------------------
          nm.nm_ne_id_in,
          nm.nm_ne_id_of,
          nm.nm_start_date,
