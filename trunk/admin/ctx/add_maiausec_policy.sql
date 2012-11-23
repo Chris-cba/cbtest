@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.1   Nov 19 2012 14:51:00   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.2   Nov 23 2012 16:24:22   Rob.Coupe  $
 --       Module Name      : $Workfile:   add_maiausec_policy.sql  $
---       Date into SCCS   : $Date:   Nov 19 2012 14:51:00  $
---       Date fetched Out : $Modtime:   Nov 19 2012 14:46:28  $
---       SCCS Version     : $Revision:   1.1  $
+--       Date into SCCS   : $Date:   Nov 23 2012 16:24:22  $
+--       Date fetched Out : $Modtime:   Nov 23 2012 16:22:52  $
+--       SCCS Version     : $Revision:   1.2  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
@@ -109,9 +109,11 @@ add_policy ( p_policy_name    => 'ICP_67_AU_READ'            ,p_object_name => '
 
 add_policy ( p_policy_name    => 'CONTRACTS_AU_READ'            ,p_object_name => 'ORG_UNITS'            ,p_policy_function => 'MAIAUSEC.CONTRACTS_PREDICATE_READ'            ,p_statement_types => 'SELECT' );
 add_policy ( p_policy_name    => 'NE_PREDICATE_READ'            ,p_object_name => 'NM_ELEMENTS_ALL'      ,p_policy_function => 'MAIAUSEC.NE_PREDICATE_READ'                   ,p_statement_types => 'SELECT' );
-add_policy ( p_policy_name    => 'NE_PREDICATE_DML'             ,p_object_name => 'NM_ELEMENTS_ALL'      ,p_policy_function => 'MAIAUSEC.NE_PREDICATE_DML'                    ,p_statement_types => 'INSERT,UPDATE,DELETE' );
+add_policy ( p_policy_name    => 'NE_PREDICATE_INS'             ,p_object_name => 'NM_ELEMENTS_ALL'      ,p_policy_function => 'MAIAUSEC.NE_PREDICATE_DML'                    ,p_statement_types => 'INSERT,UPDATE,DELETE' );
+add_policy ( p_policy_name    => 'NE_PREDICATE_UPDEL'             ,p_object_name => 'NM_ELEMENTS_ALL'       ,p_policy_function => 'MAIAUSEC.NE_PREDICATE_READ'                    ,p_statement_types => 'UPDATE,DELETE' );
 add_policy ( p_policy_name    => 'NM_PREDICATE_READ'            ,p_object_name => 'NM_MEMBERS_ALL'       ,p_policy_function => 'MAIAUSEC.NM_PREDICATE_READ'                   ,p_statement_types => 'SELECT' );
-add_policy ( p_policy_name    => 'NM_PREDICATE_DML'             ,p_object_name => 'NM_MEMBERS_ALL'       ,p_policy_function => 'MAIAUSEC.NM_PREDICATE_DML'                    ,p_statement_types => 'INSERT,UPDATE,DELETE' );
+add_policy ( p_policy_name    => 'NM_PREDICATE_INS'             ,p_object_name => 'NM_MEMBERS_ALL'       ,p_policy_function => 'MAIAUSEC.NM_PREDICATE_DML'                    ,p_statement_types => 'INSERT' );
+add_policy ( p_policy_name    => 'NM_PREDICATE_UPDEL'             ,p_object_name => 'NM_MEMBERS_ALL'       ,p_policy_function => 'MAIAUSEC.NM_PREDICATE_READ'                    ,p_statement_types => 'UPDATE,DELETE' );
 
 --
    FOR l_count IN 1..l_tab_policy_name.COUNT
