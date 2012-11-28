@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.8   Nov 28 2012 09:26:12   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.9   Nov 28 2012 09:38:18   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:26:12  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:25:00  $
---       SCCS Version     : $Revision:   1.8  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:38:18  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:38:02  $
+--       SCCS Version     : $Revision:   1.9  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.8  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.9  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -80,15 +80,6 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN get_string('(select nau_admin_unit from nm_admin_units where nau_authority_code = ICB_AGENCY_CODE )'); 
-    END IF; 
- END; 
-function DRL_14_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('DRL_DOC_ADMIN_UNIT'); 
     END IF; 
  END; 
 function MAW_17_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -206,15 +197,6 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN get_string('get_admin_unit( LFR_RSE_HE_ID)'); 
-    END IF; 
- END; 
-function DOC_53_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('DOC_ADMIN_UNIT'); 
     END IF; 
  END; 
 function SCH_61_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
