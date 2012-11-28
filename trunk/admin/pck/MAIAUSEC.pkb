@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.9   Nov 28 2012 09:38:18   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.10   Nov 28 2012 09:50:40   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:38:18  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:38:02  $
---       SCCS Version     : $Revision:   1.9  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:50:40  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:49:20  $
+--       SCCS Version     : $Revision:   1.10  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.9  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.10  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -100,15 +100,6 @@ BEGIN
        RETURN get_string('get_admin_unit( DEF_RSE_HE_ID)'); 
     END IF; 
  END; 
-function HFC_19_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('HFC_NAU_ADMIN_UNIT'); 
-    END IF; 
- END; 
 function ARE_20_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
 BEGIN 
     IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
@@ -134,15 +125,6 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN get_string('get_admin_unit( WOL_RSE_HE_ID)'); 
-    END IF; 
- END; 
-function HPA_25_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('HPAL_ADMIN_UNIT'); 
     END IF; 
  END; 
 function DLD_34_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -215,15 +197,6 @@ BEGIN
        RETURN NULL; 
     ELSE 
        RETURN get_string('get_admin_unit( REP_RSE_HE_ID)'); 
-    END IF; 
- END; 
-function SEC_64_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('SEC_ADMIN_UNIT'); 
     END IF; 
  END; 
 ---
