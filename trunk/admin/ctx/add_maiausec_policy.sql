@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.6   Nov 28 2012 09:41:04   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.7   Nov 28 2012 09:45:26   Rob.Coupe  $
 --       Module Name      : $Workfile:   add_maiausec_policy.sql  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:41:04  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:40:52  $
---       SCCS Version     : $Revision:   1.6  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:45:26  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:45:06  $
+--       SCCS Version     : $Revision:   1.7  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
@@ -65,11 +65,9 @@ add_policy ( p_policy_name    => 'BUD_12_AU_READ'            ,p_object_name => '
 add_policy ( p_policy_name    => 'ICB_13_AU_READ'            ,p_object_name => 'ITEM_CODE_BREAKDOWNS'            ,p_policy_function => 'MAIAUSEC.ICB_13_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'MAW_17_AU_READ'            ,p_object_name => 'MAI_AUTO_WO_RULES'            ,p_policy_function => 'MAIAUSEC.MAW_17_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'DEF_18_AU_READ'            ,p_object_name => 'DEFECTS'            ,p_policy_function => 'MAIAUSEC.DEF_18_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
-add_policy ( p_policy_name    => 'HFC_19_AU_READ'            ,p_object_name => 'HIG_FTP_CONNECTIONS'            ,p_policy_function => 'MAIAUSEC.HFC_19_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'ARE_20_AU_READ'            ,p_object_name => 'ACTIVITIES_REPORT'            ,p_policy_function => 'MAIAUSEC.ARE_20_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'DEF_22_AU_READ'            ,p_object_name => 'MAI_INSP_LOAD_ERROR_DEF'            ,p_policy_function => 'MAIAUSEC.DEF_22_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'WOL_23_AU_READ'            ,p_object_name => 'WORK_ORDER_LINES'            ,p_policy_function => 'MAIAUSEC.WOL_23_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
-add_policy ( p_policy_name    => 'HPA_25_AU_READ'            ,p_object_name => 'HIG_PROCESS_ALERT_LOG'            ,p_policy_function => 'MAIAUSEC.HPA_25_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'DLD_34_AU_READ'            ,p_object_name => 'DELETED_DEFECTS'            ,p_policy_function => 'MAIAUSEC.DLD_34_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'ARE_42_AU_READ'            ,p_object_name => 'MAI_INSP_LOAD_ERROR_ARE'            ,p_policy_function => 'MAIAUSEC.ARE_42_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'SCH_45_AU_READ'            ,p_object_name => 'SCHEDULE_ROADS'            ,p_policy_function => 'MAIAUSEC.SCH_45_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
@@ -78,7 +76,6 @@ add_policy ( p_policy_name    => 'REP_47_AU_READ'            ,p_object_name => '
 add_policy ( p_policy_name    => 'LFR_49_AU_READ'            ,p_object_name => 'LOCAL_FREQS'            ,p_policy_function => 'MAIAUSEC.LFR_49_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'SCH_61_AU_READ'            ,p_object_name => 'SCHEDULES'            ,p_policy_function => 'MAIAUSEC.SCH_61_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'REP_62_AU_READ'            ,p_object_name => 'MAI_INSP_LOAD_ERROR_REP'            ,p_policy_function => 'MAIAUSEC.REP_62_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
-add_policy ( p_policy_name    => 'SEC_64_AU_READ'            ,p_object_name => 'NM3_SECTOR_GROUPS'            ,p_policy_function => 'MAIAUSEC.SEC_64_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 --
 --
 -- Manual ones
