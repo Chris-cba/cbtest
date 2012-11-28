@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.5   Nov 28 2012 09:36:18   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.6   Nov 28 2012 09:41:04   Rob.Coupe  $
 --       Module Name      : $Workfile:   add_maiausec_policy.sql  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:36:18  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:36:02  $
---       SCCS Version     : $Revision:   1.5  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:41:04  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:40:52  $
+--       SCCS Version     : $Revision:   1.6  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
@@ -63,7 +63,6 @@ BEGIN
 add_policy ( p_policy_name    => 'DSR_6_AU_READ'            ,p_object_name => 'DEF_SUPERSEDING_RULES'            ,p_policy_function => 'MAIAUSEC.DSR_6_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'BUD_12_AU_READ'            ,p_object_name => 'BUDGETS'            ,p_policy_function => 'MAIAUSEC.BUD_12_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'ICB_13_AU_READ'            ,p_object_name => 'ITEM_CODE_BREAKDOWNS'            ,p_policy_function => 'MAIAUSEC.ICB_13_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
-add_policy ( p_policy_name    => 'DRL_14_AU_READ'            ,p_object_name => 'DOC_REDIRECTION_LOG'            ,p_policy_function => 'MAIAUSEC.DRL_14_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'MAW_17_AU_READ'            ,p_object_name => 'MAI_AUTO_WO_RULES'            ,p_policy_function => 'MAIAUSEC.MAW_17_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'DEF_18_AU_READ'            ,p_object_name => 'DEFECTS'            ,p_policy_function => 'MAIAUSEC.DEF_18_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
 add_policy ( p_policy_name    => 'HFC_19_AU_READ'            ,p_object_name => 'HIG_FTP_CONNECTIONS'            ,p_policy_function => 'MAIAUSEC.HFC_19_PREDICATE_READ'            ,p_statement_types => 'SELECT,INSERT,UPDATE,DELETE' ); 
