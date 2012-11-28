@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkh-arc   1.4   Nov 28 2012 09:23:38   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkh-arc   1.5   Nov 28 2012 09:39:06   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkh  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:23:38  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:23:16  $
---       SCCS Version     : $Revision:   1.4  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:39:06  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:38:44  $
+--       SCCS Version     : $Revision:   1.5  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
-g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   1.4  $';
+g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   1.5  $';
 
   FUNCTION get_version RETURN VARCHAR2;
 --
@@ -28,7 +28,6 @@ FUNCTION get_au_list return int_array_type;
 FUNCTION DSR_6_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION BUD_12_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION ICB_13_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
-FUNCTION DRL_14_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION MAW_17_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION DEF_18_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION HFC_19_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
@@ -42,7 +41,6 @@ FUNCTION SCH_45_predicate_read( schema_in varchar2, name_in varchar2) RETURN var
 FUNCTION MAI_46_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION REP_47_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION LFR_49_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
-FUNCTION DOC_53_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION SCH_61_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION REP_62_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
 FUNCTION SEC_64_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
