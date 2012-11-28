@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.7   Nov 23 2012 17:10:54   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.8   Nov 28 2012 09:26:12   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Nov 23 2012 17:10:54  $
---       Date fetched Out : $Modtime:   Nov 23 2012 17:08:20  $
---       SCCS Version     : $Revision:   1.7  $
+--       Date into SCCS   : $Date:   Nov 28 2012 09:26:12  $
+--       Date fetched Out : $Modtime:   Nov 28 2012 09:25:00  $
+--       SCCS Version     : $Revision:   1.8  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.7  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.8  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -217,24 +217,6 @@ BEGIN
        RETURN get_string('DOC_ADMIN_UNIT'); 
     END IF; 
  END; 
-function NAU_56_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('NAU_ADMIN_UNIT')||' OR '||get_up_string('NAU_ADMIN_UNIT');
-    END IF; 
- END; 
-function NAU_56_predicate_DML( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('NAU_ADMIN_UNIT');
-    END IF; 
- END; 
 function SCH_61_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
 BEGIN 
     IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
@@ -285,45 +267,6 @@ BEGIN
 	RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
                 'where oun_org_id = con_contr_org_id )'||')' ; -- or oun_admin_org_id is null ';
 */				
-    END IF; 
- END;
-FUNCTION NE_predicate_READ( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('ne_admin_unit')||' OR '||get_up_string('ne_admin_unit');--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
-    END IF; 
- END;
-
-FUNCTION NE_predicate_DML( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('ne_admin_unit');--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
-    END IF; 
- END;
-
-FUNCTION NM_predicate_READ( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN '('||get_string('nm_admin_unit')||' OR '||get_up_string('nm_admin_unit')||')';--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
-    END IF; 
- END;
-
-FUNCTION NM_predicate_DML( schema_in varchar2, name_in varchar2) RETURN varchar2 IS
-BEGIN 
-    IF Sys_Context('NM3CORE','UNRESTRICTED_INVENTORY') = 'TRUE' and Sys_Context('NM3_SECURITY_CTX','USERNAME') = Sys_Context('NM3_SECURITY_CTX','ACTUAL_USERNAME') 
-     THEN 
-       RETURN NULL; 
-    ELSE 
-       RETURN get_string('nm_admin_unit');--||' OR exists ( select 1 from nm_admin_units where nau_admin_unit = ne_admin_unit and nau_level = 1 )';
     END IF; 
  END;
 
