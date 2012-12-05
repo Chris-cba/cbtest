@@ -2,7 +2,9 @@
 /* r1val4b.h                                                       */
 /*=================================================================*/
 /* SCCS ID keywords, do not remove                                 */
-/* "@(#)r1val4b.h	1.1 05/20/04"                                  */
+/* "@(#)r1val4b.h	1.1 05/20/04"                                    */
+/* PVCS ID keywords, do not remove                                 */
+/* "$Workfile:   r1val4b.h  $ $Revision:   2.2  $ $Modtime:   Dec 04 2012 20:18:42  $" */
 /*=================================================================*/
 /* Contains functions to check HERMIS B records and to reformat    */
 /* them to fit the ROMIS format expected by Stage 2.               */
@@ -30,11 +32,13 @@
 /* direction            : 1 apha domain (Y/N)                      */
 /* inspectors  initials : Up to 3 alpha or Spaces                  */
 /*=================================================================*/
+BOOLEAN herm_linkvl();
+BOOLEAN herm_sectvl();
 
 BOOLEAN herm_b_validation(rtext,lineno)
   char *rtext;
   long int lineno;
-{
+  {
   char text[200],*strs[10];
   int noargs;
 
@@ -66,15 +70,15 @@ BOOLEAN herm_b_validation(rtext,lineno)
   inspvl(strs[4],lineno);                 /* Check Inspector       */
 
   return(TRUE);
-} /* herm_b_validation */
+  } /* herm_b_validation */
 
 /*=================================================================*/
 /* herm_linkvl                                                     */
 /*=================================================================*/
-herm_linkvl(link,lineno)
+BOOLEAN herm_linkvl(link,lineno)
   char *link;           
   long int lineno;
-{ 
+  { 
   int i;
   BOOLEAN err_found=FALSE;
 
@@ -93,7 +97,9 @@ herm_linkvl(link,lineno)
   for(i=0;i<4;i++)
     {
     if(link[i] != ' ')
+      {
       err_found=TRUE;
+      }
     }
 
   if(err_found)
@@ -102,32 +108,31 @@ herm_linkvl(link,lineno)
     format_err(lineno,1);
     }
 
-/*
+  /*
   if(link[0] == ' ')
     {
     strcpy(err_msg,"ERROR: Link code format - Not left justified BPR-8018");
     format_err(lineno,1);
     }
-*/
-/*
-   if (link[9] == ' ')
-   {
-      strcpy(err_msg,
-         "ERROR: Link code format - Must end with non space BPR-8018");
-      format_err(lineno,1);
-   }
-*/
+  */
+  /*
+  if (link[9] == ' ')
+    {
+    strcpy(err_msg,"ERROR: Link code format - Must end with non space BPR-8018");
+    format_err(lineno,1);
+    }
+  */
 
-   return(TRUE);                        
-} 
+  return(TRUE);                        
+  } 
 
 /*=================================================================*/
 /* herm_sectvl                                                     */
 /*=================================================================*/
-herm_sectvl(section,lineno)
+BOOLEAN herm_sectvl(section,lineno)
   char *section;           
   long int lineno;
-{
+  {
   int i;
   
   if(strlen(section) > 5)
@@ -135,8 +140,7 @@ herm_sectvl(section,lineno)
     strcpy(err_msg,"ERROR: Section code format > 5 characters BPR-8020");
     format_err(lineno,1);
     }   
-  
-  
+    
   if(strlen(section)  < 5)
     {
     strcpy(err_msg,"ERROR: Section code format < 5 characters BPR-8021");
@@ -148,7 +152,9 @@ herm_sectvl(section,lineno)
     for(i=0;i < strlen(section);++i)
       {
       if(isdigit(section[i])||isupper(section[i])||islower(section[i])||isspace(section[i]))
-        { /* do nothing */ ;} 
+        {
+        /* do nothing */ ;
+        } 
       else 
         {
         strcpy(err_msg,"ERROR: Section code format - Invalid character BPR-8022");
@@ -161,7 +167,9 @@ herm_sectvl(section,lineno)
     for(i=0;i < strlen(section);++i)
       {
       if (isdigit(section[i])||isspace(section[i]))
-        { /* do nothing */ ;} 
+        {
+        /* do nothing */ ;
+        }
       else 
         {
         strcpy(err_msg,"ERROR: Section code format - Invalid character BPR-8022");
@@ -171,4 +179,4 @@ herm_sectvl(section,lineno)
     }
   
   return(TRUE);                        
-} /* herm_sectvl */
+  } /* herm_sectvl */
