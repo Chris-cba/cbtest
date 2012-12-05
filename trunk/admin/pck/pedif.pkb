@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.4   Aug 31 2011 12:04:02   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.5   Dec 05 2012 10:48:32   Mike.Huitson  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Aug 31 2011 12:04:02  $
---       Date fetched Out : $Modtime:   Aug 31 2011 12:01:50  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Dec 05 2012 10:48:32  $
+--       Date fetched Out : $Modtime:   Nov 30 2012 16:05:32  $
+--       Version          : $Revision:   3.5  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -364,6 +364,8 @@ FUNCTION processpedif(job_id IN NUMBER)
   rec_count    INTEGER := 0;                       -- number of records loaded
   user_init    hig_users.hus_initials%TYPE := NULL; -- initials of user executing procedure
   --
+  lv_ped4chrass  hig_option_values.hov_value%TYPE := hig.get_sysopt('PED4CHRASS');
+  --
   -- table type to store buffer output from cursors before outputting contents to a file
   TYPE t1 IS TABLE OF nm3type.max_varchar2 INDEX BY BINARY_INTEGER;
   cursor_recs  t1;
@@ -427,10 +429,9 @@ FUNCTION processpedif(job_id IN NUMBER)
   --
   CURSOR c6
       IS
-  SELECT '6,'||
-         dty_dtp_flag||','||
-		 dty_atv_acty_area_code||','||
-		 dty_defect_code||','     rec
+  SELECT '6,'||dty_dtp_flag||','||
+		     dty_atv_acty_area_code||','||
+		     dty_defect_code||','     rec
         ,dty_hh_attribute_1||','||REPLACE(dty_hh_attri_text_1,',',':') attr_1
         ,dty_hh_attribute_2||','||REPLACE(dty_hh_attri_text_2,',',':') attr_2
         ,dty_hh_attribute_3||','||REPLACE(dty_hh_attri_text_3,',',':') attr_3
@@ -458,10 +459,9 @@ FUNCTION processpedif(job_id IN NUMBER)
   --
   CURSOR c7
       IS
-  SELECT DISTINCT '7,'||
-                  ity_sys_flag||','||
-				  afr_atv_acty_area_code||','||
-				  afr_ity_inv_code rec
+  SELECT DISTINCT '7,'||ity_sys_flag||','||
+				 afr_atv_acty_area_code||','||
+				 DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(afr_ity_inv_code) , afr_ity_inv_code) rec
     FROM act_freqs
         ,inv_item_types
    WHERE afr_atv_acty_area_code IN(SELECT DECODE(a.atv_maint_insp_flag,'S',afr_atv_acty_area_code
@@ -494,10 +494,9 @@ FUNCTION processpedif(job_id IN NUMBER)
   --
   CURSOR c8
       IS
-  SELECT '8,'||
-         dtr_sys_flag||','|| 
-		 dtr_dty_acty_area_code||','||
-		 dtr_dty_defect_code||','||RPAD(dtr_tre_treat_code,4) rec
+  SELECT '8,'||dtr_sys_flag||','|| 
+		     dtr_dty_acty_area_code||','||
+         dtr_dty_defect_code||','||RPAD(dtr_tre_treat_code,4) rec
     FROM treatments
         ,def_treats
    WHERE dtr_tre_treat_code = tre_treat_code
@@ -524,109 +523,83 @@ FUNCTION processpedif(job_id IN NUMBER)
       IS
   SELECT '9,*,'||hco_code||','||REPLACE(hco_meaning,',',':') rec
     FROM hig_codes
-     WHERE hco_domain = 'DEFECT_RESPONSE_CAT'
-       AND hco_end_date IS NULL;
+   WHERE hco_domain = 'DEFECT_RESPONSE_CAT'
+     AND hco_end_date IS NULL
+       ;
+  --
   CURSOR c11
-  IS
-      SELECT    '11,'
-             || ity_sys_flag
-             || ','
-             || ity_inv_code
-             || ','
-             || REPLACE(ity_descr
-                       ,','
-                       ,':')
-             || ','
-             || ity_pnt_or_cont
-             || ','
-             || ity_x_sect_allow_flag
-             || ','
-             || NVL(ity_contiguous, 'N')
-               rec
-        FROM inv_item_types
-       WHERE ity_road_characteristic = 'I'
-         AND ity_elec_drain_carr = NVL(fdiscipline, ity_elec_drain_carr)
-         AND (fasset IS NULL
-           OR  ity_inv_code IN (SELECT grp_value
-                                  FROM gri_run_parameters
-                                 WHERE grp_param = 'INVENTORY_ITEM'
-                                   AND grp_job_id = job_id))
-         AND ity_end_date IS NULL
-         AND INSTR(sysflags
-                  ,ity_sys_flag) > 0
-    ORDER BY 1;
+      IS
+  SELECT '11,'|| ity_sys_flag
+         ||','|| DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(ity_inv_code) , ity_inv_code)
+         ||','|| REPLACE(ity_descr,',',':')
+         ||','|| ity_pnt_or_cont
+         ||','|| ity_x_sect_allow_flag
+         ||','|| NVL(ity_contiguous, 'N') rec
+    FROM inv_item_types
+   WHERE ity_road_characteristic = 'I'
+     AND ity_elec_drain_carr = NVL(fdiscipline, ity_elec_drain_carr)
+     AND (fasset IS NULL
+          OR  ity_inv_code IN (SELECT grp_value
+                                 FROM gri_run_parameters
+                                WHERE grp_param = 'INVENTORY_ITEM'
+                                  AND grp_job_id = job_id))
+     AND ity_end_date IS NULL
+     AND INSTR(sysflags, ity_sys_flag) > 0
+   ORDER BY 1
+       ;
+  --
   CURSOR c12
-  IS
-      SELECT    '12,'
-             || i.ita_ity_sys_flag
-             || ','
-             || i.ita_iit_inv_code
-             || ','
-             || i.ita_disp_seq_no
-             || ','
-             || REPLACE(i.ita_scrn_text
-                       ,','
-                       ,':')
-             || ','
-             || DECODE(i.ita_format,  'NUMBER', 'I',  'VARCHAR2', 'S',  'S')
-             || ','
-             || i.ita_fld_length
-             || ','
-             || TO_CHAR(i.ita_dec_places)
-             || ','
-             || i.ita_min
-             || ','
-             || i.ita_max
-             || ','
-             || i.ita_validate_yn
-             || ','
-             || i.ita_manditory_yn
-               rec
-        FROM inv_type_attribs i
-            ,nm_inv_type_attribs n
-            ,inv_type_translations t
-       WHERE n.ita_inspectable = 'Y'
-         AND n.ita_attrib_name = i.ita_attrib_name
-         AND n.ita_inv_type =  t.nit_inv_type
-         AND i.ita_iit_inv_code = t.ity_inv_code
-         AND t.ity_sys_flag = ita_ity_sys_flag
-         AND INSTR(sysflags
-                  ,ita_ity_sys_flag) > 0
-         AND i.ita_end_date IS NULL
-         AND (fasset IS NULL
-           OR  ita_iit_inv_code IN (SELECT grp_value
-                                      FROM gri_run_parameters
-                                     WHERE grp_param = 'INVENTORY_ITEM'
-                                       AND grp_job_id = job_id))
-    ORDER BY 1;
+      IS
+  SELECT '12,'|| i.ita_ity_sys_flag
+         ||','|| DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(i.ita_iit_inv_code) , i.ita_iit_inv_code)
+         ||','|| i.ita_disp_seq_no
+         ||','|| REPLACE(i.ita_scrn_text,',',':')
+         ||','|| DECODE(i.ita_format,  'NUMBER', 'I',  'VARCHAR2', 'S',  'S')
+         ||','|| i.ita_fld_length
+         ||','|| TO_CHAR(i.ita_dec_places)
+         ||','|| i.ita_min
+         ||','|| i.ita_max
+         ||','|| i.ita_validate_yn
+         ||','|| i.ita_manditory_yn  rec
+    FROM inv_type_attribs i
+        ,nm_inv_type_attribs n
+        ,inv_type_translations t
+   WHERE n.ita_inspectable = 'Y'
+     AND n.ita_attrib_name = i.ita_attrib_name
+     AND n.ita_inv_type =  t.nit_inv_type
+     AND i.ita_iit_inv_code = t.ity_inv_code
+     AND t.ity_sys_flag = ita_ity_sys_flag
+     AND INSTR(sysflags,ita_ity_sys_flag) > 0
+     AND i.ita_end_date IS NULL
+     AND (fasset IS NULL
+          OR  ita_iit_inv_code IN (SELECT grp_value
+                                     FROM gri_run_parameters
+                                    WHERE grp_param = 'INVENTORY_ITEM'
+                                      AND grp_job_id = job_id))
+   ORDER BY 1
+       ;
+  --
   CURSOR c13
-  IS
-      SELECT DISTINCT    '13,'
-                      || iad_ita_ity_sys_flag
-                      || ','
-                      || iad_ita_inv_code
-                      || ','
-                      || ita_disp_seq_no
-                      || ','
-                      || iad_value
-                      || ','
-                      || REPLACE(iad_meaning
-                                ,','
-                                ,':')
-                        rec
-        FROM inv_attri_domains
-            ,inv_type_attribs
-       WHERE iad_ita_attrib_name = ita_attrib_name
-         AND iad_ita_inv_code = ita_iit_inv_code
-         AND (fasset IS NULL
-           OR  iad_ita_inv_code IN (SELECT grp_value
-                                      FROM gri_run_parameters
-                                     WHERE grp_param = 'INVENTORY_ITEM'
-                                       AND grp_job_id = job_id))
-         AND iad_end_date IS NULL
-         AND INSTR(sysflags
-                  ,iad_ita_ity_sys_flag) > 0
-    ORDER BY 1;
+      IS
+  SELECT DISTINCT '13,'|| iad_ita_ity_sys_flag
+         ||','|| DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(iad_ita_inv_code) , iad_ita_inv_code)
+         ||','|| ita_disp_seq_no
+         ||','|| iad_value
+         ||','|| REPLACE(iad_meaning,',',':')  rec
+    FROM inv_attri_domains
+        ,inv_type_attribs
+   WHERE iad_ita_attrib_name = ita_attrib_name
+     AND iad_ita_inv_code = ita_iit_inv_code
+     AND (fasset IS NULL
+          OR  iad_ita_inv_code IN (SELECT grp_value
+                                     FROM gri_run_parameters
+                                    WHERE grp_param = 'INVENTORY_ITEM'
+                                      AND grp_job_id = job_id))
+     AND iad_end_date IS NULL
+     AND INSTR(sysflags,iad_ita_ity_sys_flag) > 0
+   ORDER BY 1
+       ;
+  --
   /*
   CURSOR c14 IS
      SELECT DISTINCT '14,'||xsr_ity_sys_flag   ||','||
@@ -647,46 +620,34 @@ FUNCTION processpedif(job_id IN NUMBER)
      ORDER BY 1;
   */
   CURSOR c15
-  IS
-      SELECT DISTINCT    '15,'
-                      || xsr_nw_type
-                      || ','
-                      || xsr_scl_class
-                      || ','
-                      || xsr_ity_inv_code
-                      || ','
-                      || xsr_x_sect_value
-                      || ','
-                      || REPLACE(xsr_descr
-                                ,','
-                                ,':')
-                        rec
-        FROM xsp_restraints
-       WHERE (xsr_nw_type, xsr_scl_class) IN
-               (SELECT DISTINCT rse_sys_flag
-                               ,rse_scl_sect_class
-                  FROM road_segs
-                 WHERE rse_type = 'S'
-                   AND rse_he_id IN
-                         (    SELECT rsm_rse_he_id_of
-                                FROM road_seg_membs
-                               WHERE rsm_end_date IS NULL
-                          CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-                          START WITH rsm_rse_he_id_in = fgroup))
-    ORDER BY 1;
+      IS
+  SELECT DISTINCT '15,'|| xsr_nw_type
+         ||','|| xsr_scl_class
+         ||','|| DECODE(xsr_ity_inv_code,'$$','$$',DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(xsr_ity_inv_code) , xsr_ity_inv_code))
+         ||','|| xsr_x_sect_value
+         ||','|| REPLACE(xsr_descr,',',':')  rec
+    FROM xsp_restraints
+   WHERE (xsr_nw_type, xsr_scl_class) IN(SELECT DISTINCT rse_sys_flag
+                                               ,rse_scl_sect_class
+                                           FROM road_segs
+                                          WHERE rse_type = 'S'
+                                            AND rse_he_id IN(SELECT rsm_rse_he_id_of
+                                                               FROM road_seg_membs
+                                                              WHERE rsm_end_date IS NULL
+                                                            CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
+                                                              START WITH rsm_rse_he_id_in = fgroup))
+   ORDER BY 1
+       ;
+  --
   CURSOR c21
-  IS
-      SELECT    '21,*,'
-             || oun_unit_code
-             || ','
-             || REPLACE(oun_name
-                       ,','
-                       ,':')
-               rec
-        FROM org_units
-       WHERE oun_org_unit_type = 'NO'
-         AND oun_end_date IS NULL
-    ORDER BY 1;
+      IS
+  SELECT '21,*,'|| oun_unit_code
+         ||','|| REPLACE(oun_name,',',':')  rec
+    FROM org_units
+   WHERE oun_org_unit_type = 'NO'
+     AND oun_end_date IS NULL
+   ORDER BY 1
+       ;
   -- SM 713267 06102008
   -- Cursor 21 and 22 were the original cursors which would return the list of organisations
   -- to the user.  This cursor is fine if the parameter ANSWER2 = 'N'.
@@ -695,100 +656,83 @@ FUNCTION processpedif(job_id IN NUMBER)
   -- the restriction added.
   -- Organisation Details - admin unit restricted
   CURSOR c21a
-  IS
-      SELECT    '21,*,'
-             || oun_unit_code
-             || ','
-             || REPLACE(oun_name
-                       ,','
-                       ,':')
-               rec
-        FROM org_units
-       WHERE oun_org_unit_type = 'NO'
-         AND oun_end_date IS NULL
-         AND oun_admin_org_id IN
-               (    SELECT hag_child_admin_unit
-                      FROM hig_admin_groups
-                     WHERE hag_direct_link = 'Y'
-                START WITH hag_parent_admin_unit = (SELECT hus_admin_unit
-                                                      FROM hig_users
-                                                     WHERE hus_username = USER)
-                CONNECT BY PRIOR hag_child_admin_unit = hag_parent_admin_unit
-                       AND hag_direct_link = 'Y'
-                UNION
-                SELECT hus_admin_unit
-                  FROM hig_users
-                 WHERE hus_username = USER)
-    ORDER BY 1;
+      IS
+  SELECT '21,*,'|| oun_unit_code
+         ||','|| REPLACE(oun_name,',',':')  rec
+    FROM org_units
+   WHERE oun_org_unit_type = 'NO'
+     AND oun_end_date IS NULL
+     AND oun_admin_org_id IN(SELECT hag_child_admin_unit
+                               FROM hig_admin_groups
+                              WHERE hag_direct_link = 'Y'
+                              START WITH hag_parent_admin_unit = (SELECT hus_admin_unit
+                                                                    FROM hig_users
+                                                                   WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
+                            CONNECT BY PRIOR hag_child_admin_unit = hag_parent_admin_unit
+                                         AND hag_direct_link = 'Y'
+                              UNION
+                             SELECT hus_admin_unit
+                               FROM hig_users
+                              WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
+   ORDER BY 1
+       ;
+  --
   CURSOR c22
-  IS
-      SELECT    '22,*,'
-             || oun_unit_code
-             || ','
-             || REPLACE(oun_name
-                       ,','
-                       ,':')
-               rec
-        FROM org_units
-       WHERE oun_org_unit_type = 'RE'
-         AND oun_end_date IS NULL
-    ORDER BY 1;
+      IS
+  SELECT '22,*,'||oun_unit_code
+         ||','|| REPLACE(oun_name,',',':')  rec
+    FROM org_units
+   WHERE oun_org_unit_type = 'RE'
+     AND oun_end_date IS NULL
+   ORDER BY 1
+       ;
+  --
   CURSOR c22a
-  IS
-      SELECT    '22,*,'
-             || oun_unit_code
-             || ','
-             || REPLACE(oun_name
-                       ,','
-                       ,':')
-               rec
-        FROM org_units
-       WHERE oun_org_unit_type = 'RE'
-         AND oun_end_date IS NULL
-         AND oun_admin_org_id IN
-               (    SELECT hag_child_admin_unit
-                      FROM hig_admin_groups
-                     WHERE hag_direct_link = 'Y'
-                START WITH hag_parent_admin_unit = (SELECT hus_admin_unit
-                                                      FROM hig_users
-                                                     WHERE hus_username = USER)
-                CONNECT BY PRIOR hag_child_admin_unit = hag_parent_admin_unit
-                       AND hag_direct_link = 'Y'
-                UNION
-                SELECT hus_admin_unit
-                  FROM hig_users
-                 WHERE hus_username = USER)
-    ORDER BY 1;
+      IS
+  SELECT '22,*,'||oun_unit_code
+         ||','|| REPLACE(oun_name,',',':')  rec
+    FROM org_units
+   WHERE oun_org_unit_type = 'RE'
+     AND oun_end_date IS NULL
+     AND oun_admin_org_id IN(SELECT hag_child_admin_unit
+                               FROM hig_admin_groups
+                              WHERE hag_direct_link = 'Y'
+                              START WITH hag_parent_admin_unit = (SELECT hus_admin_unit
+                                                                    FROM hig_users
+                                                                   WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
+                            CONNECT BY PRIOR hag_child_admin_unit = hag_parent_admin_unit
+                                         AND hag_direct_link = 'Y'
+                              UNION
+                             SELECT hus_admin_unit
+                               FROM hig_users
+                              WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
+   ORDER BY 1
+       ;
+  --
   CURSOR c24
-  IS
-      SELECT DISTINCT    '24,'
-	                  ||i.ity_sys_flag
-					  ||','
-                      || d.dpr_priority
-                      || ','
-                      || REPLACE(hig.hco_meaning
-                                ,','
-                                ,':')
-                        rec
-        FROM defect_priorities d
-            ,hig_codes hig
-            ,act_freqs a
-            ,inv_item_types i
-       WHERE hig.hco_domain = 'DEFECT_PRIORITIES'
-         AND hco_end_date IS NULL
-         AND hig.hco_code = d.dpr_priority
-         AND d.dpr_atv_acty_area_code = a.afr_atv_acty_area_code
-         AND DECODE(a.afr_ity_inv_code
-                   ,NULL, i.ity_inv_code
-                   ,'%%', i.ity_inv_code
-                   ,a.afr_ity_inv_code) = i.ity_inv_code
-         AND INSTR(sysflags
-                  ,i.ity_sys_flag) > 0
-         AND i.ity_road_characteristic = 'I'
-         AND i.ity_elec_drain_carr = NVL(fdiscipline, i.ity_elec_drain_carr)
-         AND a.afr_ity_sys_flag = i.ity_sys_flag
+      IS
+  SELECT DISTINCT '24,'||i.ity_sys_flag
+			   ||','|| d.dpr_priority
+         ||','|| REPLACE(hig.hco_meaning,',',':')  rec
+    FROM defect_priorities d
+        ,hig_codes hig
+        ,act_freqs a
+        ,inv_item_types i
+   WHERE hig.hco_domain = 'DEFECT_PRIORITIES'
+     AND hco_end_date IS NULL
+     AND hig.hco_code = d.dpr_priority
+     AND d.dpr_atv_acty_area_code = a.afr_atv_acty_area_code
+     AND DECODE(a.afr_ity_inv_code,NULL,i.ity_inv_code
+                                  ,'%%', i.ity_inv_code
+                                       ,a.afr_ity_inv_code) = i.ity_inv_code
+     AND INSTR(sysflags,i.ity_sys_flag) > 0
+     AND i.ity_road_characteristic = 'I'
+     AND i.ity_elec_drain_carr = NVL(fdiscipline, i.ity_elec_drain_carr)
+     AND a.afr_ity_sys_flag = i.ity_sys_flag
 		 AND INSTR(sysflags,i.ity_sys_flag) > 0
-		 ORDER BY 1;
+	 ORDER BY 1
+       ;
+  --
   CURSOR c25
   IS
       SELECT    '25,*,'
@@ -929,13 +873,13 @@ FUNCTION processpedif(job_id IN NUMBER)
                      WHERE hag_direct_link = 'Y'
                 START WITH hag_parent_admin_unit = (SELECT hus_admin_unit
                                                       FROM hig_users
-                                                     WHERE hus_username = USER)
+                                                     WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
                 CONNECT BY PRIOR hag_child_admin_unit = hag_parent_admin_unit
                        AND hag_direct_link = 'Y'
                 UNION
                 SELECT hus_admin_unit
                   FROM hig_users
-                 WHERE hus_username = USER)
+                 WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME'))
     ORDER BY 1;
   -- end of sscanlon fix 709407 12SEP2007
   --
@@ -1006,270 +950,201 @@ FUNCTION processpedif(job_id IN NUMBER)
   -- SM 10122008 709893
   -- Changed cursor 35, 36 and 37 to use v3 tables rather than translation views.
   CURSOR c35
-  IS
-      SELECT    '35,'
-	         || ity_sys_flag
-			 || ','
-             || LPAD(TO_CHAR(iit_item_id)
-                    ,iit_id_pad)
-             || ','
-             || LPAD(TO_CHAR(iit_rse_he_id)
-                    ,rse_pad)
-             || ','
-             || iit_ity_inv_code
-             || ','
-             || iit_primary_key
-             || ','
-             || iit_foreign_key
-             || ','
-             || LPAD(TO_CHAR(iit_st_chain)
-                    ,chain_pad)
-             || ','
-             || LPAD(TO_CHAR(iit_end_chain)
-                    ,chain_pad)
-             || ','
-             || iit_x_sect
-             || ','
-             || REPLACE(iit_note
-                       ,','
-                       ,':')
-               rec
-        FROM inv_items
-            ,inv_item_types
-       WHERE iit_ity_inv_code = ity_inv_code
-         AND iit_ity_sys_flag = ity_sys_flag
-         AND ity_road_characteristic = 'I'
-         AND ity_elec_drain_carr = NVL(fdiscipline, ity_elec_drain_carr)
-         AND (fasset IS NULL
-           OR  ity_inv_code IN (SELECT grp_value
-                                  FROM gri_run_parameters
-                                 WHERE grp_param = 'INVENTORY_ITEM'
-                                   AND grp_job_id = job_id))
-         AND (fgroup IS NULL
-           OR  iit_rse_he_id IN (    SELECT nm_ne_id_of
-                                       FROM nm_members_all
-                                      WHERE nm_end_date IS NULL
-                                        AND nm_type = 'G'
-                                        AND DECODE(get_nt_type(nm_ne_id_of)
-                                                  ,'D', 'S'
-                                                  ,'L', 'S'
-                                                  ,'G') <> 'P'
-                                 CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in
-                                 START WITH nm_ne_id_in = fgroup))
-         AND (fxsp IS NULL
-           OR  EXISTS
-                 (SELECT grp_value
-                    FROM gri_run_parameters
-                   WHERE grp_value = NVL(iit_x_sect, grp_value)
-                     AND grp_param = 'XSP'
-                     AND grp_job_id = job_id))
-         AND iit_ity_sys_flag = ity_sys_flag
+      IS
+  SELECT '35,'|| ity_sys_flag
+		     ||','|| LPAD(TO_CHAR(iit_item_id),iit_id_pad)
+         ||','|| LPAD(TO_CHAR(iit_rse_he_id),rse_pad)
+         ||','|| DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(iit_ity_inv_code) , iit_ity_inv_code)
+         ||','|| iit_primary_key
+         ||','|| iit_foreign_key
+         ||','|| LPAD(TO_CHAR(iit_st_chain),chain_pad)
+         ||','|| LPAD(TO_CHAR(iit_end_chain),chain_pad)
+         ||','|| iit_x_sect
+         ||','|| REPLACE(iit_note,',',':') rec
+    FROM inv_items
+        ,inv_item_types
+   WHERE iit_ity_inv_code = ity_inv_code
+     AND iit_ity_sys_flag = ity_sys_flag
+     AND ity_road_characteristic = 'I'
+     AND ity_elec_drain_carr = NVL(fdiscipline, ity_elec_drain_carr)
+     AND (fasset IS NULL
+          OR  ity_inv_code IN (SELECT grp_value
+                                 FROM gri_run_parameters
+                                WHERE grp_param = 'INVENTORY_ITEM'
+                                  AND grp_job_id = job_id))
+     AND (fgroup IS NULL
+          OR  iit_rse_he_id IN(SELECT nm_ne_id_of
+                                 FROM nm_members_all
+                                WHERE nm_end_date IS NULL
+                                  AND nm_type = 'G'
+                                  AND DECODE(get_nt_type(nm_ne_id_of),'D', 'S'
+                                                                     ,'L', 'S'
+                                                                         ,'G') <> 'P'
+                              CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in
+                                START WITH nm_ne_id_in = fgroup))
+     AND (fxsp IS NULL
+          OR EXISTS(SELECT grp_value
+                      FROM gri_run_parameters
+                     WHERE grp_value = NVL(iit_x_sect, grp_value)
+                       AND grp_param = 'XSP'
+                       AND grp_job_id = job_id))
+     AND iit_ity_sys_flag = ity_sys_flag
 		 AND INSTR(sysflags,ity_sys_flag) > 0
-    ORDER BY 1;
+   ORDER BY 1
+       ;
   -- Inspection Network details
-  CURSOR c36(
-    he_id IN road_segs.rse_he_id%TYPE)
-  IS
-    SELECT    '36,*,'
-           || LPAD(TO_CHAR(ne.ne_id)
-                  ,rse_pad)
-           || ','
-           || LPAD(
-                DECODE(
-                  DECODE(ne.ne_gty_group_type
-                        ,'LLNK', 'Y'
-                        ,'DLNK', 'Y'
-                        ,NULL, 'Y'
-                        ,'N')
-                 ,'Y', ne.ne_owner
-                 ,NULL)
-               ,4)
-           || ','
-           || DECODE(
-                DECODE(ne.ne_gty_group_type
-                      ,'LLNK', 'Y'
-                      ,'DLNK', 'Y'
-                      ,NULL, 'Y'
-                      ,'N')
-               ,'Y', ne.ne_sub_type || ne.ne_name_1
-               ,NULL)
-           || ','
-           || DECODE(ne.ne_gty_group_type, NULL, ne.ne_number, NULL)
-           || ','
-           || ne.ne_sub_class
-           || ','
-           || REPLACE(ne.ne_descr
-                     ,','
-                     ,':')
-           || ','
-           || LPAD(
-                TO_CHAR(
-                  DECODE(ne.ne_gty_group_type
-                        ,NULL, get_ne_length(ne.ne_id)
-                        ,NULL))
-               ,chain_pad)
-           || ','
-           || SUBSTR(iit_chr_attrib41
-                    ,1
-                    ,1)
-           || ','
-           || SUBSTR(iit_chr_attrib51
-                    ,1
-                    ,1)
-             rec
-      FROM nm_elements_all ne
-          ,nm_nw_ad_link_all nad
-          ,nm_inv_items_all iit
-     WHERE ne.ne_id = he_id
-       AND ne.ne_end_date IS NULL
-       AND ne.ne_id = nad.nad_ne_id(+)
-       AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
-       AND nad.nad_primary_ad(+) = 'Y';
+  CURSOR c36(he_id IN road_segs.rse_he_id%TYPE)
+      IS
+  SELECT '36,*,'|| LPAD(TO_CHAR(ne.ne_id),rse_pad)
+         ||','|| LPAD(DECODE(DECODE(ne.ne_gty_group_type
+                                   ,'LLNK','Y'
+                                   ,'DLNK','Y'
+                                   ,NULL  ,'Y'
+                                          ,'N')
+                            ,'Y',ne.ne_owner
+                                ,NULL)
+                      ,4)
+         ||','|| DECODE(DECODE(ne.ne_gty_group_type
+                              ,'LLNK','Y'
+                              ,'DLNK','Y'
+                              ,NULL  ,'Y'
+                                     ,'N')
+                        ,'Y',ne.ne_sub_type||ne.ne_name_1
+                            ,NULL)
+         ||','|| DECODE(ne.ne_gty_group_type, NULL, ne.ne_number, NULL)
+         ||','|| ne.ne_sub_class
+         ||','|| REPLACE(ne.ne_descr,',',':')
+         ||','|| LPAD(TO_CHAR(DECODE(ne.ne_gty_group_type,NULL,get_ne_length(ne.ne_id),NULL)),chain_pad)
+         ||','|| SUBSTR(iit_chr_attrib41,1,1)
+         ||','|| SUBSTR(iit_chr_attrib51,1,1)  rec
+    FROM nm_elements_all ne
+        ,nm_nw_ad_link_all nad
+        ,nm_inv_items_all iit
+   WHERE ne.ne_id = he_id
+     AND ne.ne_end_date IS NULL
+     AND ne.ne_id = nad.nad_ne_id(+)
+     AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
+     AND nad.nad_primary_ad(+) = 'Y'
+       ;
   --
   -- Section Id and Activity details
   CURSOR c37
-  IS
-      SELECT '37,'
-	         ||afr_ity_sys_flag||',' 
-			 || TO_CHAR(ne.ne_id) || ',' 
-			 || afr.afr_atv_acty_area_code
-               rec
-        FROM nm_elements_all ne
-            ,act_freqs afr
-            ,nm_inv_items_all iit
-            ,nm_nw_ad_link_all nad
-            ,nm_elements_all linkcode
-       WHERE afr.afr_atv_acty_area_code IN
-               (SELECT DECODE(
-                         a.atv_maint_insp_flag
-                        ,'S', afr.afr_atv_acty_area_code
-                        ,DECODE(grp.grp_value
-                               ,NULL, afr.afr_atv_acty_area_code
-                               ,grp.grp_value))
-                  FROM activities a
-                      ,gri_run_parameters grp
-                 WHERE a.atv_acty_area_code(+) = grp.grp_value
-                   AND grp.grp_param = 'ACTIVITY'
-                   AND grp.grp_job_id = job_id)
-         AND ((NVL(factgroup, 'ALL') = 'ALL')
-           OR  afr.afr_atv_acty_area_code IN
-                 (SELECT agm_acty_code
-                    FROM activity_groups
-                        ,act_group_membs
-                   WHERE acg_group_code = factgroup
-                     AND agm_group_code = acg_group_code))
-         AND afr.afr_ity_sys_flag = ne.ne_prefix
-         AND afr.afr_scl_sect_class = ne.ne_sub_class
-         AND afr.afr_road_environment = SUBSTR(iit_chr_attrib41
-                                              ,1
-                                              ,1)
-         AND ne.ne_id IN (    SELECT nm.nm_ne_id_of
-                                FROM nm_members_all nm
-                               WHERE nm_type = 'G'
-                                 AND DECODE(get_nt_type(nm_ne_id_of)
-                                           ,'D', 'S'
-                                           ,'L', 'S'
-                                           ,'G') <> 'P'
-                                 AND nm.nm_end_date IS NULL
-                          CONNECT BY PRIOR nm.nm_ne_id_of = nm.nm_ne_id_in
-                          START WITH nm.nm_ne_id_in = fgroup)
-         AND ne.ne_id = nad.nad_ne_id(+)
-         AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
-         AND nad.nad_primary_ad(+) = 'Y'
-         AND ne.ne_name_2 = linkcode.ne_unique(+)
+      IS
+  SELECT '37,'||afr_ity_sys_flag
+         ||','|| TO_CHAR(ne.ne_id)
+         ||','|| afr.afr_atv_acty_area_code  rec
+    FROM nm_elements_all ne
+        ,act_freqs afr
+        ,nm_inv_items_all iit
+        ,nm_nw_ad_link_all nad
+        ,nm_elements_all linkcode
+   WHERE afr.afr_atv_acty_area_code IN(SELECT DECODE(a.atv_maint_insp_flag
+                                                    ,'S',afr.afr_atv_acty_area_code
+                                                        ,DECODE(grp.grp_value,NULL,afr.afr_atv_acty_area_code,grp.grp_value))
+                                         FROM activities a
+                                             ,gri_run_parameters grp
+                                        WHERE a.atv_acty_area_code(+) = grp.grp_value
+                                          AND grp.grp_param = 'ACTIVITY'
+                                          AND grp.grp_job_id = job_id)
+     AND ((NVL(factgroup, 'ALL') = 'ALL')
+          OR  afr.afr_atv_acty_area_code IN(SELECT agm_acty_code
+                                              FROM activity_groups
+                                                  ,act_group_membs
+                                             WHERE acg_group_code = factgroup
+                                               AND agm_group_code = acg_group_code))
+     AND afr.afr_ity_sys_flag = ne.ne_prefix
+     AND afr.afr_scl_sect_class = ne.ne_sub_class
+     AND afr.afr_road_environment = SUBSTR(iit_chr_attrib41,1,1)
+     AND ne.ne_id IN(SELECT nm.nm_ne_id_of
+                       FROM nm_members_all nm
+                      WHERE nm_type = 'G'
+                        AND DECODE(get_nt_type(nm_ne_id_of),'D','S'
+                                                           ,'L','S'
+                                                               ,'G') <> 'P'
+                        AND nm.nm_end_date IS NULL
+                    CONNECT BY PRIOR nm.nm_ne_id_of = nm.nm_ne_id_in
+                      START WITH nm.nm_ne_id_in = fgroup)
+     AND ne.ne_id = nad.nad_ne_id(+)
+     AND nad.nad_iit_ne_id = iit.iit_ne_id(+)
+     AND nad.nad_primary_ad(+) = 'Y'
+     AND ne.ne_name_2 = linkcode.ne_unique(+)
 		 AND INSTR(sysflags,afr_ity_sys_flag) > 0
-    ORDER BY 1;
+   ORDER BY 1
+       ;
   --
   CURSOR c38
-  IS
-        SELECT rsm_rse_he_id_of section
-          FROM road_seg_membs
-         WHERE rsm_end_date IS NULL
-           AND rsm_type = 'S'
-    CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
-    START WITH rsm_rse_he_id_in = fgroup
-      ORDER BY inspection_order(rsm_rse_he_id_in
-                               ,rsm_rse_he_id_of);
+      IS
+  SELECT rsm_rse_he_id_of section
+    FROM road_seg_membs
+   WHERE rsm_end_date IS NULL
+     AND rsm_type = 'S'
+ CONNECT BY PRIOR rsm_rse_he_id_of = rsm_rse_he_id_in
+   START WITH rsm_rse_he_id_in = fgroup
+   ORDER BY inspection_order(rsm_rse_he_id_in,rsm_rse_he_id_of)
+       ;
   -- Weather Condition details
   CURSOR c39
-  IS
-      SELECT    '39,*,'
-             || hco_code
-             || ','
-             || REPLACE(hco_meaning
-                       ,','
-                       ,':')
-               rec
-        FROM hig_codes
-       WHERE hco_domain = 'ASSET_MODIFICATION'
-         AND hco_end_date IS NULL
-    ORDER BY 1;
+      IS
+  SELECT '39,*,'|| hco_code
+         ||','||REPLACE(hco_meaning,',',':')  rec
+    FROM hig_codes
+   WHERE hco_domain = 'ASSET_MODIFICATION'
+     AND hco_end_date IS NULL
+   ORDER BY 1
+       ;
   --
   -- Obtain the file extension from the GRI_MODULES table for the
   -- selected module.
   --
   CURSOR file_extension
-  IS
-    SELECT grm_file_type
-      FROM gri_modules
-     WHERE grm_module = v_module;
+      IS
+  SELECT grm_file_type
+    FROM gri_modules
+   WHERE grm_module = v_module
+       ;
   --
   -- Retrieve the initials for the user to insert before the filename
   -- so that filename's are specific to users
   --
   CURSOR get_name
-  IS
-    SELECT hus_initials
-      FROM hig_users
-     WHERE hus_username = USER;
+      IS
+  SELECT hus_initials
+    FROM hig_users
+   WHERE hus_username = Sys_Context('NM3_SECURITY_CTX','USERNAME')
+       ;
   --
   -- Added to check if module was run from a web client
   --
   CURSOR get_ui
-  IS
-    SELECT grr_mode
-      FROM gri_report_runs
-     WHERE grr_job_id = job_id;
+      IS
+  SELECT grr_mode
+    FROM gri_report_runs
+   WHERE grr_job_id = job_id
+       ;
   --
   lc_ui        VARCHAR2(15);
   --
   CURSOR c_def_attr
-  IS
-    SELECT    dty_hh_attribute_1
-           || ','
-           || REPLACE(dty_hh_attri_text_1
-                     ,','
-                     ,':')
-             d_attr_text
-      FROM def_types
-     WHERE dty_hh_attribute_1 IS NOT NULL
-    UNION
-    SELECT    dty_hh_attribute_2
-           || ','
-           || REPLACE(dty_hh_attri_text_2
-                     ,','
-                     ,':')
-      FROM def_types
-     WHERE dty_hh_attribute_2 IS NOT NULL
-    UNION
-    SELECT    dty_hh_attribute_3
-           || ','
-           || REPLACE(dty_hh_attri_text_3
-                     ,','
-                     ,':')
-      FROM def_types
-     WHERE dty_hh_attribute_3 IS NOT NULL
-    UNION
-    SELECT    dty_hh_attribute_4
-           || ','
-           || REPLACE(dty_hh_attri_text_4
-                     ,','
-                     ,':')
-      FROM def_types
-     WHERE dty_hh_attribute_4 IS NOT NULL;
+      IS
+  SELECT dty_hh_attribute_1||','|| REPLACE(dty_hh_attri_text_1,',',':')  d_attr_text
+    FROM def_types
+   WHERE dty_hh_attribute_1 IS NOT NULL
+   UNION
+  SELECT dty_hh_attribute_2||','|| REPLACE(dty_hh_attri_text_2,',',':')
+    FROM def_types
+   WHERE dty_hh_attribute_2 IS NOT NULL
+   UNION
+  SELECT dty_hh_attribute_3||','|| REPLACE(dty_hh_attri_text_3,',',':')
+    FROM def_types
+   WHERE dty_hh_attribute_3 IS NOT NULL
+   UNION
+  SELECT dty_hh_attribute_4||','|| REPLACE(dty_hh_attri_text_4,',',':')
+    FROM def_types
+   WHERE dty_hh_attribute_4 IS NOT NULL
+       ;
   --
   PROCEDURE handle_error(pi_error_msg IN VARCHAR2)
-    IS
+     IS
   BEGIN
     /*
     ||Report The Error.
@@ -1400,33 +1275,18 @@ BEGIN
   --
   FOR i_rec IN 1 .. l_count_def_attr LOOP
     rec_count := rec_count + 1;
-      SELECT    '5,*,'
-             || TO_CHAR(i_rec)
-             || ','
-             || SUBSTR(def_attr_rec(i_rec)
-                      ,INSTR(def_attr_rec(i_rec)
-                            ,','
-                            ,1)
-                       + 1)
-             || ','
-             || DECODE(data_type,  'VARCHAR2', 'S',  'NUMBER', 'I')
-             || ','
-             || DECODE(data_type
-                      ,'VARCHAR2', data_length
-                      ,'NUMBER', data_precision)
-             || ','
-             || data_scale
-               rec
-        INTO cursor_recs(rec_count)
-        FROM user_tab_columns
-       WHERE column_name = SUBSTR(def_attr_rec(i_rec)
-                                 ,1
-                                 ,INSTR(def_attr_rec(i_rec)
-                                       ,','
-                                       ,1)
-                                  - 1)
-         AND table_name = 'DEFECTS'
-    ORDER BY 1;
+    SELECT '5,*,'||TO_CHAR(i_rec)
+           ||','|| SUBSTR(def_attr_rec(i_rec),INSTR(def_attr_rec(i_rec),',',1)+1)
+           ||','|| DECODE(data_type,  'VARCHAR2', 'S',  'NUMBER', 'I')
+           ||','|| DECODE(data_type,'VARCHAR2',data_length
+                                   ,'NUMBER'  ,data_precision)
+           ||','|| data_scale  rec
+      INTO cursor_recs(rec_count)
+      FROM user_tab_columns
+     WHERE column_name = SUBSTR(def_attr_rec(i_rec),1,INSTR(def_attr_rec(i_rec),',',1)-1)
+       AND table_name = 'DEFECTS'
+     ORDER BY 1
+         ;
   END LOOP;
   --
   FOR i_rec IN c6 LOOP
