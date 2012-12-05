@@ -1,6 +1,9 @@
 /* SCCS ID keywords, do not remove */
 static char *sccsid = "@(#)r1util.pc	1.1 09/08/03";
 
+/* PVCS ID keywords, do not remove      */
+/* "$Workfile:   r1util.pc  $ $Revision:   2.2  $ $Modtime:   Dec 04 2012 20:18:42  $" */
+
 /* Change history :-
  * DATE         : 31-10-97
  * CHANGED BY   : G Fletcher
@@ -28,6 +31,7 @@ extern char csv_separator;
 /************************************************************ 
 * Function Declaration area                                 *
 ************************************************************/ 
+int atoi();
 
 void rollback()
 { 
@@ -151,7 +155,7 @@ union intORcharPTR a15;
 
 noargs = getstrs(line,args);      /* get arg addresses into args[] */
 
-nf =  strlen(format);
+nf =  (int)strlen(format);
 nf = (nf<noargs) ? nf:noargs;
 format += nf-1;
 switch (nf) {
