@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.19   Nov 07 2011 16:29:20   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.20   Dec 05 2012 10:47:40   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Nov 07 2011 16:29:20  $
---       Date fetched Out : $Modtime:   Nov 07 2011 16:28:38  $
---       PVCS Version     : $Revision:   3.19  $
+--       Date into PVCS   : $Date:   Dec 05 2012 10:47:40  $
+--       Date fetched Out : $Modtime:   Nov 30 2012 17:25:16  $
+--       PVCS Version     : $Revision:   3.20  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.19  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.20  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';
@@ -399,6 +399,7 @@ PROCEDURE process_rmms_or_eid_file(pi_batch_id    IN     activities_report.are_b
   lv_recal_done  BOOLEAN := FALSE;
   lv_defrecalup  hig_option_values.hov_value%TYPE := hig.get_sysopt('DEFRECALUP');
   lv_defrecallo  hig_option_values.hov_value%TYPE := hig.get_sysopt('DEFRECALLO');
+  lv_ped4chrass  hig_option_values.hov_value%TYPE := hig.get_sysopt('PED4CHRASS');
   --
   lv_rse_admin_unit    nm_admin_units_all.nau_admin_unit%TYPE;
   lv_rse_length        nm_elements_all.ne_length%TYPE;
@@ -1371,6 +1372,7 @@ nm_debug.debug('File inspdate = '||lv_token);
     lv_chainage         defects.def_st_chain%TYPE;
     lv_org_id           org_units.oun_org_id%TYPE;
     lv_def_locn_descr   VARCHAR2(1000); -- clb 06122010 task 0107258 - increased to 1000 chars
+    lv_file_inv_code    VARCHAR2(4);
     --
   BEGIN
     /*
@@ -1515,15 +1517,35 @@ nm_debug.debug('File inspdate = '||lv_token);
     END IF;
     /*
     ||Extract The Asset Type.
+    ||NB. If Product Option PED4CHRASS is set to Y then we may need to
+    ||translate 4 character asset type codes to the 2 character code
+    ||used by MAI.
     */
     lv_token := get_token_value(pi_tokens   => lt_tokens
                                ,pi_position => lv_i_rec_invcode);
     IF NOT set_varchar2(pi_value   => lv_token
-                       ,pio_target => lr_def.def_ity_inv_code)
+                       ,pio_target => lv_file_inv_code)
      THEN
         add_error_to_stack(pi_seq_no => lv_i_seq_no
                           ,pi_ner_id => 9271);
         RAISE invalid_record;
+    ELSE
+        IF LENGTH(lv_file_inv_code) > 2
+         THEN
+            IF (lv_ped4chrass = 'Y')
+             THEN
+                /* Try to translate the given code */
+                lr_def.def_ity_inv_code := mai.translate_nm_inv_type(lv_file_inv_code);
+            END IF;
+            IF lr_def.def_ity_inv_code IS NULL
+             THEN
+                add_error_to_stack(pi_seq_no => lv_i_seq_no
+                                  ,pi_ner_id => 9271);
+                RAISE invalid_record;
+            END IF;
+        ELSE
+            lr_def.def_ity_inv_code := lv_file_inv_code;
+        END IF;        
     END IF;
     /*
     ||Process The Fields That Only Occur In The Enhanced Format File.
