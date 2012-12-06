@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.5   Dec 05 2012 10:48:32   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.6   Dec 06 2012 14:22:20   Mike.Huitson  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Dec 05 2012 10:48:32  $
---       Date fetched Out : $Modtime:   Nov 30 2012 16:05:32  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Dec 06 2012 14:22:20  $
+--       Date fetched Out : $Modtime:   Dec 06 2012 13:35:38  $
+--       Version          : $Revision:   3.6  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -623,7 +623,7 @@ FUNCTION processpedif(job_id IN NUMBER)
       IS
   SELECT DISTINCT '15,'|| xsr_nw_type
          ||','|| xsr_scl_class
-         ||','|| DECODE(xsr_ity_inv_code,'$$','$$',DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(xsr_ity_inv_code) , xsr_ity_inv_code))
+         ||','|| xsr_ity_inv_code
          ||','|| xsr_x_sect_value
          ||','|| REPLACE(xsr_descr,',',':')  rec
     FROM xsp_restraints
