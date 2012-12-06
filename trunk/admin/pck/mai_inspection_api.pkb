@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.30   Dec 06 2012 10:53:00   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.31   Dec 06 2012 11:01:40   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Dec 06 2012 10:53:00  $
---       Date fetched Out : $Modtime:   Dec 05 2012 20:11:34  $
---       PVCS Version     : $Revision:   3.30  $
+--       Date into PVCS   : $Date:   Dec 06 2012 11:01:40  $
+--       Date fetched Out : $Modtime:   Dec 06 2012 11:01:22  $
+--       PVCS Version     : $Revision:   3.31  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.30  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.31  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -2443,13 +2443,6 @@ BEGIN
          lv_action_cat := lt_rep_tab(i).rep_record.rep_action_cat;
       END IF;
       --
-      nm_debug.debug('Calling rep_date_due...');
-      nm_debug.debug('Inspection Date = '||pi_defect_rec.def_inspection_date);
-      nm_debug.debug('Activity = '||lt_rep_tab(i).rep_record.rep_atv_acty_area_code);
-      nm_debug.debug('Priority = '||pi_defect_rec.def_priority);
-      nm_debug.debug('Action Category = '||lv_action_cat);
-      nm_debug.debug('Road Id = '||lt_rep_tab(i).rep_record.rep_rse_he_id);
-      
       mai.rep_date_due(pi_defect_rec.def_inspection_date
                       ,lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                       ,pi_defect_rec.def_priority
@@ -2457,8 +2450,7 @@ BEGIN
                       ,lt_rep_tab(i).rep_record.rep_rse_he_id
                       ,lt_rep_tab(i).rep_record.rep_date_due
                       ,lv_dummy);
-                      
-      nm_debug.debug('Return value is: '||lv_dummy);
+      --
       IF lv_dummy <> 0
        THEN
           IF lv_dummy = 8509
