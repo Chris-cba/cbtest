@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.29   Aug 16 2011 14:16:16   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.30   Dec 06 2012 10:53:00   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Aug 16 2011 14:16:16  $
---       Date fetched Out : $Modtime:   Aug 08 2011 14:07:48  $
---       PVCS Version     : $Revision:   3.29  $
+--       Date into PVCS   : $Date:   Dec 06 2012 10:53:00  $
+--       Date fetched Out : $Modtime:   Dec 05 2012 20:11:34  $
+--       PVCS Version     : $Revision:   3.30  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.29  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.30  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1904,7 +1904,7 @@ BEGIN
   nm_debug.debug('Activity');
   IF lr_defect_rec.def_iit_item_id IS NOT NULL
    THEN
-      IF NOT validate_asset_activity(pi_inv_type        => lr_defect_rec.def_ity_inv_code
+      IF NOT validate_asset_activity(pi_inv_type        => mai.translate_mai_inv_type(lr_defect_rec.def_ity_inv_code)
                                     ,pi_maint_insp_flag => pi_are_maint_insp_flag
                                     ,pi_sys_flag        => lr_rse.rse_sys_flag
                                     ,pi_activity        => lr_defect_rec.def_atv_acty_area_code)
@@ -2443,6 +2443,13 @@ BEGIN
          lv_action_cat := lt_rep_tab(i).rep_record.rep_action_cat;
       END IF;
       --
+      nm_debug.debug('Calling rep_date_due...');
+      nm_debug.debug('Inspection Date = '||pi_defect_rec.def_inspection_date);
+      nm_debug.debug('Activity = '||lt_rep_tab(i).rep_record.rep_atv_acty_area_code);
+      nm_debug.debug('Priority = '||pi_defect_rec.def_priority);
+      nm_debug.debug('Action Category = '||lv_action_cat);
+      nm_debug.debug('Road Id = '||lt_rep_tab(i).rep_record.rep_rse_he_id);
+      
       mai.rep_date_due(pi_defect_rec.def_inspection_date
                       ,lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                       ,pi_defect_rec.def_priority
@@ -2450,6 +2457,8 @@ BEGIN
                       ,lt_rep_tab(i).rep_record.rep_rse_he_id
                       ,lt_rep_tab(i).rep_record.rep_date_due
                       ,lv_dummy);
+                      
+      nm_debug.debug('Return value is: '||lv_dummy);
       IF lv_dummy <> 0
        THEN
           IF lv_dummy = 8509
@@ -3958,7 +3967,7 @@ BEGIN
             ||Get The Maintenance Section Associated With The Asset Or
             ||The Relevant Dummy Section For Off Network Assets.
             */
-            lv_iit_rse_he_id := mai.get_budget_allocation(p_inv_type  => lr_defect_rec.def_ity_inv_code
+            lv_iit_rse_he_id := mai.get_budget_allocation(p_inv_type  => mai.translate_mai_inv_type(lr_defect_rec.def_ity_inv_code)
                                                          ,p_iit_ne_id => lr_defect_rec.def_iit_item_id);
             /*
             ||Make Sure The Asset's Section Matches
