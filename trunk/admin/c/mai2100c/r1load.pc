@@ -2,7 +2,7 @@
 static char *sccsid = "@(#)r1load.pc  1.3 09/10/04";
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1load.pc  $ $Revision:   2.2  $ $Modtime:   Dec 04 2012 20:18:42  $" */
+/* "$Workfile:   r1load.pc  $ $Revision:   2.3  $ $Modtime:   Dec 07 2012 12:21:18  $" */
 
 /*
    CHANGE HISTORY :-
@@ -913,17 +913,21 @@ void translate_inv_code(rtext,lineno)
         }
     }
     trans_inv_code_in.arr[k] = '\0';
+    trans_inv_code_in.len = strlen((char*)trans_inv_code_in.arr);
     tmp_text[j]='\0';
     trans_inv_code_out.arr[0] = '\0';
     trans_inv_code_out.len = 0;
+
     if (k > 2)
       {
-      EXEC SQL
-        SELECT mai.translate_nm_inv_type(:trans_inv_code_in)
-          INTO :trans_inv_code_out
-          FROM dual
-             ;
+     	EXEC SQL EXECUTE
+		    BEGIN
+			    :trans_inv_code_out := mai.translate_nm_inv_type(:trans_inv_code_in);
+        END;
+      END-EXEC;
+
       trans_inv_code_out.arr[trans_inv_code_out.len] = '\0';
+
       if (trans_inv_code_out.len > 0)
         {
         /* Put the record back together
@@ -934,7 +938,7 @@ void translate_inv_code(rtext,lineno)
       else
         {
         /* Unable to translate the asset code so raise an error */
-        strcpy(err_msg,"ERROR: Inventory item  - More than 2 characters BPR-8037");
+        strcpy(err_msg,"ERROR: Inventory item  - Unable to translate 4 character code BPR-8037");
         format_err(lineno,3);
         }
       }

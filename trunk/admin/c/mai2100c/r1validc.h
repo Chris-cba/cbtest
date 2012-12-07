@@ -5,7 +5,7 @@
 /* "@(#)r1validc.h	1.2 05/20/04"  */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1validc.h  $ $Revision:   2.3  $ $Modtime:   Dec 04 2012 14:25:40  $" */
+/* "$Workfile:   r1validc.h  $ $Revision:   2.4  $ $Modtime:   Dec 07 2012 12:24:38  $" */
 
 /* ---------------------------------------------------------------------- *
    Change History
@@ -106,16 +106,16 @@ BOOLEAN inventvl(inv,lineno,ped4chrass_value)
    * PED File will be outputing 4 character (nm3) asset codes so we need to
    * allow them, if PED4CHRASS is set to N (or any other value) the asset
    * codes should be the 2 characters that MAI normaly deals with. */
-  if ((strlen(inv) > 2 && strcmp(ped4chrass_value,"Y")==0) || (strlen(inv) > 4))
+  
+  if (strlen(inv) > 2 && strcmp(ped4chrass_value,"N")==0)
     {
-    if (strcmp(ped4chrass_value,"N")==0)
-      {
-      strcpy(err_msg,"ERROR: Inventory item  - More than 2 characters BPR-8037");
-      }
-    else
-      {
-      strcpy(err_msg,"ERROR: Inventory item  - More than 4 characters BPR-8037");
-      }
+    strcpy(err_msg,"ERROR: Inventory item  - More than 2 characters BPR-8037");
+    format_err(lineno,3);
+    }
+
+  if (strlen(inv) > 4)
+    {
+    strcpy(err_msg,"ERROR: Inventory item  - More than 4 characters BPR-8037");
     format_err(lineno,3);
     }
 
