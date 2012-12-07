@@ -1,0 +1,946 @@
+/* SCCS ID keywords, do not remove */
+static char *sccsid = "@(#)r1load.pc  1.3 09/10/04";
+
+/* PVCS ID keywords, do not remove      */
+/* "$Workfile:   r1load.pc  $ $Revision:   2.3  $ $Modtime:   Dec 07 2012 12:21:18  $" */
+
+/*
+   CHANGE HISTORY :-
+   DATE         : 01-SEP-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : 1.7 > 2.1 database conversion
+
+   DATE         : 31-10-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : client-server conversion
+
+   DATE         : 24-Apr-01
+   CHANGED BY   : M Elsmore (MRE)
+   DESCRIPTION  : Changed to allow alphabetic characters in SECTION
+                  Number id ANSECTNO is 'Y'. (For Hampshire only).
+
+   DATE         : 26-Apr-01
+   CHANGED BY   : M Elsmore (MRE)
+   DESCRIPTION  : Fixed such that message 'ERROR: C type record count
+                  10 does not match terminator 3 BPR-8110' is only output
+                  if genuine, rather than always on 'Format Check' runs.
+*/
+
+#include <stdio.h>
+#include <ctype.h>
+#include <errno.h>
+#ifdef IBM
+#include <string.h>
+#endif
+#include "rmms.h"
+
+
+EXEC SQL BEGIN DECLARE SECTION;
+static VARCHAR h_rectype[100][2];
+static VARCHAR h_text[100][2000];
+static long int     h_seq_no[100];
+static VARCHAR h_inv_by[100][30];
+static VARCHAR h_date[100][25];
+static long int count;
+static long int GBSeqNo;
+static VARCHAR agent_code[5];
+static VARCHAR ped4chrass[2001];
+VARCHAR trans_inv_code_in[5];
+VARCHAR trans_inv_code_out[3];
+int rmms_flag; /* indicates database type */
+EXEC SQL END DECLARE SECTION;
+
+#define SQLCA_STORAGE_CLASS extern
+
+EXEC SQL INCLUDE sqlext.h;
+
+extern struct msgs
+  {
+  long type;
+  char text[2000];
+  } msg;
+
+/* ------------------------------------------------ *
+   24-Apr-01. MRE. Added ansectno_flag.
+ * ------------------------------------------------ */
+extern VARCHAR ansectno_flag[100];
+extern int mkey;
+extern char pipe_msg[254];
+
+int load_flag;  /* indicates load type for validation */
+int a_load_flag;  /* indicates load type for validation from A card*/
+extern long int count_a;         /* A Record type count */
+extern long int count_b;         /* B Record type count */
+extern long int count_c;         /* C Record type count */
+extern long int count_z;         /* Z Record type count */
+extern long int expect_b;        /* Expected B records (Z type record) */
+extern long int expect_c;        /* Expected C records (Z type record) */
+static long int no_inserts;      /* No of records inserted (sqlca.sqerrd[2]) */
+extern FILE *fi;
+static BOOLEAN forok;           /*Load ok after format checks */
+extern char err_stack[100][100]; /*Error stack for stacking format errors*/
+extern BOOLEAN insyn;            /*insert records flag */
+extern BOOLEAN fcheck;           /* format check only ? flag */
+extern int  prerrors;    /*printed errors number - used to control headings*/
+extern char output;               /*Output flag */
+extern int noerrs;                /*Count of number errorneous records */
+
+extern char err_msg[100];
+
+/************************************************************************/
+#define NOLOADS 4
+/* the number of different load types catered for by the loader
+NB. to add a different load type add a new h file including the validation
+add one to NOLOADS
+*/
+
+/* include file containing code to control the output of error messages
+found when format checking HH load files */
+#include "r1forerr.h"
+
+/* include file containing code to validate husky hunter B type records */
+#include "r1validb.h"
+
+/* include file containing code to
+validate 2nd type husky hunter B type records */
+#include "r1val2b.h"
+
+/* include file containing code to
+validate ROMIS type husky hunter B type records */
+#include "r1val3b.h"
+
+/* include file containing code to
+validate HERMIS B records */
+#include "r1val4b.h"
+
+/* include file containing code to validate husky hunter C type records */
+#include "r1validc.h"
+
+/* include file containing code to validate husky hunter Z type records */
+#include "r1validz.h"
+/************************************************************************/
+
+int rmcaseup();
+int write_pipe();
+#ifndef ibm
+int access();
+#endif
+void jobend();
+void dblogoff();
+void exit();
+BOOLEAN prorecs();
+void nullfill();
+BOOLEAN probrec();
+BOOLEAN putrec();
+BOOLEAN insertrecs();
+char* sqlerr();
+void setcount();
+void format_c_rec();
+void translate_inv_code();
+void rollback();
+int dump_errs();
+
+
+BOOLEAN chkabv(abv,str)
+  char *abv,*str;
+  {
+  int i;
+
+  if (strlen(abv) > strlen(str))
+    {
+    return(FALSE);
+    }
+  for (i=0;i<strlen(abv);i++)
+    {
+    if ((rmcaseup(abv[i]) != rmcaseup(str[i])) && (abv[i] != ' '))
+      {
+      return(FALSE);
+      }
+    }
+  return(TRUE);
+}
+
+/* Function Proload -
+   Prompts for load file.
+   Checks load file valid.
+   Passes control to prorecs to process load file.
+*/
+BOOLEAN proload(date,st_seq_no,end_seq_no,uid)
+char *date;
+long int st_seq_no;
+long int *end_seq_no;
+char *uid;
+  {
+  char undl[80];
+  #ifndef ibm
+    char *gets();
+  #endif
+  long int i;
+  count_a = 0;
+  count_b = 0;
+  count_c = 0;
+  count_z = 0;
+  expect_b = 0;
+  expect_c = 0;
+
+  if (fcheck==FALSE)
+    {
+    EXEC SQL
+    SELECT HUS_AGENT_CODE
+      INTO :agent_code
+      FROM HIG_USERS
+     WHERE HUS_USERNAME=user
+         ;
+    agent_code.arr[agent_code.len] = '\0';
+
+    EXEC SQL
+    SELECT TO_NUMBER(HOP_VALUE)
+      INTO :rmms_flag
+      FROM HIG_OPTIONS
+     WHERE HOP_ID='RMMSFLAG'
+       AND HOP_PRODUCT='HIG'
+         ;
+
+    EXEC SQL
+    SELECT NVL(MIN(hov_value),'N')
+      INTO :ped4chrass
+      FROM hig_option_values
+     WHERE hov_id = 'PED4CHRASS'
+         ;
+    ped4chrass.arr[ped4chrass.len] = '\0';
+
+    switch  (rmms_flag)
+    {
+         case 1 : write_pipe(fi,"INFO: Database type is : Oracle DTp Standard");
+                        printf("\nDatabase type is : Oracle DTp Standard\n");
+                  break;
+         case 2 : write_pipe(fi,"INFO: Database type is : Hims/Oracle Hybrid");
+                        printf("\nDatabase type is : Hims/Oracle Hybrid\n");
+                  break;
+         case 3 : write_pipe(fi,"INFO: Database type is : ROMIS");
+                        printf("\nDatabase type is : ROMIS \n");
+                  break;
+         case 4 : write_pipe(fi,"INFO: Database type is : Welsh Office Standard");
+                        printf("\nDatabase type is : Welsh Office Standard\n");
+                  break;
+       }
+  }
+  else /* fcheck != FALSE */
+  {
+    strcpy(agent_code.arr,"FCHK");
+    agent_code.len=4;rmms_flag=1;
+  }
+
+
+  #ifdef ibm
+     if (fopen((char*)EXParam[2].arr,"r") == NULL)
+  #else
+     if (access((char*)EXParam[2].arr,4) == -1)
+  #endif
+     {
+       sprintf(err_msg,"%s %s",EXParam[2].arr,strerror(errno));
+        strcpy(pipe_msg,"ERROR: Unable to access input file ");
+        strcat(pipe_msg,(char *)EXParam[2].arr);
+        write_pipe(NULL,pipe_msg);
+      EXEC SQL ROLLBACK WORK;
+      jobend(EXJobId,1,err_msg);
+      EXEC SQL COMMIT WORK;
+      dblogoff();
+      exit(EX_FAIL);
+    }
+
+
+  for (i=0;i<strlen((char *)EXParam[2].arr);i++)
+  {
+    undl[i] = '*';
+  }
+     undl[strlen((char *)EXParam[2].arr)]='\0';
+
+     if (fcheck == FALSE)
+     {
+       printf("\nStarting format checks and load for : %s \n",(char *)EXParam[2].arr);
+       printf("**************************************%s\n\n",undl);
+                strcpy(pipe_msg,"INFO: Starting format checks and load for : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                write_pipe(fi,pipe_msg);
+       fprintf(fi,"\nStarting format checks and load for : %s \n",(char *)EXParam[2].arr);
+       fprintf(fi,"**************************************%s\n\n",undl);
+     }
+     else
+     {
+       printf("\nStarting format checks for : %s \n",(char *)EXParam[2].arr);
+       printf("*******************************%s\n\n",undl);
+                strcpy(pipe_msg,"INFO: Starting format checks for : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                write_pipe(fi,pipe_msg);
+       fprintf(fi,"\nStarting format checks for : %s \n",(char *)EXParam[2].arr);
+       fprintf(fi,"*******************************%s\n\n",undl);
+     }
+
+     if (prorecs((char *)EXParam[2].arr,date,st_seq_no,end_seq_no,uid) == TRUE)
+    {
+      if (fcheck== FALSE)
+       {
+
+          printf("\nINFO: Finished loading and checking : %s ",(char *)EXParam[2].arr);
+           printf("BPR-8503\n");
+           printf("**************************************%s*",undl);
+           printf("********\n\n");
+           printf("\nStarting load integrity validation for : %s\n",(char *)EXParam[2].arr);
+           printf("*****************************************%s\n\n\n",undl);
+                strcpy(pipe_msg,"INFO: Finished loading and checking : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                strcat(pipe_msg,"BPR-8503");
+                write_pipe(fi,pipe_msg);
+                strcpy(pipe_msg,"INFO: Starting load integrity validation for : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                write_pipe(fi,pipe_msg);
+           fprintf(fi,"\nINFO: Finished loading : %s BPR-8503\n",(char *)EXParam[2].arr);
+           fprintf(fi,"**********************************%s\n\n",undl);
+           fprintf(fi,"Starting load integrity validation for : %s\n",(char *)EXParam[2].arr);
+           fprintf(fi,"*****************************************%s\n\n",undl);
+           return(TRUE);
+       }
+       else
+       {
+           printf("\nINFO: Finished checking : %s ",(char *)EXParam[2].arr);
+           printf("BPR-8503\n");
+           printf("**************************************%s*",undl);
+           printf("********\n\n");
+           printf("\nChecks successful for : %s\n",(char *)EXParam[2].arr);
+           printf("*************************%s\n\n\n",undl);
+
+                strcpy(pipe_msg,"INFO: Finished checking : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                strcat(pipe_msg,"BPR-8503");
+                write_pipe(fi,pipe_msg);
+                strcpy(pipe_msg,"INFO: Checks successful for : ");
+                strcat(pipe_msg,(char *)EXParam[2].arr);
+                write_pipe(fi,pipe_msg);
+
+           fprintf(fi,"\nINFO: Finished checking : %s BPR-8503\n",(char *)EXParam[2].arr);
+           fprintf(fi,"**********************************%s\n\n",undl);
+           fprintf(fi,"Checks successful for : %s\n",(char *)EXParam[2].arr);
+           fprintf(fi,"***********************%s\n\n",undl);
+           return(TRUE);
+         }
+     }
+     else
+   {
+        return(FALSE);
+   }
+
+} /* PROLOAD end brace */
+
+/* Function Prorecs
+Opens load file.
+checks records
+counts records
+passes records to putrec for insertion.
+checks expected record types from Z type record
+*/
+
+BOOLEAN prorecs(lfile,date,st_seq_no,end_seq_no,uid)
+  char *lfile;
+  char *date;
+  long int   st_seq_no;
+  long int   *end_seq_no;
+  char  *uid;
+{ /* PRORECS start brace */
+  FILE *lfi;
+  #ifndef ibm
+  FILE *fopen();
+  #endif
+  BOOLEAN okload;
+  char line[2000],*j;
+  char rectype,rectext[2000],rectext2[2000];
+  char prvrec,*strs[10];
+  long int count,k,linecount,ttvl;
+  int b_errs=0;
+  
+  #ifdef ibm
+  unsigned char *eofyn;
+  #endif
+
+  forok = TRUE;
+  noerrs=0;
+  load_flag = 1;
+  lfi = fopen(lfile,"r");
+  setcount();
+  linecount = 0;
+  rectype = 'A';
+
+  count = st_seq_no ;
+
+printf("count1 = [%ld]\n",count);
+  #ifdef ibm
+  while(TRUE)
+  #else
+  while(!feof(lfi))
+  #endif
+    {
+    prvrec = (rectype == '\0') ? prvrec : rectype;
+    rectype = '\0';
+    nullfill(line,2000);
+    #ifdef ibm
+        eofyn = fgets(line,2000,lfi);
+    #else
+        fgets(line,2000,lfi);
+    #endif
+
+    linecount++; /* increment count of records read from file (start of file) = 1*/
+
+    /* remove trailing space characters */
+    for(j=(line + strlen(line) - 1);isspace(*j);*j-- = '\0');
+      if(line[0] == '\"')
+        {
+        count++;
+printf("count2 = [%ld]\n",count);
+        #ifndef ibm
+          if(strlen(line) > 1900)
+            {
+            strcpy(err_msg,"ERROR: String exceeds maximum load length BPR-8013");
+            format_err(linecount,3);
+            }
+          if(line[strlen(line) - 1] != '\"')
+            {
+            strcpy(err_msg,"ERROR: String not terminated by a double quote BPR-8102");
+            format_err(linecount,3);
+            }
+        #endif
+        /* sscanf(&line[1],"%c,%[^\"]",&rectype,rectext) ;*/
+
+        rectype=line[1];
+        for(k=3;line[k] != '\"' && k <1900 ; k++)
+          {
+          rectext[k-3] = line[k];
+          }
+        rectext[k-3] = '\0';
+
+        if((count == (st_seq_no + 1)) && (rectype != 'A'))
+          {
+          strcpy(err_msg,"ERROR: non A record type encountered at start of file BPR-8103");
+          format_err(linecount,3);
+          }
+
+        switch (rectype)
+          {
+          case 'A' :
+                   count_a++;
+                   rectext[6] = '\0';
+
+                   if(chkabv(rectext,"HERMIS")== TRUE)
+                     {
+                     load_flag = 4;
+                     }
+                   else if((chkabv(rectext,"ROMIS")== TRUE)||
+                           (chkabv(rectext,"GCC")  == TRUE))
+                     {
+                     load_flag = 3;
+                     }
+                   else
+                     if(chkabv(rectext,"SURREY") == TRUE)
+                       {
+                       load_flag = 2;
+                       }
+                     else
+                       {
+                       load_flag = 1;
+                       }
+
+                   a_load_flag = load_flag;
+                   if(fcheck==TRUE)
+                     {
+                     rmms_flag=load_flag;
+                     }
+                   break;
+
+          case 'B' :
+                   count_b++;
+                   dump_errs();
+
+                   for(ttvl=0;ttvl<NOLOADS;ttvl++)
+                     {
+                     okload=FALSE;
+                     if(probrec(rectext,linecount) == FALSE)
+                       {
+                       if(ttvl == 0)
+                         {
+                         b_errs=noerrs;
+                         }
+                       load_flag = ((load_flag%NOLOADS) + 1);
+                       }
+                     else
+                       {
+                       okload=TRUE;
+                       break;
+                       }
+                     }
+
+                   if(okload == TRUE)
+                     {
+                     noerrs=0;
+                     }
+                   else
+                     {
+                     noerrs = b_errs;
+                     format_err(0,2);
+                     }
+
+                   load_flag=a_load_flag;
+                   break;
+
+          case 'C' :
+                   count_c++;
+                   c_validation(rectext,linecount,(load_flag == 4 ? TRUE : FALSE),(char*)ped4chrass.arr);
+                   if(load_flag == 4)
+                     format_c_rec(&rectext);
+                   translate_inv_code(&rectext,linecount);
+                   break;
+
+          case 'Z' :
+                   count_z++;
+                   z_validation(rectext,linecount);
+                   break;
+
+          case '\0':
+                   count--;  /* decrement count and          */
+                   break;    /* do nothing as rectype not set*/
+
+          default  :
+                   strcpy(err_msg,"ERROR: unknown record type encountered BPR-8104");
+                   format_err(linecount,3);
+          }
+
+        if(rectype != '\0' && insyn == TRUE)
+          {
+           EXEC SQL SELECT ne_id_seq.nextval
+                     INTO :GBSeqNo
+                     FROM dual;
+          count = GBSeqNo;
+          putrec(rectype,rectext,count,uid,date);
+          }
+
+        if((prvrec == 'Z') && (rectype != '\0') && (rectype != 'Z'))
+          {
+          strcpy(err_msg,"\nERROR : Z record encountered before eof BPR-8105");
+          format_err(linecount,3);
+          }
+        }
+
+      #ifdef ibm
+        if(eofyn == NULL)
+          break;
+      #endif
+    } /*end of while */
+
+  *end_seq_no = count;
+
+  fclose(lfi);
+
+  if(count_a == 0)
+    {
+    strcpy(err_msg,"ERROR: File does not contain A type record BPR-8108");
+    format_err(0,3);
+    }
+
+  if((count_a != 1) && (count_a != 0) )
+    {
+    strcpy(err_msg,"ERROR: File contains more than one A type record BPR-8108");
+    format_err(0,3);
+    }
+
+  if(count_z == 0)
+    {
+    strcpy(err_msg,"ERROR: File does not contain Z type record BPR-8111");
+    format_err(0,3);
+    }
+
+  if((count_z != 0) && (count_z != 1) )
+    {
+    strcpy(err_msg,"ERROR: File contains more than one Z type record BPR-8111");
+    format_err(0,3);
+    }
+
+  if(prvrec != 'Z')
+    {
+    strcpy(err_msg,"ERROR: Non Z record encountered at eof BPR-8106");
+    format_err(0,3);
+    return(FALSE);
+    }
+
+/* -------------------------------------------------------------------------------- *
+ * 26-Apr-01. MRE. The following line replaced with call to getwstr, so that on     *
+ * format only runs, the Z-Record B and C record counts will be validated correctly *
+ * Note that getwstrs is destructive on the source string, so send over a copy...   *
+ * if (getstrs(rectext,strs) < 2)                                                   *
+ * -------------------------------------------------------------------------------- */
+  strcpy(rectext2,rectext);
+  if(getwstrs(rectext2,strs) < 2)
+    {
+    strcpy(err_msg,"ERROR: No of arguments in Z record less than required BPR-8107");
+    format_err(linecount,3);
+    return(FALSE);
+    }
+
+  expect_b = atoi(strs[0]);
+
+  expect_c = atoi(strs[1]);
+
+  if(count_b != expect_b)
+    {
+    sprintf(err_msg,"ERROR: B type record count %d does not match terminator %d BPR-8109", count_b,expect_b);
+    format_err(0,3);
+    }
+
+  if(count_c != expect_c)
+    {
+    sprintf (err_msg,"ERROR: C type record count %d does not match terminator %d BPR-8110",count_c,expect_c);
+    format_err(0,3);
+    }
+printf("count1    = [%ld]\n",count);
+printf("st_seq_no = [%ld]\n",st_seq_no);
+  if(insyn == TRUE)
+    {
+    insertrecs();
+    if(no_inserts != (count - st_seq_no))
+      {
+      printf("%d %d",no_inserts,(count - st_seq_no));
+      strcpy(err_msg,"ERROR: loaded records does not match counts BPR-8112");
+      format_err(0,3);
+      return(FALSE);
+      }
+    } /*end brace if insyn */
+
+  if(forok == TRUE)
+    {
+    return(TRUE);
+    }
+  else
+    {
+    return(FALSE);
+    }
+} /* PRORECS end brace */
+
+
+void setcount()
+{
+  count = 0;
+  no_inserts = 0;
+}
+
+/*
+Function PUTREC
+
+takes inspection type record
+
+loads PRO*C array with records for insertion
+
+calls insertrecs every 100 records
+*/
+
+BOOLEAN putrec(rectype,text,seq_no,inv_by,date)
+  char rectype;
+  char *text;
+  long int seq_no;
+  char *inv_by;
+  char *date;
+  {
+  h_rectype[count].arr[0] = rectype;
+  h_rectype[count].arr[1] = '\0';
+  h_rectype[count].len = 1;
+
+  strcpy(h_text[count].arr,text);
+  h_text[count].len = (int)strlen((char*)h_text[count].arr);
+
+  h_seq_no[count] = seq_no;
+
+  strcpy(h_inv_by[count].arr,inv_by);
+  h_inv_by[count].len = (int)strlen((char*)h_inv_by[count].arr);
+
+  strcpy(h_date[count].arr,date);
+  h_date[count].len = (int)strlen((char*)h_date[count].arr);
+
+  count++;
+
+  if (count == 100)
+    {
+    if (insertrecs() == FALSE)
+      {
+      return(FALSE);
+      }
+    else
+      {
+      return(TRUE);
+      }
+    }
+
+  return(TRUE);
+} /* PUTREC end brace */
+
+/* FUNCTION insertrecs
+
+Inserts inventory load records into the database.
+
+*/
+
+
+BOOLEAN insertrecs()
+{ /* INSERTRECS start brace */
+
+if (count != 0)
+{
+
+  EXEC SQL FOR :count INSERT INTO HHINV_LOAD_1
+        (REC_TYPE,FULL_VALUE,REC_SEQ_NO,INVENT_BY,LOAD_DATE)
+        VALUES (:h_rectype,
+                :h_text,
+                :h_seq_no,
+                :h_inv_by,
+                TO_DATE(:h_date,'RRMMDD:HHMISS'));
+   no_inserts += sqlca.sqlerrd[2];
+   count = 0;
+
+   if (sqlca.sqlcode != 0)
+   {
+     EXEC SQL ROLLBACK WORK;
+     jobend(EXJobId,1,sqlerr((FILE *)0));
+     EXEC SQL COMMIT WORK;
+     dblogoff();
+     exit(EX_FAIL);
+   }
+
+  return(TRUE);
+}
+else
+  return(TRUE);
+
+} /* INSERTRECS end brace */
+
+
+/* functions to format B records prior to insert into the database
+
+called only from PROBREC
+
+*/
+
+herm_format_b(rectext)
+  char *rectext;
+{
+  char map[300];
+
+  strcpy(map,"49.50.51.52.9.10.11.12.13.14.,.16.17.18.19.20.,.6.7.3.4.0.1.,.N.,.22.23.24");
+  mapstr(rectext,map);
+}/* herm_format_b */
+
+
+su_format_b(rectext)
+char *rectext;
+{
+int i;
+char map[300];
+
+switch (rmms_flag)
+{
+case 1  :
+
+/*****************************************************************************/
+agent_code.arr[4] = '\0';
+for (i=agent_code.len;i < 4;i++)
+{ agent_code.arr[i] = ' ';}
+rectext[49] = '\0';
+strcat(rectext,agent_code.arr);
+strcpy(map,
+"49.50.51.52.9.10.11.12.13.14.,.16.17.18.19.20.,.6.7.3.4.0.1.,.N.,.22.23.24");
+mapstr(rectext,map);
+break;
+/*****************************************************************************/
+
+
+case 2  :
+default :
+
+/*****************************************************************************/
+strcpy(map,
+"9.10.11.12.13.14. . . . .,.16.17.18.19.20.,.6.7.3.4.0.1.,.N.,.22.23.24");
+mapstr(rectext,map);
+break;
+/*****************************************************************************/
+
+}/*end brace SWITCH*/
+
+}/*end brace SU_FORMAT_B*/
+
+
+gu_format_b(rectext)
+char *rectext;
+{   return(TRUE);
+/* this is a dummy function ROMIS inventory load
+exactly matches the Oracle RMMS generic format.
+Fuction may need to be changed if this format needs to be changed.
+ */
+}/*end brace GU_FORMAT_B*/
+
+dtp_format_b(rectext)
+char *rectext;
+{
+
+/* putspace(rectext,13,3);
+   This was here but is now causing problems in
+   the stage two loader, so it has been removed
+   Ian Turnbull 12/5/00  */
+
+}
+
+
+BOOLEAN probrec(rectext,linecount)
+  char *rectext;
+  long int linecount;
+{ /* PROBREC start brace */
+  int olderrs;
+  /*used as check to see if validation has caused errors */
+  olderrs = noerrs;
+
+  printf("probrec load_flag = %d\n",load_flag);
+  switch (load_flag)
+   {
+   case 4  :
+           herm_b_validation(rectext,linecount);
+           if(noerrs != olderrs)
+             {
+             return(FALSE);
+             }
+           else
+             {
+/*             herm_format_b(rectext); */
+             return(TRUE);
+             }
+           break;
+
+   case 3  :
+           gb_validation(rectext,linecount);
+           if(noerrs != olderrs)
+             {
+             return(FALSE);
+             }
+           else
+             {
+             gu_format_b(rectext);
+             return(TRUE);
+             }
+           break;
+
+   case 2  :
+           sb_validation(rectext,linecount);
+           if(noerrs != olderrs)
+             {
+             return(FALSE);
+             }
+           else
+             {
+             su_format_b(rectext);
+             return(TRUE);
+             }
+           break;
+
+   case 1  :
+   default :
+           b_validation(rectext,linecount);
+           if(noerrs != olderrs)
+             {
+             return(FALSE);
+             }
+           else
+             {
+             dtp_format_b(rectext);
+             return(TRUE);
+             }
+           break;
+
+   }  /* SWITCH end brace */
+
+}  /* PROBREC end brace */
+
+/*=================================================================*/
+/* format_c_rec                                                    */
+/*=================================================================*/
+/* Function to remove spaces from the xsect field on the C record  */
+/*=================================================================*/
+void format_c_rec(rtext)
+  char *rtext;
+  {
+  int i,j=0,com_cnt=0;
+  char tmp_text[2000];
+
+  for(i=0;i<strlen(rtext);i++)
+    {
+    if(rtext[i]==',')
+      com_cnt++;
+
+    if(com_cnt==1 && isspace(rtext[i])) /* xsect is the second field */
+      ;                                 /* i.e. the field after the  */
+    else                                /* first comma.              */
+      tmp_text[j++] = rtext[i];
+    }
+  tmp_text[j]='\0';
+  strcpy(rtext,tmp_text);
+  }
+
+void translate_inv_code(rtext,lineno)
+  char *rtext;
+  long int lineno;
+  {
+  int i,j=0,k=0,com_cnt=0;
+  char tmp_text[2000];
+
+  if (strcmp(ped4chrass.arr,"Y") == 0)
+    {
+    /* Split the record into the inv code
+     * and the rest of the record. */
+    for(i=0;i<strlen(rtext);i++)
+      {
+      if(rtext[i]==',')
+        {
+        com_cnt++;
+        }
+      if(com_cnt==0)
+        {
+        trans_inv_code_in.arr[k++] = rtext[i];
+        }
+      else
+        {
+        tmp_text[j++] = rtext[i];
+        }
+    }
+    trans_inv_code_in.arr[k] = '\0';
+    trans_inv_code_in.len = strlen((char*)trans_inv_code_in.arr);
+    tmp_text[j]='\0';
+    trans_inv_code_out.arr[0] = '\0';
+    trans_inv_code_out.len = 0;
+
+    if (k > 2)
+      {
+     	EXEC SQL EXECUTE
+		    BEGIN
+			    :trans_inv_code_out := mai.translate_nm_inv_type(:trans_inv_code_in);
+        END;
+      END-EXEC;
+
+      trans_inv_code_out.arr[trans_inv_code_out.len] = '\0';
+
+      if (trans_inv_code_out.len > 0)
+        {
+        /* Put the record back together
+         * using the translated asset code. */
+        strcpy(rtext,(char*)trans_inv_code_out.arr);
+        strcat(rtext,tmp_text);
+        }
+      else
+        {
+        /* Unable to translate the asset code so raise an error */
+        strcpy(err_msg,"ERROR: Inventory item  - Unable to translate 4 character code BPR-8037");
+        format_err(lineno,3);
+        }
+      }
+    }
+  }
