@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.31   Dec 06 2012 11:01:40   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.32   Jan 07 2013 09:49:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Dec 06 2012 11:01:40  $
---       Date fetched Out : $Modtime:   Dec 06 2012 11:01:22  $
---       PVCS Version     : $Revision:   3.31  $
+--       Date into PVCS   : $Date:   Jan 07 2013 09:49:40  $
+--       Date fetched Out : $Modtime:   Dec 21 2012 11:41:02  $
+--       PVCS Version     : $Revision:   3.32  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.31  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.32  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -240,28 +240,41 @@ END get_sta;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION get_dpr(pi_rep_action_cat     IN repairs.rep_action_cat%TYPE
+FUNCTION get_dpr(pi_admin_unit         IN nm_admin_units_all.nau_admin_unit%TYPE
+                ,pi_rep_action_cat     IN repairs.rep_action_cat%TYPE
                 ,pi_atv_acty_area_code IN activities.atv_acty_area_code%TYPE
                 ,pi_def_priority       IN defects.def_priority%TYPE
                 ,pi_effective_date     IN DATE)
   RETURN defect_priorities%ROWTYPE IS
   --
+  CURSOR c_priority IS
+  SELECT dpr.*
+    FROM defect_priorities dpr, 
+         hig_admin_units hau, 
+         hig_admin_groups hag,
+         hig_codes
+   WHERE TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
+                             NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+                      AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+     AND hag.hag_child_admin_unit  =  pi_admin_unit
+     AND hag.hag_parent_admin_unit = hau.hau_admin_unit
+     AND dpr_atv_acty_area_code    = pi_atv_acty_area_code
+     AND dpr_priority              = pi_def_priority
+     AND dpr_action_cat            = hco_code
+     AND dpr_admin_unit            = hag.hag_parent_admin_unit
+     AND hco_code                  = pi_rep_action_cat
+     AND hco_domain                = 'REPAIR_TYPE'
+     AND pi_effective_date BETWEEN NVL(hco_start_date,pi_effective_date)
+                               AND NVL(hco_end_date  ,pi_effective_date)
+  ORDER BY hau_level desc;
+  --
   lr_retval defect_priorities%ROWTYPE;
   --
 BEGIN
   --
-  SELECT dpr.*
-    INTO lr_retval
-    FROM hig_codes
-        ,defect_priorities dpr
-   WHERE dpr.dpr_priority           = pi_def_priority
-     AND dpr.dpr_atv_acty_area_code = pi_atv_acty_area_code
-     AND dpr.dpr_action_cat         = hco_code
-     AND hco_code                   = pi_rep_action_cat
-     AND hco_domain                 = 'REPAIR_TYPE'
-     AND pi_effective_date BETWEEN NVL(hco_start_date,pi_effective_date)
-                               AND NVL(hco_end_date  ,pi_effective_date)
-       ;
+  OPEN c_priority;
+  FETCH c_priority INTo lr_retval;
+  CLOSE c_priority;
   --
   RETURN lr_retval;
   --
@@ -1345,7 +1358,8 @@ END validate_defect_type;
 FUNCTION validate_priority(pi_priority           IN defects.def_priority%TYPE
                           ,pi_atv_acty_area_code IN activities.atv_acty_area_code%TYPE
                           ,pi_action_cat         IN repairs.rep_action_cat%TYPE DEFAULT 'P'
-                          ,pi_effective_date     IN DATE)
+                          ,pi_effective_date     IN DATE
+						  ,pi_rse_he_id          IN defects.def_rse_he_id%TYPE)
   RETURN BOOLEAN IS
   --
   lv_dummy NUMBER;
@@ -1359,11 +1373,18 @@ BEGIN
    WHERE dpr_priority           = pi_priority
      AND dpr_atv_acty_area_code = pi_atv_acty_area_code
      AND dpr_action_cat         = pi_action_cat
+     AND dpr_admin_unit IN ( SELECT hag.hag_parent_admin_unit
+                               FROM hig_admin_units hau, hig_admin_groups hag
+                              WHERE TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
+                                             NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+                                         AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+                                AND hag.hag_child_admin_unit = mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => pi_rse_he_id)
+                                AND hag.hag_parent_admin_unit = hau.hau_admin_unit )
      AND dpr_priority           = hco_code
      AND hco_domain             = 'DEFECT_PRIORITIES'
      AND pi_effective_date BETWEEN NVL(hco_start_date,pi_effective_date)
                                AND NVL(hco_end_date  ,pi_effective_date)
-       ;
+   ;
   --
   RETURN TRUE;
   --
@@ -1965,7 +1986,8 @@ BEGIN
   --
   IF NOT validate_priority(pi_priority           => lr_defect_rec.def_priority
                           ,pi_atv_acty_area_code => lr_defect_rec.def_atv_acty_area_code
-                          ,pi_effective_date     => pi_are_date_work_done)
+                          ,pi_effective_date     => pi_are_date_work_done
+						  ,pi_rse_he_id          => lr_defect_rec.def_rse_he_id)
    THEN
       --
       raise_application_error(-20027,'Invalid Priority Specified. Priority ['||lr_defect_rec.def_priority
@@ -2395,7 +2417,8 @@ BEGIN
           raise_application_error(-20029,'No Repair Action Category Specified.');
       END IF;
       --
-      lr_defect_priorities := get_dpr(pi_rep_action_cat     => lt_rep_tab(i).rep_record.rep_action_cat
+      lr_defect_priorities := get_dpr(pi_admin_unit         => mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => lr_rse.rse_he_id) 
+                                     ,pi_rep_action_cat     => lt_rep_tab(i).rep_record.rep_action_cat
                                      ,pi_atv_acty_area_code => lt_rep_tab(i).rep_record.rep_atv_acty_area_code
                                      ,pi_def_priority       => pi_defect_rec.def_priority
                                      ,pi_effective_date     => pi_insp_rec.are_date_work_done);
@@ -2450,7 +2473,6 @@ BEGIN
                       ,lt_rep_tab(i).rep_record.rep_rse_he_id
                       ,lt_rep_tab(i).rep_record.rep_date_due
                       ,lv_dummy);
-      --
       IF lv_dummy <> 0
        THEN
           IF lv_dummy = 8509
