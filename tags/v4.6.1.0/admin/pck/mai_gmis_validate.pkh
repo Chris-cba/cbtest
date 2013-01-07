@@ -1,0 +1,162 @@
+CREATE OR REPLACE PACKAGE mai_gmis_validate AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkh-arc   2.1   Jan 07 2013 09:51:18   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_gmis_validate.pkh  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:51:18  $
+--       Date fetched Out : $Modtime:   Jul 20 2012 11:19:06  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on SCCS Version     : 1.3
+--
+--
+--   Author : Darren Cope
+--
+--   Validation funcs for gmis interface
+--
+-----------------------------------------------------------------------------
+--	Copyright (c) exor corporation ltd, 2002
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+
+  -----------
+  --constants
+  -----------
+  --g_sccsid is the SCCS ID for the package
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.1  $"';
+
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="activity_is_valid">
+-- Checks the validity of an activity code
+FUNCTION activity_is_valid(p_acty_area_code IN activities.atv_acty_area_code%TYPE
+                          ,p_dtp_flag       IN activities.atv_dtp_flag%TYPE) RETURN activities.atv_acty_area_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_user_id">
+-- This function returns the user_id given a initial
+-- Initial is not a unique field so the function will return the first one it matches
+FUNCTION get_user_id(p_user IN hig_users.hus_initials%TYPE) RETURN hig_users.hus_user_id%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="hco_is_valid">
+-- This function checks the validity of a hig status code
+FUNCTION hco_is_valid(p_domain IN hig_codes.hco_domain%TYPE
+                     ,p_code   IN hig_codes.hco_code%TYPE) RETURN hig_codes.hco_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_chainage>
+-- This function checks if the chainage given is within the length of the section
+FUNCTION check_chainage(p_ne_id IN nm_elements_all.ne_id%TYPE
+                       ,p_chain IN nm_elements_all.ne_length%TYPE) RETURN nm_elements_all.ne_length%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_xsp>
+-- This function checks if the xsp is valid
+FUNCTION check_xsp(pi_ne_id         IN nm_elements.ne_id%TYPE
+                  ,pi_x_sect        IN xsp_restraints.xsr_x_sect_value%TYPE) RETURN xsp_restraints.xsr_x_sect_value%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="def_code_is_valid">
+-- This function checks the validity of a defect code
+FUNCTION def_code_is_valid(p_defect_code IN def_types.dty_defect_code%TYPE
+                          ,p_area_code   IN def_types.dty_atv_acty_area_code%TYPE
+                          ,p_sys_flag    IN def_types.dty_dtp_flag%TYPE) RETURN def_types.dty_defect_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="treatment_is_valid">
+-- This function checks the validity of a treatment
+FUNCTION treatment_is_valid(p_tre_code IN repairs.rep_tre_treat_code%TYPE) RETURN repairs.rep_tre_treat_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="std_item_is_valid">
+-- This function checks the validity of a stdandard item
+FUNCTION std_item_is_valid(p_std_item IN standard_items.sta_item_code%TYPE) RETURN standard_items.sta_item_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="std_quantity_within_limits">
+-- This function checks the validity of a stdandard item quantities
+FUNCTION std_quantity_within_limits (p_std_item IN standard_items.sta_item_code%TYPE
+                                    ,p_qty      IN standard_items.sta_min_quantity%TYPE) RETURN standard_items.sta_min_quantity%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_ity_sys_flag">
+-- This function returns the sys flag of a given section
+FUNCTION get_ity_sys_flag(p_rse_he_id IN nm_elements.ne_id%TYPE) RETURN road_segs.rse_sys_flag%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_def_attr_col">
+-- This function returns the defect attribute column for the attribute number given
+FUNCTION get_def_attr_col(p_defect_code     defects.def_defect_code%TYPE
+                         ,p_acty_area_code  defects.def_atv_acty_area_code%TYPE
+                         ,p_sys_flag        defects.def_ity_sys_flag%TYPE
+                         ,p_attr_num        pls_integer) RETURN def_types.dty_hh_attribute_1%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="dpr_is_valid_for_area">
+-- This function checks a defect priority and repair actio against area code
+FUNCTION dpr_is_valid_for_area (pi_dpr_admin_unit         IN defect_priorities.dpr_admin_unit%TYPE
+                               ,pi_dpr_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE 
+                               ,pi_dpr_priority           IN defect_priorities.dpr_priority%TYPE
+                               ,pi_dpr_action_cat         IN defect_priorities.dpr_action_cat%TYPE) RETURN defect_priorities.dpr_priority%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+  PRAGMA RESTRICT_REFERENCES(get_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(activity_is_valid, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_user_id, WNDS);
+  PRAGMA RESTRICT_REFERENCES(hco_is_valid, WNDS);
+  PRAGMA RESTRICT_REFERENCES(def_code_is_valid, WNDS);
+  PRAGMA RESTRICT_REFERENCES(treatment_is_valid, WNDS);
+  PRAGMA RESTRICT_REFERENCES(std_item_is_valid, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_ity_sys_flag, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_def_attr_col, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_gmis_validate;
+/
