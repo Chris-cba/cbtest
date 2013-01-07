@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_tab_dpr IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkh-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkh-arc   2.1   Jan 07 2013 09:51:44   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_tab_dpr.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:51:44  $
+--       Date fetched Out : $Modtime:   Jul 19 2012 14:41:08  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -28,7 +28,7 @@ CREATE OR REPLACE PACKAGE mai_tab_dpr IS
 --
 --</PACKAGE>
 --<GLOBVAR>
-   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.0  $"';
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
 --  g_sccsid is the SCCS ID for the package
 --
 --</GLOBVAR>
@@ -53,7 +53,8 @@ FUNCTION get_body_version RETURN varchar2;
 --
 --   Function to get using DPR_INDEX_P1 index
 --
-FUNCTION get (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+FUNCTION get (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+             ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
              ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
              ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
              ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -77,7 +78,8 @@ PROCEDURE ins (p_rec_dpr IN OUT defect_priorities%ROWTYPE);
 --
 --   Function to lock using DPR_INDEX_P1 index
 --
-FUNCTION lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+FUNCTION lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                  ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
                   ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
                   ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
                   ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -87,7 +89,8 @@ FUNCTION lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area
 --
 --   Procedure to lock using DPR_INDEX_P1 index
 --
-PROCEDURE lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+PROCEDURE lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                   ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
                    ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
                    ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
                    ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -102,7 +105,8 @@ PROCEDURE lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_are
 --
 --   Procedure to del using DPR_INDEX_P1 index
 --
-PROCEDURE del (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+PROCEDURE del (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+              ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
               ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
               ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
               ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
