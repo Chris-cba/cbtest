@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.30   Jun 20 2012 14:01:30   Linesh.Sorathia  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.31   Jan 07 2013 09:49:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jun 20 2012 14:01:30  $
---       Date fetched Out : $Modtime:   Jun 18 2012 10:18:10  $
---       SCCS Version     : $Revision:   2.30  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:49:04  $
+--       Date fetched Out : $Modtime:   Dec 19 2012 16:37:56  $
+--       SCCS Version     : $Revision:   2.31  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.30  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.31  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -826,91 +826,111 @@ BEGIN
   --
 END calculate_inv_quantity_assets;
 --
-PROCEDURE rep_date_due (
-           p_date               IN DATE
-          ,p_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE
-          ,p_dpr_priority       IN defect_priorities.dpr_priority%TYPE
-          ,p_dpr_action_cat     IN defect_priorities.dpr_action_cat%TYPE
-          ,p_heid               IN road_segments_all.rse_he_id%TYPE
-          ,p_out_date           OUT DATE
-          ,p_error              OUT NUMBER) IS
-
- CURSOR c_int_code IS
-    SELECT dpr_int_code
-          ,dpr_use_working_days
-          ,dpr_use_next_insp
-    FROM   defect_priorities
-    WHERE  dpr_atv_acty_area_code = p_atv_acty_area_code
-    AND    dpr_priority           = p_dpr_priority
-    AND    dpr_action_cat         = p_dpr_action_cat;
- --
- CURSOR get_rse_int_code IS
-    SELECT  rse.rse_int_code
-    FROM    road_segments_all rse
-           ,intervals         INT
-    WHERE   rse.rse_int_code      = INT.int_code
-    AND     rse.rse_he_id         = p_heid
-    AND     p_date
-    BETWEEN NVL(INT.int_start_date,p_date)
-    AND     NVL(INT.int_end_date,p_date);
- --
-    l_int_code               defect_priorities.dpr_int_code%TYPE;
-    l_use_working_days       defect_priorities.dpr_use_working_days%TYPE;
-    l_use_next_insp          defect_priorities.dpr_use_next_insp%TYPE;
- --
-    v_error    NUMBER:=0;
- --
- BEGIN
-    l_use_working_days:='N'; -- Initialize Use Working Days
-    l_use_next_insp:='N';    -- Initialize Use Next Inspection
- --
-    OPEN  c_int_code;
-    FETCH c_int_code INTO l_int_code
-                         ,l_use_working_days
-                         ,l_use_next_insp;
---
-    IF  c_int_code%NOTFOUND
-    THEN v_error:=8509;
-    END IF;
- --
-    CLOSE c_int_code;
- --
- -- The inspection interval can be obtained from the defect_prriorities
- -- table OR form the road_segs table for the specified sectioin.
- -- The flag dpr_use_next_insp should be obtained from the defect_
- -- priorities table and if the flag is 'Y' then the interval code to
- -- be used should be obtained from the road_segs table otherwise the
- -- default interval code from the defect_priorities table should be
- -- used.
- --
-    IF v_error = 0 THEN
-    IF l_use_next_insp = 'Y'
-    THEN -- obtain the interval code from the road_segs table for the
-         -- selected section.
-         -- the intervals table is used in the query so that a check
-         -- for existance is made against the interval code since
-         -- the interval code may be null.
-         OPEN get_rse_int_code;
-         FETCH get_rse_int_code INTO l_int_code;
-         IF get_rse_int_code%NOTFOUND
-         THEN v_error:=8213;             -- Unable to obtain interval code
-         END IF;
-         CLOSE get_rse_int_code;
-    END IF;
- --
-    IF l_use_working_days = 'Y'
-    THEN p_out_date:=hig.date_due(p_date,l_int_code,TRUE);
-    ELSE p_out_date:=hig.date_due(p_date,l_int_code,FALSE);
-    END IF;
-  p_error := v_error;
-  ELSE
-
--- Invalid interval - no need to try and find date due.
-
-  p_error := v_error;
+PROCEDURE rep_date_due (p_date               IN DATE
+                       ,p_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE
+                       ,p_dpr_priority       IN defect_priorities.dpr_priority%TYPE
+                       ,p_dpr_action_cat     IN defect_priorities.dpr_action_cat%TYPE
+                       ,p_heid               IN road_segments_all.rse_he_id%TYPE
+                       ,p_out_date           OUT DATE
+                       ,p_error              OUT NUMBER) IS
+  --
+  CURSOR c_int_code(cp_atv_acty_area_code  defect_priorities.dpr_atv_acty_area_code%TYPE
+                   ,cp_dpr_priority        defect_priorities.dpr_priority%TYPE
+                   ,cp_dpr_action_cat      defect_priorities.dpr_action_cat%TYPE
+                   ,cp_admin_unit          nm_admin_units_all.nau_admin_unit%TYPE)
+      IS
+  SELECT dpr_int_code
+        ,dpr_use_working_days
+        ,dpr_use_next_insp
+    FROM defect_priorities, hig_admin_units hau, hig_admin_groups hag
+   where TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
+                 NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+             AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+    AND hag.hag_child_admin_unit = :cp_admin_unit
+    AND hag.hag_parent_admin_unit = hau.hau_admin_unit
+   and   dpr_atv_acty_area_code = :cp_atv_acty_area_code
+   and   dpr_priority           = :cp_dpr_priority
+   and   dpr_action_cat         =:cp_dpr_action_cat
+   and   dpr_admin_unit       = hag.hag_parent_admin_unit
+ order by hau_level desc;
+ 
+   --
+  CURSOR get_rse_int_code(cp_heid  road_segments_all.rse_he_id%TYPE
+                         ,cp_date  DATE)
+      IS
+  SELECT rse_int_code
+    FROM road_segments_all
+        ,intervals
+   WHERE int_code = rse_int_code
+     AND rse_he_id = cp_heid
+     AND cp_date BETWEEN NVL(int_start_date,cp_date)
+                     AND NVL(int_end_date,cp_date)
+       ;
+  --
+  lv_int_code          defect_priorities.dpr_int_code%TYPE;
+  lv_use_working_days  defect_priorities.dpr_use_working_days%TYPE := 'N';
+  lv_use_next_insp     defect_priorities.dpr_use_next_insp%TYPE := 'N';
+  --
+  lv_error  NUMBER:=0;
+  --
+BEGIN
+  --
+  OPEN  c_int_code(p_atv_acty_area_code
+                  ,p_dpr_priority
+                  ,p_dpr_action_cat
+                  ,mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => p_heid));
+  FETCH c_int_code
+   INTO lv_int_code
+       ,lv_use_working_days
+       ,lv_use_next_insp;
+  --
+  IF  c_int_code%NOTFOUND
+   THEN
+      lv_error:=8509;
   END IF;
-END;
-
+  --
+  CLOSE c_int_code;
+  --
+  -- The inspection interval can be obtained from the defect_prriorities
+  -- table OR form the road_segs table for the specified sectioin.
+  -- The flag dpr_use_next_insp should be obtained from the defect_
+  -- priorities table and if the flag is 'Y' then the interval code to
+  -- be used should be obtained from the road_segs table otherwise the
+  -- default interval code from the defect_priorities table should be
+  -- used.
+  --
+  IF lv_error = 0
+   THEN
+      IF lv_use_next_insp = 'Y'
+       THEN
+          -- obtain the interval code from the road_segs table for the
+          -- selected section.
+          -- the intervals table is used in the query so that a check
+          -- for existance is made against the interval code since
+          -- the interval code may be null.
+          OPEN  get_rse_int_code(p_heid,p_date);
+          FETCH get_rse_int_code
+           INTO lv_int_code;
+          IF get_rse_int_code%NOTFOUND
+           THEN
+              lv_error:=8213;             -- Unable to obtain interval code
+          END IF;
+          CLOSE get_rse_int_code;
+      END IF;
+      --
+      IF lv_use_working_days = 'Y'
+       THEN
+          p_out_date:=hig.date_due(p_date,lv_int_code,TRUE);
+      ELSE
+          p_out_date:=hig.date_due(p_date,lv_int_code,FALSE);
+      END IF;
+      p_error := lv_error;
+  ELSE
+      -- Invalid interval - no need to try and find date due.
+      p_error := lv_error;
+  END IF;
+END rep_date_due;
+--
 ----------------------------------------------------------------------------
 -- Start of functions and procedures required for inventory view creattion
 -- via mai1400
@@ -3686,14 +3706,11 @@ FUNCTION get_auto_def_priority(p_rse_he_id     IN NUMBER
                               ,p_network_type  IN VARCHAR2
                               ,p_activity_code IN VARCHAR2
                               ,p_defect_code   IN VARCHAR2)
-  RETURN VARCHAR2
-IS
-  TYPE adsp_rowid IS TABLE OF ROWID
-                       INDEX BY BINARY_INTEGER;
-  TYPE adsp_attrib IS TABLE OF VARCHAR2(500)
-                        INDEX BY BINARY_INTEGER;
-  TYPE adsp_cntrl_value IS TABLE OF VARCHAR2(500)
-                             INDEX BY BINARY_INTEGER;
+  RETURN VARCHAR2 IS
+  --
+  TYPE adsp_rowid IS TABLE OF ROWID INDEX BY BINARY_INTEGER;
+  TYPE adsp_attrib IS TABLE OF VARCHAR2(500) INDEX BY BINARY_INTEGER;
+  TYPE adsp_cntrl_value IS TABLE OF VARCHAR2(500) INDEX BY BINARY_INTEGER;
   l_adsp_rowid        adsp_rowid;
   l_adsp_attrib       adsp_attrib;
   l_adsp_cntrl_value  adsp_cntrl_value;
@@ -3701,17 +3718,20 @@ IS
   cur_string_x        VARCHAR2(30000) := NULL;
   v_priority          defect_priorities.dpr_priority%TYPE;
   l_count             PLS_INTEGER;
+  lv_admin_unit       nm_admin_units_all.nau_admin_unit%TYPE;
+  --
 BEGIN
-  cur_string := 'select adsp_priority' || CHR(10);
-  cur_string :=
-    cur_string || ' from auto_defect_selection_priority, road_segs' || CHR(10);
-  cur_string :=
-    cur_string || ' where adsp_dtp_flag = :p_network_type' || CHR(10);
-  cur_string :=
-    cur_string || ' and adsp_atv_acty_area_code = :p_activity_code' || CHR(10);
-  cur_string :=
-    cur_string || ' and adsp_defect_code = :p_defect_code' || CHR(10);
-  cur_string := cur_string || ' and rse_he_id = :p_rse_he_id';
+  --
+  lv_admin_unit := mai_priority.get_lowest_adsp_admin_unit(pi_ne_id => p_rse_he_id);
+  --
+  cur_string := 'select adsp_priority'
+     ||CHR(10)|| ' from auto_defect_selection_priority, road_segs'
+     ||CHR(10)||' where adsp_atv_acty_area_code = :p_activity_code'
+     ||CHR(10)||  ' and adsp_defect_code = :p_defect_code'
+     ||CHR(10)||  ' and adsp_admin_unit = :p_admin_unit' --Admin Unit Change
+     ||CHR(10)||  ' and adsp_dtp_flag = rse_sys_flag'
+     ||CHR(10)||  ' and rse_he_id = :p_rse_he_id'
+  ;
   SELECT adsp.ROWID
         ,hco.hco_meaning
         ,adsp.adsp_cntrl_value
@@ -3722,37 +3742,35 @@ BEGIN
         ,auto_defect_selection_priority adsp
    WHERE hco.hco_domain = 'ADSP_RSE_ATTS'
      AND hco.hco_code = adsp.adsp_flex_attrib
+     AND adsp.adsp_admin_unit = lv_admin_unit
      AND adsp.adsp_atv_acty_area_code = p_activity_code
      AND adsp.adsp_defect_code = p_defect_code
      AND adsp.adsp_dtp_flag = p_network_type
-     AND adsp.adsp_priority_rank IN
-           (SELECT MIN(adsp.adsp_priority_rank)
-              FROM auto_defect_selection_priority adsp
-             WHERE adsp.adsp_atv_acty_area_code = p_activity_code
-               AND adsp.adsp_defect_code = p_defect_code
-               AND adsp.adsp_dtp_flag = p_network_type);
+     AND adsp.adsp_priority_rank IN(SELECT MIN(adsp.adsp_priority_rank)
+                                      FROM auto_defect_selection_priority adsp2
+                                     WHERE adsp2.adsp_admin_unit = lv_admin_unit
+                                       AND adsp2.adsp_atv_acty_area_code = p_activity_code
+                                       AND adsp2.adsp_defect_code = p_defect_code
+                                       AND adsp2.adsp_dtp_flag = p_network_type)
+       ;
+  --
   l_count := l_adsp_rowid.COUNT;
   IF l_count > 0
   THEN
     -- Will never loop since entered ranking.. but it works OK
     FOR l_i IN 1 .. l_count LOOP
       -- Add rse attrib to sql statement
-      cur_string_x :=
-           cur_string
-        || CHR(10)
-        || ' and '
-        || l_adsp_attrib(l_i)
-        || ' = adsp_cntrl_value';
+      cur_string_x := cur_string||CHR(10)||' and '||l_adsp_attrib(l_i)|| ' = adsp_cntrl_value';
       -- Get priority for current attrib
       EXECUTE IMMEDIATE cur_string_x
         INTO v_priority
-        USING p_network_type
-             ,p_activity_code
+        USING p_activity_code
              ,p_defect_code
+             ,lv_admin_unit
              ,p_rse_he_id;
     END LOOP;
   END IF;
-  -- RETURN to_char(v_date_due);
+  --
   RETURN (v_priority);
 END;
 -----------------------------------------------------------------------------------
@@ -6263,37 +6281,26 @@ END get_wo_wol_ids;
 FUNCTION get_feature_flags_rec(pi_domain          IN VARCHAR2
                               ,pi_status_code     IN hig_status_codes.hsc_status_code%TYPE
                               ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN feature_flags_rec IS
-
  l_refcursor nm3type.ref_cursor;
-
  l_sql VARCHAR2(2000);
  l_retval feature_flags_rec;
-
 BEGIN
-
   l_sql := 'SELECT hsc_allow_feature1,hsc_allow_feature2,hsc_allow_feature3,hsc_allow_feature4,hsc_allow_feature5,hsc_allow_feature6,hsc_allow_feature7,hsc_allow_feature8,hsc_allow_feature9,hsc_allow_feature10'||chr(10)
          ||'  FROM hig_status_codes'||chr(10)
          ||' WHERE hsc_domain_code = :1'||chr(10)
          ||'   AND hsc_status_code = :2'||chr(10)
          ||'   AND :3 BETWEEN NVL(hsc_start_date,:4) AND NVL(hsc_end_date,:5)';
-
  OPEN l_refcursor FOR l_sql USING pi_domain, pi_status_code, pi_as_at_date,pi_as_at_date,pi_as_at_date;
-
  FETCH l_refcursor INTO l_retval;
  CLOSE l_refcursor;
-
  RETURN(l_retval);
-
 END get_feature_flags_rec;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION expected_and_actual_the_same(pi_expected_rec IN feature_flags_rec
                                      ,pi_actual_rec   IN feature_flags_rec) RETURN BOOLEAN IS
-
 BEGIN
-
-
  RETURN(  pi_actual_rec.hsc_allow_feature1 = NVL(pi_expected_rec.hsc_allow_feature1,pi_actual_rec.hsc_allow_feature1)
       AND pi_actual_rec.hsc_allow_feature2 = NVL(pi_expected_rec.hsc_allow_feature2,pi_actual_rec.hsc_allow_feature2)
       AND pi_actual_rec.hsc_allow_feature3 = NVL(pi_expected_rec.hsc_allow_feature3,pi_actual_rec.hsc_allow_feature3)
@@ -6304,23 +6311,15 @@ BEGIN
       AND pi_actual_rec.hsc_allow_feature8 = NVL(pi_expected_rec.hsc_allow_feature8,pi_actual_rec.hsc_allow_feature8)
       AND pi_actual_rec.hsc_allow_feature9 = NVL(pi_expected_rec.hsc_allow_feature9,pi_actual_rec.hsc_allow_feature9)
       );
-
-
 END expected_and_actual_the_same;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_AMENDABLE(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-
-
  l_expected_rec feature_flags_rec;
-
 BEGIN
-
-
  l_expected_rec.hsc_allow_feature5 := 'Y';
-
   RETURN(
          expected_and_actual_the_same(pi_expected_rec => l_expected_rec
                                      ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
@@ -6328,23 +6327,15 @@ BEGIN
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
          );
-
-
 END defect_is_AMENDABLE;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_INSTRUCTED(pi_defect_status   IN defects.def_status_code%TYPE
                              ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-
-
  l_expected_rec feature_flags_rec;
-
 BEGIN
-
-
  l_expected_rec.hsc_allow_feature3 := 'Y';
-
   RETURN(
          expected_and_actual_the_same(pi_expected_rec => l_expected_rec
                                      ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
@@ -6352,26 +6343,15 @@ BEGIN
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
          );
-
-
-
-
-
 END defect_is_INSTRUCTED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_COMPLETED(pi_defect_status   IN defects.def_status_code%TYPE
                             ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-
-
  l_expected_rec feature_flags_rec;
-
 BEGIN
-
-
    l_expected_rec.hsc_allow_feature4 := 'Y';
-
   RETURN(
          expected_and_actual_the_same(pi_expected_rec => l_expected_rec
                                      ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
@@ -6379,23 +6359,15 @@ BEGIN
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
          );
-
-
 END defect_is_COMPLETED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_REPAIRED(pi_defect_status   IN defects.def_status_code%TYPE
                            ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-
-
  l_expected_rec feature_flags_rec;
-
 BEGIN
-
-
  l_expected_rec.hsc_allow_feature6 := 'Y';
-
   RETURN(
          expected_and_actual_the_same(pi_expected_rec => l_expected_rec
                                      ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
@@ -6403,23 +6375,15 @@ BEGIN
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
          );
-
-
 END defect_is_REPAIRED;
 --
 ---------------------------------------------------------------------------------------------------
 --
 FUNCTION defect_is_SUPERSEDED(pi_defect_status   IN defects.def_status_code%TYPE
                              ,pi_as_at_date      IN DATE DEFAULT TRUNC(SYSDATE)) RETURN BOOLEAN IS
-
-
  l_expected_rec feature_flags_rec;
-
 BEGIN
-
-
  l_expected_rec.hsc_allow_feature8 := 'Y';
-
   RETURN(
          expected_and_actual_the_same(pi_expected_rec => l_expected_rec
                                      ,pi_actual_rec   => get_feature_flags_rec(pi_domain         => 'DEFECTS'
@@ -6427,9 +6391,7 @@ BEGIN
                                                                               ,pi_as_at_date      => pi_as_at_date)
                                       )
          );
-
-
-END defect_is_SUPERSEDED;
+END defect_is_superseded;
 --
 ---------------------------------------------------------------------------------------------------
 --
@@ -6769,42 +6731,6 @@ BEGIN
             ||'START with nm_ne_id_in = '||NVL(pi_bud_rse_he_id,pi_wor_rse_he_id_group)||') '
   ;
   /*
-            ||'     AND def_rse_he_id IN((SELECT nm_ne_id_of'
-            ||'                             FROM nm_members'
-            ||'                            WHERE nm_type = ''G'''
-            ||'                              AND cp_defect_id IS NULL'
-            ||'                          CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in'
-            ||'                                       AND nm_end_date IS NULL'
-            ||'                            START WITH nm_ne_id_in IN(NVL(cp_rse_he_id_1,pi_wor_rse_he_id_group)'
-            ||'                                                     ,cp_rse_he_id_2'
-            ||'                                                     ,cp_rse_he_id_3'
-            ||'                                                     ,cp_rse_he_id_4'
-            ||'                                                     ,cp_rse_he_id_5'
-            ||'                                                     ,cp_rse_he_id_6)'
-            ||'                            UNION'
-            ||'                           SELECT ne_id'
-            ||'                             FROM nm_elements'
-            ||'                            WHERE ne_id IN(NVL(cp_rse_he_id_1,pi_wor_rse_he_id_group)'
-            ||'                                          ,cp_rse_he_id_2'
-            ||'                                          ,cp_rse_he_id_3'
-            ||'                                          ,cp_rse_he_id_4'
-            ||'                                          ,cp_rse_he_id_5'
-            ||'                                          ,cp_rse_he_id_6)'
-            ||'                              AND cp_defect_id IS NULL'
-            ||'                            UNION'
-            ||'                           SELECT def_rse_he_id'
-            ||'                             FROM defects'
-            ||'                            WHERE def_defect_id = cp_defect_id)'
-            ||'                        INTERSECT'
-            ||'                           SELECT nm_ne_id_of'
-            ||'                             FROM nm_members'
-            ||'                            WHERE nm_type = ''G'''
-            ||'                          CONNECT BY PRIOR nm_ne_id_of = nm_ne_id_in'
-            ||'                                       AND nm_end_date IS NULL'
-            ||'                            START with nm_ne_id_in = NVL(cp_bud_rse_he_id,cp_wor_rse_he_id_group))'
-*/
-
-  /*
   ||Check the Treatment Code parameters.
   */
   lv_in_list := get_in_list(pi_value1         => pi_tre_treat_code_1
@@ -6899,7 +6825,7 @@ PROCEDURE calc_wol_totals
              sum(boq_act_cost)
       from boq_items
     where boq_wol_id = p_wol_id;
---
+  --
   cursor wol_boq_uplift_totals(p_boq_uplift_rate   standard_items.sta_rate%TYPE) is
    select NVL(sum(boq_est_cost) * (p_boq_uplift_rate / 100),0)
            ,NVL(sum(boq_act_cost) * (p_boq_uplift_rate / 100),0)
@@ -7020,20 +6946,16 @@ BEGIN  /* mai - automatic variables */
     return the Oracle user who is owner of the MAI application
     (use 'DEFECTS' as the sample HIGHWAYS object)
   */
-  IF    (Sys_Context('NM3CORE','APPLICATION_OWNER') IS NULL) THEN
-    RAISE_APPLICATION_ERROR( -20000 ,'MAI.G_APPLICATION_OWNER is null.');
+  IF (Sys_Context('NM3CORE','APPLICATION_OWNER') IS NULL)
+   THEN
+      RAISE_APPLICATION_ERROR( -20000 ,'MAI.G_APPLICATION_OWNER is null.');
   END IF;
 
   /* return the language under which the application is running */
   g_language := 'ENGLISH';
-
-
   g_swr_licenced := nm3ddl.does_object_exist(p_object_name => 'SWR_ID_MAPPING'
                                             ,p_object_type => 'TABLE');
-
-
   g_tma_licenced := nm3ddl.does_object_exist(p_object_name => 'TMA_ID_MAPPING'
                                             ,p_object_type => 'TABLE');
-
 END mai;
 /
