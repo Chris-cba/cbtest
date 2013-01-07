@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_dpr IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkb-arc   2.1   Jan 07 2013 09:51:32   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_tab_dpr.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:51:32  $
+--       Date fetched Out : $Modtime:   Dec 20 2012 09:26:50  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_dpr IS
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"@$Revision:   2.0  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"@$Revision:   2.1  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_dpr';
@@ -49,7 +49,8 @@ END get_body_version;
 --
 --   Function to get using DPR_INDEX_P1 index
 --
-FUNCTION get (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+FUNCTION get (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+             ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
              ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
              ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
              ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -57,11 +58,18 @@ FUNCTION get (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code
              ) RETURN defect_priorities%ROWTYPE IS
 --
    CURSOR cs_dpr IS
-   SELECT *
-    FROM  defect_priorities
-   WHERE  dpr_atv_acty_area_code = pi_dpr_atv_acty_area_code
-    AND   dpr_priority           = pi_dpr_priority
-    AND   dpr_action_cat         = pi_dpr_action_cat;
+     SELECT dpr.*
+    FROM defect_priorities dpr, hig_admin_units hau, hig_admin_groups hag
+   where TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
+                 NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+             AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+    AND hag.hag_child_admin_unit = pi_dpr_admin_unit
+    AND hag.hag_parent_admin_unit = hau.hau_admin_unit
+   and   dpr_atv_acty_area_code = pi_dpr_atv_acty_area_code
+   and   dpr_priority           = pi_dpr_priority
+   and   dpr_action_cat         =pi_dpr_action_cat
+   and   dpr_admin_unit       = hag.hag_parent_admin_unit
+ order by hau_level desc;
 --
    l_found  BOOLEAN;
    l_retval defect_priorities%ROWTYPE;
@@ -81,6 +89,7 @@ BEGIN
                     ,pi_id                 => 67
                     ,pi_sqlcode            => pi_not_found_sqlcode
                     ,pi_supplementary_info => 'defect_priorities (DPR_INDEX_P1)'
+                                              ||CHR(10)||'dpr_admin_unit         => '||pi_dpr_admin_unit
                                               ||CHR(10)||'dpr_atv_acty_area_code => '||pi_dpr_atv_acty_area_code
                                               ||CHR(10)||'dpr_priority           => '||pi_dpr_priority
                                               ||CHR(10)||'dpr_action_cat         => '||pi_dpr_action_cat
@@ -110,6 +119,7 @@ BEGIN
             ,dpr_use_next_insp
             ,dpr_print_targets
             ,dpr_time_mandatory
+            ,dpr_admin_unit
             )
      VALUES (p_rec_dpr.dpr_atv_acty_area_code
             ,p_rec_dpr.dpr_priority
@@ -119,6 +129,7 @@ BEGIN
             ,p_rec_dpr.dpr_use_next_insp
             ,p_rec_dpr.dpr_print_targets
             ,p_rec_dpr.dpr_time_mandatory
+            ,p_rec_dpr.dpr_admin_unit
             )
    RETURNING dpr_atv_acty_area_code
             ,dpr_priority
@@ -128,6 +139,7 @@ BEGIN
             ,dpr_use_next_insp
             ,dpr_print_targets
             ,dpr_time_mandatory
+            ,dpr_admin_unit
       INTO   p_rec_dpr.dpr_atv_acty_area_code
             ,p_rec_dpr.dpr_priority
             ,p_rec_dpr.dpr_action_cat
@@ -135,7 +147,9 @@ BEGIN
             ,p_rec_dpr.dpr_use_working_days
             ,p_rec_dpr.dpr_use_next_insp
             ,p_rec_dpr.dpr_print_targets
-            ,p_rec_dpr.dpr_time_mandatory;
+            ,p_rec_dpr.dpr_time_mandatory
+            ,p_rec_dpr.dpr_admin_unit
+           ;
 --
    nm_debug.proc_end(g_package_name,'ins');
 --
@@ -146,7 +160,8 @@ END ins;
 --
 --   Function to lock using DPR_INDEX_P1 index
 --
-FUNCTION lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+FUNCTION lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                  ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
                   ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
                   ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
                   ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -157,7 +172,8 @@ FUNCTION lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area
    CURSOR cs_dpr IS
    SELECT ROWID
     FROM  defect_priorities
-   WHERE  dpr_atv_acty_area_code = pi_dpr_atv_acty_area_code
+   WHERE  dpr_admin_unit         = pi_dpr_admin_unit
+    AND   dpr_atv_acty_area_code = pi_dpr_atv_acty_area_code
     AND   dpr_priority           = pi_dpr_priority
     AND   dpr_action_cat         = pi_dpr_action_cat
    FOR UPDATE NOWAIT;
@@ -182,6 +198,7 @@ BEGIN
                     ,pi_id                 => 67
                     ,pi_sqlcode            => pi_not_found_sqlcode
                     ,pi_supplementary_info => 'defect_priorities (DPR_INDEX_P1)'
+                                              ||CHR(10)||'dpr_admin_unit         => '||pi_dpr_admin_unit
                                               ||CHR(10)||'dpr_atv_acty_area_code => '||pi_dpr_atv_acty_area_code
                                               ||CHR(10)||'dpr_priority           => '||pi_dpr_priority
                                               ||CHR(10)||'dpr_action_cat         => '||pi_dpr_action_cat
@@ -200,6 +217,7 @@ EXCEPTION
                     ,pi_id                 => 33
                     ,pi_sqlcode            => pi_locked_sqlcode
                     ,pi_supplementary_info => 'defect_priorities (DPR_INDEX_P1)'
+                                              ||CHR(10)||'dpr_admin_unit         => '||pi_dpr_admin_unit
                                               ||CHR(10)||'dpr_atv_acty_area_code => '||pi_dpr_atv_acty_area_code
                                               ||CHR(10)||'dpr_priority           => '||pi_dpr_priority
                                               ||CHR(10)||'dpr_action_cat         => '||pi_dpr_action_cat
@@ -212,7 +230,8 @@ END lock_gen;
 --
 --   Procedure to lock using DPR_INDEX_P1 index
 --
-PROCEDURE lock_gen (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+PROCEDURE lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                   ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
                    ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
                    ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
                    ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -227,7 +246,8 @@ BEGIN
    nm_debug.proc_start(g_package_name,'lock_gen');
 --
    l_rowid := lock_gen
-                   (pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
+                   (pi_dpr_admin_unit         => pi_dpr_admin_unit
+                   ,pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
                    ,pi_dpr_priority           => pi_dpr_priority
                    ,pi_dpr_action_cat         => pi_dpr_action_cat
                    ,pi_raise_not_found        => pi_raise_not_found
@@ -243,7 +263,8 @@ END lock_gen;
 --
 --   Procedure to del using DPR_INDEX_P1 index
 --
-PROCEDURE del (pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+PROCEDURE del (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+              ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
               ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
               ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
               ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
@@ -257,7 +278,8 @@ BEGIN
 --
    -- Lock the row first
    l_rowid := lock_gen
-                   (pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
+                   (pi_dpr_admin_unit         => pi_dpr_admin_unit
+                   ,pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
                    ,pi_dpr_priority           => pi_dpr_priority
                    ,pi_dpr_action_cat         => pi_dpr_action_cat
                    ,pi_raise_not_found        => pi_raise_not_found
@@ -282,6 +304,7 @@ BEGIN
 --
    nm_debug.proc_start(g_package_name,'debug');
 --
+   nm_debug.debug('dpr_admin_unit         : '||pi_rec_dpr.dpr_admin_unit,p_level);
    nm_debug.debug('dpr_atv_acty_area_code : '||pi_rec_dpr.dpr_atv_acty_area_code,p_level);
    nm_debug.debug('dpr_priority           : '||pi_rec_dpr.dpr_priority,p_level);
    nm_debug.debug('dpr_action_cat         : '||pi_rec_dpr.dpr_action_cat,p_level);
