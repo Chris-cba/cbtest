@@ -1,0 +1,135 @@
+CREATE OR REPLACE PACKAGE mai_tab_dpr IS
+--<PACKAGE>
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkh-arc   2.1   Jan 07 2013 09:51:44   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_tab_dpr.pkh  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:51:44  $
+--       Date fetched Out : $Modtime:   Jul 19 2012 14:41:08  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on SCCS Version     : 1.1
+--
+--
+--   Author : Darren Cope
+--
+--   Generated package DO NOT MODIFY
+--
+--   nm3get_gen header : @(#)mai_tab_dpr.pkh	1.1 03/09/04
+--   nm3get_gen body   : @(#)mai_tab_dpr.pkh	1.1 03/09/04
+--
+-----------------------------------------------------------------------------
+--
+--	Copyright (c) exor corporation ltd, 2004
+--
+-----------------------------------------------------------------------------
+--
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+--  g_sccsid is the SCCS ID for the package
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get">
+--
+--   Function to get using DPR_INDEX_P1 index
+--
+FUNCTION get (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+             ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+             ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
+             ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
+             ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
+             ,pi_not_found_sqlcode      PLS_INTEGER DEFAULT -20000
+             ) RETURN defect_priorities%ROWTYPE;
+PRAGMA RESTRICT_REFERENCES (get, WNPS, WNDS);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins">
+-- Inserts a ROWTYPE record into defect_priorities
+-- Returns the ROWTYPE record as inserted - trigger modified values
+--
+PROCEDURE ins (p_rec_dpr IN OUT defect_priorities%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="lock_gen">
+--
+--   Function to lock using DPR_INDEX_P1 index
+--
+FUNCTION lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                  ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+                  ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
+                  ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
+                  ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
+                  ,pi_not_found_sqlcode      PLS_INTEGER DEFAULT -20000
+                  ,pi_locked_sqlcode         PLS_INTEGER DEFAULT -20000
+                  ) RETURN ROWID;
+--
+--   Procedure to lock using DPR_INDEX_P1 index
+--
+PROCEDURE lock_gen (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+                   ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+                   ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
+                   ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
+                   ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
+                   ,pi_not_found_sqlcode      PLS_INTEGER DEFAULT -20000
+                   ,pi_locked_sqlcode         PLS_INTEGER DEFAULT -20000
+                   );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="del">
+--
+--   Procedure to del using DPR_INDEX_P1 index
+--
+PROCEDURE del (pi_dpr_admin_unit         defect_priorities.dpr_admin_unit%TYPE
+              ,pi_dpr_atv_acty_area_code defect_priorities.dpr_atv_acty_area_code%TYPE
+              ,pi_dpr_priority           defect_priorities.dpr_priority%TYPE
+              ,pi_dpr_action_cat         defect_priorities.dpr_action_cat%TYPE
+              ,pi_raise_not_found        BOOLEAN     DEFAULT TRUE
+              ,pi_not_found_sqlcode      PLS_INTEGER DEFAULT -20000
+              ,pi_locked_sqlcode         PLS_INTEGER DEFAULT -20000
+              );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="debug">
+-- Debug a ROWTYPE record
+PROCEDURE debug (pi_rec_dpr defect_priorities%ROWTYPE,p_level PLS_INTEGER DEFAULT 3);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_tab_dpr;
+/
