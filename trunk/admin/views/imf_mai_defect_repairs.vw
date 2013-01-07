@@ -70,11 +70,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.4   Sep 01 2011 08:48:00   Chris.Baugh  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.5   Jan 07 2013 09:59:48   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_defect_repairs.vw  $
-       --       Date into PVCS   : $Date:   Sep 01 2011 08:48:00  $
-       --       Date fetched Out : $Modtime:   Aug 31 2011 16:03:32  $
-       --       Version          : $Revision:   3.4  $
+       --       Date into PVCS   : $Date:   Jan 07 2013 09:59:48  $
+       --       Date fetched Out : $Modtime:   Dec 20 2012 12:21:34  $
+       --       Version          : $Revision:   3.5  $
        -- Foundation view displaying maintenance defect repairs
        -------------------------------------------------------------------------
        def_defect_id                                     defect_id
@@ -91,11 +91,10 @@ SELECT -------------------------------------------------------------------------
           FROM hig_codes
          WHERE hco_domain = 'DEFECT_PRIORITIES'
            AND hco_code = def_priority )                 priority_description
-      ,(SELECT dpr.dpr_int_code
-          FROM defect_priorities dpr
-         WHERE dpr_atv_acty_area_code = def_atv_acty_area_code
-           AND  dpr_priority = def_priority
-           AND  dpr_action_cat = rep_action_cat)         priority_interval
+      ,mai_priority.get_dpr_interval(mai_priority.get_lowest_dpr_admin_unit(def_rse_he_id),
+                                                  def_atv_acty_area_code,
+                                                  def_priority,
+                                                  rep_action_cat)          priority_interval
       ,def_defect_code                                   defect_type
       ,(SELECT dty_descr1
           FROM def_types
