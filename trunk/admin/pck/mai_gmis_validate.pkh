@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE mai_gmis_validate AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkh-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkh-arc   2.1   Jan 07 2013 09:51:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_gmis_validate.pkh  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:51:18  $
+--       Date fetched Out : $Modtime:   Jul 20 2012 11:19:06  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.3
 --
 --
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE mai_gmis_validate AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.0  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.1  $"';
 
 --</GLOBVAR>
 --
@@ -135,7 +135,8 @@ FUNCTION get_def_attr_col(p_defect_code     defects.def_defect_code%TYPE
 --
 --<PROC NAME="dpr_is_valid_for_area">
 -- This function checks a defect priority and repair actio against area code
-FUNCTION dpr_is_valid_for_area (pi_dpr_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE 
+FUNCTION dpr_is_valid_for_area (pi_dpr_admin_unit         IN defect_priorities.dpr_admin_unit%TYPE
+                               ,pi_dpr_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE 
                                ,pi_dpr_priority           IN defect_priorities.dpr_priority%TYPE
                                ,pi_dpr_action_cat         IN defect_priorities.dpr_action_cat%TYPE) RETURN defect_priorities.dpr_priority%TYPE;
 --</PROC>
