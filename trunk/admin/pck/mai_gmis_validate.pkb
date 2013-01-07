@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_validate AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkb-arc   2.1   Jan 07 2013 09:50:48   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_gmis_validate.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:50:48  $
+--       Date fetched Out : $Modtime:   Jul 20 2012 11:06:52  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.3
 --
 --
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_validate AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.0  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.1  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai_gmis_validate';
 
@@ -281,11 +281,13 @@ END get_def_attr_col;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION dpr_is_valid_for_area (pi_dpr_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE 
+FUNCTION dpr_is_valid_for_area (pi_dpr_admin_unit         IN defect_priorities.dpr_admin_unit%TYPE
+                               ,pi_dpr_atv_acty_area_code IN defect_priorities.dpr_atv_acty_area_code%TYPE 
                                ,pi_dpr_priority           IN defect_priorities.dpr_priority%TYPE
                                ,pi_dpr_action_cat         IN defect_priorities.dpr_action_cat%TYPE) RETURN defect_priorities.dpr_priority%TYPE IS
 BEGIN
-  RETURN mai_tab_dpr.get(pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
+  RETURN mai_tab_dpr.get(pi_dpr_admin_unit         => pi_dpr_admin_unit
+                        ,pi_dpr_atv_acty_area_code => pi_dpr_atv_acty_area_code
                         ,pi_dpr_priority           => pi_dpr_priority
                         ,pi_dpr_action_cat         => pi_dpr_action_cat
                         ,pi_raise_not_found        => TRUE).dpr_priority;
