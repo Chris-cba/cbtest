@@ -8,11 +8,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/update_doc_def_priorities.trg-arc   3.0   Nov 05 2009 11:18:50   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/update_doc_def_priorities.trg-arc   3.1   Jan 07 2013 10:00:48   Chris.Baugh  $
 --       Module Name      : $Workfile:   update_doc_def_priorities.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:50  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:14:46  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jan 07 2013 10:00:48  $
+--       Date fetched Out : $Modtime:   Jul 19 2012 13:43:08  $
+--       Version          : $Revision:   3.1  $
 --
 --
 -----------------------------------------------------------------------------
@@ -26,7 +26,8 @@ BEGIN
              ddp_dpr_use_working_days = :new.dpr_use_working_days
       where  ddp_dpr_acty_area_code = :new.dpr_atv_acty_area_code
         and  ddp_dpr_priority       = :new.dpr_priority
-        and  ddp_dpr_action_cat     = :new.dpr_action_cat;
+        and  ddp_dpr_action_cat     = :new.dpr_action_cat
+        and ddp_dpr_admin_unit = :new.dpr_admin_unit;
   end if;
 END;
 /
