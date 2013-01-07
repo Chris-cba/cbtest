@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.1   Sep 29 2010 15:15:04   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.2   Jan 07 2013 09:50:32   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_gmis_load.pkb  $
---       Date into SCCS   : $Date:   Sep 29 2010 15:15:04  $
---       Date fetched Out : $Modtime:   Sep 29 2010 14:40:06  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jan 07 2013 09:50:32  $
+--       Date fetched Out : $Modtime:   Jul 20 2012 11:26:48  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.20
 --
 --
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.1  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_gmis_load';
@@ -741,35 +741,35 @@ END parse_line1;
 -----------------------------------------------------------------------------
 --
 PROCEDURE parse_line2 (p_line IN varchar2) IS
-	l_sys_flag road_segs.rse_sys_flag%TYPE := NVL(
-  	mai_gmis_validate.get_ity_sys_flag(g_are_report.are_rse_he_id), 'L');
+	l_sys_flag road_segs.rse_sys_flag%TYPE := NVL(mai_gmis_validate.get_ity_sys_flag(g_are_report.are_rse_he_id), 'L');
 BEGIN
   nm_debug.debug('parse_line2: line="'||p_line, g_dbglevel);
   
-  g_defect.def_defect_id                    := get_a_field(p_line, 2);
-  g_arl.arl_atv_acty_area_code              := mai_gmis_validate.activity_is_valid(get_a_field(p_line, 3), l_sys_flag);
-  g_defect.def_defect_code                  := mai_gmis_validate.def_code_is_valid(p_defect_code => get_a_field(p_line, 4)
-                                                                                  ,p_area_code   => g_arl.arl_atv_acty_area_code
-                                                                                  ,p_sys_flag    => l_sys_flag);
-  g_defect.def_priority                     := mai_gmis_validate.hco_is_valid('DEFECT_PRIORITIES', get_a_field(p_line, 5));
-  g_defect.def_created_date                 := TO_DATE(get_a_field(p_line, 6), 'YYMMDD');
-  g_defect.def_time_hrs                     := TO_NUMBER(substr(get_a_field(p_line, 7), 1, 2));
-  g_defect.def_time_mins                    := TO_NUMBER(substr(get_a_field(p_line, 7), 3));
-  g_defect_status                           := get_a_field(p_line, 8);
+  g_defect.def_defect_id       := get_a_field(p_line, 2);
+  g_arl.arl_atv_acty_area_code := mai_gmis_validate.activity_is_valid(get_a_field(p_line, 3), l_sys_flag);
+  g_defect.def_defect_code     := mai_gmis_validate.def_code_is_valid(p_defect_code => get_a_field(p_line, 4)
+                                                                     ,p_area_code   => g_arl.arl_atv_acty_area_code
+                                                                     ,p_sys_flag    => l_sys_flag);
+  g_defect.def_priority     := mai_gmis_validate.hco_is_valid('DEFECT_PRIORITIES', get_a_field(p_line, 5));
+  g_defect.def_created_date := TO_DATE(get_a_field(p_line, 6), 'YYMMDD');
+  g_defect.def_time_hrs     := TO_NUMBER(substr(get_a_field(p_line, 7), 1, 2));
+  g_defect.def_time_mins    := TO_NUMBER(substr(get_a_field(p_line, 7), 3));
+  g_defect_status           := get_a_field(p_line, 8);
 
   -- now validate the priority against area and repair type
-  g_defect.def_priority                     := mai_gmis_validate.dpr_is_valid_for_area(pi_dpr_atv_acty_area_code => g_arl.arl_atv_acty_area_code
-                                                                                      ,pi_dpr_priority           => g_defect.def_priority
-                                                                                      ,pi_dpr_action_cat         => c_rep_action_cat);
+  g_defect.def_priority := mai_gmis_validate.dpr_is_valid_for_area(pi_dpr_admin_unit         => mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => g_are_report.are_rse_he_id)
+                                                                  ,pi_dpr_atv_acty_area_code => g_arl.arl_atv_acty_area_code
+                                                                  ,pi_dpr_priority           => g_defect.def_priority
+                                                                  ,pi_dpr_action_cat         => c_rep_action_cat);
   -- other fields
-  g_defect.def_siss_id                      := c_def_siss_id;
-  g_defect.def_rse_he_id                    := g_are_report.are_rse_he_id;
-  g_defect.def_atv_acty_area_code           := g_arl.arl_atv_acty_area_code;
-  g_defect.def_ity_sys_flag                 := l_sys_flag;
-  g_defect.def_orig_priority                := g_defect.def_priority;
-  g_defect.def_last_updated_date            := mai_gmis_util.add_time(p_date    => g_defect.def_created_date
-                                                                     ,p_hours   => g_defect.def_time_hrs
-                                                                     ,p_minutes => g_defect.def_time_mins);
+  g_defect.def_siss_id            := c_def_siss_id;
+  g_defect.def_rse_he_id          := g_are_report.are_rse_he_id;
+  g_defect.def_atv_acty_area_code := g_arl.arl_atv_acty_area_code;
+  g_defect.def_ity_sys_flag       := l_sys_flag;
+  g_defect.def_orig_priority      := g_defect.def_priority;
+  g_defect.def_last_updated_date  := mai_gmis_util.add_time(p_date    => g_defect.def_created_date
+                                                           ,p_hours   => g_defect.def_time_hrs
+                                                           ,p_minutes => g_defect.def_time_mins);
 END parse_line2;
 --
 -----------------------------------------------------------------------------
