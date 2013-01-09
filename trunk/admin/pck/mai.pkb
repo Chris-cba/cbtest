@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.31   Jan 07 2013 09:49:04   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.32   Jan 09 2013 14:11:28   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jan 07 2013 09:49:04  $
---       Date fetched Out : $Modtime:   Dec 19 2012 16:37:56  $
---       SCCS Version     : $Revision:   2.31  $
+--       Date into SCCS   : $Date:   Jan 09 2013 14:11:28  $
+--       Date fetched Out : $Modtime:   Jan 09 2013 14:11:20  $
+--       SCCS Version     : $Revision:   2.32  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.31  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.32  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -846,11 +846,11 @@ PROCEDURE rep_date_due (p_date               IN DATE
    where TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
                  NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
              AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
-    AND hag.hag_child_admin_unit = :cp_admin_unit
+    AND hag.hag_child_admin_unit = cp_admin_unit
     AND hag.hag_parent_admin_unit = hau.hau_admin_unit
-   and   dpr_atv_acty_area_code = :cp_atv_acty_area_code
-   and   dpr_priority           = :cp_dpr_priority
-   and   dpr_action_cat         =:cp_dpr_action_cat
+   and   dpr_atv_acty_area_code = cp_atv_acty_area_code
+   and   dpr_priority           = cp_dpr_priority
+   and   dpr_action_cat         = cp_dpr_action_cat
    and   dpr_admin_unit       = hag.hag_parent_admin_unit
  order by hau_level desc;
  
