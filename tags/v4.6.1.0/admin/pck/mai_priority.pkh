@@ -1,0 +1,86 @@
+CREATE OR REPLACE PACKAGE mai_priority AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkh-arc   1.1   Jan 09 2013 13:45:10   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_priority.pkh  $
+--       Date into PVCS   : $Date:   Jan 09 2013 13:45:10  $
+--       Date fetched Out : $Modtime:   Jan 09 2013 13:45:12  $
+--       PVCS Version     : $Revision:   1.1  $
+--
+-----------------------------------------------------------------------------
+--      Copyright (c) exor corporation ltd, 2009
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--
+--
+--<TYPE>
+--
+--
+TYPE dpr_tab IS TABLE OF defect_priorities%ROWTYPE INDEX BY binary_integer;
+
+  TYPE doc_def_priority_tab IS TABLE OF doc_def_priorities%ROWTYPE
+  INDEX BY  BINARY_INTEGER;
+
+--
+--</TYPE>
+--
+--<GLOBVAR>
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   1.1  $';
+  g_application_owner  VARCHAR2(30);
+  gr_defect_rec        defects%ROWTYPE;
+  
+  g_doc_def_priority_tab      doc_def_priority_tab;  
+
+--</GLOBVAR>
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_lowest_dpr_admin_unit(pi_ne_id nm_elements_all.ne_id%TYPE) RETURN nm_admin_units_all.nau_admin_unit%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_lowest_adsp_admin_unit(pi_ne_id nm_elements_all.ne_id%TYPE) RETURN nm_admin_units_all.nau_admin_unit%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION valid_admin_unit(pi_unit_code hig_admin_units.hau_unit_code%TYPE) RETURN hig_admin_units.hau_admin_unit%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE pop_priority_tab(pi_admin_unit   hig_admin_units.hau_admin_unit%TYPE
+                                         ,pi_cpr_id          doc_def_priorities.ddp_doc_compl_cpr_id%TYPE
+                                         ,pi_acty_area_code   doc_def_priorities.ddp_dpr_acty_area_code%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE get_doc_def_priorities(pi_admin_unit          IN  hig_admin_units.hau_admin_unit%TYPE
+                                                   ,pi_cpr_id                 IN  doc_def_priorities.ddp_doc_compl_cpr_id%TYPE
+                                                   ,pi_acty_area_code   IN  doc_def_priorities.ddp_dpr_acty_area_code%TYPE
+                                                   ,po_priorities_tab      IN OUT doc_def_priority_tab);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_dpr_interval(pi_admin_unit          IN  defect_priorities.dpr_admin_unit%TYPE
+                                       ,pi_acty_area_code    IN  defect_priorities.dpr_atv_acty_area_code%TYPE
+                                       ,pi_priority                IN  defect_priorities.dpr_priority%TYPE
+                                       ,pi_action_cat           IN  defect_priorities.dpr_action_cat%TYPE)
+  RETURN defect_priorities.dpr_int_code%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+
+END mai_priority;
+/
