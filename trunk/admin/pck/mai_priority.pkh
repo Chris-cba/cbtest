@@ -1,15 +1,15 @@
-CREATE OR REPLACE PACKAGE DORSET.mai_priority AS
+CREATE OR REPLACE PACKAGE mai_priority AS
 --
 --<PACKAGE>
 -----------------------------------------------------------------------------
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkh-arc   1.0   Jan 07 2013 09:55:44   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkh-arc   1.1   Jan 09 2013 13:45:10   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_priority.pkh  $
---       Date into PVCS   : $Date:   Jan 07 2013 09:55:44  $
---       Date fetched Out : $Modtime:   Dec 21 2012 09:18:04  $
---       PVCS Version     : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Jan 09 2013 13:45:10  $
+--       Date fetched Out : $Modtime:   Jan 09 2013 13:45:12  $
+--       PVCS Version     : $Revision:   1.1  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -29,7 +29,7 @@ TYPE dpr_tab IS TABLE OF defect_priorities%ROWTYPE INDEX BY binary_integer;
 --</TYPE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   1.0  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   1.1  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
   
