@@ -1,20 +1,20 @@
-CREATE OR REPLACE PACKAGE BODY DORSET.mai_priority AS
+CREATE OR REPLACE PACKAGE BODY mai_priority AS
 --
 -----------------------------------------------------------------------------
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkb-arc   1.0   Jan 07 2013 09:55:10   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkb-arc   1.1   Jan 09 2013 13:45:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_priority.pkb  $
---       Date into PVCS   : $Date:   Jan 07 2013 09:55:10  $
---       Date fetched Out : $Modtime:   Dec 20 2012 12:38:22  $
---       PVCS Version     : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Jan 09 2013 13:45:54  $
+--       Date fetched Out : $Modtime:   Jan 09 2013 13:45:30  $
+--       PVCS Version     : $Revision:   1.1  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   1.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   1.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_priority';
 --
 TYPE admin_unit_tab IS TABLE OF nm_admin_units_all.nau_admin_unit%TYPE;
