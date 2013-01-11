@@ -1,10 +1,10 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_process_policy.sql-arc   1.0   Nov 14 2012 14:58:26   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_process_policy.sql-arc   1.1   Jan 11 2013 14:17:24   Rob.Coupe  $
 --       Module Name      : $Workfile:   add_process_policy.sql  $
---       Date into SCCS   : $Date:   Nov 14 2012 14:58:26  $
---       Date fetched Out : $Modtime:   Nov 14 2012 14:14:22  $
---       SCCS Version     : $Revision:   1.0  $
+--       Date into SCCS   : $Date:   Jan 11 2013 14:17:24  $
+--       Date fetched Out : $Modtime:   Jan 11 2013 14:16:26  $
+--       SCCS Version     : $Revision:   1.1  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) Bentley Systems 2012
@@ -56,6 +56,12 @@ add_policy ( p_policy_name     => 'HP_PROCESS_READ'
             ,p_object_name     => 'HIG_PROCESSES'            
             ,p_policy_function => 'HIG_PROCESS_SECURITY.HP_PREDICATE_READ'            
             ,p_statement_types => 'SELECT,UPDATE,DELETE' ); 
+
+--
+add_policy ( p_policy_name     => 'MILB_PROCESS_READ'            
+            ,p_object_name     => 'MAI_INSP_LOAD_BATCHES'            
+            ,p_policy_function => 'HIG_PROCESS_SECURITY.MILB_PREDICATE_READ'            
+            ,p_statement_types => 'SELECT' ); 
 
 --
    FOR l_count IN 1..l_tab_policy_name.COUNT
