@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.6   Dec 06 2012 14:22:20   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.7   Jan 16 2013 09:55:50   Mike.Huitson  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Dec 06 2012 14:22:20  $
---       Date fetched Out : $Modtime:   Dec 06 2012 13:35:38  $
---       Version          : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   Jan 16 2013 09:55:50  $
+--       Date fetched Out : $Modtime:   Jan 14 2013 18:24:52  $
+--       Version          : $Revision:   3.7  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -71,8 +71,6 @@ startline     VARCHAR2(1000) := '1,EDIF , Version: '||g_body_sccsid|| ', Created
 --
 TYPE def_attr IS TABLE OF VARCHAR2(1000) INDEX BY BINARY_INTEGER;
 def_attr_rec  def_attr;
---
-l_count_def_attr  BINARY_INTEGER := 0;
 --
 -----------------------------------------------------------------------------
 --
@@ -357,14 +355,16 @@ END;
 FUNCTION processpedif(job_id IN NUMBER)
   RETURN BOOLEAN IS
   --
-  fn           VARCHAR2(20) := '{ ProcessPedif }';
-  rse_pad      INTEGER := 8;                   -- Padded length for section id
-  iit_id_pad   INTEGER := 8;                  -- Padded length for Inv Item Id
-  chain_pad    INTEGER := 6;              -- Padded length for Chainage values
-  rec_count    INTEGER := 0;                       -- number of records loaded
-  user_init    hig_users.hus_initials%TYPE := NULL; -- initials of user executing procedure
+  fn                 VARCHAR2(20) := '{ ProcessPedif }';
+  rse_pad            INTEGER := 8;                   -- Padded length for section id
+  iit_id_pad         INTEGER := 8;                  -- Padded length for Inv Item Id
+  chain_pad          INTEGER := 6;              -- Padded length for Chainage values
+  rec_count          INTEGER := 0;                       -- number of records loaded
+  lv_def_attr_count  BINARY_INTEGER := 0;
+  user_init          hig_users.hus_initials%TYPE := NULL; -- initials of user executing procedure
   --
   lv_ped4chrass  hig_option_values.hov_value%TYPE := hig.get_sysopt('PED4CHRASS');
+  lv_peddateatr  hig_option_values.hov_value%TYPE := hig.get_sysopt('PEDDATEATR');
   --
   -- table type to store buffer output from cursors before outputting contents to a file
   TYPE t1 IS TABLE OF nm3type.max_varchar2 INDEX BY BINARY_INTEGER;
@@ -551,16 +551,16 @@ FUNCTION processpedif(job_id IN NUMBER)
   CURSOR c12
       IS
   SELECT '12,'|| i.ita_ity_sys_flag
-         ||','|| DECODE(lv_ped4chrass, 'Y', mai.translate_mai_inv_type(i.ita_iit_inv_code) , i.ita_iit_inv_code)
+         ||','|| DECODE(lv_ped4chrass, 'Y', t.nit_inv_type, i.ita_iit_inv_code)
          ||','|| i.ita_disp_seq_no
          ||','|| REPLACE(i.ita_scrn_text,',',':')
-         ||','|| DECODE(i.ita_format,  'NUMBER', 'I',  'VARCHAR2', 'S',  'S')
-         ||','|| i.ita_fld_length
+         ||','|| DECODE(i.ita_format, 'NUMBER', 'I', 'DATE', DECODE(lv_peddateatr, 'Y', 'D', 'S'), 'S')
+         ||','|| DECODE(i.ita_format, 'DATE', DECODE(lv_peddateatr, 'Y', 11, i.ita_fld_length), i.ita_fld_length)
          ||','|| TO_CHAR(i.ita_dec_places)
          ||','|| i.ita_min
          ||','|| i.ita_max
          ||','|| i.ita_validate_yn
-         ||','|| i.ita_manditory_yn  rec
+         ||','|| i.ita_manditory_yn rec
     FROM inv_type_attribs i
         ,nm_inv_type_attribs n
         ,inv_type_translations t
@@ -1254,8 +1254,8 @@ BEGIN
   END LOOP;
   /* populate pl/sql table with defect attribute descriptions */
   FOR def_rec IN c_def_attr LOOP
-    l_count_def_attr := l_count_def_attr + 1;
-    def_attr_rec(l_count_def_attr) := def_rec.d_attr_text;
+    lv_def_attr_count := lv_def_attr_count + 1;
+    def_attr_rec(lv_def_attr_count) := def_rec.d_attr_text;
   END LOOP;
   /* fetch in values from all cursors */
   FOR i_rec IN c2 LOOP
@@ -1273,7 +1273,7 @@ BEGIN
     cursor_recs(rec_count) := i_rec.rec;
   END LOOP;
   --
-  FOR i_rec IN 1 .. l_count_def_attr LOOP
+  FOR i_rec IN 1 .. lv_def_attr_count LOOP
     rec_count := rec_count + 1;
     SELECT '5,*,'||TO_CHAR(i_rec)
            ||','|| SUBSTR(def_attr_rec(i_rec),INSTR(def_attr_rec(i_rec),',',1)+1)
@@ -1294,7 +1294,7 @@ BEGIN
     cursor_recs(rec_count) := i_rec.rec;
     IF i_rec.attr_1 != ','
     THEN
-      FOR i IN 1 .. l_count_def_attr LOOP
+      FOR i IN 1 ..lv_def_attr_count LOOP
         IF def_attr_rec(i) = i_rec.attr_1
         THEN
           cursor_recs(rec_count) :=
@@ -1306,7 +1306,7 @@ BEGIN
     END IF;
     IF i_rec.attr_2 != ','
     THEN
-      FOR i IN 1 .. l_count_def_attr LOOP
+      FOR i IN 1 .. lv_def_attr_count LOOP
         IF def_attr_rec(i) = i_rec.attr_2
         THEN
           cursor_recs(rec_count) :=
@@ -1318,7 +1318,7 @@ BEGIN
     END IF;
     IF i_rec.attr_3 != ','
     THEN
-      FOR i IN 1 .. l_count_def_attr LOOP
+      FOR i IN 1 .. lv_def_attr_count LOOP
         IF def_attr_rec(i) = i_rec.attr_3
         THEN
           cursor_recs(rec_count) :=
@@ -1330,7 +1330,7 @@ BEGIN
     END IF;
     IF i_rec.attr_4 != ','
     THEN
-      FOR i IN 1 .. l_count_def_attr LOOP
+      FOR i IN 1 .. lv_def_attr_count LOOP
         IF def_attr_rec(i) = i_rec.attr_4
         THEN
           cursor_recs(rec_count) := cursor_recs(rec_count) || TO_CHAR(i);
