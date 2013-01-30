@@ -3,11 +3,11 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.7   Jan 16 2013 09:55:50   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.8   Jan 30 2013 18:34:20   Mike.Huitson  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Jan 16 2013 09:55:50  $
---       Date fetched Out : $Modtime:   Jan 14 2013 18:24:52  $
---       Version          : $Revision:   3.7  $
+--       Date into PVCS   : $Date:   Jan 30 2013 18:34:20  $
+--       Date fetched Out : $Modtime:   Jan 30 2013 18:27:20  $
+--       Version          : $Revision:   3.8  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
 -- Copyright (c) exor corporation ltd, 2010
@@ -17,7 +17,7 @@ AS
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.7  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007
@@ -576,7 +576,10 @@ FUNCTION processpedif(job_id IN NUMBER)
                                      FROM gri_run_parameters
                                     WHERE grp_param = 'INVENTORY_ITEM'
                                       AND grp_job_id = job_id))
-   ORDER BY 1
+   ORDER
+      BY i.ita_ity_sys_flag
+        ,DECODE(lv_ped4chrass, 'Y', t.nit_inv_type, i.ita_iit_inv_code)
+        ,i.ita_disp_seq_no
        ;
   --
   CURSOR c13
@@ -623,7 +626,7 @@ FUNCTION processpedif(job_id IN NUMBER)
       IS
   SELECT DISTINCT '15,'|| xsr_nw_type
          ||','|| xsr_scl_class
-         ||','|| xsr_ity_inv_code
+         ||','|| DECODE(lv_ped4chrass, 'Y', xsr_ity_inv_code, DECODE(xsr_ity_inv_code, '$$', xsr_ity_inv_code, mai.translate_nm_inv_type(xsr_ity_inv_code)))
          ||','|| xsr_x_sect_value
          ||','|| REPLACE(xsr_descr,',',':')  rec
     FROM xsp_restraints
