@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4600_mai4610_upg.sql-arc   1.0   Jan 09 2013 10:37:06   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4600_mai4610_upg.sql-arc   1.1   Feb 07 2013 08:31:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai4600_mai4610_upg.sql  $
---       Date into PVCS   : $Date:   Jan 09 2013 10:37:06  $
---       Date fetched Out : $Modtime:   Jan 07 2013 15:10:26  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Feb 07 2013 08:31:54  $
+--       Date fetched Out : $Modtime:   Feb 07 2013 08:32:40  $
+--       Version          : $Revision:   1.1  $
 --
 --   Product upgrade script
 --
@@ -79,6 +79,17 @@ SET FEEDBACK OFF
 ---------------------------------------------------------------------------------------------------
 --                        **************** TRIGGERS   ****************
 --
+SET TERM ON
+PROMPT Triggers...
+SET TERM OFF
+SET DEFINE ON
+SELECT '&exor_base'||'mai'||'&terminator'||'admin'||
+        '&terminator'||'trg'||'&terminator'||'maitrgcre.sql' run_file
+FROM dual
+/
+SET FEEDBACK ON
+start &&run_file
+SET FEEDBACK OFF
 ---------------------------------------------------------------------------------------------------
 --                        **************** APPLICATION CONTEXTS ****************
 --
