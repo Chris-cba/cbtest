@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.32   Jan 07 2013 09:49:40   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.33   Feb 07 2013 15:39:56   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jan 07 2013 09:49:40  $
---       Date fetched Out : $Modtime:   Dec 21 2012 11:41:02  $
---       PVCS Version     : $Revision:   3.32  $
+--       Date into PVCS   : $Date:   Feb 07 2013 15:39:56  $
+--       Date fetched Out : $Modtime:   Jan 30 2013 17:07:08  $
+--       PVCS Version     : $Revision:   3.33  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.32  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.33  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -963,9 +963,10 @@ END ins_defect_doc;
 --
 -----------------------------------------------------------------------------
 --
-FUNCTION validate_asset(pi_item_type defects.def_ity_inv_code%TYPE
-                       ,pi_item_id   nm_inv_items_all.iit_ne_id%TYPE)
-  RETURN BOOLEAN IS
+PROCEDURE validate_asset(pi_item_type       defects.def_ity_inv_code%TYPE
+                       ,pi_item_id         nm_inv_items_all.iit_ne_id%TYPE
+                       ,pi_effective_date  DATE)
+  IS
   --
   lv_nm3_inv_type  nm_inv_types_all.nit_inv_type%TYPE;
   lv_ft_id         NUMBER;
@@ -999,9 +1000,9 @@ BEGIN
       /*
       ||Build SQL To Check FT Asset.
       */
-      lv_sql := 'SELECT '||lr_inv_type.nit_lr_ne_column_name
+      lv_sql := 'SELECT '||lr_inv_type.nit_foreign_pk_column
               ||'  FROM '||lr_inv_type.nit_table_name
-              ||' WHERE '||lr_inv_type.nit_lr_ne_column_name||'='||pi_item_id;
+              ||' WHERE '||lr_inv_type.nit_foreign_pk_column||'='||pi_item_id;
       /*
       ||Execute SQL.
       */
@@ -1009,28 +1010,35 @@ BEGIN
       /*
       ||Check The Value Returned.
       */
-      IF lv_ft_id IS NOT NULL
+      IF lv_ft_id IS NULL
        THEN
-          lv_retval := TRUE;
-      ELSE
-          lv_retval := FALSE;
+          raise_application_error(-20001,'Invalid Asset Type/Asset Id Supplied.');
       END IF;
       --
   ELSE
       /*
       ||Check nm3 Asset.
       */
-      lr_nm3_asset :=  nm3get.get_iit_all(pi_iit_ne_id       => pi_item_id
-                                         ,pi_raise_not_found => TRUE);
-      lv_retval := TRUE;
+      BEGIN
+        lr_nm3_asset :=  nm3get.get_iit_all(pi_iit_ne_id       => pi_item_id
+                                           ,pi_raise_not_found => TRUE);
+      EXCEPTION
+        WHEN others
+         THEN
+            raise_application_error(-20001,'Invalid Asset Type/Asset Id Supplied.');
+      END;
+      /*
+      ||Make Sure The Asset Is Active On The Inspection Date.
+      */
+      IF lr_nm3_asset.iit_start_date > pi_effective_date
+       THEN
+          raise_application_error(-20001,'Invalid Asset Id Supplied, The Asset''s Start Date Is Greater Than The Inspection Date.');
+      ELSIF lr_nm3_asset.iit_end_date < pi_effective_date
+       THEN
+          raise_application_error(-20001,'Invalid Asset Id Supplied, The Asset''s End Date Is Less Than The Inspection Date.');
+      END IF;
   END IF;
   --
-  RETURN lv_retval;
-  --
-EXCEPTION
-  WHEN others
-   THEN
-     RETURN FALSE;
 END validate_asset;
 --
 -----------------------------------------------------------------------------
@@ -3859,6 +3867,7 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
   lv_asset_type       defects.def_ity_inv_code%TYPE;
   lv_insp_sys_flag    VARCHAR2(1);
   lv_error_flag       VARCHAR2(1);
+  lv_effective_date   DATE;
   --
   lv_entity_type   VARCHAR2(10);
   lv_boqs_created  NUMBER;
@@ -3960,11 +3969,9 @@ BEGIN
                 /*
                 ||Check That The Asset Exists.
                 */
-                IF NOT validate_asset(pi_item_type => lr_defect_rec.def_ity_inv_code
-                                     ,pi_item_id   => lr_defect_rec.def_iit_item_id)
-                 THEN
-                    raise_application_error(-20001,'Invalid Asset Type/Asset Id Supplied.');
-                END IF;
+                validate_asset(pi_item_type => lr_defect_rec.def_ity_inv_code
+                              ,pi_item_id   => lr_defect_rec.def_iit_item_id
+                              ,pi_effective_date => lr_insp_rec.are_date_work_done);
                 /*
                 ||Asset exists but can we work with it?
                 ||
@@ -3981,8 +3988,25 @@ BEGIN
             ||Get The Maintenance Section Associated With The Asset Or
             ||The Relevant Dummy Section For Off Network Assets.
             */
-            lv_iit_rse_he_id := mai.get_budget_allocation(p_inv_type  => mai.translate_mai_inv_type(lr_defect_rec.def_ity_inv_code)
-                                                         ,p_iit_ne_id => lr_defect_rec.def_iit_item_id);
+            BEGIN
+              --
+              lv_effective_date := To_Date(Sys_Context('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY');
+              nm3user.set_effective_date(lr_insp_rec.are_date_work_done);
+              --
+              lv_iit_rse_he_id := mai.get_budget_allocation(p_inv_type  => mai.translate_mai_inv_type(lr_defect_rec.def_ity_inv_code)
+                                                           ,p_iit_ne_id => lr_defect_rec.def_iit_item_id);
+              --
+              nm3user.set_effective_date(lv_effective_date);
+              --
+            EXCEPTION
+              WHEN others
+               THEN
+                  IF lv_effective_date IS NOT NULL
+                   THEN
+                      nm3user.set_effective_date(lv_effective_date);
+                  END IF;
+                  raise_application_error(-20049,'Asset Is Not Associated With A Section Or Budget Allocation At The Time Of The Inspection.');
+            END;            
             /*
             ||Make Sure The Asset's Section Matches
             ||The Section Being Inspected.
