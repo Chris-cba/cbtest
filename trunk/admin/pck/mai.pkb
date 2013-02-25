@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.32   Jan 09 2013 14:11:28   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.33   Feb 25 2013 15:23:46   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Jan 09 2013 14:11:28  $
---       Date fetched Out : $Modtime:   Jan 09 2013 14:11:20  $
---       SCCS Version     : $Revision:   2.32  $
+--       Date into SCCS   : $Date:   Feb 25 2013 15:23:46  $
+--       Date fetched Out : $Modtime:   Feb 25 2013 15:24:34  $
+--       SCCS Version     : $Revision:   2.33  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.32  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.33  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -3772,6 +3772,9 @@ BEGIN
   END IF;
   --
   RETURN (v_priority);
+EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+      RETURN null;
 END;
 -----------------------------------------------------------------------------------
 -- END of Auto Defect Prioritisation Changes
