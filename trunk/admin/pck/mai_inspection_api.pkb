@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.34   Feb 20 2013 15:25:10   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.35   Feb 25 2013 16:43:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 20 2013 15:25:10  $
---       Date fetched Out : $Modtime:   Feb 20 2013 15:15:30  $
---       PVCS Version     : $Revision:   3.34  $
+--       Date into PVCS   : $Date:   Feb 25 2013 16:43:14  $
+--       Date fetched Out : $Modtime:   Feb 25 2013 16:35:30  $
+--       PVCS Version     : $Revision:   3.35  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.34  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.35  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1370,25 +1370,38 @@ FUNCTION validate_priority(pi_priority           IN defects.def_priority%TYPE
 						  ,pi_rse_he_id          IN defects.def_rse_he_id%TYPE)
   RETURN BOOLEAN IS
   --
-  lv_dummy NUMBER;
-  --
-BEGIN
-  --
-  SELECT 1
-    INTO lv_dummy
+  CURSOR C1 IS
+    SELECT 1
     FROM hig_codes
         ,defect_priorities
-   WHERE dpr_priority           = pi_priority
+        ,hig_admin_units hau 
+        ,hig_admin_groups hag
+   WHERE TO_DATE (SYS_CONTEXT ('NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY') BETWEEN 
+                             NVL (hau_start_date, TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+                      AND NVL (hau_end_date,  TO_DATE (SYS_CONTEXT ( 'NM3CORE', 'EFFECTIVE_DATE'), 'DD-MON-YYYY'))
+     AND hag.hag_child_admin_unit  =  mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => pi_rse_he_id)
+     AND hag.hag_parent_admin_unit = hau.hau_admin_unit
+     AND dpr_admin_unit            = hag.hag_parent_admin_unit
+     AND dpr_priority           = pi_priority
      AND dpr_atv_acty_area_code = pi_atv_acty_area_code
      AND dpr_action_cat         = pi_action_cat
-     AND dpr_admin_unit = mai_priority.get_lowest_dpr_admin_unit(pi_ne_id => pi_rse_he_id)
      AND dpr_priority           = hco_code
      AND hco_domain             = 'DEFECT_PRIORITIES'
      AND pi_effective_date BETWEEN NVL(hco_start_date,pi_effective_date)
                                AND NVL(hco_end_date  ,pi_effective_date)
    ;
+
+  lv_dummy NUMBER;
+  lv_row_found BOOLEAN;
+  -- 
+BEGIN
   --
-  RETURN TRUE;
+  OPEN C1;  
+  FETCH C1 INTO lv_dummy;
+  lv_row_found := C1%FOUND;
+  CLOSE C1;
+  
+  RETURN lv_row_found;
   --
 EXCEPTION
   WHEN no_data_found
