@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.32   Sep 27 2012 12:00:46   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.33   Feb 26 2013 09:42:46   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Sep 27 2012 12:00:46  $
---       Date fetched Out : $Modtime:   Sep 27 2012 11:58:50  $
---       PVCS Version     : $Revision:   3.32  $
+--       Date into PVCS   : $Date:   Feb 26 2013 09:42:46  $
+--       Date fetched Out : $Modtime:   Feb 19 2013 08:43:56  $
+--       PVCS Version     : $Revision:   3.33  $
 --
 -----------------------------------------------------------------------------
 --  Copyright (c) exor corporation ltd, 2007
 -----------------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.32  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.33  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -5207,19 +5207,7 @@ PROCEDURE check_rules_overlap(pi_mawc_id         IN  mai_auto_wo_rule_criteria.m
     FROM mai_auto_wo_rule_criteria,
          mai_auto_wo_rules
    WHERE mawc_mawr_id = mawr_id
-     AND mawr_admin_unit IN
-                     (SELECT hag_parent_admin_unit
-                        FROM hig_admin_groups,
-                             hig_admin_units
-                       WHERE hag_direct_link='Y'
-                         AND hau_admin_unit = hag_parent_admin_unit
-                       START WITH hag_child_admin_unit = pi_admin_unit
-                     CONNECT BY
-                       PRIOR hag_parent_admin_unit=hag_child_admin_unit
-                         AND hag_direct_link='Y'
-                       UNION
-                      SELECT pi_admin_unit
-                        FROM dual)
+     AND mawr_admin_unit = pi_admin_unit
      AND ((pi_road_group_id IN (SELECT nm_ne_id_of
                    FROM nm_members
                   WHERE nm_type = 'G'
