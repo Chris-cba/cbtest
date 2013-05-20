@@ -4,11 +4,11 @@ REM
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.3   Apr 25 2012 15:26:40   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/mai_transviews.sql-arc   2.4   May 20 2013 11:39:58   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_transviews.sql  $
---       Date into SCCS   : $Date:   Apr 25 2012 15:26:40  $
---       Date fetched Out : $Modtime:   Apr 25 2012 15:16:00  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   May 20 2013 11:39:58  $
+--       Date fetched Out : $Modtime:   May 08 2013 16:01:26  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
@@ -1249,7 +1249,17 @@ CREATE OR REPLACE FORCE VIEW INV_ITEM_TYPES
  ITY_HHPOS58, ITY_HHPOS59, ITY_HHPOS60, ITY_HHPOS61, ITY_HHPOS62, 
  ITY_HHPOS63, ITY_HHPOS64, ITY_HHPOS65, ITY_HHPOS66, ITY_HHPOS67, 
  ITY_HHPOS68, ITY_HHPOS69, ITY_HHPOS70, ITY_HHPOS71, ITY_HHPOS72, 
- ITY_HHPOS73, ITY_HHPOS74, ITY_HHPOS75)
+ ITY_HHPOS73, ITY_HHPOS74, ITY_HHPOS75, ITY_HHPOS76, ITY_HHPOS77,
+ ITY_HHPOS78, ITY_HHPOS79, ITY_HHPOS80, ITY_HHPOS81, ITY_HHPOS82,
+ ITY_HHPOS83, ITY_HHPOS84, ITY_HHPOS85, ITY_HHPOS86, ITY_HHPOS87,
+ ITY_HHPOS88, ITY_HHPOS89, ITY_HHPOS90, ITY_HHPOS91, ITY_HHPOS92,
+ ITY_HHPOS93, ITY_HHPOS94, ITY_HHPOS95, ITY_HHPOS96, ITY_HHPOS97,
+ ITY_HHPOS98, ITY_HHPOS99, ITY_HHPOS100, ITY_HHPOS101, ITY_HHPOS102,
+ ITY_HHPOS103, ITY_HHPOS104, ITY_HHPOS105, ITY_HHPOS106, ITY_HHPOS107,
+ ITY_HHPOS108, ITY_HHPOS109, ITY_HHPOS110, ITY_HHPOS111, ITY_HHPOS112,
+ ITY_HHPOS113, ITY_HHPOS114, ITY_HHPOS115, ITY_HHPOS116, ITY_HHPOS117,
+ ITY_HHPOS118, ITY_HHPOS119, ITY_HHPOS120
+ )
 AS 
 SELECT 
 ittc.ity_dtp_flag                        ity_dtp_flag, 
@@ -1374,7 +1384,52 @@ ittc.ity_hhsubstrt8       ity_hhsubstrt8,
  ittc.ity_hhpos72       ity_hhpos72, 
  ittc.ity_hhpos73       ity_hhpos73, 
  ittc.ity_hhpos74       ity_hhpos74, 
- ittc.ity_hhpos75       ity_hhpos75 
+ ittc.ity_hhpos75       ity_hhpos75, 
+ ittc.ity_hhpos76       ity_hhpos76, 
+ ittc.ity_hhpos77       ity_hhpos77, 
+ ittc.ity_hhpos78       ity_hhpos78, 
+ ittc.ity_hhpos79       ity_hhpos79, 
+ ittc.ity_hhpos80       ity_hhpos80, 
+ ittc.ity_hhpos81       ity_hhpos81, 
+ ittc.ity_hhpos82       ity_hhpos82, 
+ ittc.ity_hhpos83       ity_hhpos83, 
+ ittc.ity_hhpos84       ity_hhpos84, 
+ ittc.ity_hhpos85       ity_hhpos85, 
+ ittc.ity_hhpos86       ity_hhpos86, 
+ ittc.ity_hhpos87       ity_hhpos87, 
+ ittc.ity_hhpos88       ity_hhpos88, 
+ ittc.ity_hhpos89       ity_hhpos89, 
+ ittc.ity_hhpos90       ity_hhpos90, 
+ ittc.ity_hhpos91       ity_hhpos91, 
+ ittc.ity_hhpos92       ity_hhpos92, 
+ ittc.ity_hhpos93       ity_hhpos93, 
+ ittc.ity_hhpos94       ity_hhpos94, 
+ ittc.ity_hhpos95       ity_hhpos95, 
+ ittc.ity_hhpos96       ity_hhpos96, 
+ ittc.ity_hhpos97       ity_hhpos97, 
+ ittc.ity_hhpos98       ity_hhpos98, 
+ ittc.ity_hhpos99       ity_hhpos99, 
+ ittc.ity_hhpos100     ity_hhpos100, 
+ ittc.ity_hhpos101     ity_hhpos101, 
+ ittc.ity_hhpos102     ity_hhpos102, 
+ ittc.ity_hhpos103     ity_hhpos103, 
+ ittc.ity_hhpos104     ity_hhpos104, 
+ ittc.ity_hhpos105     ity_hhpos105, 
+ ittc.ity_hhpos106     ity_hhpos106, 
+ ittc.ity_hhpos107     ity_hhpos107, 
+ ittc.ity_hhpos108     ity_hhpos108, 
+ ittc.ity_hhpos109     ity_hhpos109, 
+ ittc.ity_hhpos110     ity_hhpos110, 
+ ittc.ity_hhpos111     ity_hhpos111, 
+ ittc.ity_hhpos112     ity_hhpos112, 
+ ittc.ity_hhpos113     ity_hhpos113, 
+ ittc.ity_hhpos114     ity_hhpos114, 
+ ittc.ity_hhpos115     ity_hhpos115, 
+ ittc.ity_hhpos116     ity_hhpos116, 
+ ittc.ity_hhpos117     ity_hhpos117, 
+ ittc.ity_hhpos118     ity_hhpos118, 
+ ittc.ity_hhpos119     ity_hhpos119, 
+ ittc.ity_hhpos120     ity_hhpos120 
  FROM nm_inv_types nitc, 
       nm_inv_type_groupings itg, 
       inv_type_translations ittc, 
