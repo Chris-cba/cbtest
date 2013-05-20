@@ -5,7 +5,7 @@
 /* "@(#)r1validc.h	1.2 05/20/04"  */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1validc.h  $ $Revision:   2.4  $ $Modtime:   Dec 07 2012 12:24:38  $" */
+/* "$Workfile:   r1validc.h  $ $Revision:   2.5  $ $Modtime:   Apr 24 2013 16:41:22  $" */
 
 /* ---------------------------------------------------------------------- *
    Change History
@@ -46,7 +46,7 @@ BOOLEAN c_validation(rtext,lineno,hermis_file,ped4chrass_value)
   BOOLEAN hermis_file;
   char *ped4chrass_value;
   {
-  char text[2000],*strs[100];
+  char text[2000],*strs[1000];
   int noargs,i;
 
   /* make copy of record text to allow protection of record text */
@@ -55,9 +55,9 @@ BOOLEAN c_validation(rtext,lineno,hermis_file,ped4chrass_value)
   /* checks max no attributes permitted and breaks up attribute string with
   null terminators, returns array of string pointers to each attribute in
   string text */
-  if ((noargs = getwstrs(text,strs)) > 99)
+  if ((noargs = getwstrs(text,strs)) > 130)
     {
-    sprintf(err_msg,"ERROR: %d fields in C type record (Max 99) BPR-8035",(noargs + 1));
+    sprintf(err_msg,"ERROR: %d fields in C type record (Max 130) BPR-8035",(noargs + 1));
     format_err(lineno,3);
     }
 
