@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.12  $ $Modtime:   May 10 2012 15:46:18  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.13  $ $Modtime:   Apr 23 2013 12:35:50  $";
 
 #include <stdio.h>
 #include <string.h>
@@ -308,7 +308,98 @@ extern size_t buf_len, msg_len;
        hhattr74          varchar2(32),
        hhfld75           varchar2(500),
        hhattr75          varchar2(32),
-       hhinv_ity_sys_flag varchar2(1) );
+       hhfld76           varchar2(500),
+       hhattr76          varchar2(32),
+       hhfld77           varchar2(500),
+       hhattr77          varchar2(32),
+       hhfld78           varchar2(500),
+       hhattr78          varchar2(32),
+       hhfld79           varchar2(500),
+       hhattr79          varchar2(32),
+       hhfld80           varchar2(500),
+       hhattr80          varchar2(32),
+       hhfld81           varchar2(500),
+       hhattr81          varchar2(32),
+       hhfld82           varchar2(500),
+       hhattr82          varchar2(32),
+       hhfld83           varchar2(500),
+       hhattr83          varchar2(32),
+       hhfld84           varchar2(500),
+       hhattr84          varchar2(32),
+       hhfld85           varchar2(500),
+       hhattr85          varchar2(32),
+       hhfld86           varchar2(500),
+       hhatt86          varchar2(32),
+       hhfld87           varchar2(500),
+       hhattr87          varchar2(32),
+       hhfld88           varchar2(500),
+       hhattr88          varchar2(32),
+       hhfld89           varchar2(500),
+       hhattr89          varchar2(32),
+       hhfld90           varchar2(500),
+       hhattr90          varchar2(32),
+       hhfld91           varchar2(500),
+       hhattr91          varchar2(32),
+       hhfld92           varchar2(500),
+       hhattr92          varchar2(32),
+       hhfld93           varchar2(500),
+       hhattr93          varchar2(32),
+       hhfld94           varchar2(500),
+       hhattr94          varchar2(32),
+       hhfld95           varchar2(500),
+       hhattr95          varchar2(32),
+       hhfld96           varchar2(500),
+       hhattr96          varchar2(32),
+       hhfld97           varchar2(500),
+       hhattr97          varchar2(32),
+       hhfld98           varchar2(500),
+       hhattr98          varchar2(32),
+       hhfld99           varchar2(500),
+       hhattr99          varchar2(32),
+       hhfld100           varchar2(500),
+       hhattr100          varchar2(32),
+       hhfld101           varchar2(500),
+       hhattr101          varchar2(32),
+       hhfld102           varchar2(500),
+       hhattr102          varchar2(32),
+       hhfld103           varchar2(500),
+       hhattr103          varchar2(32),
+       hhfld104           varchar2(500),
+       hhattr104          varchar2(32),
+       hhfld105           varchar2(500),
+       hhattr105          varchar2(32),
+       hhfld106           varchar2(500),
+       hhattr106          varchar2(32),
+       hhfld107           varchar2(500),
+       hhattr107          varchar2(32),
+       hhfld108           varchar2(500),
+       hhattr108          varchar2(32),
+       hhfld109           varchar2(500),
+       hhattr109          varchar2(32),
+       hhfld110           varchar2(500),
+       hhattr110          varchar2(32),
+       hhfld111           varchar2(500),
+       hhattr111          varchar2(32),
+       hhfld112           varchar2(500),
+       hhattr112          varchar2(32),
+       hhfld113           varchar2(500),
+       hhattr113          varchar2(32),
+       hhfld114           varchar2(500),
+       hhattr114          varchar2(32),
+       hhfld115           varchar2(500),
+       hhattr115          varchar2(32),
+       hhfld116           varchar2(500),
+       hhattr116          varchar2(32),
+       hhfld117           varchar2(500),
+       hhattr117          varchar2(32),
+       hhfld118           varchar2(500),
+       hhattr118          varchar2(32),
+       hhfld119           varchar2(500),
+       hhattr119          varchar2(32),
+       hhfld120           varchar2(500),
+       hhattr120          varchar2(32),
+       hhinv_ity_sys_flag varchar2(1)
+        );
 
   EXEC SQL DECLARE HHINV_LOAD_3 TABLE
       (rec_seq_no            NUMBER(38,0),
@@ -541,7 +632,22 @@ int bring_in_err_2()
                   HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                   HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                   HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                  HHFLD74,HHATTR74,HHFLD75,HHATTR75, HHINV_ITY_SYS_FLAG)
+                  HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76, 
+                  HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                  HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                  HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                  HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                  HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                  HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                  HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                  HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                  HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                  HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                  HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                  HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                  HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                  HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                  HHFLD119,HHATTR119,HHFLD120,HHATTR120,HHINV_ITY_SYS_FLAG)
            SELECT REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,
                   SCL_CLASS,INV_CODE,PEO_INVENT_BY_ID,INVENT_DATE,
                   X_SECT,ST_CHAIN,END_CHAIN,ROAD_CHARACTERISTIC,
@@ -571,7 +677,22 @@ int bring_in_err_2()
                   HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                   HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                   HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                  HHFLD74,HHATTR74,HHFLD75,HHATTR75, HHINV_ITY_SYS_FLAG
+                  HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76, 
+                  HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                  HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                  HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                  HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                  HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                  HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                  HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                  HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                  HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                  HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                  HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                  HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                  HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                  HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                  HHFLD119,HHATTR119,HHFLD120,HHATTR120,HHINV_ITY_SYS_FLAG
            FROM   HHINV_ITEM_ERR_2  HHI2
            WHERE  HHI2.SECT_HDR_SEQ_NO
            IN
@@ -613,7 +734,22 @@ int bring_in_err_2()
                   HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                   HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                   HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                  HHFLD74,HHATTR74,HHFLD75,HHATTR75)
+                  HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                  HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                  HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                  HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                  HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                  HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                  HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                  HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                  HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                  HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                  HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                  HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                  HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                  HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                  HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                  HHFLD119,HHATTR119,HHFLD120,HHATTR120)
            SELECT REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,
                   SCL_CLASS,INV_CODE,PEO_INVENT_BY_ID,INVENT_DATE,
                   X_SECT,ST_CHAIN,END_CHAIN,ROAD_CHARACTERISTIC,
@@ -643,7 +779,22 @@ int bring_in_err_2()
                   HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                   HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                   HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                  HHFLD74,HHATTR74,HHFLD75,HHATTR75
+                  HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                  HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                  HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                  HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                  HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                  HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                  HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                  HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                  HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                  HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                  HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                  HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                  HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                  HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                  HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                  HHFLD119,HHATTR119,HHFLD120,HHATTR120
            FROM   HHINV_ITEM_ERR_2  HHI2
            WHERE  HHI2.SECT_HDR_SEQ_NO
            IN
@@ -2867,8 +3018,22 @@ int pull_off_inv_bad()
                     HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                     HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                     HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                    ERROR_MSG,HHINV_ITY_SYS_FLAG )
+                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                    HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                    HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                    HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                    HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                    HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                    HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                    HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                    HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                    HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                    HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                    HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                    HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                    HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                    HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                    HHFLD119,HHATTR119,HHFLD120,HHATTR120,ERROR_MSG,HHINV_ITY_SYS_FLAG )
             SELECT  :run_num,REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,SCL_CLASS,
                     LINKCODE, SECTION_CODE,INV_CODE,PEO_INVENT_BY_ID,
                     INVENT_DATE, survey_length, hhinv_survey_direction,
@@ -2898,8 +3063,22 @@ int pull_off_inv_bad()
                     HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                     HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                     HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                    ERROR_MSG,HHINV_ITY_SYS_FLAG
+                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                    HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                    HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                    HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                    HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                    HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                    HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                    HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                    HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                    HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                    HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                    HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                    HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                    HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                    HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                    HHFLD119,HHATTR119,HHFLD120,HHATTR120, ERROR_MSG,HHINV_ITY_SYS_FLAG
             FROM    HHINV_LOAD_2 HHL2
             WHERE   ERROR_FLG = 'Y'
               AND   NOT EXISTS(SELECT 1
@@ -2938,8 +3117,22 @@ int pull_off_inv_bad()
                     HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                     HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                     HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                    ERROR_MSG )
+                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                    HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                    HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                    HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                    HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                    HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                    HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                    HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                    HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                    HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                    HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                    HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                    HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                    HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                    HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                    HHFLD119,HHATTR119,HHFLD120,HHATTR120,ERROR_MSG )
             SELECT  :run_num,REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,SCL_CLASS,
                     LINKCODE, SECTION_CODE,INV_CODE,PEO_INVENT_BY_ID,
                     INVENT_DATE, survey_length,
@@ -2968,8 +3161,22 @@ int pull_off_inv_bad()
                     HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                     HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                     HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                    ERROR_MSG
+                    HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                    HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79, 
+                    HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82, 
+                    HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85, 
+                    HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88, 
+                    HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91, 
+                    HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94, 
+                    HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97, 
+                    HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100, 
+                    HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103, 
+                    HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106, 
+                    HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109, 
+                    HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112, 
+                    HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115, 
+                    HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118, 
+                    HHFLD119,HHATTR119,HHFLD120,HHATTR120,ERROR_MSG
             FROM    HHINV_LOAD_2 HHL2
             WHERE   ERROR_FLG = 'Y'
               AND   NOT EXISTS(SELECT 1
@@ -3635,7 +3842,368 @@ int cre_attri_rows()
                   ltrim(HH.HHFLD75,' '),HHINV_ITY_SYS_FLAG
            FROM   HHINV_LOAD_2 HH
            WHERE  ERROR_FLG IS NULL
-           AND    HH.HHATTR75     IS NOT NULL;
+           AND    HH.HHATTR75     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR76,
+                  ltrim(HH.HHFLD76,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR76     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR77,
+                  ltrim(HH.HHFLD77,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR77     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR78,
+                  ltrim(HH.HHFLD78,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR78     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR79,
+                  ltrim(HH.HHFLD79,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR79     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR80,
+                  ltrim(HH.HHFLD80,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR80     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR81,
+                  ltrim(HH.HHFLD81,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR81     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR82,
+                  ltrim(HH.HHFLD82,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR82     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR83,
+                  ltrim(HH.HHFLD83,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR83     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR84,
+                  ltrim(HH.HHFLD84,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR84     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR85,
+                  ltrim(HH.HHFLD85,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR85     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR86,
+                  ltrim(HH.HHFLD86,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR86     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR87,
+                  ltrim(HH.HHFLD87,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR87     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR88,
+                  ltrim(HH.HHFLD88,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR88     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR89,
+                  ltrim(HH.HHFLD89,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR89     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR90,
+                  ltrim(HH.HHFLD90,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR90     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR91,
+                  ltrim(HH.HHFLD91,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR91     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR92,
+                  ltrim(HH.HHFLD92,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR92     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR93,
+                  ltrim(HH.HHFLD93,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR93     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR94,
+                  ltrim(HH.HHFLD94,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR94     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR95,
+                  ltrim(HH.HHFLD95,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR95     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR96,
+                  ltrim(HH.HHFLD96,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR96     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR97,
+                  ltrim(HH.HHFLD97,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR97     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR98,
+                  ltrim(HH.HHFLD98,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR98     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR99,
+                  ltrim(HH.HHFLD99,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR99     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR100,
+                  ltrim(HH.HHFLD100,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR100     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR101,
+                  ltrim(HH.HHFLD101,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR101     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR102,
+                  ltrim(HH.HHFLD102,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR102     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR103,
+                  ltrim(HH.HHFLD103,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR103     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR104,
+                  ltrim(HH.HHFLD104,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR104     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR105,
+                  ltrim(HH.HHFLD105,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR105     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR106,
+                  ltrim(HH.HHFLD106,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR106     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR107,
+                  ltrim(HH.HHFLD107,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR107     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR108,
+                  ltrim(HH.HHFLD108,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR108     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR109,
+                  ltrim(HH.HHFLD109,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR109     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR110,
+                  ltrim(HH.HHFLD110,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR110     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR111,
+                  ltrim(HH.HHFLD111,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR111     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR112,
+                  ltrim(HH.HHFLD112,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR112     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR113,
+                  ltrim(HH.HHFLD113,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR113     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR114,
+                  ltrim(HH.HHFLD114,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR114     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR115,
+                  ltrim(HH.HHFLD115,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR115     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR116,
+                  ltrim(HH.HHFLD116,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR116     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR117,
+                  ltrim(HH.HHFLD117,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR117     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR118,
+                  ltrim(HH.HHFLD118,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR118     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR119,
+                  ltrim(HH.HHFLD119,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR119     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR120,
+                  ltrim(HH.HHFLD120,' '),HHINV_ITY_SYS_FLAG
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR120     IS NOT NULL
+           ;
       break;
    default:
    EXEC SQL   INSERT INTO HHINV_LOAD_3
@@ -4241,7 +4809,368 @@ int cre_attri_rows()
                   ltrim(HH.HHFLD75,' ')
            FROM   HHINV_LOAD_2 HH
            WHERE  ERROR_FLG IS NULL
-           AND    HH.HHATTR75     IS NOT NULL ;
+           AND    HH.HHATTR75     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR76,
+                  ltrim(HH.HHFLD76,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR76     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR77,
+                  ltrim(HH.HHFLD77,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR77     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR78,
+                  ltrim(HH.HHFLD78,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR78     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR79,
+                  ltrim(HH.HHFLD79,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR79     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR80,
+                  ltrim(HH.HHFLD80,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR80     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR81,
+                  ltrim(HH.HHFLD81,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR81     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR82,
+                  ltrim(HH.HHFLD82,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR82     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR83,
+                  ltrim(HH.HHFLD83,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR83     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR84,
+                  ltrim(HH.HHFLD84,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR84     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR85,
+                  ltrim(HH.HHFLD85,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR85     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR86,
+                  ltrim(HH.HHFLD86,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR86     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR87,
+                  ltrim(HH.HHFLD87,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR87     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR88,
+                  ltrim(HH.HHFLD88,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR88     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR89,
+                  ltrim(HH.HHFLD89,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR89     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR90,
+                  ltrim(HH.HHFLD90,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR90     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR91,
+                  ltrim(HH.HHFLD91,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR91     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR92,
+                  ltrim(HH.HHFLD92,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR92     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR93,
+                  ltrim(HH.HHFLD93,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR93     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR94,
+                  ltrim(HH.HHFLD94,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR94     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR95,
+                  ltrim(HH.HHFLD95,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR95     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR96,
+                  ltrim(HH.HHFLD96,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR96     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR97,
+                  ltrim(HH.HHFLD97,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR97     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR98,
+                  ltrim(HH.HHFLD98,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR98     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR99,
+                  ltrim(HH.HHFLD99,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR99     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR100,
+                  ltrim(HH.HHFLD100,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR100     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR101,
+                  ltrim(HH.HHFLD101,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR101     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR102,
+                  ltrim(HH.HHFLD102,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR102     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR103,
+                  ltrim(HH.HHFLD103,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR103     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR104,
+                  ltrim(HH.HHFLD104,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR104     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR105,
+                  ltrim(HH.HHFLD105,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR105     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR106,
+                  ltrim(HH.HHFLD106,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR106     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR107,
+                  ltrim(HH.HHFLD107,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR107     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR108,
+                  ltrim(HH.HHFLD108,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR108     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR109,
+                  ltrim(HH.HHFLD109,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR109     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR110,
+                  ltrim(HH.HHFLD110,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR110     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR111,
+                  ltrim(HH.HHFLD111,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR111     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR112,
+                  ltrim(HH.HHFLD112,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR112     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR113,
+                  ltrim(HH.HHFLD113,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR113     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR114,
+                  ltrim(HH.HHFLD114,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR114     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR115,
+                  ltrim(HH.HHFLD115,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR115     IS NOT NULL
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR116,
+                  ltrim(HH.HHFLD116,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR116     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR117,
+                  ltrim(HH.HHFLD117,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR117     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR118,
+                  ltrim(HH.HHFLD118,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR118     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR119,
+                  ltrim(HH.HHFLD119,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR119     IS NOT NULL 
+   UNION
+           SELECT REC_SEQ_NO,HE_ID,LINKCODE,SECTION_CODE,INV_CODE,ST_CHAIN,
+                  END_CHAIN,PEO_INVENT_BY_ID,INVENT_DATE,X_SECT,
+                  HH.HHATTR120,
+                  ltrim(HH.HHFLD120,' ')
+           FROM   HHINV_LOAD_2 HH
+           WHERE  ERROR_FLG IS NULL
+           AND    HH.HHATTR120     IS NOT NULL 
+           ;
    }
 /* Statement below replaced by the one above. Should result in
    less disk space use (about 20%). Implemented now but needs more
@@ -4598,8 +5527,22 @@ int pull_inv_due_attr()
                    HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                    HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                    HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                   HHINV_ITY_SYS_FLAG)
+                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                   HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79,
+                   HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82,
+                   HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85,
+                   HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88,
+                   HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91,
+                   HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94,
+                   HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97,
+                   HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100,
+                   HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103,
+                   HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106,
+                   HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109,
+                   HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112,
+                   HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115,
+                   HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118,
+                   HHFLD119,HHATTR119,HHFLD120,HHATTR120,HHINV_ITY_SYS_FLAG)
            SELECT  :run_num,REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,SCL_CLASS,
                    LINKCODE,SECTION_CODE,INV_CODE,PEO_INVENT_BY_ID,
                    survey_length, hhinv_survey_direction,
@@ -4629,8 +5572,22 @@ int pull_inv_due_attr()
                    HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                    HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                    HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,
-                   HHINV_ITY_SYS_FLAG
+                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                   HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79,
+                   HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82,
+                   HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85,
+                   HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88,
+                   HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91,
+                   HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94,
+                   HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97,
+                   HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100,
+                   HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103,
+                   HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106,
+                   HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109,
+                   HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112,
+                   HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115,
+                   HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118,
+                   HHFLD119,HHATTR119,HHFLD120,HHATTR120,HHINV_ITY_SYS_FLAG
            FROM    HHINV_LOAD_2 HHL2
            WHERE   (HHL2.REC_SEQ_NO)
            IN
@@ -4670,7 +5627,23 @@ int pull_inv_due_attr()
                    HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                    HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                    HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                   HHFLD74,HHATTR74,HHFLD75,HHATTR75)
+                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                   HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79,
+                   HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82,
+                   HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85,
+                   HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88,
+                   HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91,
+                   HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94,
+                   HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97,
+                   HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100,
+                   HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103,
+                   HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106,
+                   HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109,
+                   HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112,
+                   HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115,
+                   HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118,
+                   HHFLD119,HHATTR119,HHFLD120,HHATTR120
+                   )
            SELECT  :run_num,REC_SEQ_NO,SECT_HDR_SEQ_NO,HE_ID,SCL_CLASS,
                    LINKCODE,SECTION_CODE,INV_CODE,PEO_INVENT_BY_ID,
                    survey_length, hhinv_survey_direction,
@@ -4700,7 +5673,22 @@ int pull_inv_due_attr()
                    HHFLD65,HHATTR65,HHFLD66,HHATTR66,HHFLD67,HHATTR67,
                    HHFLD68,HHATTR68,HHFLD69,HHATTR69,HHFLD70,HHATTR70,
                    HHFLD71,HHATTR71,HHFLD72,HHATTR72,HHFLD73,HHATTR73,
-                   HHFLD74,HHATTR74,HHFLD75,HHATTR75
+                   HHFLD74,HHATTR74,HHFLD75,HHATTR75,HHFLD76,HHATTR76,
+                   HHFLD77,HHATTR77,HHFLD78,HHATTR78,HHFLD79,HHATTR79,
+                   HHFLD80,HHATTR80,HHFLD81,HHATTR81,HHFLD82,HHATTR82,
+                   HHFLD83,HHATTR83,HHFLD84,HHATTR84,HHFLD85,HHATTR85,
+                   HHFLD86,HHATTR86,HHFLD87,HHATTR87,HHFLD88,HHATTR88,
+                   HHFLD89,HHATTR89,HHFLD90,HHATTR90,HHFLD91,HHATTR91,
+                   HHFLD92,HHATTR92,HHFLD93,HHATTR93,HHFLD94,HHATTR94,
+                   HHFLD95,HHATTR95,HHFLD96,HHATTR96,HHFLD97,HHATTR97,
+                   HHFLD98,HHATTR98,HHFLD99,HHATTR99,HHFLD100,HHATTR100,
+                   HHFLD101,HHATTR101,HHFLD102,HHATTR102,HHFLD103,HHATTR103,
+                   HHFLD104,HHATTR104,HHFLD105,HHATTR105,HHFLD106,HHATTR106,
+                   HHFLD107,HHATTR107,HHFLD108,HHATTR108,HHFLD109,HHATTR109,
+                   HHFLD110,HHATTR110,HHFLD111,HHATTR111,HHFLD112,HHATTR112,
+                   HHFLD113,HHATTR113,HHFLD114,HHATTR114,HHFLD115,HHATTR115,
+                   HHFLD116,HHATTR116,HHFLD117,HHATTR117,HHFLD118,HHATTR118,
+                   HHFLD119,HHATTR119,HHFLD120,HHATTR120
            FROM    HHINV_LOAD_2 HHL2
            WHERE   (HHL2.REC_SEQ_NO)
            IN

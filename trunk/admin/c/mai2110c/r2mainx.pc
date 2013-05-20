@@ -3,7 +3,7 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.6  $ $Modtime:   Jan 11 2010 10:48:00  $";
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.7  $ $Modtime:   May 10 2013 09:12:00  $";
 
 #define BOOLEAN int
 #define FALSE 0
@@ -225,6 +225,96 @@ VARCHAR c_att74[50][501];
 VARCHAR c_pos75[50][33];
 VARCHAR c_att75[50][501];
 
+VARCHAR c_pos76[50][33];
+VARCHAR c_att76[50][501];
+VARCHAR c_pos77[50][33];
+VARCHAR c_att77[50][501];
+VARCHAR c_pos78[50][33];
+VARCHAR c_att78[50][501];
+VARCHAR c_pos79[50][33];
+VARCHAR c_att79[50][501];
+VARCHAR c_pos80[50][33];
+VARCHAR c_att80[50][501];
+VARCHAR c_pos81[50][33];
+VARCHAR c_att81[50][501];
+VARCHAR c_pos82[50][33];
+VARCHAR c_att82[50][501];
+VARCHAR c_pos83[50][33];
+VARCHAR c_att83[50][501];
+VARCHAR c_pos84[50][33];
+VARCHAR c_att84[50][501];
+VARCHAR c_pos85[50][33];
+VARCHAR c_att85[50][501];
+VARCHAR c_pos86[50][33];
+VARCHAR c_att86[50][501];
+VARCHAR c_pos87[50][33];
+VARCHAR c_att87[50][501];
+VARCHAR c_pos88[50][33];
+VARCHAR c_att88[50][501];
+VARCHAR c_pos89[50][33];
+VARCHAR c_att89[50][501];
+VARCHAR c_pos90[50][33];
+VARCHAR c_att90[50][501];
+VARCHAR c_pos91[50][33];
+VARCHAR c_att91[50][501];
+VARCHAR c_pos92[50][33];
+VARCHAR c_att92[50][501];
+VARCHAR c_pos93[50][33];
+VARCHAR c_att93[50][501];
+VARCHAR c_pos94[50][33];
+VARCHAR c_att94[50][501];
+VARCHAR c_pos95[50][33];
+VARCHAR c_att95[50][501];
+VARCHAR c_pos96[50][33];
+VARCHAR c_att96[50][501];
+VARCHAR c_pos97[50][33];
+VARCHAR c_att97[50][501];
+VARCHAR c_pos98[50][33];
+VARCHAR c_att98[50][501];
+VARCHAR c_pos99[50][33];
+VARCHAR c_att99[50][501];
+VARCHAR c_pos100[50][33];
+VARCHAR c_att100[50][501];
+VARCHAR c_pos101[50][33];
+VARCHAR c_att101[50][501];
+VARCHAR c_pos102[50][33];
+VARCHAR c_att102[50][501];
+VARCHAR c_pos103[50][33];
+VARCHAR c_att103[50][501];
+VARCHAR c_pos104[50][33];
+VARCHAR c_att104[50][501];
+VARCHAR c_pos105[50][33];
+VARCHAR c_att105[50][501];
+VARCHAR c_pos106[50][33];
+VARCHAR c_att106[50][501];
+VARCHAR c_pos107[50][33];
+VARCHAR c_att107[50][501];
+VARCHAR c_pos108[50][33];
+VARCHAR c_att108[50][501];
+VARCHAR c_pos109[50][33];
+VARCHAR c_att109[50][501];
+VARCHAR c_pos110[50][33];
+VARCHAR c_att110[50][501];
+VARCHAR c_pos111[50][33];
+VARCHAR c_att111[50][501];
+VARCHAR c_pos112[50][33];
+VARCHAR c_att112[50][501];
+VARCHAR c_pos113[50][33];
+VARCHAR c_att113[50][501];
+VARCHAR c_pos114[50][33];
+VARCHAR c_att114[50][501];
+VARCHAR c_pos115[50][33];
+VARCHAR c_att115[50][501];
+VARCHAR c_pos116[50][33];
+VARCHAR c_att116[50][501];
+VARCHAR c_pos117[50][33];
+VARCHAR c_att117[50][501];
+VARCHAR c_pos118[50][33];
+VARCHAR c_att118[50][501];
+VARCHAR c_pos119[50][33];
+VARCHAR c_att119[50][501];
+VARCHAR c_pos120[50][33];
+VARCHAR c_att120[50][501];
 
 VARCHAR full_date[19];
 short ic_survey_length[50];
@@ -388,6 +478,96 @@ short ic_att74[50];
 short ic_pos75[50];
 short ic_att75[50];
 
+short ic_pos76[50];
+short ic_att76[50];
+short ic_pos77[50];
+short ic_att77[50];
+short ic_pos78[50];
+short ic_att78[50];
+short ic_pos79[50];
+short ic_att79[50];
+short ic_pos80[50];
+short ic_att80[50];
+short ic_pos81[50];
+short ic_att81[50];
+short ic_pos82[50];
+short ic_att82[50];
+short ic_pos83[50];
+short ic_att83[50];
+short ic_pos84[50];
+short ic_att84[50];
+short ic_pos85[50];
+short ic_att85[50];
+short ic_pos86[50];
+short ic_att86[50];
+short ic_pos87[50];
+short ic_att87[50];
+short ic_pos88[50];
+short ic_att88[50];
+short ic_pos89[50];
+short ic_att89[50];
+short ic_pos90[50];
+short ic_att90[50];
+short ic_pos91[50];
+short ic_att91[50];
+short ic_pos92[50];
+short ic_att92[50];
+short ic_pos93[50];
+short ic_att93[50];
+short ic_pos94[50];
+short ic_att94[50];
+short ic_pos95[50];
+short ic_att95[50];
+short ic_pos96[50];
+short ic_att96[50];
+short ic_pos97[50];
+short ic_att97[50];
+short ic_pos98[50];
+short ic_att98[50];
+short ic_pos99[50];
+short ic_att99[50];
+short ic_pos100[50];
+short ic_att100[50];
+short ic_pos101[50];
+short ic_att101[50];
+short ic_pos102[50];
+short ic_att102[50];
+short ic_pos103[50];
+short ic_att103[50];
+short ic_pos104[50];
+short ic_att104[50];
+short ic_pos105[50];
+short ic_att105[50];
+short ic_pos106[50];
+short ic_att106[50];
+short ic_pos107[50];
+short ic_att107[50];
+short ic_pos108[50];
+short ic_att108[50];
+short ic_pos109[50];
+short ic_att109[50];
+short ic_pos110[50];
+short ic_att110[50];
+short ic_pos111[50];
+short ic_att111[50];
+short ic_pos112[50];
+short ic_att112[50];
+short ic_pos113[50];
+short ic_att113[50];
+short ic_pos114[50];
+short ic_att114[50];
+short ic_pos115[50];
+short ic_att115[50];
+short ic_pos116[50];
+short ic_att116[50];
+short ic_pos117[50];
+short ic_att117[50];
+short ic_pos118[50];
+short ic_att118[50];
+short ic_pos119[50];
+short ic_att119[50];
+short ic_pos120[50];
+short ic_att120[50];
 
 VARCHAR userid[66];
 
@@ -1580,7 +1760,7 @@ int copy_data_1()
    ************************************************************************ */
  {
  int noargs,i,norecs = 0,fin_yn = 0;
- char *strs[100];
+ char *strs[130];
 
  if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
  {
@@ -1675,6 +1855,51 @@ int copy_data_1()
                    ITY.ITY_HHPOS73,
                    ITY.ITY_HHPOS74,
                    ITY.ITY_HHPOS75,
+                   ITY.ITY_HHPOS76,
+                   ITY.ITY_HHPOS77,
+                   ITY.ITY_HHPOS78,
+                   ITY.ITY_HHPOS79,
+                   ITY.ITY_HHPOS80,
+                   ITY.ITY_HHPOS81,
+                   ITY.ITY_HHPOS82,
+                   ITY.ITY_HHPOS83,
+                   ITY.ITY_HHPOS84,
+                   ITY.ITY_HHPOS85,
+                   ITY.ITY_HHPOS86,
+                   ITY.ITY_HHPOS87,
+                   ITY.ITY_HHPOS88,
+                   ITY.ITY_HHPOS89,
+                   ITY.ITY_HHPOS90,
+                   ITY.ITY_HHPOS91,
+                   ITY.ITY_HHPOS92,
+                   ITY.ITY_HHPOS93,
+                   ITY.ITY_HHPOS94,
+                   ITY.ITY_HHPOS95,
+                   ITY.ITY_HHPOS96,
+                   ITY.ITY_HHPOS97,
+                   ITY.ITY_HHPOS98,
+                   ITY.ITY_HHPOS99,
+                   ITY.ITY_HHPOS100,
+                   ITY.ITY_HHPOS101,
+                   ITY.ITY_HHPOS102,
+                   ITY.ITY_HHPOS103,
+                   ITY.ITY_HHPOS104,
+                   ITY.ITY_HHPOS105,
+                   ITY.ITY_HHPOS106,
+                   ITY.ITY_HHPOS107,
+                   ITY.ITY_HHPOS108,
+                   ITY.ITY_HHPOS109,
+                   ITY.ITY_HHPOS110,
+                   ITY.ITY_HHPOS111,
+                   ITY.ITY_HHPOS112,
+                   ITY.ITY_HHPOS113,
+                   ITY.ITY_HHPOS114,
+                   ITY.ITY_HHPOS115,
+                   ITY.ITY_HHPOS116,
+                   ITY.ITY_HHPOS117,
+                   ITY.ITY_HHPOS118,
+                   ITY.ITY_HHPOS119,
+                   ITY.ITY_HHPOS120,
                    HHSl.HHINV_RSE_SYS_FLAG
             FROM   HHINV_HOLD_1 HHA, INV_ITEM_TYPES ITY, HHINV_SECT_LOG HHSl
             WHERE  REC_TYPE = 'C'
@@ -1776,7 +2001,52 @@ int copy_data_1()
                    ITY.ITY_HHPOS72,
                    ITY.ITY_HHPOS73,
                    ITY.ITY_HHPOS74,
-                   ITY.ITY_HHPOS75
+                   ITY.ITY_HHPOS75,
+                   ITY.ITY_HHPOS76,
+                   ITY.ITY_HHPOS77,
+                   ITY.ITY_HHPOS78,
+                   ITY.ITY_HHPOS79,
+                   ITY.ITY_HHPOS80,
+                   ITY.ITY_HHPOS81,
+                   ITY.ITY_HHPOS82,
+                   ITY.ITY_HHPOS83,
+                   ITY.ITY_HHPOS84,
+                   ITY.ITY_HHPOS85,
+                   ITY.ITY_HHPOS86,
+                   ITY.ITY_HHPOS87,
+                   ITY.ITY_HHPOS88,
+                   ITY.ITY_HHPOS89,
+                   ITY.ITY_HHPOS90,
+                   ITY.ITY_HHPOS91,
+                   ITY.ITY_HHPOS92,
+                   ITY.ITY_HHPOS93,
+                   ITY.ITY_HHPOS94,
+                   ITY.ITY_HHPOS95,
+                   ITY.ITY_HHPOS96,
+                   ITY.ITY_HHPOS97,
+                   ITY.ITY_HHPOS98,
+                   ITY.ITY_HHPOS99,
+                   ITY.ITY_HHPOS100,
+                   ITY.ITY_HHPOS101,
+                   ITY.ITY_HHPOS102,
+                   ITY.ITY_HHPOS103,
+                   ITY.ITY_HHPOS104,
+                   ITY.ITY_HHPOS105,
+                   ITY.ITY_HHPOS106,
+                   ITY.ITY_HHPOS107,
+                   ITY.ITY_HHPOS108,
+                   ITY.ITY_HHPOS109,
+                   ITY.ITY_HHPOS110,
+                   ITY.ITY_HHPOS111,
+                   ITY.ITY_HHPOS112,
+                   ITY.ITY_HHPOS113,
+                   ITY.ITY_HHPOS114,
+                   ITY.ITY_HHPOS115,
+                   ITY.ITY_HHPOS116,
+                   ITY.ITY_HHPOS117,
+                   ITY.ITY_HHPOS118,
+                   ITY.ITY_HHPOS119,
+                   ITY.ITY_HHPOS120
             FROM   HHINV_HOLD_1 HHA, INV_ITEM_TYPES ITY, HHINV_SECT_LOG HHSl
             WHERE  REC_TYPE = 'C'
             AND    SUBSTR(HHA.FULL_VALUE,1,2) = ITY.ITY_INV_CODE
@@ -1890,6 +2160,51 @@ int copy_data_1()
                             :c_pos73:ic_pos73,
                             :c_pos74:ic_pos74,
                             :c_pos75:ic_pos75,
+                            :c_pos76:ic_pos76,
+                            :c_pos77:ic_pos77,
+                            :c_pos78:ic_pos78,
+                            :c_pos79:ic_pos79,
+                            :c_pos80:ic_pos80,
+                            :c_pos81:ic_pos81,
+                            :c_pos82:ic_pos82,
+                            :c_pos83:ic_pos83,
+                            :c_pos84:ic_pos84,
+                            :c_pos85:ic_pos85,
+                            :c_pos86:ic_pos86,
+                            :c_pos87:ic_pos87,
+                            :c_pos88:ic_pos88,
+                            :c_pos89:ic_pos89,
+                            :c_pos90:ic_pos90,
+                            :c_pos91:ic_pos91,
+                            :c_pos92:ic_pos92,
+                            :c_pos93:ic_pos93,
+                            :c_pos94:ic_pos94,
+                            :c_pos95:ic_pos95,
+                            :c_pos96:ic_pos96,
+                            :c_pos97:ic_pos97,
+                            :c_pos98:ic_pos98,
+                            :c_pos99:ic_pos99,
+                            :c_pos100:ic_pos100,
+                            :c_pos101:ic_pos101,
+                            :c_pos102:ic_pos102,
+                            :c_pos103:ic_pos103,
+                            :c_pos104:ic_pos104,
+                            :c_pos105:ic_pos105,
+                            :c_pos106:ic_pos106,
+                            :c_pos107:ic_pos107,
+                            :c_pos108:ic_pos108,
+                            :c_pos109:ic_pos109,
+                            :c_pos110:ic_pos110,
+                            :c_pos111:ic_pos111,
+                            :c_pos112:ic_pos112,
+                            :c_pos113:ic_pos113,
+                            :c_pos114:ic_pos114,
+                            :c_pos115:ic_pos115,
+                            :c_pos116:ic_pos116,
+                            :c_pos117:ic_pos117,
+                            :c_pos118:ic_pos118,
+                            :c_pos119:ic_pos119,
+                            :c_pos120:ic_pos120,
                             :c_sys_flag;
   }
   else
@@ -1982,7 +2297,52 @@ int copy_data_1()
                             :c_pos72:ic_pos72,
                             :c_pos73:ic_pos73,
                             :c_pos74:ic_pos74,
-                            :c_pos75:ic_pos75;
+                            :c_pos75:ic_pos75,
+                            :c_pos76:ic_pos76,
+                            :c_pos77:ic_pos77,
+                            :c_pos78:ic_pos78,
+                            :c_pos79:ic_pos79,
+                            :c_pos80:ic_pos80,
+                            :c_pos81:ic_pos81,
+                            :c_pos82:ic_pos82,
+                            :c_pos83:ic_pos83,
+                            :c_pos84:ic_pos84,
+                            :c_pos85:ic_pos85,
+                            :c_pos86:ic_pos86,
+                            :c_pos87:ic_pos87,
+                            :c_pos88:ic_pos88,
+                            :c_pos89:ic_pos89,
+                            :c_pos90:ic_pos90,
+                            :c_pos91:ic_pos91,
+                            :c_pos92:ic_pos92,
+                            :c_pos93:ic_pos93,
+                            :c_pos94:ic_pos94,
+                            :c_pos95:ic_pos95,
+                            :c_pos96:ic_pos96,
+                            :c_pos97:ic_pos97,
+                            :c_pos98:ic_pos98,
+                            :c_pos99:ic_pos99,
+                            :c_pos100:ic_pos100,
+                            :c_pos101:ic_pos101,
+                            :c_pos102:ic_pos102,
+                            :c_pos103:ic_pos103,
+                            :c_pos104:ic_pos104,
+                            :c_pos105:ic_pos105,
+                            :c_pos106:ic_pos106,
+                            :c_pos107:ic_pos107,
+                            :c_pos108:ic_pos108,
+                            :c_pos109:ic_pos109,
+                            :c_pos110:ic_pos110,
+                            :c_pos111:ic_pos111,
+                            :c_pos112:ic_pos112,
+                            :c_pos113:ic_pos113,
+                            :c_pos114:ic_pos114,
+                            :c_pos115:ic_pos115,
+                            :c_pos116:ic_pos116,
+                            :c_pos117:ic_pos117,
+                            :c_pos118:ic_pos118,
+                            :c_pos119:ic_pos119,
+                            :c_pos120:ic_pos120;
   }
         if (sqlca.sqlcode < 0)
                 sql_err("copy_data_1(3)");
@@ -1994,6 +2354,51 @@ int copy_data_1()
      for (i = 0; i < c_count; ++i)
      {
 
+        ic_att120[i] = -1;
+        ic_att119[i] = -1;
+        ic_att118[i] = -1;
+        ic_att117[i] = -1;
+        ic_att116[i] = -1;
+        ic_att115[i] = -1;
+        ic_att114[i] = -1;
+        ic_att113[i] = -1;
+        ic_att112[i] = -1;
+        ic_att111[i] = -1;
+        ic_att110[i] = -1;
+        ic_att109[i] = -1;
+        ic_att108[i] = -1;
+        ic_att107[i] = -1;
+        ic_att106[i] = -1;
+        ic_att105[i] = -1;
+        ic_att104[i] = -1;
+        ic_att103[i] = -1;
+        ic_att102[i] = -1;
+        ic_att101[i] = -1;
+        ic_att100[i] = -1;
+        ic_att99[i] = -1;
+        ic_att98[i] = -1;
+        ic_att97[i] = -1;
+        ic_att96[i] = -1;
+        ic_att95[i] = -1;
+        ic_att94[i] = -1;
+        ic_att93[i] = -1;
+        ic_att92[i] = -1;
+        ic_att91[i] = -1;
+        ic_att90[i] = -1;
+        ic_att89[i] = -1;
+        ic_att88[i] = -1;
+        ic_att87[i] = -1;
+        ic_att86[i] = -1;
+        ic_att85[i] = -1;
+        ic_att84[i] = -1;
+        ic_att83[i] = -1;
+        ic_att82[i] = -1;
+        ic_att81[i] = -1;
+        ic_att80[i] = -1;
+        ic_att79[i] = -1;
+        ic_att78[i] = -1;
+        ic_att77[i] = -1;
+        ic_att76[i] = -1;
         ic_att75[i] = -1;
         ic_att74[i] = -1;
         ic_att73[i] = -1;
@@ -2082,8 +2487,188 @@ int copy_data_1()
 
         switch (noargs) {
 
-               default :  /* If more than 100 attributes ignore additional
+               default :  /* If more than 130 attributes ignore additional
                              attributes */ ;
+
+               case 124 : strcpy((char *)c_att120[i].arr,strs[123]);
+                         c_att120[i].len = strlen((char *)c_att120[i].arr);
+                         ic_att120[i] = 0;
+
+               case 123 : strcpy((char *)c_att119[i].arr,strs[122]);
+                         c_att119[i].len = strlen((char *)c_att119[i].arr);
+                         ic_att119[i] = 0;
+
+               case 122 : strcpy((char *)c_att118[i].arr,strs[121]);
+                         c_att118[i].len = strlen((char *)c_att118[i].arr);
+                         ic_att118[i] = 0;
+
+               case 121 : strcpy((char *)c_att117[i].arr,strs[120]);
+                         c_att117[i].len = strlen((char *)c_att117[i].arr);
+                         ic_att117[i] = 0;
+
+               case 120 : strcpy((char *)c_att116[i].arr,strs[119]);
+                         c_att116[i].len = strlen((char *)c_att116[i].arr);
+                         ic_att116[i] = 0;
+
+               case 119 : strcpy((char *)c_att115[i].arr,strs[118]);
+                         c_att115[i].len = strlen((char *)c_att115[i].arr);
+                         ic_att115[i] = 0;
+
+               case 118 : strcpy((char *)c_att114[i].arr,strs[117]);
+                         c_att114[i].len = strlen((char *)c_att114[i].arr);
+                         ic_att114[i] = 0;
+
+               case 117 : strcpy((char *)c_att113[i].arr,strs[116]);
+                         c_att113[i].len = strlen((char *)c_att113[i].arr);
+                         ic_att113[i] = 0;
+
+               case 116 : strcpy((char *)c_att112[i].arr,strs[115]);
+                         c_att112[i].len = strlen((char *)c_att112[i].arr);
+                         ic_att112[i] = 0;
+
+               case 115 : strcpy((char *)c_att111[i].arr,strs[114]);
+                         c_att111[i].len = strlen((char *)c_att111[i].arr);
+                         ic_att111[i] = 0;
+
+               case 114 : strcpy((char *)c_att110[i].arr,strs[113]);
+                         c_att110[i].len = strlen((char *)c_att110[i].arr);
+                         ic_att110[i] = 0;
+
+               case 113 : strcpy((char *)c_att109[i].arr,strs[112]);
+                         c_att109[i].len = strlen((char *)c_att109[i].arr);
+                         ic_att109[i] = 0;
+
+               case 112 : strcpy((char *)c_att108[i].arr,strs[111]);
+                         c_att108[i].len = strlen((char *)c_att108[i].arr);
+                         ic_att108[i] = 0;
+
+               case 111 : strcpy((char *)c_att107[i].arr,strs[110]);
+                         c_att107[i].len = strlen((char *)c_att107[i].arr);
+                         ic_att107[i] = 0;
+
+               case 110 : strcpy((char *)c_att106[i].arr,strs[109]);
+                         c_att106[i].len = strlen((char *)c_att106[i].arr);
+                         ic_att106[i] = 0;
+
+               case 109 : strcpy((char *)c_att105[i].arr,strs[108]);
+                         c_att105[i].len = strlen((char *)c_att105[i].arr);
+                         ic_att105[i] = 0;
+
+               case 108 : strcpy((char *)c_att104[i].arr,strs[107]);
+                         c_att104[i].len = strlen((char *)c_att104[i].arr);
+                         ic_att104[i] = 0;
+
+               case 107 : strcpy((char *)c_att103[i].arr,strs[106]);
+                         c_att103[i].len = strlen((char *)c_att103[i].arr);
+                         ic_att103[i] = 0;
+
+               case 106 : strcpy((char *)c_att102[i].arr,strs[105]);
+                         c_att102[i].len = strlen((char *)c_att102[i].arr);
+                         ic_att102[i] = 0;
+
+               case 105 : strcpy((char *)c_att101[i].arr,strs[104]);
+                         c_att101[i].len = strlen((char *)c_att101[i].arr);
+                         ic_att101[i] = 0;
+
+               case 104 : strcpy((char *)c_att100[i].arr,strs[103]);
+                         c_att100[i].len = strlen((char *)c_att100[i].arr);
+                         ic_att100[i] = 0;
+
+               case 103 : strcpy((char *)c_att99[i].arr,strs[102]);
+                         c_att99[i].len = strlen((char *)c_att99[i].arr);
+                         ic_att99[i] = 0;
+
+               case 102 : strcpy((char *)c_att98[i].arr,strs[101]);
+                         c_att98[i].len = strlen((char *)c_att98[i].arr);
+                         ic_att98[i] = 0;
+
+               case 101 : strcpy((char *)c_att97[i].arr,strs[100]);
+                         c_att97[i].len = strlen((char *)c_att97[i].arr);
+                         ic_att97[i] = 0;
+
+               case 100 : strcpy((char *)c_att96[i].arr,strs[99]);
+                         c_att96[i].len = strlen((char *)c_att96[i].arr);
+                         ic_att96[i] = 0;
+
+               case 99 : strcpy((char *)c_att95[i].arr,strs[98]);
+                         c_att95[i].len = strlen((char *)c_att95[i].arr);
+                         ic_att95[i] = 0;
+
+               case 98 : strcpy((char *)c_att94[i].arr,strs[97]);
+                         c_att94[i].len = strlen((char *)c_att94[i].arr);
+                         ic_att94[i] = 0;
+
+               case 97 : strcpy((char *)c_att93[i].arr,strs[96]);
+                         c_att93[i].len = strlen((char *)c_att93[i].arr);
+                         ic_att93[i] = 0;
+
+               case 96 : strcpy((char *)c_att92[i].arr,strs[95]);
+                         c_att92[i].len = strlen((char *)c_att92[i].arr);
+                         ic_att92[i] = 0;
+
+               case 95 : strcpy((char *)c_att91[i].arr,strs[94]);
+                         c_att91[i].len = strlen((char *)c_att91[i].arr);
+                         ic_att91[i] = 0;
+
+               case 94 : strcpy((char *)c_att90[i].arr,strs[93]);
+                         c_att90[i].len = strlen((char *)c_att90[i].arr);
+                         ic_att90[i] = 0;
+
+               case 93 : strcpy((char *)c_att89[i].arr,strs[92]);
+                         c_att89[i].len = strlen((char *)c_att89[i].arr);
+                         ic_att89[i] = 0;
+
+               case 92 : strcpy((char *)c_att88[i].arr,strs[91]);
+                         c_att88[i].len = strlen((char *)c_att88[i].arr);
+                         ic_att88[i] = 0;
+
+               case 91 : strcpy((char *)c_att87[i].arr,strs[90]);
+                         c_att87[i].len = strlen((char *)c_att87[i].arr);
+                         ic_att87[i] = 0;
+
+               case 90 : strcpy((char *)c_att86[i].arr,strs[89]);
+                         c_att86[i].len = strlen((char *)c_att86[i].arr);
+                         ic_att86[i] = 0;
+
+               case 89 : strcpy((char *)c_att85[i].arr,strs[88]);
+                         c_att85[i].len = strlen((char *)c_att85[i].arr);
+                         ic_att85[i] = 0;
+
+               case 88 : strcpy((char *)c_att84[i].arr,strs[87]);
+                         c_att84[i].len = strlen((char *)c_att84[i].arr);
+                         ic_att84[i] = 0;
+
+               case 87 : strcpy((char *)c_att83[i].arr,strs[86]);
+                         c_att83[i].len = strlen((char *)c_att83[i].arr);
+                         ic_att83[i] = 0;
+
+               case 86 : strcpy((char *)c_att82[i].arr,strs[85]);
+                         c_att82[i].len = strlen((char *)c_att82[i].arr);
+                         ic_att82[i] = 0;
+
+               case 85 : strcpy((char *)c_att81[i].arr,strs[84]);
+                         c_att81[i].len = strlen((char *)c_att81[i].arr);
+                         ic_att81[i] = 0;
+
+               case 84 : strcpy((char *)c_att80[i].arr,strs[83]);
+                         c_att80[i].len = strlen((char *)c_att80[i].arr);
+                         ic_att80[i] = 0;
+
+               case 83 : strcpy((char *)c_att79[i].arr,strs[82]);
+                         c_att79[i].len = strlen((char *)c_att79[i].arr);
+                         ic_att79[i] = 0;
+
+               case 82 : strcpy((char *)c_att78[i].arr,strs[81]);
+                         c_att78[i].len = strlen((char *)c_att78[i].arr);
+                         ic_att78[i] = 0;
+
+               case 81 : strcpy((char *)c_att77[i].arr,strs[80]);
+                         c_att77[i].len = strlen((char *)c_att77[i].arr);
+                         ic_att77[i] = 0;
+
+               case 80 : strcpy((char *)c_att76[i].arr,strs[79]);
+                         c_att76[i].len = strlen((char *)c_att76[i].arr);
+                         ic_att76[i] = 0;
 
                case 79 : strcpy((char *)c_att75[i].arr,strs[78]);
                          c_att75[i].len = strlen((char *)c_att75[i].arr);
@@ -2408,7 +2993,6 @@ int copy_data_1()
         } /* END OF FOR */
 
 
-
 if (c_count != 0)
 {
   if (rmms_flag == 3 || rmms_flag == 1 || rmms_flag == 4)
@@ -2581,6 +3165,96 @@ if (c_count != 0)
                    HHATTR74,
                    HHFLD75,
                    HHATTR75,
+                   HHFLD76,
+                   HHATTR76,
+                   HHFLD77,
+                   HHATTR77,
+                   HHFLD78,
+                   HHATTR78,
+                   HHFLD79,
+                   HHATTR79,
+                   HHFLD80,
+                   HHATTR80,
+                   HHFLD81,
+                   HHATTR81,
+                   HHFLD82,
+                   HHATTR82,
+                   HHFLD83,
+                   HHATTR83,
+                   HHFLD84,
+                   HHATTR84,
+                   HHFLD85,
+                   HHATTR85,
+                   HHFLD86,
+                   HHATTR86,
+                   HHFLD87,
+                   HHATTR87,
+                   HHFLD88,
+                   HHATTR88,
+                   HHFLD89,
+                   HHATTR89,
+                   HHFLD90,
+                   HHATTR90,
+                   HHFLD91,
+                   HHATTR91,
+                   HHFLD92,
+                   HHATTR92,
+                   HHFLD93,
+                   HHATTR93,
+                   HHFLD94,
+                   HHATTR94,
+                   HHFLD95,
+                   HHATTR95,
+                   HHFLD96,
+                   HHATTR96,
+                   HHFLD97,
+                   HHATTR97,
+                   HHFLD98,
+                   HHATTR98,
+                   HHFLD99,
+                   HHATTR99,
+                   HHFLD100,
+                   HHATTR100,
+                   HHFLD101,
+                   HHATTR101,
+                   HHFLD102,
+                   HHATTR102,
+                   HHFLD103,
+                   HHATTR103,
+                   HHFLD104,
+                   HHATTR104,
+                   HHFLD105,
+                   HHATTR105,
+                   HHFLD106,
+                   HHATTR106,
+                   HHFLD107,
+                   HHATTR107,
+                   HHFLD108,
+                   HHATTR108,
+                   HHFLD109,
+                   HHATTR109,
+                   HHFLD110,
+                   HHATTR110,
+                   HHFLD111,
+                   HHATTR111,
+                   HHFLD112,
+                   HHATTR112,
+                   HHFLD113,
+                   HHATTR113,
+                   HHFLD114,
+                   HHATTR114,
+                   HHFLD115,
+                   HHATTR115,
+                   HHFLD116,
+                   HHATTR116,
+                   HHFLD117,
+                   HHATTR117,
+                   HHFLD118,
+                   HHATTR118,
+                   HHFLD119,
+                   HHATTR119,
+                   HHFLD120,
+                   HHATTR120,
                    HHINV_ITY_SYS_FLAG)
                    VALUES
                    (:c_seq1,
@@ -2750,6 +3424,96 @@ if (c_count != 0)
                     :c_pos74:ic_pos74,
                     :c_att75:ic_att75,
                     :c_pos75:ic_pos75,
+                    :c_att76:ic_att76,
+                    :c_pos76:ic_pos76,
+                    :c_att77:ic_att77,
+                    :c_pos77:ic_pos77,
+                    :c_att78:ic_att78,
+                    :c_pos78:ic_pos78,
+                    :c_att79:ic_att79,
+                    :c_pos79:ic_pos79,
+                    :c_att80:ic_att80,
+                    :c_pos80:ic_pos80,
+                    :c_att81:ic_att81,
+                    :c_pos81:ic_pos81,
+                    :c_att82:ic_att82,
+                    :c_pos82:ic_pos82,
+                    :c_att83:ic_att83,
+                    :c_pos83:ic_pos83,
+                    :c_att84:ic_att84,
+                    :c_pos84:ic_pos84,
+                    :c_att85:ic_att85,
+                    :c_pos85:ic_pos85,
+                    :c_att86:ic_att86,
+                    :c_pos86:ic_pos86,
+                    :c_att87:ic_att87,
+                    :c_pos87:ic_pos87,
+                    :c_att88:ic_att88,
+                    :c_pos88:ic_pos88,
+                    :c_att89:ic_att89,
+                    :c_pos89:ic_pos89,
+                    :c_att90:ic_att90,
+                    :c_pos90:ic_pos90,
+                    :c_att91:ic_att91,
+                    :c_pos91:ic_pos91,
+                    :c_att92:ic_att92,
+                    :c_pos92:ic_pos92,
+                    :c_att93:ic_att93,
+                    :c_pos93:ic_pos93,
+                    :c_att94:ic_att94,
+                    :c_pos94:ic_pos94,
+                    :c_att95:ic_att95,
+                    :c_pos95:ic_pos95,
+                    :c_att96:ic_att96,
+                    :c_pos96:ic_pos96,
+                    :c_att97:ic_att97,
+                    :c_pos97:ic_pos97,
+                    :c_att98:ic_att98,
+                    :c_pos98:ic_pos98,
+                    :c_att99:ic_att99,
+                    :c_pos99:ic_pos99,
+                    :c_att100:ic_att100,
+                    :c_pos100:ic_pos100,
+                    :c_att101:ic_att101,
+                    :c_pos101:ic_pos101,
+                    :c_att102:ic_att102,
+                    :c_pos102:ic_pos102,
+                    :c_att103:ic_att103,
+                    :c_pos103:ic_pos103,
+                    :c_att104:ic_att104,
+                    :c_pos104:ic_pos104,
+                    :c_att105:ic_att105,
+                    :c_pos105:ic_pos105,
+                    :c_att106:ic_att106,
+                    :c_pos106:ic_pos106,
+                    :c_att107:ic_att107,
+                    :c_pos107:ic_pos107,
+                    :c_att108:ic_att108,
+                    :c_pos108:ic_pos108,
+                    :c_att109:ic_att109,
+                    :c_pos109:ic_pos109,
+                    :c_att110:ic_att110,
+                    :c_pos110:ic_pos110,
+                    :c_att111:ic_att111,
+                    :c_pos111:ic_pos111,
+                    :c_att112:ic_att112,
+                    :c_pos112:ic_pos112,
+                    :c_att113:ic_att113,
+                    :c_pos113:ic_pos113,
+                    :c_att114:ic_att114,
+                    :c_pos114:ic_pos114,
+                    :c_att115:ic_att115,
+                    :c_pos115:ic_pos115,
+                    :c_att116:ic_att116,
+                    :c_pos116:ic_pos116,
+                    :c_att117:ic_att117,
+                    :c_pos117:ic_pos117,
+                    :c_att118:ic_att118,
+                    :c_pos118:ic_pos118,
+                    :c_att119:ic_att119,
+                    :c_pos119:ic_pos119,
+                    :c_att120:ic_att120,
+                    :c_pos120:ic_pos120,
                     :c_sys_flag);
     }
     else
@@ -2921,7 +3685,98 @@ if (c_count != 0)
                    HHFLD74,
                    HHATTR74,
                    HHFLD75,
-                   HHATTR75)
+                   HHATTR75,
+                   HHFLD76,
+                   HHATTR76,
+                   HHFLD77,
+                   HHATTR77,
+                   HHFLD78,
+                   HHATTR78,
+                   HHFLD79,
+                   HHATTR79,
+                   HHFLD80,
+                   HHATTR80,
+                   HHFLD81,
+                   HHATTR81,
+                   HHFLD82,
+                   HHATTR82,
+                   HHFLD83,
+                   HHATTR83,
+                   HHFLD84,
+                   HHATTR84,
+                   HHFLD85,
+                   HHATTR85,
+                   HHFLD86,
+                   HHATTR86,
+                   HHFLD87,
+                   HHATTR87,
+                   HHFLD88,
+                   HHATTR88,
+                   HHFLD89,
+                   HHATTR89,
+                   HHFLD90,
+                   HHATTR90,
+                   HHFLD91,
+                   HHATTR91,
+                   HHFLD92,
+                   HHATTR92,
+                   HHFLD93,
+                   HHATTR93,
+                   HHFLD94,
+                   HHATTR94,
+                   HHFLD95,
+                   HHATTR95,
+                   HHFLD96,
+                   HHATTR96,
+                   HHFLD97,
+                   HHATTR97,
+                   HHFLD98,
+                   HHATTR98,
+                   HHFLD99,
+                   HHATTR99,
+                   HHFLD100,
+                   HHATTR100,
+                   HHFLD101,
+                   HHATTR101,
+                   HHFLD102,
+                   HHATTR102,
+                   HHFLD103,
+                   HHATTR103,
+                   HHFLD104,
+                   HHATTR104,
+                   HHFLD105,
+                   HHATTR105,
+                   HHFLD106,
+                   HHATTR106,
+                   HHFLD107,
+                   HHATTR107,
+                   HHFLD108,
+                   HHATTR108,
+                   HHFLD109,
+                   HHATTR109,
+                   HHFLD110,
+                   HHATTR110,
+                   HHFLD111,
+                   HHATTR111,  
+                   HHFLD112,
+                   HHATTR112, 
+                   HHFLD113,
+                   HHATTR113,
+                   HHFLD114,
+                   HHATTR114,                                                                         
+                   HHFLD115,
+                   HHATTR115,
+                   HHFLD116,
+                   HHATTR116,
+                   HHFLD117,
+                   HHATTR117,
+                   HHFLD118,
+                   HHATTR118,                   
+                   HHFLD119,
+                   HHATTR119,
+                   HHFLD120,
+                   HHATTR120
+                   )
                    VALUES
                    (:c_seq1,
                     :c_seq2,
@@ -3089,7 +3944,98 @@ if (c_count != 0)
                     :c_att74:ic_att74,
                     :c_pos74:ic_pos74,
                     :c_att75:ic_att75,
-                    :c_pos75:ic_pos75);
+                    :c_pos75:ic_pos75,
+                    :c_att76:ic_att76,
+                    :c_pos76:ic_pos76,
+                    :c_att77:ic_att77,
+                    :c_pos77:ic_pos77,
+                    :c_att78:ic_att78,
+                    :c_pos78:ic_pos78,
+                    :c_att79:ic_att79,
+                    :c_pos79:ic_pos79,
+                    :c_att80:ic_att80,
+                    :c_pos80:ic_pos80,
+                    :c_att81:ic_att81,
+                    :c_pos81:ic_pos81,
+                    :c_att82:ic_att82,
+                    :c_pos82:ic_pos82,
+                    :c_att83:ic_att83,
+                    :c_pos83:ic_pos83,
+                    :c_att84:ic_att84,
+                    :c_pos84:ic_pos84,
+                    :c_att85:ic_att85,
+                    :c_pos85:ic_pos85,
+                    :c_att86:ic_att86,
+                    :c_pos86:ic_pos86,
+                    :c_att87:ic_att87,
+                    :c_pos87:ic_pos87,
+                    :c_att88:ic_att88,
+                    :c_pos88:ic_pos88,
+                    :c_att89:ic_att89,
+                    :c_pos89:ic_pos89,
+                    :c_att90:ic_att90,
+                    :c_pos90:ic_pos90,
+                    :c_att91:ic_att91,
+                    :c_pos91:ic_pos91,
+                    :c_att92:ic_att92,
+                    :c_pos92:ic_pos92,
+                    :c_att93:ic_att93,
+                    :c_pos93:ic_pos93,
+                    :c_att94:ic_att94,
+                    :c_pos94:ic_pos94,
+                    :c_att95:ic_att95,
+                    :c_pos95:ic_pos95,
+                    :c_att96:ic_att96,
+                    :c_pos96:ic_pos96,
+                    :c_att97:ic_att97,
+                    :c_pos97:ic_pos97,
+                    :c_att98:ic_att98,
+                    :c_pos98:ic_pos98,
+                    :c_att99:ic_att99,
+                    :c_pos99:ic_pos99,
+                    :c_att100:ic_att100,
+                    :c_pos100:ic_pos100,
+                    :c_att101:ic_att101,
+                    :c_pos101:ic_pos101,
+                    :c_att102:ic_att102,
+                    :c_pos102:ic_pos102,
+                    :c_att103:ic_att103,
+                    :c_pos103:ic_pos103,
+                    :c_att104:ic_att104,
+                    :c_pos104:ic_pos104,
+                    :c_att105:ic_att105,
+                    :c_pos105:ic_pos105,
+                    :c_att106:ic_att106,
+                    :c_pos106:ic_pos106,
+                    :c_att107:ic_att107,
+                    :c_pos107:ic_pos107,
+                    :c_att108:ic_att108,
+                    :c_pos108:ic_pos108,
+                    :c_att109:ic_att109,
+                    :c_pos109:ic_pos109,
+                    :c_att110:ic_att110,
+                    :c_pos110:ic_pos110,
+                    :c_att111:ic_att111,
+                    :c_pos111:ic_pos111,
+                    :c_att112:ic_att112,
+                    :c_pos112:ic_pos112,
+                    :c_att113:ic_att113,
+                    :c_pos113:ic_pos113,
+                    :c_att114:ic_att114,
+                    :c_pos114:ic_pos114,
+                    :c_att115:ic_att115,
+                    :c_pos115:ic_pos115,
+                    :c_att116:ic_att116,
+                    :c_pos116:ic_pos116,
+                    :c_att117:ic_att117,
+                    :c_pos117:ic_pos117,
+                    :c_att118:ic_att118,
+                    :c_pos118:ic_pos118,
+                    :c_att119:ic_att119,
+                    :c_pos119:ic_pos119,
+                    :c_att120:ic_att120,
+                    :c_pos120:ic_pos120
+                    );
     }
         if (sqlca.sqlcode < 0)
                 sql_err("copy_data_1(4)");
