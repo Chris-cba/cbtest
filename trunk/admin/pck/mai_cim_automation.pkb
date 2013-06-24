@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.8   Oct 13 2011 11:14:44   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.9   Jun 24 2013 09:29:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Oct 13 2011 11:14:44  $
---       Date fetched Out : $Modtime:   Oct 13 2011 11:14:52  $
---       Version          : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jun 24 2013 09:29:18  $
+--       Date fetched Out : $Modtime:   Jun 24 2013 08:38:20  $
+--       Version          : $Revision:   3.9  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.8  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.9  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -150,9 +150,12 @@ IS
               l_msg := 'Loading file '||pi_file_name||' failed '|| l_ih_rec.ih_error;
               l_failed := 'Y' ;
           END IF ;
-      ELSE    
-          l_msg :=     'Error while loading file '||pi_file_name;
-          l_failed := 'Y' ;
+      ELSE  
+          IF l_error IS NOT NULL	
+          THEN		  
+             l_msg :=     'Error while loading file '||pi_file_name;
+             l_failed := 'Y' ;
+		  END IF;
       END IF ;      
       hig_process_api.log_it(pi_process_id   => l_process_id
                             ,pi_message      => l_msg
