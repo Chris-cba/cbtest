@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.34   Aug 16 2011 14:16:58   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.35   Jun 24 2013 09:28:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Aug 16 2011 14:16:58  $
---       Date fetched Out : $Modtime:   Aug 15 2011 09:19:40  $
---       SCCS Version     : $Revision:   2.34  $
+--       Date into SCCS   : $Date:   Jun 24 2013 09:28:54  $
+--       Date fetched Out : $Modtime:   Jun 24 2013 08:36:58  $
+--       SCCS Version     : $Revision:   2.35  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.34  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.35  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -3355,6 +3355,8 @@ PROCEDURE completion_file_ph1( p_contractor_id    IN varchar2
   l_invalid_filename varchar2(250) := 'Error: Filename invalid. Check the ZEROPAD product option. File: '||l_filename;
   invalid_file     EXCEPTION;
   invalid_filename EXCEPTION;
+  l_details_ok     VARCHAR2(1);
+
   
 l_count number := 0;
 l_auto_load    Boolean := FALSE;
@@ -3399,7 +3401,12 @@ BEGIN
                               ,l_record
                               ,l_error);
 
-                email_errors(l_ih_id,'WC');--email section for future use
+                -- emailing now covered by alerts clb 24062013 email_errors(l_ih_id,'WC');--email section for future use
+   			    check_details_ok(l_ih_id, 'WC', l_details_ok);
+                IF l_details_ok != 'Y'
+				THEN
+				   p_error := 'Errors encountered';
+				END IF;
                 close_lines(l_ih_id);--complete work order lines
             END IF;
 
