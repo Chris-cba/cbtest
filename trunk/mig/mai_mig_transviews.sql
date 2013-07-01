@@ -4,15 +4,15 @@ REM
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai_mig_transviews.sql-arc   2.0   Jun 13 2007 16:46:24   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai_mig_transviews.sql-arc   2.1   Jul 01 2013 16:00:06   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_mig_transviews.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:46:24  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:45:44  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:06  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:28:26  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.8
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 CREATE OR REPLACE FORCE VIEW INV_ITEMS_ALL
@@ -57,7 +57,7 @@ SELECT
 --       SCCS Version     : 1.8
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
           iit_date_created iit_created_date, iit_start_date iit_cre_date
         , inv.iit_ne_id iit_item_id, itt.ity_inv_code iit_ity_inv_code
@@ -748,7 +748,7 @@ CREATE OR REPLACE FORCE VIEW INV_ITEMS
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID, IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, 
  IIT_LAST_UPDATED_DATE, IIT_RSE_HE_ID, IIT_ST_CHAIN, IIT_ANGLE, IIT_ANGLE_TXT, 
@@ -800,7 +800,7 @@ CREATE OR REPLACE FORCE VIEW INV_ITEM_TYPES
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (ITY_DTP_FLAG, ITY_ELEC_DRAIN_CARR, ITY_INV_CODE, ITY_PNT_OR_CONT, ITY_SYS_FLAG, 
  ITY_X_SECT_ALLOW_FLAG, ITY_CONTIGUOUS, ITY_DESCR, ITY_DUPLICATE, ITY_FEA_CODE, 
@@ -974,7 +974,7 @@ CREATE OR REPLACE FORCE VIEW INV_TYPE_ATTRIBS
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (ITA_ATTRIB_NAME, ITA_DEC_PLACES, ITA_DYNAMIC_ATTRIB, ITA_FLD_LENGTH, ITA_FORMAT, 
  ITA_IIT_INV_CODE, ITA_ITY_SYS_FLAG, ITA_MANDITORY_YN, ITA_SCRN_TEXT, ITA_VALIDATE_YN, 
@@ -1028,7 +1028,7 @@ SELECT
 --       SCCS Version     : 1.8
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ----------------------------------------------------------------------------- 
 ity_inv_code  icr_category, 
 itr_hro_role icr_role, 
@@ -1053,7 +1053,7 @@ SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
  col_id,
  ity_inv_code
@@ -1075,7 +1075,7 @@ SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 iit_created_date iih_created_date,
 iit_item_id iih_item_id,
@@ -1105,7 +1105,7 @@ CREATE OR REPLACE FORCE VIEW INV_ATTRI_DOMAINS
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (IAD_ITA_ATTRIB_NAME, IAD_ITA_INV_CODE, IAD_ITA_ITY_SYS_FLAG, IAD_VALUE, IAD_DTP_CODE, 
  IAD_MEANING, IAD_START_DATE, IAD_END_DATE)
@@ -1145,7 +1145,7 @@ SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
  1,'1',1
 FROM dual
@@ -1166,7 +1166,7 @@ nou_pus_node_id, nou_chainage, nou_node_type ) AS SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
         nnu.nnu_ne_id
        ,no.no_node_name
@@ -1201,7 +1201,7 @@ SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
  no_node_name,
 no_np_id,
@@ -1232,7 +1232,7 @@ AS SELECT
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 np_id, np_descr, np_grid_east, np_grid_north
 FROM nm_points;
@@ -1251,7 +1251,7 @@ create or replace view ROAD_TYPES as
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
        select GTY_GROUP_TYPE
              ,GTY_DESCR
@@ -1304,7 +1304,7 @@ create or replace view section_classes
 -----------------------------------------------------------------------------
 --   Originally taken from 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 as select decode( substr(NSC_NW_TYPE,1,1), 'D', 'T', 'C') SCL_ROAD_CAT,
                   NSC_SUB_CLASS SCL_SECT_CLASS,
@@ -1338,7 +1338,7 @@ CREATE OR REPLACE FORCE VIEW UNITS
 --       SCCS Version     : 1.8
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (UN_DOMAIN_ID, UN_UNIT_ID, UN_UNIT_NAME, UN_FORMAT_MASK)
 AS
@@ -1359,7 +1359,7 @@ CREATE OR REPLACE VIEW inv_type_colours
 --       SCCS Version     : 1.8
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 (col_id, ity_inv_code) AS
 select col_id

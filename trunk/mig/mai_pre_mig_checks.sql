@@ -1,5 +1,5 @@
-REM Copyright (c) Exor Corporation Ltd, 2004
-REM @(#)$Header:   //vm_latest/archives/mai/mig/mai_pre_mig_checks.sql-arc   2.0   Jun 13 2007 16:46:24   smarshall  $
+REM Copyright 2013 Bentley Systems Incorporated. All rights reserved.
+REM @(#)$Header:   //vm_latest/archives/mai/mig/mai_pre_mig_checks.sql-arc   2.1   Jul 01 2013 16:00:06   James.Wadsworth  $
 
 set echo off
 set linesize 120
