@@ -5,16 +5,16 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_mai_policy.sql-arc   3.1   Sep 22 2011 12:34:58   Rob.Coupe  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_mai_policy.sql-arc   3.2   Jul 01 2013 15:47:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   drop_mai_policy.sql  $
---       Date into PVCS   : $Date:   Sep 22 2011 12:34:58  $
---       Date fetched Out : $Modtime:   Sep 22 2011 12:34:08  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 --   Drop MAI security policies
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2001
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
   CURSOR cs_policies_to_drop (c_owner VARCHAR2)

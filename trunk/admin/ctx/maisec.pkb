@@ -2,11 +2,11 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.3   Sep 27 2011 11:43:36   Rob.Coupe  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkb-arc   3.4   Jul 01 2013 15:47:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   maisec.pkb  $
---       Date into PVCS   : $Date:   Sep 27 2011 11:43:36  $
---       Date fetched Out : $Modtime:   Sep 27 2011 11:41:44  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 --   Author : Mike Huitson
 --
@@ -14,10 +14,10 @@ CREATE OR REPLACE PACKAGE BODY maisec AS
 --
 --
 ------------------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------------------------
 --
-  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.3  $';
+  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   3.4  $';
   --
   g_package_name  CONSTANT varchar2(30) := 'maisec';
   --

@@ -1,14 +1,14 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_process_policy.sql-arc   1.1   Nov 19 2012 15:11:44   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_process_policy.sql-arc   1.2   Jul 01 2013 15:47:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   drop_process_policy.sql  $
---       Date into SCCS   : $Date:   Nov 19 2012 15:11:44  $
---       Date fetched Out : $Modtime:   Nov 19 2012 15:11:30  $
---       SCCS Version     : $Revision:   1.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       SCCS Version     : $Revision:   1.2  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) Bentley Systems 2012
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 declare

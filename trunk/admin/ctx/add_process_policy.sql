@@ -1,13 +1,13 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_process_policy.sql-arc   1.1   Jan 11 2013 14:17:24   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_process_policy.sql-arc   1.2   Jul 01 2013 15:47:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   add_process_policy.sql  $
---       Date into SCCS   : $Date:   Jan 11 2013 14:17:24  $
---       Date fetched Out : $Modtime:   Jan 11 2013 14:16:26  $
---       SCCS Version     : $Revision:   1.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       SCCS Version     : $Revision:   1.2  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) Bentley Systems 2012
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
@@ -16,7 +16,7 @@ SET SERVEROUTPUT ON SIZE 1000000
 DECLARE
 --
 -----------------------------------------------------------------------------
---	Copyright (c) Bentley Systems 2012
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
    l_tab_policy_name     nm3type.tab_varchar30;

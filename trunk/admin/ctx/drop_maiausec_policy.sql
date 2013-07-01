@@ -1,14 +1,14 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_maiausec_policy.sql-arc   1.1   Nov 20 2012 10:05:46   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/drop_maiausec_policy.sql-arc   1.2   Jul 01 2013 15:47:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   drop_maiausec_policy.sql  $
---       Date into SCCS   : $Date:   Nov 20 2012 10:05:46  $
---       Date fetched Out : $Modtime:   Nov 20 2012 10:05:34  $
---       SCCS Version     : $Revision:   1.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       SCCS Version     : $Revision:   1.2  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) Bentley Systems 2012
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 declare
