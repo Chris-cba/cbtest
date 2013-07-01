@@ -2,15 +2,15 @@
 --
 --   Pvcs Identifiers :-
 --
---       Pvcsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix1.sql-arc   3.1   Nov 25 2010 09:59:00   Mike.Alexander  $
+--       Pvcsid           : $Header:   //vm_latest/archives/mai/install/mai_4300_fix1.sql-arc   3.2   Jul 01 2013 16:01:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_4300_fix1.sql  $
---       Date Into Pvcs   : $Date:   Nov 25 2010 09:59:00  $
---       Date Fetched Out : $Modtime:   Nov 25 2010 09:58:26  $
---       Pvcs Version     : $Revision:   3.1  $
+--       Date Into Pvcs   : $Date:   Jul 01 2013 16:01:48  $
+--       Date Fetched Out : $Modtime:   Jul 01 2013 14:32:42  $
+--       Pvcs Version     : $Revision:   3.2  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (C) Exor Corporation Ltd, 2010
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 set echo off

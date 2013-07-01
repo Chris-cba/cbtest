@@ -2,14 +2,14 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4210_fix1_metadata_upg.sql-arc   3.0   Aug 04 2010 11:53:26   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4210_fix1_metadata_upg.sql-arc   3.1   Jul 01 2013 16:01:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_4210_fix1_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Aug 04 2010 11:53:26  $
---       Date fetched Out : $Modtime:   Aug 04 2010 11:53:10  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:01:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:42  $
+--       PVCS Version     : $Revision:   3.1  $
 --
 --------------------------------------------------------------------------------
---   Copyright (c) exor corporation ltd, 2010
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --------------------------------------------------------------------------------
 --
 /*
