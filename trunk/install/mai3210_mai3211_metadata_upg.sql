@@ -3,17 +3,17 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai3210_mai3211_metadata_upg.sql-arc   2.0   Jun 13 2007 16:32:36   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai3210_mai3211_metadata_upg.sql-arc   2.1   Jul 01 2013 16:02:18   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai3210_mai3211_metadata_upg.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:36  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:02:18  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --   Product upgrade script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2005
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --
