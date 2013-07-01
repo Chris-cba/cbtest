@@ -1,0 +1,239 @@
+REM Copyright 2013 Bentley Systems Incorporated. All rights reserved.
+REM @(#)$Header:   //vm_latest/archives/mai/install/maidata.par-arc   2.1   Jul 01 2013 16:03:32   James.Wadsworth  $
+
+maidata1---------------------------------------------------------------------
+maidata1-- maidata1.sql
+maidata1---------------------------------------------------------------------
+maidata1--
+maidata1-- This script populates mandatory data for maintenance manager.
+maidata1-- The data is actually stored in core Highways tables.
+maidata1--
+maidata1-- This data must exist in order for certain modules to function.
+maidata1-- The script must always be run during new installations.
+maidata1-- The script may also be run during upgrades, to insert records 
+maidata1-- which do not already exist.
+maidata1--
+maidata1-- Users may perform limited updates on this data.
+maidata1-- Descriptions may be amended, however codes should not be amended
+maidata1-- without consulting Exor Support.
+maidata1--
+maidata1-- OWNER=MAIDATA31
+maidata1-- MODE=APPEND
+maidata1--
+maidata1-- The following tables will be populated (do NOT amend the sequence) :
+maidata1--
+maidata1-->HIG_PRODUCTS
+maidata1-->NM_ERRORS
+maidata1-->HIG_DOMAINS
+maidata1-->HIG_CODES
+maidata1-->HIG_MODULES
+maidata1-->HIG_OPTIONS
+maidata1-->HIG_STATUS_DOMAINS
+maidata1-->HIG_STATUS_CODES
+maidata1---------------------------------------------------------------------
+
+
+
+
+maidata2---------------------------------------------------------------------
+maidata2-- maidata2.sql
+maidata2---------------------------------------------------------------------
+maidata2--
+maidata2-- This script populates core highways and maintenance manager 
+maidata2-- tables with mandatory data for maintenance manager.
+maidata2--
+maidata2-- This data must exist in order for certain modules to function.
+maidata2-- The script must always be run during new installations.
+maidata2-- The script may also be run during upgrades, to refresh existing
+maidata2-- data with new values.
+maidata2--
+maidata2-- Users may NOT update any of this data.
+maidata2--
+maidata2-- OWNER=MAIDATA31
+maidata2-- MODE=REFRESH
+maidata2--
+maidata2-- The following tables will be populated (do NOT amend the sequence) :
+maidata2--
+maidata2-->GRI_MODULES
+maidata2-->GRI_PARAMS
+maidata2-->GRI_MODULE_PARAMS
+maidata2-->GRI_PARAM_DEPENDENCIES
+maidata2-->GRI_PARAM_LOOKUP
+maidata2-->LOAD_ERRORS
+maidata2---------------------------------------------------------------------
+
+
+
+
+maidata3---------------------------------------------------------------------
+maidata3-- maidata3.sql
+maidata3---------------------------------------------------------------------
+maidata3--
+maidata3-- This script populates core Highways tables with mandatory data.
+maidata3--
+maidata3-- This data must exist in order for the menu security to function.
+maidata3-- The script must always be run during new installations.
+maidata3-- The script may also be run during upgrades, to insert records 
+maidata3-- which do not already exist.
+maidata3--
+maidata3-- It is recommended that users adopt this data where possible,
+maidata3-- in order to simplify implementation and support.
+maidata3-- Users who wish to define their own roles must amend this script
+maidata3-- to define whether forms should run normal or query_only.
+maidata3--
+maidata3--
+maidata3-- OWNER=MAIDATA31
+maidata3-- MODE=APPEND
+maidata3--
+maidata3-- The following tables will be populated (do NOT amend the sequence) :
+maidata3--
+maidata3-->HIG_ROLES
+maidata3-->HIG_MODULE_ROLES
+maidata3---------------------------------------------------------------------
+
+
+
+
+maidata4---------------------------------------------------------------------
+maidata4-- maidata4.sql
+maidata4---------------------------------------------------------------------
+maidata4--
+maidata4-- This script populates mandatory data for structural projects.
+maidata4-- The data is stored in maintenance manager tables.
+maidata4--
+maidata4-- The script must always be run during new installations.
+maidata4-- The script may also be run during upgrades, to insert records 
+maidata4-- which do not already exist.
+maidata4--
+maidata4-- Users must NOT update the inventory codes, because they are
+maidata4-- referenced from within the STP modules.
+maidata4-- Users may create additional xsp records, as appropriate.
+maidata4--
+maidata4-- *******************************************************************
+maidata4-- Note: THIS GENERATED SCRIPT NEEDS EDITING MANUALLY BEFORE SHIPPING
+maidata4-- It accepts &1 to denote Network Type
+maidata4--
+maidata4-- Therefore the SET DEFINE OFF statement must replaced with SET DEFINE ON
+maidata4-- *******************************************************************
+maidata4--
+maidata4-- OWNER=MAIDATA31
+maidata4-- MODE=APPEND
+maidata4--
+maidata4-- The following tables will be populated (do NOT amend the sequence) :
+maidata4--
+maidata4-->COLOUR_LAYER_MAP
+maidata4-->NM_INV_DOMAINS_ALL
+maidata4-->NM_INV_TYPES_ALL
+maidata4-->NM_INV_ATTRI_LOOKUP_ALL
+maidata4-->NM_INV_TYPE_ATTRIBS_ALL
+maidata4-->INV_TYPE_TRANSLATIONS
+
+maidata4--SQL>set define on
+maidata4---------------------------------------------------------------------
+
+
+
+
+maidata5---------------------------------------------------------------------
+maidata5-- maidata5.sql
+maidata5---------------------------------------------------------------------
+maidata5--
+maidata5-- This script populates maint. manager tables with dummy startup data.
+maidata5--
+maidata5-- It is recommended that this script be run during new installations,
+maidata5-- to simplify the implementation.
+maidata5-- The script should not normally be run during upgrades.
+maidata5--
+maidata5-- OWNER=MAIDATA31
+maidata5-- MODE=APPEND
+maidata5--
+maidata5-- The following tables will be populated (do NOT amend the sequence) :
+maidata5--
+maidata5-->FINANCIAL_YEARS
+maidata5-->HHINV_RUN_LOG
+maidata5-->JOB_SIZES
+maidata5-->STANDARD_ITEM_SECTIONS
+maidata5-->STANDARD_ITEM_SUB_SECTIONS
+maidata5-->VAT_RATES
+maidata5-->DOC_TEMPLATE_GATEWAYS
+maidata5-->DOC_TEMPLATE_COLUMNS
+maidata5-->WO_AUDIT_COLUMNS
+maidata5-->HIG_HD_MODULES
+maidata5-->HIG_HD_MOD_USES
+maidata5-->HIG_HD_LOOKUP_JOIN_DEFS
+maidata5-->HIG_HD_LOOKUP_JOIN_COLS
+maidata5-->HIG_HD_SELECTED_COLS
+maidata5-->HIG_HD_JOIN_DEFS
+maidata5-->HIG_HD_TABLE_JOIN_COLS
+maidata5---------------------------------------------------------------------
+
+
+
+maidata6---------------------------------------------------------------------
+maidata6-- maidata6.sql
+maidata6---------------------------------------------------------------------
+maidata6--
+maidata6-- This script populates core highways and maintenance manager 
+maidata6-- tables with mandatory data for maintenance manager.
+maidata6--
+maidata6-- This data must exist in order for certain modules to function.
+maidata6-- The script must always be run during new installations.
+maidata6-- The script may also be run during upgrades, to refresh existing
+maidata6-- data with new values.
+maidata6--
+maidata6-- Users may NOT update any of this data.
+maidata6--
+maidata6-- OWNER=MAIDATA31
+maidata6-- MODE=REFRESH
+maidata6--
+maidata6-- The following tables will be populated (do NOT amend the sequence) :
+maidata6--
+maidata6-->DOC_GATEWAYS
+maidata6-->DOC_GATE_SYNS
+maidata6---------------------------------------------------------------------
+
+
+
+
+maidata7---------------------------------------------------------------------
+maidata7-- maidata7.sql
+maidata7---------------------------------------------------------------------
+maidata7--
+maidata7-- This script populates maintenance manager tables with DoT data.
+maidata7-- This data is mandated by DoT for all English trunk road systems.
+maidata7--
+maidata7-- The script must always be run during new installations in England.
+maidata7-- The script may also be run during upgrades, to refresh existing
+maidata7-- data with new values.
+maidata7-- The script may provide useful startup data for international sites.
+maidata7--
+maidata7-- DoT Users may NOT update any of this data.
+maidata7--
+maidata7-- OWNER=MAIDATA31_DOT
+maidata7-- MODE=REFRESH
+maidata7--
+maidata7-- The following tables will be populated (do NOT amend the sequence) :
+maidata7--
+maidata7-->ACTIVITIES
+maidata7-->ACTIVITY_GROUPS
+maidata7-->ACT_GROUP_MEMBS
+maidata7-->SECTION_CLASSES
+maidata7-->INTERVALS
+maidata7-->ACT_FREQS
+maidata7-->DEFECT_PRIORITIES
+maidata7-->DEF_TYPES
+maidata7-->TREATMENTS
+maidata7-->DEF_TREATS
+maidata7-->NM_INV_DOMAINS_ALL
+maidata7-->NM_INV_TYPES_ALL
+maidata7-->NM_INV_ATTRI_LOOKUP_ALL
+maidata7-->NM_INV_TYPE_ATTRIBS_ALL
+maidata7-->INV_TYPE_TRANSLATIONS
+maidata7-->ITEM_CODE_BREAKDOWNS
+maidata7-->IHMS_CONVERSIONS
+maidata7-->VALID_FOR_MAINTENANCE
+maidata7-->NM_NW_XSP
+maidata7-->NM_XSP_RESTRAINTS
+maidata7-->NM_XSP_REVERSAL
+maidata7---------------------------------------------------------------------
+
