@@ -5,15 +5,15 @@ CREATE OR REPLACE PACKAGE mai_priority AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkh-arc   1.1   Jan 09 2013 13:45:10   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkh-arc   1.2   Jul 01 2013 16:25:58   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_priority.pkh  $
---       Date into PVCS   : $Date:   Jan 09 2013 13:45:10  $
---       Date fetched Out : $Modtime:   Jan 09 2013 13:45:12  $
---       PVCS Version     : $Revision:   1.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:58  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:22:08  $
+--       PVCS Version     : $Revision:   1.2  $
 --
------------------------------------------------------------------------------
---      Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --</PACKAGE>
 --
 --
@@ -29,7 +29,7 @@ TYPE dpr_tab IS TABLE OF defect_priorities%ROWTYPE INDEX BY binary_integer;
 --</TYPE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   1.1  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   1.2  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
   

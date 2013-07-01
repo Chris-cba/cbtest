@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.5   May 25 2010 14:49:18   cbaugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkh-arc   3.6   Jul 01 2013 16:25:58   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkh  $
---       Date into PVCS   : $Date:   May 25 2010 14:49:18  $
---       Date fetched Out : $Modtime:   May 25 2010 14:43:28  $
---       PVCS Version     : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:58  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:21:58  $
+--       PVCS Version     : $Revision:   3.6  $
 --
 -----------------------------------------------------------------------------
 --      Copyright (c) exor corporation ltd, 2009
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE mai_inspection_loader AS
 --</PACKAGE>
 --<GLOBVAR>
   --
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.6  $';
   g_application_owner  VARCHAR2(30);
   --
 --</GLOBVAR>

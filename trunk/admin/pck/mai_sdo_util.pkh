@@ -4,17 +4,17 @@ IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.2   Oct 11 2010 20:27:42   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.3   Jul 01 2013 16:25:58   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_sdo_util.pkh  $
---       Date into SCCS   : $Date:   Oct 11 2010 20:27:42  $
---       Date fetched Out : $Modtime:   Oct 11 2010 20:10:22  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:58  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.7
 --
 --   Author : A. Edwards
 --
 -----------------------------------------------------------------------------
---   Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
    g_sccsid   CONSTANT VARCHAR2 (80) := '@(#)mai_sdo_util.pkh	1.7 05/08/07';

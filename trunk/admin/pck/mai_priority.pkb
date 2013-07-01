@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_priority AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkb-arc   1.1   Jan 09 2013 13:45:54   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_priority.pkb-arc   1.2   Jul 01 2013 16:25:58   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_priority.pkb  $
---       Date into PVCS   : $Date:   Jan 09 2013 13:45:54  $
---       Date fetched Out : $Modtime:   Jan 09 2013 13:45:30  $
---       PVCS Version     : $Revision:   1.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:58  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:21:58  $
+--       PVCS Version     : $Revision:   1.2  $
 --
------------------------------------------------------------------------------
---  Copyright (c) exor corporation ltd, 2007
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   1.1  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   1.2  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_priority';
 --
 TYPE admin_unit_tab IS TABLE OF nm_admin_units_all.nau_admin_unit%TYPE;
