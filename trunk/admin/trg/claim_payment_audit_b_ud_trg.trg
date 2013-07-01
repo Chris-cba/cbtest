@@ -1,11 +1,14 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/claim_payment_audit_b_ud_trg.trg-arc   2.0   Jun 13 2007 16:23:02   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/claim_payment_audit_b_ud_trg.trg-arc   2.1   Jul 01 2013 15:52:50   James.Wadsworth  $
 --       Module Name      : $Workfile:   claim_payment_audit_b_ud_trg.trg  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:23:02  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:22:42  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:52:50  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:01:52  $
+--       SCCS Version     : $Revision:   2.1  $
 --       
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER CLAIM_PAYMENT_AUDIT_B_UD_TRG
 BEFORE DELETE OR UPDATE
 ON CLAIM_PAYMENTS
