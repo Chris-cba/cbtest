@@ -2,17 +2,17 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai3120_mai3130.sql-arc   2.0   Jun 13 2007 16:32:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai3120_mai3130.sql-arc   2.1   Jul 01 2013 16:02:16   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai3120_mai3130.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:34  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:02:16  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --   Product upgrade script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2004
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --
