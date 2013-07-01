@@ -1,14 +1,14 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.9   Mar 23 2011 10:40:56   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.10   Jul 01 2013 16:02:12   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   Mar 23 2011 10:40:56  $
---       Date fetched Out : $Modtime:   Mar 23 2011 10:31:22  $
---       PVCS Version     : $Revision:   2.9  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       PVCS Version     : $Revision:   2.10  $
 --
 -----------------------------------------------------------------------------
--- Copyright (c) exor corporation ltd, 2009
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 -- Generated for Oracle 10g on Tue Jun 01  10:38:38 2010 by Server Generator 10.1.2.9.28

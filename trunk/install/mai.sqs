@@ -3,14 +3,14 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.4   May 05 2010 14:14:38   mhuitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.sqs-arc   2.5   Jul 01 2013 16:02:12   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai.sqs  $
---       Date into PVCS   : $Date:   May 05 2010 14:14:38  $
---       Date fetched Out : $Modtime:   May 05 2010 14:12:26  $
---       PVCS Version     : $Revision:   2.4  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       PVCS Version     : $Revision:   2.5  $
 --
 -----------------------------------------------------------------------------
--- Copyright (c) exor corporation ltd, 2009
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 -- Generated for Oracle 10g on Wed May 05  14:04:31 2010 by Server Generator 10.1.2.9.28

@@ -1,14 +1,14 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.30   Sep 21 2012 17:23:30   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.31   Jul 01 2013 16:02:12   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Sep 21 2012 17:23:30  $
---       Date fetched Out : $Modtime:   Sep 21 2012 17:22:10  $
---       PVCS Version     : $Revision:   2.30  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       PVCS Version     : $Revision:   2.31  $
 --
 -----------------------------------------------------------------------------
--- Copyright (c) exor corporation ltd, 2009
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 -- Generated for Oracle 10g on Fri Sep 21  17:08:07 2012 by Server Generator 10.1.2.9.28

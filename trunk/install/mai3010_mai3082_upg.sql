@@ -1,5 +1,5 @@
 --
-define sccsid = '$Revision:   2.0  $'
+define sccsid = '$Revision:   2.1  $'
 spool mai3082_upg.LOG
 --
 --get some db info

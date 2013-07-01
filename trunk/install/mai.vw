@@ -1,5 +1,5 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '$Revision:   2.0  $';
+define sccsid = '$Revision:   2.1  $';
 --
 -- Generated for Oracle 8 on Tue Mar 30  13:12:43 2004 by Server Generator 6.0.3.3.0
  
