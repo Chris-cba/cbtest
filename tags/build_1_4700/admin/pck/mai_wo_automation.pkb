@@ -1,0 +1,392 @@
+CREATE OR REPLACE PACKAGE BODY mai_wo_automation
+AS
+-------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkb-arc   3.5   Jul 01 2013 16:32:42   James.Wadsworth  $
+--       Module Name      : $Workfile:   mai_wo_automation.pkb  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:32:42  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:31:48  $
+--       Version          : $Revision:   3.5  $
+--       Based on SCCS version : 
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
+--
+--all global package variables here
+
+  -----------
+  --constants
+  -----------
+  --g_body_sccsid is the SCCS ID for the package body
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.5  $';
+
+  g_package_name CONSTANT varchar2(30) := 'mai_wo_automation' ;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN varchar2 IS
+BEGIN
+   RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_rse (pi_rse_he_id IN nm_elements.ne_id%TYPE)
+RETURN road_segs%ROWTYPE
+IS
+--
+   CURSOR c_get_rse
+   IS
+   SELECT *
+   FROM   road_segs 
+   WHERE  rse_he_id = pi_rse_he_id;
+   l_rse_rec road_segs%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_get_rse;
+   FETCH c_get_rse INTO l_rse_rec;
+   CLOSE c_get_rse;
+
+   Return l_rse_rec;   
+--
+END get_rse;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_bud_details(pi_bud_id IN budgets.bud_id%TYPE)
+Return g_bud_rec%TYPE  
+IS 
+--
+   CURSOR c_bud
+   IS
+   SELECT icb_work_code
+         ,icb_work_category_name
+         ,bud_sys_flag
+         ,bud_rse_he_id
+         ,bud_fyr_id
+         ,icb_id
+   FROM   Budgets
+         ,item_code_breakdowns
+   WHERE  icb_dtp_flag = bud_sys_flag
+   AND    icb_item_code = bud_icb_item_code  
+   AND    icb_sub_item_code = bud_icb_sub_item_code  
+   AND    icb_sub_sub_item_code = bud_icb_sub_sub_item_code
+   AND    DECODE(hig.get_sysopt('ICBFGAC'),'Y',icb_agency_code,bud_agency) = bud_agency
+   AND    bud_id = pi_bud_id ;
+   l_bud_rec g_bud_rec%TYPE;
+--
+BEGIN
+--
+   OPEN  c_bud;
+   FETCH c_bud INTO l_bud_rec;
+   CLOSE c_bud ;   
+
+   Return l_bud_rec;
+--
+END get_bud_details;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_con(pi_con_id IN contracts.con_id%TYPE)
+Return   contracts%ROWTYPE
+IS
+--
+   CURSOR c_con
+   IS
+   SELECT *
+   FROM   contracts 
+   WHERE  con_id = pi_con_id;
+   l_con_rec contracts%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_con;
+   FETCH c_con INTO l_con_rec;
+   CLOSE c_con;
+
+   Return l_con_rec ;
+--
+END  get_con;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_atv(pi_atv_acty_code IN Varchar2)
+Return   activities%ROWTYPE
+IS
+--
+   CURSOR c_atv
+   IS
+   SELECT *
+   FROM   activities 
+   WHERE  atv_acty_area_code = pi_atv_acty_code;
+   l_atv_rec activities%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_atv;
+   FETCH c_atv INTO l_atv_rec;
+   CLOSE c_atv;
+
+   Return l_atv_rec ;
+--
+END  get_atv;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_dty(pi_dty_code IN Varchar2)
+Return   def_types%ROWTYPE
+IS
+--
+   CURSOR c_dty
+   IS
+   SELECT *
+   FROM   def_types
+   WHERE  dty_defect_code = pi_dty_code;
+   l_dty_rec def_types%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_dty;
+   FETCH c_dty INTO l_dty_rec;
+   CLOSE c_dty;
+
+   Return l_dty_rec ;
+--
+END  get_dty;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_siss(pi_siss_id IN standard_item_sub_sections.siss_id%TYPE)
+Return   standard_item_sub_sections%ROWTYPE
+IS
+--
+   CURSOR c_siss
+   IS
+   SELECT *
+   FROM   standard_item_sub_sections
+   WHERE  siss_id = pi_siss_id;
+   l_siss_rec standard_item_sub_sections%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_siss;
+   FETCH c_siss INTO l_siss_rec;
+   CLOSE c_siss;
+
+   Return l_siss_rec ;
+--
+END  get_siss;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_tre(pi_tre_code IN Varchar2)
+Return   treatments%ROWTYPE
+IS
+--
+   CURSOR c_tre
+   IS
+   SELECT *
+   FROM   treatments
+   WHERE  tre_treat_code = pi_tre_code;
+   l_tre_rec treatments%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_tre;
+   FETCH c_tre INTO l_tre_rec;
+   CLOSE c_tre;
+
+   Return l_tre_rec ;
+--
+END  get_tre;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION check_detail_exists(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
+Return   Boolean
+IS
+--
+   l_cnt Number ;
+--
+BEGIN
+--
+   SELECT Count(0)
+   INTO   l_cnt
+   FROM   mai_auto_wo_rule_criteria
+   WHERE  mawc_mawr_id  = pi_mawr_id ;
+
+   Return Nvl(l_cnt,0) > 0; 
+--
+END check_detail_exists;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE delete_criteria(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
+IS
+BEGIN
+--
+   DELETE 
+   FROM   mai_auto_wo_rule_criteria
+   WHERE  mawc_mawr_id = pi_mawr_id;
+--
+END delete_criteria;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE copy_rule(pi_mawr_id IN  mai_auto_wo_rules.mawr_id%TYPE
+                   ,po_mawr_id OUT mai_auto_wo_rules.mawr_id%TYPE)
+IS
+--
+   l_mawr_id mai_auto_wo_rules.mawr_id%TYPE;
+--
+BEGIN
+--
+   SELECT mawr_id_seq.nextval
+   INTO   l_mawr_id 
+   FROM   dual;
+   
+   INSERT INTO mai_auto_wo_rules 
+          (mawr_id
+          ,mawr_name
+          ,mawr_descr
+          ,mawr_admin_unit
+          ,mawr_road_group_id
+          ,mawr_scheme_type
+          ,mawr_bud_id
+          ,mawr_con_id
+          ,mawr_aggregate_repairs
+          ,mawr_start_date
+          ,mawr_end_date
+          ,mawr_enabled)
+   SELECT l_mawr_id 
+         ,mawr_name
+         ,mawr_descr
+         ,mawr_admin_unit
+         ,mawr_road_group_id
+         ,mawr_scheme_type
+         ,mawr_bud_id
+         ,mawr_con_id
+         ,mawr_aggregate_repairs
+         ,mawr_start_date
+         ,mawr_end_date
+         ,mawr_enabled
+   FROM   mai_auto_wo_rules
+   WHERE  mawr_id = pi_mawr_id ;
+   
+  INSERT INTO mai_auto_wo_rule_criteria 
+         (mawc_id
+         ,mawc_mawr_id
+         ,mawc_atv_acty_area_code
+         ,mawc_dty_defect_code
+         ,mawc_priority
+         ,mawc_def_siss_id
+         ,mawc_include_temp_repair
+         ,mawc_include_perm_repair
+         ,mawc_tre_treat_code
+         ,mawc_auto_instruct
+         ,mawc_enabled) 
+   SELECT mawc_id_seq.nextval
+         ,l_mawr_id
+         ,mawc_atv_acty_area_code
+         ,mawc_dty_defect_code
+         ,mawc_priority
+         ,mawc_def_siss_id
+         ,mawc_include_temp_repair
+         ,mawc_include_perm_repair
+         ,mawc_tre_treat_code
+         ,mawc_auto_instruct
+         ,mawc_enabled 
+  FROM   mai_auto_wo_rule_criteria
+  WHERE  mawc_mawr_id  = pi_mawr_id ;
+
+   po_mawr_id := l_mawr_id ;
+--
+END copy_rule;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION duplicate_rule(pi_mawr_rec IN mai_auto_wo_rules%ROWTYPE)
+RETURN BOOLEAN
+IS
+--
+   l_cnt Number;
+--
+BEGIN
+--
+   SELECT Count(0)
+   INTO   l_cnt
+   FROM   mai_auto_wo_rules
+   WHERE  mawr_admin_unit           = pi_mawr_rec.mawr_admin_unit
+   AND    Nvl(mawr_road_group_id,0) = Nvl(pi_mawr_rec.mawr_road_group_id,0)
+   AND    mawr_start_date           = pi_mawr_rec.mawr_start_date
+   AND    mawr_scheme_type          = pi_mawr_rec.mawr_scheme_type
+   AND    mawr_bud_id               = pi_mawr_rec.mawr_bud_id
+   AND    mawr_con_id               = pi_mawr_rec.mawr_con_id   
+   AND    mawr_id                  != pi_mawr_rec.mawr_id ;
+
+   RETURN Nvl(l_cnt,0) > 0 ;
+--
+END duplicate_rule;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_mawr(pi_mawr_id IN mai_auto_wo_rules.mawr_id%TYPE)
+Return   mai_auto_wo_rules%ROWTYPE
+IS
+--
+   CURSOR c_mawr 
+   IS
+   SELECT *
+   FROM   mai_auto_wo_rules
+   WHERE  mawr_id = pi_mawr_id;
+   l_mawr_rec mai_auto_wo_rules%ROWTYPE;   
+--
+BEGIN
+--
+   OPEN  c_mawr;
+   FETCH c_mawr INTO l_mawr_rec;
+   CLOSE c_mawr;
+
+   RETURN l_mawr_rec; 
+--
+END get_mawr;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_fyr(pi_fyr_id IN financial_years.fyr_id%TYPE)
+Return   financial_years%ROWTYPE
+IS
+--
+   CURSOR c_fyr
+   IS
+   SELECT *
+   FROM   financial_years
+   WHERE  fyr_id = pi_fyr_id ;
+   l_fyr_rec financial_years%ROWTYPE;
+--
+BEGIN
+--
+   OPEN  c_fyr;
+   FETCH c_fyr INTO l_fyr_rec;
+   CLOSE c_fyr;
+
+   Return l_fyr_rec ;
+--
+END get_fyr;
+--
+-----------------------------------------------------------------------------
+--
+END mai_wo_automation;
+/
+
+
+
