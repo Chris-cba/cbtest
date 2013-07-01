@@ -3,24 +3,24 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.35   Jun 24 2013 09:28:54   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.36   Jul 01 2013 16:25:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jun 24 2013 09:28:54  $
---       Date fetched Out : $Modtime:   Jun 24 2013 08:36:58  $
---       SCCS Version     : $Revision:   2.35  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:42  $
+--       SCCS Version     : $Revision:   2.36  $
 --       Based on SCCS Version     : 1.37
 --
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)interfaces.pck    1.26 08/19/03'
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2003
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 -- global, private variables
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.35  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.36  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 

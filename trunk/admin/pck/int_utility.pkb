@@ -3,16 +3,16 @@ CREATE OR REPLACE package body int_utility is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/int_utility.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/int_utility.pkb-arc   2.1   Jul 01 2013 16:25:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   int_utility.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:42  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 -- Originally taken from '@(#)intutil.pck	1.1 01/27/99'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 function get_field(string  varchar2, field_no number) RETURN varchar2 is

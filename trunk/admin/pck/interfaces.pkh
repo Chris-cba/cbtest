@@ -6,21 +6,21 @@ CREATE OR REPLACE PACKAGE interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.5   Mar 02 2011 15:42:42   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.6   Jul 01 2013 16:25:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   interfaces.pkh  $
---       Date into SCCS   : $Date:   Mar 02 2011 15:42:42  $
---       Date fetched Out : $Modtime:   Feb 22 2011 14:42:20  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:42  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on SCCS Version     : 1.16
 ----
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)interfaces.pck	1.26 08/19/03'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.5  $"';
+    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.6  $"';
     g_file_handle             utl_file.file_type ;
     extract_filename 		varchar2(2000);
 --</GLOBVAR>
