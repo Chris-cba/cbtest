@@ -2,13 +2,15 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/utl/ReportDefect.sql-arc   1.0   Mar 09 2011 18:11:06   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/utl/ReportDefect.sql-arc   1.1   Jul 01 2013 15:54:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   ReportDefect.sql  $
---       Date into PVCS   : $Date:   Mar 09 2011 18:11:06  $
---       Date fetched Out : $Modtime:   Mar 09 2011 14:02:50  $
---       PVCS Version     : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:54:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:03:34  $
+--       PVCS Version     : $Revision:   1.1  $
 --
---------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
 SET SERVEROUTPUT ON
 SET TIMING ON

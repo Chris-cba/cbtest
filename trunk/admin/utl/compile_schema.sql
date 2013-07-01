@@ -1,11 +1,14 @@
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/utl/compile_schema.sql-arc   2.1   Jan 07 2008 10:08:12   jwadsworth  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/utl/compile_schema.sql-arc   2.2   Jul 01 2013 15:54:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   compile_schema.sql  $
---       Date into PVCS   : $Date:   Jan 07 2008 10:08:12  $
---       Date fetched Out : $Modtime:   Jan 07 2008 10:04:30  $
---       PVCS Version     : $Revision:   2.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:54:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:03:12  $
+--       PVCS Version     : $Revision:   2.2  $
 --       Based on SCCS version : 
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 
 set verify off
 set head off

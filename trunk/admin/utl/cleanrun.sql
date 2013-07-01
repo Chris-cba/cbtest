@@ -1,12 +1,15 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/utl/cleanrun.sql-arc   2.0   Jun 13 2007 16:29:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/utl/cleanrun.sql-arc   2.1   Jul 01 2013 15:54:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   cleanrun.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:29:34  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:29:14  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:54:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:03:00  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
 undefine run_number
 col run_number new_value run_number noprint

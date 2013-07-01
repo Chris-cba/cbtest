@@ -1,5 +1,7 @@
 REM SCCS ID Keyword, do no remove
-define sccsid = '$Revision:   2.0  $';
+REM Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+
+define sccsid = '$Revision:   2.1  $';
 delete from hhinv_run_log;
 insert into hhinv_run_log (fst_run_date,
                            lst_run_date,
