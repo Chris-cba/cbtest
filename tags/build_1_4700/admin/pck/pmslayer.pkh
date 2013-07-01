@@ -1,0 +1,69 @@
+CREATE OR REPLACE PACKAGE PMSLAYER AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pmslayer.pkh-arc   2.1   Jul 01 2013 16:26:54   James.Wadsworth  $
+--       Module Name      : $Workfile:   pmslayer.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)pmslayer.pck	1.1 10/02/97'
+-----------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+/*
+Title 	:	Generic dimension functions for Structural Projects.
+Purpose	:	This package contains SQL Selectable functions to calculate
+		dimensions associated with road XSP's.  The functions will
+		return Max Chainage length,Max Depth and Chainage Start Point
+		for a given XSP in a given Road seg.
+
+Author	:	I Smith
+Date	:	Sept 1997
+-----------------------------------------------------------------------------
+Mod Hist:	None
+*/
+-----------------------------------------------------------------------------
+--<PROC NAME="MaxChainageLength">
+--
+     FUNCTION MaxChainageLength(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	                          XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+     RETURN NUMBER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="MaxXSPDepth">
+--
+    FUNCTION MaxXSPDepth(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	     	           XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+    RETURN NUMBER;	     	           
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ChainageStart">
+--
+    FUNCTION ChainageStart(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	                     XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+    RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--<PRAGMA>
+    PRAGMA RESTRICT_REFERENCES(MaxChainageLength,WNDS,WNPS);
+    PRAGMA RESTRICT_REFERENCES(MaxXSPDepth,WNDS,WNPS);
+    PRAGMA RESTRICT_REFERENCES(ChainageStart,WNDS,WNPS);
+--</PRAGMA>
+-----------------------------------------------------------------------------
+END PMSLAYER;
+/
