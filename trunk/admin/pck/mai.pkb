@@ -4,23 +4,23 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.33   Feb 25 2013 15:23:46   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.34   Jul 01 2013 16:26:46   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Feb 25 2013 15:23:46  $
---       Date fetched Out : $Modtime:   Feb 25 2013 15:24:34  $
---       SCCS Version     : $Revision:   2.33  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:46  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:18:42  $
+--       SCCS Version     : $Revision:   2.34  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai.pck 1.35 05/08/03'
------------------------------------------------------------------------------
---  Copyright (c) exor corporation ltd, 2002
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.33  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.34  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';

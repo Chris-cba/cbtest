@@ -5,11 +5,11 @@ AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.8   May 10 2012 13:56:54   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkb-arc   2.9   Jul 01 2013 16:26:46   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai2110c.pkb  $
---       Date into PVCS   : $Date:   May 10 2012 13:56:54  $
---       Date fetched Out : $Modtime:   May 10 2012 12:20:08  $
---       PVCS Version     : $Revision:   2.8  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:46  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       PVCS Version     : $Revision:   2.9  $
 --       Based on SCCS version :
 --
 --
@@ -18,7 +18,7 @@ AS
 --   mai2110c body
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
@@ -26,7 +26,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.8  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.9  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai2110c';
   --
