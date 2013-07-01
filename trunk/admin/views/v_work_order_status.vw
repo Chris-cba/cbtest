@@ -8,12 +8,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.4   Jul 26 2010 17:00:24   cbaugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.5   Jul 01 2013 15:55:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_work_order_status.vw  $
---       Date into PVCS   : $Date:   Jul 26 2010 17:00:24  $
---       Date fetched Out : $Modtime:   Jul 15 2010 08:00:58  $
---       Version          : $Revision:   3.4  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:26:08  $
+--       Version          : $Revision:   3.5  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        wor.wor_works_order_no wor_works_order_no
       ,NVL(wos.wor_status,(SELECT hsc_status_code --DRAFT
