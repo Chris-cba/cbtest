@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/imf_mai_install.sql-arc   3.0   Mar 13 2009 14:31:32   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/imf_mai_install.sql-arc   3.1   Jul 01 2013 16:00:24   James.Wadsworth  $
 --       Module Name      : $Workfile:   imf_mai_install.sql  $
---       Date into PVCS   : $Date:   Mar 13 2009 14:31:32  $
---       Date fetched Out : $Modtime:   Mar 13 2009 14:31:04  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:00:24  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       Version          : $Revision:   3.1  $
 --       Based on SCCS version : 
 -------------------------------------------------------------------------
 --

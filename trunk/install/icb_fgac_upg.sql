@@ -2,11 +2,11 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/icb_fgac_upg.sql-arc   2.0   Jun 13 2007 16:32:32   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/icb_fgac_upg.sql-arc   2.1   Jul 01 2013 16:00:24   James.Wadsworth  $
 --       Module Name      : $Workfile:   icb_fgac_upg.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:32  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:24  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       SCCS Version     : $Revision:   2.1  $
 --       based on SCCS Version     : 1.1
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)icb_fgac_upg.sql	1.3 06/20/03';

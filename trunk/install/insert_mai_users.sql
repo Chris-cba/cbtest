@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/insert_mai_users.sql-arc   2.0   May 06 2011 11:46:04   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/insert_mai_users.sql-arc   2.1   Jul 01 2013 16:00:24   James.Wadsworth  $
 --       Module Name      : $Workfile:   insert_mai_users.sql  $
---       Date into SCCS   : $Date:   May 06 2011 11:46:04  $
---       Date fetched Out : $Modtime:   May 06 2011 11:41:00  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:24  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
 --   Author : M Huitson
@@ -17,7 +17,7 @@
 --    Creates a record in the table mai_users for each user defined in hig_users
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2011
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 INSERT
   INTO mai_users
