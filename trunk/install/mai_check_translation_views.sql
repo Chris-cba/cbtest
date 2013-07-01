@@ -6,11 +6,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_check_translation_views.sql-arc   2.0   Jun 13 2007 16:32:32   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_check_translation_views.sql-arc   2.1   Jul 01 2013 16:01:56   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_check_translation_views.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:32  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:01:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:44  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -19,7 +19,7 @@ DECLARE
 --   MAI Translation View checking script
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2006
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 /*
