@@ -4,18 +4,18 @@ AS
  --
  --   PVCS Identifiers :-
  --
- --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.9   Jul 28 2010 15:00:20   cbaugh  $
+ --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3863.pkb-arc   2.10   Jul 01 2013 16:26:48   James.Wadsworth  $
  --       Module Name      : $Workfile:   mai3863.pkb  $
- --       Date into SCCS   : $Date:   Jul 28 2010 15:00:20  $
- --       Date fetched Out : $Modtime:   Jul 28 2010 14:19:28  $
- --       SCCS Version     : $Revision:   2.9  $
+ --       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
+ --       Date fetched Out : $Modtime:   Jul 01 2013 16:19:14  $
+ --       SCCS Version     : $Revision:   2.10  $
  --       Based on SCCS Version     : 1.3
  --
  -----------------------------------------------------------------------------
  --   Originally taken from '@(#)mai3863.pck    @(#)mai3863.pck 1.31 08/05/02';
- -----------------------------------------------------------------------------
- -- Copyright (c) exor corporation ltd, 2002
- -----------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
   
   -- sscanlon fix 709407 12SEP2007 
   -- Please search for 'sscanlon fix 709407 12SEP2007' throughout this 

@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkh-arc   1.6   Nov 28 2012 09:50:10   Rob.Coupe  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkh-arc   1.7   Jul 01 2013 16:26:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkh  $
---       Date into SCCS   : $Date:   Nov 28 2012 09:50:10  $
---       Date fetched Out : $Modtime:   Nov 28 2012 09:49:46  $
---       SCCS Version     : $Revision:   1.6  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   1.7  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) Bentley Systems 2012
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
-g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   1.6  $';
+g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   1.7  $';
 
   FUNCTION get_version RETURN VARCHAR2;
 --

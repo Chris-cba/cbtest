@@ -4,11 +4,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.4   Jan 12 2010 11:52:38   mhuitson  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.5   Jul 01 2013 16:26:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai2110c.pkh  $
---       Date into PVCS   : $Date:   Jan 12 2010 11:52:38  $
---       Date fetched Out : $Modtime:   Jan 11 2010 15:28:12  $
---       PVCS Version     : $Revision:   2.4  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       PVCS Version     : $Revision:   2.5  $
 --       Based on SCCS version :
 --
 --
@@ -17,7 +17,7 @@ AS
 --   mai2110c
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
@@ -26,7 +26,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.4  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.5  $"';
   TYPE hhinv_load_3_rec
     IS RECORD(rec_seq_no                 hhinv_load_3.rec_seq_no               %TYPE
              ,iit_he_id                  hhinv_load_3.he_id                    %TYPE

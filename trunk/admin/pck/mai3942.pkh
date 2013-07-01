@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE mai3942 AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3942.pkh-arc   2.0   Oct 22 2008 17:34:50   smarshall  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai3942.pkh-arc   2.1   Jul 01 2013 16:26:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai3942.pkh  $
---       Date into PVCS   : $Date:   Oct 22 2008 17:34:50  $
---       Date fetched Out : $Modtime:   Oct 22 2008 16:25:02  $
---       PVCS Version     : $Revision:   2.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       PVCS Version     : $Revision:   2.1  $
 --
 --
 --   Author : S Marshall
@@ -16,7 +16,7 @@ CREATE OR REPLACE PACKAGE mai3942 AS
 --   Package for 716903 fix for drd urgently required.
 --
 -----------------------------------------------------------------------------
---   Copyright (c) exor corporation ltd, 2001
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>

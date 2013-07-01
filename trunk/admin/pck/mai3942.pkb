@@ -3,14 +3,14 @@ CREATE OR REPLACE PACKAGE BODY MAI3942 AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai3942.pkb-arc   2.0   Oct 22 2008 17:34:52   smarshall  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/pck/mai3942.pkb-arc   2.1   Jul 01 2013 16:26:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai3942.pkb  $
---       Date into PVCS   : $Date:   Oct 22 2008 17:34:52  $
---       Date fetched Out : $Modtime:   Oct 22 2008 17:01:56  $
---       PVCS Version     : $Revision:   2.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       PVCS Version     : $Revision:   2.1  $
 
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY MAI3942 AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.0  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.1  $"';
 
   g_package_name CONSTANT varchar2(30) := 'MAI3942';
 --
