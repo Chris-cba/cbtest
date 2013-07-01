@@ -4,12 +4,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/def_rep_treat_wo.vw-arc   3.0   Nov 05 2009 10:35:06   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/def_rep_treat_wo.vw-arc   3.1   Jul 01 2013 15:55:02   James.Wadsworth  $
 --       Module Name      : $Workfile:   def_rep_treat_wo.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:06  $
---       Date fetched Out : $Modtime:   Nov 04 2009 15:53:38  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:02  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:08:32  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        def_defect_id
      , def_atv_acty_area_code
