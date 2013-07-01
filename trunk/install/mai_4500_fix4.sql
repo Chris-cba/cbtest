@@ -2,14 +2,14 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix4.sql-arc   3.1   May 10 2012 17:23:58   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_4500_fix4.sql-arc   3.2   Jul 01 2013 16:01:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_4500_fix4.sql  $
---       Date into PVCS   : $Date:   May 10 2012 17:23:58  $
---       Date fetched Out : $Modtime:   May 10 2012 17:17:34  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:01:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:42  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 --------------------------------------------------------------------------------
---   Copyright (c) 2012 Bentley Systems Incorporated.
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --------------------------------------------------------------------------------
 --
 set echo off
