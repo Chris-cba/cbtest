@@ -8,14 +8,14 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.13   Jul 01 2013 16:03:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Oct 30 2009 09:55:32  $
---       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
---       Version          : $Revision:   1.12  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
+--       Version          : $Revision:   1.13  $
 --
 ------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 
 SET ECHO OFF
 SET LINESIZE 120
@@ -342,15 +342,15 @@ CREATE OR REPLACE FORCE VIEW inv_items_all_section
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.12   Oct 30 2009 09:55:32   malexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_ddl_upg.sql-arc   1.13   Jul 01 2013 16:03:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4052_mai4100_ddl_upg.sql  $
---       Date into SCCS   : $Date:   Oct 30 2009 09:55:32  $
---       Date fetched Out : $Modtime:   Oct 30 2009 09:54:26  $
---       SCCS Version     : $Revision:   1.12  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:03:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
+--       SCCS Version     : $Revision:   1.13  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
   (IIT_CREATED_DATE, IIT_CRE_DATE, IIT_ITEM_ID,
   IIT_ITY_INV_CODE, IIT_ITY_SYS_FLAG, IIT_LAST_UPDATED_DATE,

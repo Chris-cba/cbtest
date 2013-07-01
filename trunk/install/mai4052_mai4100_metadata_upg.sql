@@ -8,14 +8,14 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.5   Oct 22 2009 15:36:36   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4052_mai4100_metadata_upg.sql-arc   3.6   Jul 01 2013 16:03:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4052_mai4100_metadata_upg.sql  $
---       Date into PVCS   : $Date:   Oct 22 2009 15:36:36  $
---       Date fetched Out : $Modtime:   Oct 22 2009 15:35:52  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
+--       Version          : $Revision:   3.6  $
 --
 ------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 
 SET ECHO OFF
 SET LINESIZE 120
