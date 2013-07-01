@@ -5,11 +5,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/check_mai_table_columns.sql-arc   2.0   Jun 13 2007 16:32:32   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/check_mai_table_columns.sql-arc   2.1   Jul 01 2013 16:00:22   James.Wadsworth  $
 --       Module Name      : $Workfile:   check_mai_table_columns.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:32  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:22  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:32  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.3
 --
 --
@@ -17,7 +17,7 @@ DECLARE
 --
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
  TYPE rec_cols IS RECORD (table_name VARCHAR2(30)
