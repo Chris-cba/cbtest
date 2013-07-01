@@ -2,12 +2,14 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.10   Nov 23 2012 17:46:08   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.11   Jul 01 2013 15:54:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into PVCS   : $Date:   Nov 23 2012 17:46:08  $
---       Date fetched Out : $Modtime:   Nov 23 2012 17:15:26  $
---       Version          : $Revision:   2.10  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:54:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 15:54:10  $
+--       Version          : $Revision:   2.11  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
 --
 SET ECHO OFF
