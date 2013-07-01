@@ -5,19 +5,19 @@ CREATE OR REPLACE PACKAGE mai_user AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_users.pkh-arc   3.0   Feb 24 2011 17:56:12   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_users.pkh-arc   3.1   Jul 01 2013 16:26:02   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_users.pkh  $
---       Date into PVCS   : $Date:   Feb 24 2011 17:56:12  $
---       Date fetched Out : $Modtime:   Feb 14 2011 12:36:30  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:02  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:22:50  $
+--       PVCS Version     : $Revision:   3.1  $
 --
------------------------------------------------------------------------------
---      Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.0  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.1  $';
 --</GLOBVAR>
 --
 -----------------------------------------------------------------------------
