@@ -3,21 +3,21 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.8   Jan 30 2013 18:34:20   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/pedif.pkb-arc   3.9   Jul 01 2013 16:26:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   pedif.pkb  $
---       Date into PVCS   : $Date:   Jan 30 2013 18:34:20  $
---       Date fetched Out : $Modtime:   Jan 30 2013 18:27:20  $
---       Version          : $Revision:   3.8  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:26:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       Version          : $Revision:   3.9  $
 --       Based on SCCS version :
 -------------------------------------------------------------------------
--- Copyright (c) exor corporation ltd, 2010
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -------------------------------------------------------------------------
 --all global package variables here
 -----------
 --constants
 -----------
 --g_body_sccsid is the SCCS ID for the package body
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.8  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   3.9  $';
 g_package_name  CONSTANT VARCHAR2(30) := 'pedif';
 --
 -- sscanlon fix 709407 12SEP2007

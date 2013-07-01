@@ -4,20 +4,20 @@ as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkb-arc   2.2   Nov 18 2010 17:52:36   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/wo_budget_check.pkb-arc   2.3   Jul 01 2013 16:26:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   wo_budget_check.pkb  $
---       Date into SCCS   : $Date:   Nov 18 2010 17:52:36  $
---       Date fetched Out : $Modtime:   Nov 18 2010 17:51:06  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based onSCCS Version     : 1.3
 --
 -----------------------------------------------------------------------------
 --   Originally taken from @(#)wo_budget_check.pck	1.1 03/26/02
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
 g_package_name  CONSTANT  varchar2(30)   := 'wo_budget_check';
 --
 -----------------------------------------------------------------------------

@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY PMSLAYER AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pmslayer.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pmslayer.pkb-arc   2.1   Jul 01 2013 16:26:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   pmslayer.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)pmslayer.pck	1.1 10/02/97'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 	FUNCTION ChainageStart(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,

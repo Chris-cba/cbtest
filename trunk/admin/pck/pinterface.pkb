@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.2   Jun 20 2012 15:34:50   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.3   Jul 01 2013 16:26:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   pinterface.pkb  $
---       Date into SCCS   : $Date:   Jun 20 2012 15:34:50  $
---       Date fetched Out : $Modtime:   Jun 14 2012 16:35:26  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)pinterface.pck	1.3 05/18/99'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
   --
   debug          boolean:=TRUE;
