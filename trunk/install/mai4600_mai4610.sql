@@ -3,16 +3,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4600_mai4610.sql-arc   1.0   Jan 09 2013 10:32:36   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4600_mai4610.sql-arc   1.1   Jul 01 2013 16:03:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4600_mai4610.sql  $
---       Date into PVCS   : $Date:   Jan 09 2013 10:32:36  $
---       Date fetched Out : $Modtime:   Jan 07 2013 15:10:26  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
+--       Version          : $Revision:   1.1  $
 --
 --   Product upgrade script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2013
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 undefine exor_base
 undefine run_file

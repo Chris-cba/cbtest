@@ -3,16 +3,16 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.3   Sep 25 2009 14:00:58   malexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata_install.sql-arc   2.4   Jul 01 2013 16:03:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   maidata_install.sql  $
---       Date into PVCS   : $Date:   Sep 25 2009 14:00:58  $
---       Date fetched Out : $Modtime:   Sep 25 2009 14:00:32  $
---       Version          : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:42  $
+--       Version          : $Revision:   2.4  $
 --
 --   Product upgrade script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 set echo off
