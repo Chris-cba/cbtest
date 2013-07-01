@@ -15,14 +15,14 @@ SELECT
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3856_woc.vw-arc   3.0   Jul 25 2011 09:17:20   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3856_woc.vw-arc   3.1   Jul 01 2013 15:55:30   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_mai3856_woc.vw  $
---       Date into PVCS   : $Date:   Jul 25 2011 09:17:20  $
---       Date fetched Out : $Modtime:   Jul 25 2011 09:14:42  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:30  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:04:42  $
+--       Version          : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2011
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
         woc_claim_ref

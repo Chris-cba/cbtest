@@ -5,12 +5,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai_users.vw-arc   3.0   Feb 24 2011 18:08:44   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai_users.vw-arc   3.1   Jul 01 2013 15:55:30   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_mai_users.vw  $
---       Date into PVCS   : $Date:   Feb 24 2011 18:08:44  $
---       Date fetched Out : $Modtime:   Feb 16 2011 12:19:48  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:30  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:21:00  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        mus_user_id
       ,hus_name

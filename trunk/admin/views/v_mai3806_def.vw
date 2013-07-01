@@ -71,12 +71,14 @@ SELECT  /*+ FIRST_ROWS_N */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.5   Apr 07 2011 11:33:14   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3806_def.vw-arc   3.6   Jul 01 2013 15:55:30   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_mai3806_def.vw  $
---       Date into PVCS   : $Date:   Apr 07 2011 11:33:14  $
---       Date fetched Out : $Modtime:   Apr 07 2011 11:32:40  $
---       Version          : $Revision:   3.5  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:30  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:22:16  $
+--       Version          : $Revision:   3.6  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        are_date_work_done
       ,are_batch_id
