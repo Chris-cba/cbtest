@@ -6,11 +6,11 @@ DECLARE
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/a_i_hus_mai.trg-arc   3.1   Feb 24 2011 18:05:14   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/a_i_hus_mai.trg-arc   3.2   Jul 01 2013 15:52:48   James.Wadsworth  $
 --       Module Name      : $Workfile:   a_i_hus_mai.trg  $
---       Date into PVCS   : $Date:   Feb 24 2011 18:05:14  $
---       Date fetched Out : $Modtime:   Feb 24 2011 18:04:52  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:52:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.2  $
 -------------------------------------------------------------------------
 --
 --   TRIGGER A_I_HUS_MAI
@@ -20,7 +20,7 @@ DECLARE
 --  Created During the MAI Install to maintain records in the table MAI_USERS.
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2001
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 BEGIN
