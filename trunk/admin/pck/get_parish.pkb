@@ -20,13 +20,16 @@ RETURN VARCHAR IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/get_parish.pkb-arc   2.0   Jun 13 2007 17:36:48   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/get_parish.pkb-arc   2.1   Jul 01 2013 16:32:44   James.Wadsworth  $
 --       Module Name      : $Workfile:   get_parish.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:48  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:32:44  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:30:02  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 ******************************************************************************/
 
   CURSOR c1( parcode IN NM_INV_ATTRI_LOOKUP_ALL.ial_value%TYPE)

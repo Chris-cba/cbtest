@@ -3,14 +3,16 @@ CREATE OR REPLACE PACKAGE BODY Blackburn AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.2   Jun 20 2012 15:34:46   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.3   Jul 01 2013 16:32:44   James.Wadsworth  $
 --       Module Name      : $Workfile:   blackburn.pkb  $
---       Date into SCCS   : $Date:   Jun 20 2012 15:34:46  $
---       Date fetched Out : $Modtime:   Jun 14 2012 16:45:48  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:32:44  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:29:04  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.2
 --
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
   Type sections_tabtype is table of varchar2(150) index by binary_integer;
   Type exor_load_table  is table of varchar2(150) index by binary_integer;
