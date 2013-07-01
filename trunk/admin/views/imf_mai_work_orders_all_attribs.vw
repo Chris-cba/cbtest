@@ -238,13 +238,15 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_orders_all_attribs.vw-arc   3.0   Aug 13 2010 10:54:40   Mike.Huitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_orders_all_attribs.vw-arc   3.1   Jul 01 2013 15:55:24   James.Wadsworth  $
        --       Module Name      : $Workfile:   imf_mai_work_orders_all_attribs.vw  $
-       --       Date into PVCS   : $Date:   Aug 13 2010 10:54:40  $
-       --       Date fetched Out : $Modtime:   Aug 12 2010 17:34:42  $
-       --       Version          : $Revision:   3.0  $
+       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:24  $
+       --       Date fetched Out : $Modtime:   Jul 01 2013 14:13:54  $
+       --       Version          : $Revision:   3.1  $
        -- Foundation view displaying maintenance manager work orders
-       -------------------------------------------------------------------------
+       ------------------------------------------------------------------
+       --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+       ------------------------------------------------------------------
        wor_works_order_no                           works_order_number
       ,wor_descr                                    works_order_description
       ,(SELECT wor_status
