@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkw.sql-arc   2.0   Jun 13 2007 16:32:40   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkw.sql-arc   2.1   Jul 01 2013 16:03:40   James.Wadsworth  $
 --       Module Name      : $Workfile:   maipkw.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:40  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:03:40  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:42  $
+--       SCCS Version     : $Revision:   2.1  $
 --       based on SCCS Version     : 1.3
 --
 -----------------------------------------------------------------------------
 -- Originally taken from '@(#)maipck.sql	1.22 11/27/02'
 -----------------------------------------------------------------------------
--- Copyright (c) 2003 exor corporation.
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --
 -- This script creates all package wrapped bodies for the Maintenance Manager product.
 -- It should be executed during upgrades and new installations.
