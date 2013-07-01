@@ -1,0 +1,104 @@
+create or replace package mairepl as
+--<PACKAGE>
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairepl.pkh-arc   2.1   Jul 01 2013 16:26:52   James.Wadsworth  $
+--       Module Name      : $Workfile:   mairepl.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on SCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+---
+--	This package contains procedures and functions which are required by
+--	the Replace / UnReplace processes within Network Manager.
+--
+--      Maintenance Manager specific functionality can be found here, whilst
+--      product specific functionality can be found in separate packages.
+--      eg Structures specific logic can be found in STRREPL.PCK .
+--
+--  Originally taken from '@(#)mairepl.pck 1.13 01/11/02';
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--**** REPLACE PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_data">
+  procedure check_data
+	(p_rse_he_id_1	  in number,   	-- section to replace
+	 p_rse_he_id_2	  in number,	-- link to replace into
+	 p_sect_no   	  in varchar2, 	-- new section to replace into
+	 p_effective_date   in date, 	      -- effective date of replace
+	 p_errors    	  in out number,
+	 p_error_string	  in out varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="replace_data">
+  procedure replace_data
+	(p_rse_he_id_new    in number,      -- new section
+	 p_rse_he_id	  in number,	-- section replaced
+	 p_effective_date   in date);    	-- effective date of replace
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-----------------------------------------------------------------------------
+--**** UNREPLACE PROCEDURES *****
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_data_unreplace">
+  procedure check_data_unreplace
+	  (p_id       	  in number,	-- rse_he_id to be unreplaced
+	   p_actioned_date  in varchar2,
+	   p_errors    	  in out number,
+	   p_error_string   in out varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="unreplace_data">
+  procedure unreplace_data
+	(p_id_orig    	in number,		-- section to be unreplaced
+	 p_id_del       	in number,		-- section to be deleted
+	 p_history_date 	in date);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version,  WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+end mairepl;
+/
