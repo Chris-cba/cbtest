@@ -6,15 +6,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/works_order_fgac.trg-arc   3.0   Nov 05 2009 11:18:48   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/works_order_fgac.trg-arc   3.1   Jul 01 2013 15:53:20   James.Wadsworth  $
 --       Module Name      : $Workfile:   works_order_fgac.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:48  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:17:00  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:53:20  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.1  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2009
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
    --

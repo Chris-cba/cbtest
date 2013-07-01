@@ -6,18 +6,18 @@ FOR EACH ROW
 ----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/wol_register_iud_trg.trg-arc   2.0   Jun 13 2007 16:23:02   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/wol_register_iud_trg.trg-arc   2.1   Jul 01 2013 15:53:20   James.Wadsworth  $
 --       Module Name      : $Workfile:   wol_register_iud_trg.trg  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:23:02  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:22:42  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:53:20  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --   Add details of wol to a global pl/sql table that is processed by 
 --   trigger wol_register_as_trg
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
 

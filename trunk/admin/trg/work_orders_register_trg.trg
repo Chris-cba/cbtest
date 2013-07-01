@@ -5,18 +5,18 @@ FOR EACH ROW
 ----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/work_orders_register_trg.trg-arc   2.0   Jun 13 2007 16:23:02   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/work_orders_register_trg.trg-arc   2.1   Jul 01 2013 15:53:20   James.Wadsworth  $
 --       Module Name      : $Workfile:   work_orders_register_trg.trg  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:23:02  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:22:42  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:53:20  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
 --
 --   WORK_ORDERS trigger to update wor_register_status depending on the value of the flag
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2006
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
 
