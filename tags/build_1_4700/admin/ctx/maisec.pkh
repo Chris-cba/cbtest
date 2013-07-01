@@ -1,0 +1,91 @@
+CREATE OR REPLACE PACKAGE maisec AS
+--
+------------------------------------------------------------------------------------
+--
+--<PACKAGE>
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/ctx/maisec.pkh-arc   3.1   Jul 01 2013 15:47:26   James.Wadsworth  $
+--       Module Name      : $Workfile:   maisec.pkh  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:47:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
+--       PVCS Version     : $Revision:   3.1  $
+--
+--   Author : Mike Huitson
+--
+--   Package for implementing context-based security
+--
+------------------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------------------------
+--</PACKAGE>
+--
+------------------------------------------------------------------------------------
+--
+--<GLOBVAR>
+--  g_sccsid is the SCCS_ID
+  g_sccsid      CONSTANT  varchar2(80) := '$Revision:   3.1  $';
+  --
+  c_admin_unit  CONSTANT VARCHAR2(1) := 'A';
+  c_user        CONSTANT VARCHAR2(1) := 'U';
+  c_not_enabled CONSTANT VARCHAR2(1) := 'N';
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_version">
+-- This function returns the SCCS ID
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+------------------------------------------------------------------------------------
+--
+--<PROC NAME="con_predicate_read">
+FUNCTION con_predicate_read(schema_in VARCHAR2
+                           ,name_in   VARCHAR2)
+  RETURN VARCHAR2;
+--</PROC>
+--
+------------------------------------------------------------------------------------
+--
+--<PROC NAME="wo_predicate_read">
+FUNCTION wo_predicate_read(schema_in VARCHAR2
+                          ,name_in   VARCHAR2)
+  RETURN VARCHAR2;
+--</PROC>
+--
+------------------------------------------------------------------------------------
+--
+--<PROC NAME="boq_predicate_read">
+FUNCTION boq_predicate_read(schema_in VARCHAR2
+                           ,name_in   VARCHAR2)
+  RETURN VARCHAR2;
+--</PROC>
+--
+------------------------------------------------------------------------------------
+--
+--<PROC NAME="cni_predicate_read">
+FUNCTION cni_predicate_read(schema_in VARCHAR2
+                           ,name_in   VARCHAR2)
+  RETURN VARCHAR2;
+--</PROC>
+--
+------------------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version,wnds,wnps);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, wnps, wnds);
+--</PRAGMA>
+--
+------------------------------------------------------------------------------------
+--
+END maisec;
+/
