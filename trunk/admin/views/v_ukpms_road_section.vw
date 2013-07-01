@@ -40,12 +40,15 @@ SELECT /* INDEX (INV_ITEMS_ALL IIT_INDEX_P2) */
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_ukpms_road_section.vw-arc   3.0   Nov 05 2009 10:35:02   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_ukpms_road_section.vw-arc   3.1   Jul 01 2013 15:55:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_ukpms_road_section.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:02  $
---       Date fetched Out : $Modtime:   Nov 04 2009 16:08:46  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:25:36  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
+
 --
         iit_created_date,
             iit_cre_date,

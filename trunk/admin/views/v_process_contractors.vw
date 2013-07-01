@@ -12,12 +12,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_process_contractors.vw-arc   3.2   May 27 2011 09:45:44   Steve.Cooper  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_process_contractors.vw-arc   3.3   Jul 01 2013 15:55:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_process_contractors.vw  $
---       Date into PVCS   : $Date:   May 27 2011 09:45:44  $
---       Date fetched Out : $Modtime:   May 25 2011 15:06:06  $
---       Version          : $Revision:   3.2  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:24:54  $
+--       Version          : $Revision:   3.3  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        oun_org_id
       ,oun_unit_code

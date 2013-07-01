@@ -4,12 +4,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai7040_sum.vw-arc   3.0   Nov 05 2009 10:35:02   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai7040_sum.vw-arc   3.1   Jul 01 2013 15:55:32   James.Wadsworth  $
 --       Module Name      : $Workfile:   v_mai7040_sum.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:02  $
---       Date fetched Out : $Modtime:   Nov 04 2009 15:39:56  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:32  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:24:32  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
        rse_agency||rse_linkcode v_linkcode
       ,sum(nvl(pbi_end_mp,pbi_begin_mp) - pbi_begin_mp) v_sum_length
