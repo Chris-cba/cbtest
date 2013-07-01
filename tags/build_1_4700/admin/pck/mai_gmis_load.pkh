@@ -1,0 +1,126 @@
+CREATE OR REPLACE package mai_gmis_load as
+--<PACKAGE>
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkh-arc   2.1   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       Module Name      : $Workfile:   mai_gmis_load.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on SCCS Version     : 1.5
+--
+--
+--   Author : D. Cope
+--
+--   Gmis survery file loader package
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.1  $"';
+--  g_sccsid is the SCCS ID for the package
+
+-- this need defining here as def_types records are assigned using execute immediate
+  g_defect             defects%ROWTYPE;
+  
+  -- contains the current batch file clob
+  g_current_batch_file nm3type.tab_varchar32767;
+  
+  TYPE rec_glb_batch_details IS RECORD
+       (file_text             nm3type.max_varchar2
+       ,line_number           NUMBER(10)
+  );
+   
+  TYPE tab_rec_glb_batch_details IS TABLE OF rec_glb_batch_details INDEX BY binary_integer;
+   
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="gmis_loader">
+-- This performs the loading of the gmis file from nm_upload_files
+PROCEDURE gmis_loader(p_loadfile IN varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="gmis_reload">
+-- This function reloads a failed gmis load using data in nm_gmis_load_batches
+FUNCTION gmis_reload(pi_batch           IN  mai_gmis_load_batches.glb_load_batch%TYPE
+                    ,po_glb_error_data  OUT mai_gmis_load_batches.glb_error_data%TYPE
+                    ,po_glb_error_text  OUT mai_gmis_load_batches.glb_error_text%TYPE
+                    ,po_glb_line_number OUT mai_gmis_load_batches.glb_line_number%TYPE) RETURN boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="load_survey_file">
+-- Loads a Gmis survey file from disk into nm_upload_files for processing
+PROCEDURE load_survey_file;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="load_survey_file">
+-- Processes the loaded file
+PROCEDURE process_survey_file(p_in  IN varchar2 DEFAULT NULL);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_survey_file(p_job_id IN NUMBER,
+                             p_stmt   IN VARCHAR2,
+                             p_sector   IN  VARCHAR2,
+                             p_feedback OUT NUMBER);
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="query_batch_details">
+-- PROCEDURE to handle survey file editing in MAI2550
+PROCEDURE query_batch_details(pi_batch      IN     mai_gmis_load_batches.glb_load_batch%TYPE DEFAULT NULL
+                             ,po_batch_dets IN OUT tab_rec_glb_batch_details);
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="update_batch_detail">
+-- PROCEDURE to handle survey file editing in MAI2550
+PROCEDURE update_batch_detail(pi_batch       IN     mai_gmis_load_batches.glb_load_batch%TYPE
+                             ,po_batch_dets  IN OUT tab_rec_glb_batch_details);
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="lock_batch_detail">
+-- PROCEDURE to handle survey file editing in MAI2550
+PROCEDURE lock_batch_detail(pi_batch       IN     mai_gmis_load_batches.glb_load_batch%TYPE
+                           ,po_batch_dets  IN OUT tab_rec_glb_batch_details);
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="delete_batch_detail">
+-- PROCEDURE to handle survey file editing in MAI2550
+PROCEDURE delete_batch_detail(pi_batch       IN     mai_gmis_load_batches.glb_load_batch%TYPE
+                             ,po_batch_dets  IN OUT tab_rec_glb_batch_details);
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="insert_batch_detail">
+-- PROCEDURE to handle survey file editing in MAI2550
+PROCEDURE insert_batch_detail(pi_batch       IN     mai_gmis_load_batches.glb_load_batch%TYPE
+                             ,po_batch_dets  IN OUT tab_rec_glb_batch_details);
+--
+-----------------------------------------------------------------------------
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_gmis_load;
+/

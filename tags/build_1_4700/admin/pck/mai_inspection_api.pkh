@@ -1,0 +1,331 @@
+CREATE OR REPLACE PACKAGE mai_inspection_api AS
+--
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.12   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       Module Name      : $Workfile:   mai_inspection_api.pkh  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:21:26  $
+--       PVCS Version     : $Revision:   3.12  $
+--
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.12  $';
+--
+gr_defect_rec  defects%ROWTYPE;
+--</GLOBVAR>
+--
+--<TYPE>
+--
+TYPE com_rec IS RECORD (com_doc_id            NUMBER(9)
+                       ,com_are_report_id     NUMBER(8)
+                       ,com_title             VARCHAR2(60)
+                       ,com_category          VARCHAR2(8)
+                       ,com_dtp_code          VARCHAR2(4)
+                       ,com_date_issued       DATE
+                       ,com_file              VARCHAR2(254)
+                       ,com_dlc_dmd_id        NUMBER(9)
+                       ,com_dlc_id            NUMBER(9)
+                       ,com_reference_code    VARCHAR2(254)
+                       ,com_descr             VARCHAR2(2000)
+                       ,com_error             VARCHAR2(4000)); 
+TYPE com_tab IS TABLE OF com_rec INDEX BY BINARY_INTEGER;
+--
+TYPE das_rec IS RECORD (das_doc_id            NUMBER(9)
+                       ,das_are_report_id     NUMBER(8)
+                       ,das_def_defect_id     NUMBER(8)
+                       ,das_category          VARCHAR2(8)
+                       ,das_title             VARCHAR2(60)
+                       ,das_dtp_code          VARCHAR2(4)
+                       ,das_date_issued       DATE
+                       ,das_file              VARCHAR2(254)
+                       ,das_dlc_dmd_id        NUMBER(9)
+                       ,das_dlc_id            NUMBER(9)
+                       ,das_reference_code    VARCHAR2(254)
+                       ,das_descr             VARCHAR2(2000)
+                       ,das_location          VARCHAR2(30)
+                       ,das_error             VARCHAR2(4000)); 
+TYPE das_tab IS TABLE OF das_rec INDEX BY BINARY_INTEGER;
+--
+TYPE def_attr_tab IS TABLE OF VARCHAR2(254) INDEX BY BINARY_INTEGER;
+--
+TYPE boq_rec IS RECORD(boq_record boq_items%ROWTYPE
+                      ,boq_error  VARCHAR2(4000));
+TYPE boq_tab IS TABLE OF boq_rec INDEX BY BINARY_INTEGER;
+--
+TYPE rep_rec IS RECORD(rep_record repairs%ROWTYPE
+                      ,rep_boqs   boq_tab
+                      ,rep_error  VARCHAR2(4000));
+TYPE rep_tab IS TABLE OF rep_rec INDEX BY BINARY_INTEGER;
+--
+TYPE def_rec IS RECORD(def_record  defects%ROWTYPE
+                      ,def_attribs def_attr_tab
+                      ,def_repairs rep_tab
+                      ,def_assocs  das_tab
+                      ,def_error   VARCHAR2(4000));
+TYPE def_tab IS TABLE OF def_rec INDEX BY BINARY_INTEGER;
+--
+TYPE activities_rec IS RECORD(atv_acty_area_code  activities.atv_acty_area_code%TYPE
+                             ,atv_error           VARCHAR2(4000));
+TYPE activities_tab IS TABLE OF activities_rec INDEX BY BINARY_INTEGER;
+--
+TYPE insp_rec IS RECORD(insp_record      activities_report%ROWTYPE
+                       ,insp_activities  activities_tab
+                       ,insp_defects     def_tab
+                       ,insp_comments    com_tab
+                       ,insp_error       VARCHAR2(4000));
+TYPE insp_tab IS TABLE OF insp_rec INDEX BY BINARY_INTEGER;
+--
+TYPE act_report_lines_tab IS TABLE OF act_report_lines%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE repairs_tab IS TABLE OF repairs%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE boq_items_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE matched_defect_rec IS RECORD(def_defect_id defects.def_defect_id%TYPE
+                                 ,def_priority  defects.def_priority%TYPE);
+TYPE matched_defects_tab IS TABLE OF matched_defect_rec INDEX BY BINARY_INTEGER;
+--
+TYPE defects_tab IS TABLE OF defects%ROWTYPE INDEX BY BINARY_INTEGER;
+--
+TYPE tre_boqs_rec
+  IS RECORD(boq_sta_item_code       boq_items.boq_sta_item_code%TYPE
+           ,sta_item_name           standard_items.sta_item_name%TYPE
+           ,sta_unit                standard_items.sta_unit%TYPE
+           ,sta_dim1_text           standard_items.sta_dim1_text%TYPE
+           ,sta_dim2_text           standard_items.sta_dim2_text%TYPE
+           ,sta_dim3_text           standard_items.sta_dim3_text%TYPE
+           ,sta_min_quantity        standard_items.sta_min_quantity%TYPE
+           ,sta_max_quantity        standard_items.sta_max_quantity%TYPE
+           ,sta_rogue_flag          standard_items.sta_rogue_flag%TYPE
+           ,sta_labour_units        standard_items.sta_labour_units%TYPE
+           ,boq_est_dim1            boq_items.boq_est_dim1%TYPE
+           ,boq_est_dim2            boq_items.boq_est_dim2%TYPE
+           ,boq_est_dim3            boq_items.boq_est_dim3%TYPE
+           ,boq_est_quantity        boq_items.boq_est_quantity%TYPE
+           ,boq_est_rate            boq_items.boq_est_rate%TYPE
+           ,boq_est_cost            boq_items.boq_est_cost%TYPE
+           ,boq_est_labour          boq_items.boq_est_labour%TYPE
+           );
+TYPE tre_boqs_tab IS TABLE OF tre_boqs_rec INDEX BY BINARY_INTEGER;
+--
+--</TYPE>
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_next_id(pi_seq_name IN VARCHAR2)
+  RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_default_treatment(pi_defect_type IN defects.def_defect_code%TYPE
+                              ,pi_priority    IN defects.def_priority%TYPE
+                              ,pi_activity    IN activities.atv_acty_area_code%TYPE)
+  RETURN default_treats.dft_tre_treat_code%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_are_to_insp_tab(pi_are_rec   IN     activities_report%ROWTYPE
+                             ,pio_insp_tab IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_activities_tab_to_insp_tab(pi_activities_tab IN     activities_tab
+                                        ,pio_insp_tab      IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_def_tab_to_insp_tab(pi_def_tab   IN     mai_inspection_api.def_tab
+                                 ,pio_insp_tab IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_comm_tab_to_insp_tab(pi_com_tab   IN     mai_inspection_api.com_tab
+                                  ,pio_insp_tab IN OUT mai_inspection_api.insp_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_def_to_def_tab(pi_def_rec  IN     defects%ROWTYPE
+                            ,pio_def_tab IN OUT mai_inspection_api.def_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_def_attr_tab_to_def_tab(pi_def_attr_tab IN     mai_inspection_api.def_attr_tab
+                                     ,pio_def_tab     IN OUT mai_inspection_api.def_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_rep_tab_to_def_tab(pi_rep_tab  IN     mai_inspection_api.rep_tab
+                                ,pio_def_tab IN OUT mai_inspection_api.def_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_das_tab_to_def_tab(pi_das_tab  IN     mai_inspection_api.das_tab
+                                ,pio_def_tab IN OUT mai_inspection_api.def_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_rep_to_rep_tab(pi_rep_rec  IN     repairs%ROWTYPE
+                            ,pio_rep_tab IN OUT mai_inspection_api.rep_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_boq_tab_to_rep_tab(pi_boq_tab  IN     mai_inspection_api.boq_tab
+                                ,pio_rep_tab IN OUT mai_inspection_api.rep_tab);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE add_boq_to_boq_tab(pi_boq_rec  IN     boq_items%ROWTYPE
+                            ,pio_boq_tab IN OUT mai_inspection_api.boq_tab);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_insp(pi_are_report_id IN activities_report.are_report_id%TYPE)
+  RETURN activities_report%ROWTYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_initial_defect_status(pi_effective_date IN DATE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_complete_defect_status(pi_effective_date IN DATE)
+  RETURN hig_status_codes.hsc_status_code%TYPE;
+--
+-----------------------------------------------------------------------------
+-- This procedure validates the given activity_reports record and defaults
+-- any missing values where possible.
+PROCEDURE validate_insp_rec(pio_insp_rec IN OUT activities_report%ROWTYPE
+                           ,po_sys_flag     OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_section(pi_rse_he_id IN nm_elements_all.ne_id%TYPE)
+  RETURN road_sections%ROWTYPE;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE get_tre_boqs(pi_admin_unit         IN     nm_admin_units_all.nau_admin_unit%TYPE
+                      ,pi_treat_code         IN     treatment_models.tmo_tre_treat_code%TYPE
+                      ,pi_atv_acty_area_code IN     treatment_models.tmo_atv_acty_area_code%TYPE
+                      ,pi_defect_code        IN     treatment_models.tmo_dty_defect_code%TYPE
+                      ,pi_sys_flag           IN     treatment_models.tmo_sys_flag%TYPE
+                      ,pi_attr_value         IN     VARCHAR2
+                      ,po_results            IN OUT tre_boqs_tab);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION update_sect_last_updated(pi_ne_id              IN nm_elements_all.ne_id%TYPE
+                                 ,pi_are_date_work_done IN activities_report.are_date_work_done%TYPE)
+  RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE upd_notrefound_defects(pi_are_report_id       IN activities_report.are_report_id%TYPE
+                                ,pi_are_maint_insp_flag IN activities_report.are_maint_insp_flag%TYPE
+                                ,pi_are_initiation_type IN activities_report.are_initiation_type%TYPE
+                                ,pi_are_rse_he_id       IN activities_report.are_rse_he_id%TYPE
+                                ,pi_are_st_chain        IN activities_report.are_st_chain%TYPE
+                                ,pi_are_end_chain       IN activities_report.are_end_chain%TYPE
+                                ,pi_are_date_work_done  IN activities_report.are_date_work_done%TYPE);  
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE upd_notrefound_defects(pi_are_report_id IN activities_report.are_report_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION match_defect(pi_def_defect_id          IN defects.def_defect_id%TYPE
+                     ,pi_def_created_date       IN defects.def_created_date%TYPE
+                     ,pi_def_ity_inv_code       IN defects.def_ity_inv_code%TYPE
+                     ,pi_def_atv_acty_area_code IN defects.def_atv_acty_area_code%TYPE
+                     ,pi_def_defect_code        IN defects.def_defect_code%TYPE
+                     ,pi_def_rse_he_id          IN defects.def_rse_he_id%TYPE
+                     ,pi_def_st_chain           IN defects.def_st_chain%TYPE
+                     ,pi_def_x_sect             IN defects.def_x_sect%TYPE
+                     ,pi_def_mand_adv           IN defects.def_mand_adv%TYPE
+                     ,pi_def_priority           IN defects.def_priority%TYPE
+                     ,pi_are_report_id          IN activities_report.are_report_id%TYPE
+                     ,pi_are_initiation_type    IN activities_report.are_initiation_type%TYPE
+                     ,pi_are_maint_insp_flag    IN activities_report.are_maint_insp_flag%TYPE
+                     ,pi_are_date_work_done     IN activities_report.are_date_work_done%TYPE
+                     ,pi_dsr_tolerance          IN def_superseding_rules.dsr_tolerance%TYPE
+                     )
+  RETURN matched_defects_tab;
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE supersede_defect(pi_superseded_defect_id      IN defects.def_defect_id%TYPE
+                          ,pi_superseded_priority       IN defects.def_priority%TYPE
+                          ,pi_active_defect_id          IN defects.def_defect_id%TYPE
+                          ,pi_active_priority           IN defects.def_priority%TYPE
+                          ,pi_active_rse_he_id          IN defects.def_rse_he_id%TYPE
+                          ,pi_active_coord_flag         IN defects.def_coord_flag%TYPE
+                          ,pi_are_initiation_type       IN activities_report.are_initiation_type%TYPE
+                          ,pi_active_are_date_work_done IN activities_report.are_date_work_done%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE supersede_insp_defects(pi_are_report_id       IN activities_report.are_report_id%TYPE
+                                ,pi_are_maint_insp_flag IN activities_report.are_maint_insp_flag%TYPE
+                                ,pi_are_initiation_type IN activities_report.are_initiation_type%TYPE
+                                ,pi_are_rse_he_id       IN activities_report.are_rse_he_id%TYPE
+                                ,pi_are_date_work_done  IN activities_report.are_date_work_done%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE supersede_insp_defects(pi_are_report_id IN activities_report.are_report_id%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE upd_roadstud_repairs(pi_ne_id     IN nm_elements_all.ne_id%TYPE
+                              ,pi_insp_date IN activities_report.are_date_work_done%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
+                           ,pi_commit     IN     VARCHAR2
+                           ,po_error_flag    OUT VARCHAR2);
+--
+-----------------------------------------------------------------------------
+--
+PROCEDURE construct_tree_plsql_table
+  (pi_process_id           IN PLS_INTEGER
+  ,po_tab_initial_state    IN OUT nm3type.tab_number
+  ,po_tab_depth            IN OUT nm3type.tab_number
+  ,po_tab_label            IN OUT nm3type.tab_varchar80
+  ,po_tab_icon             IN OUT nm3type.tab_varchar30
+  ,po_tab_data             IN OUT nm3type.tab_varchar30
+  ,po_tab_parent           IN OUT nm3type.tab_varchar30);
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION validate_def_att(pi_column IN VARCHAR2
+                         ,pi_value  IN VARCHAR2)
+  RETURN BOOLEAN;
+--
+-----------------------------------------------------------------------------
+--
+--
+-----------------------------------------------------------------------------
+--
+--
+-----------------------------------------------------------------------------
+--
+END mai_inspection_api;
+/
