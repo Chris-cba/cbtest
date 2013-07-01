@@ -3,17 +3,17 @@
 --
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.2   Oct 25 2007 15:56:36   jwadsworth  $
+--       pvcsid                 : $Header:   //vm_latest/archives/mai/install/mai4010_mai4020_upg.sql-arc   2.3   Jul 01 2013 16:02:44   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4010_mai4020_upg.sql  $
---       Date into PVCS   : $Date:   Oct 25 2007 15:56:36  $
---       Date fetched Out : $Modtime:   Oct 25 2007 15:56:06  $
---       PVCS Version     : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:02:44  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
+--       PVCS Version     : $Revision:   2.3  $
 --       Based on SCCS version :
 --
 --   Product upgrade script
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2007
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 SET ECHO OFF
 SET LINESIZE 120
