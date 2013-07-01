@@ -24,16 +24,19 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.9   Oct 07 2011 09:49:06   Chris.Baugh  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.10   Jul 01 2013 15:55:04   James.Wadsworth  $
        --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
-       --       Date into PVCS   : $Date:   Oct 07 2011 09:49:06  $
-       --       Date fetched Out : $Modtime:   Oct 07 2011 09:51:18  $
-       --       Version          : $Revision:   3.9  $
+       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:04  $
+       --       Date fetched Out : $Modtime:   Jul 01 2013 14:09:12  $
+       --       Version          : $Revision:   3.10  $
        -- Foundation view displaying bill of quantities for a defect
        -------------------------------------------------------------------------
        -- SM 03042009
        -- Added rownum=1 to ICB inline sql to cater for ICBFGAC product option
-       -------------------------------------------------------------------------   
+       ------------------------------------------------------------------
+       --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+       ------------------------------------------------------------------
+
        bi.boq_id                                                                  bill_of_quantities_id
       ,bi.boq_parent_id                                                           bill_of_quantities_parent_id
       ,bi.boq_defect_id                                                           defect_id

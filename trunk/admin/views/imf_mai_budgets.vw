@@ -27,13 +27,15 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.4   Jul 02 2010 11:00:48   mhuitson  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_budgets.vw-arc   1.5   Jul 01 2013 15:55:04   James.Wadsworth  $
        --       Module Name      : $Workfile:   imf_mai_budgets.vw  $
-       --       Date into PVCS   : $Date:   Jul 02 2010 11:00:48  $
-       --       Date fetched Out : $Modtime:   Jul 02 2010 11:00:22  $
-       --       Version          : $Revision:   1.4  $
+       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:04  $
+       --       Date fetched Out : $Modtime:   Jul 01 2013 14:09:38  $
+       --       Version          : $Revision:   1.5  $
        -- Foundation view displaying budgets
-       -------------------------------------------------------------------------
+       ------------------------------------------------------------------
+       --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+       ------------------------------------------------------------------
        b.bud_id                                 budget_id
       ,b.bud_rse_he_id                          network_element_id
       ,ne.ne_unique                             network_element_reference
