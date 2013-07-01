@@ -8,11 +8,11 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/update_rse_agency.trg-arc   3.0   Nov 05 2009 11:18:50   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/update_rse_agency.trg-arc   3.1   Jul 01 2013 15:53:18   James.Wadsworth  $
 --       Module Name      : $Workfile:   update_rse_agency.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:50  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:11:32  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:53:18  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.1  $
 --
 -- This trigger is a workaround that enables budget reports to work.
 -- These reports necessitate an agency code be held against each road
@@ -22,7 +22,7 @@ DECLARE
 -- populated from the agency of a schedule.
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2009
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
   if :new.schd_agency != :old.schd_agency then

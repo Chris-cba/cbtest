@@ -5,14 +5,14 @@ FOR EACH ROW
 ----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/org_units_ai_contractor.trg-arc   3.0   Nov 23 2012 17:43:12   Mike.Huitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/org_units_ai_contractor.trg-arc   3.1   Jul 01 2013 15:53:18   James.Wadsworth  $
 --       Module Name      : $Workfile:   org_units_ai_contractor.trg  $
---       Date into SCCS   : $Date:   Nov 23 2012 17:43:12  $
---       Date fetched Out : $Modtime:   Nov 23 2012 17:19:22  $
---       SCCS Version     : $Revision:   3.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:53:18  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       SCCS Version     : $Revision:   3.1  $
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2012
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 DECLARE
   --

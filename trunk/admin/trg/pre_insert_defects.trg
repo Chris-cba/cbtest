@@ -8,15 +8,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/pre_insert_defects.trg-arc   3.0   Nov 05 2009 11:18:50   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/pre_insert_defects.trg-arc   3.1   Jul 01 2013 15:53:18   James.Wadsworth  $
 --       Module Name      : $Workfile:   pre_insert_defects.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:50  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:17:08  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:53:18  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.1  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2009
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
   --
