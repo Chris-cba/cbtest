@@ -1,0 +1,623 @@
+CREATE OR REPLACE package WWO AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkh-arc   2.1   Jul 01 2013 16:26:56   James.Wadsworth  $
+--       Module Name      : $Workfile:   works_func.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based onSCCS Version     : 1.2
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="Update_Last_Printed">
+--
+   Procedure Update_Last_Printed(WorkOrderNo IN VARCHAR2);
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Std_Text">
+--
+   Function Get_Std_Text return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Work_Order">
+--
+   function Get_Work_Order(WorkOrderNo IN VARCHAR2) return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Network_Ind">
+--
+   function Get_Network_Ind(WorkOrderNo IN VARCHAR2) return VARCHAR2;
+	
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Road_Group">
+--
+   function Get_Road_Group(WorkOrderNo IN VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Order_Total">
+--
+   function Get_Order_Total(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Order_Sub_Total">
+--
+   function Get_Order_Sub_Total(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Order_Bal_Sum">
+--
+   function Get_Order_Bal_Sum(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Contract">
+--
+   function Get_Contract(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Contractor_Addr">
+--
+   function Get_Contractor_Addr(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Contract_No">
+--
+   function Get_Contract_No(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Contractor">
+--
+   function Get_Contractor(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Authorised_By">
+--
+   function Authorised_By(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Raised_By">
+--
+   function Raised_By(WorkOrderNo In VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Scheme_Type">
+--
+   function Scheme_Type(WorkOrderNo IN VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Work_Order_Line">
+--
+   function Get_Work_Order_Line (intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Loc_Full">
+--
+   function Get_Defect_Loc_Full(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Loc">
+--
+   function Get_Defect_Loc(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Loc_Minimum">
+--
+   function Get_Defect_Loc_Minimum(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Unit">
+--
+   function Get_Defect_Unit(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Qty">
+--
+   function Get_Defect_Qty(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Rate">
+--
+   function Get_Defect_Rate(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Est_Value">
+--
+   function Get_Defect_Est_Value(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Repair_Treat">
+--
+   function Get_Repair_Treat(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Repair_Desc">
+--
+   function Get_Repair_Desc(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_id">
+--
+   function Get_Defect_id(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Priority">
+--
+   function Get_Defect_Priority(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_Id">
+--
+   function Get_Wol_Id(intLine IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN NUMBER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_Link">
+--
+   function Get_Wol_Link(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_SectNo">
+--
+   function Get_Wol_SectNo(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_Road_Section">
+--
+   function Get_Wol_Road_Section(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_Item_No">
+--
+   function Get_Wol_Item_No(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN NUMBER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Work_Category">
+--
+   function Get_Work_Category(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Activity">
+--
+   function Get_Defect_Activity(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Code_Descr">
+--
+   function Get_Defect_Code_Descr(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Treatment_Desc">
+--
+   function Get_Treatment_Desc(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Line">
+--
+   Function Get_Defect_Line(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Qty">
+--
+   function Get_BOQ_Qty(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Unit">
+--
+   function Get_BOQ_Unit(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Total">
+--
+   function Get_BOQ_Total(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Line_Total">
+--
+   function Get_BOQ_Line_Total(WorkOrderLine IN INTEGER) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Rate">
+--
+   function Get_BOQ_Rate(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Item">
+--
+   function Get_BOQ_Item(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Desc">
+--
+   function Get_BOQ_Desc(intBOQLine IN INTEGER, WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Line">
+--
+   function Get_BOQ_Line(intLineNo IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Line2">
+--
+   function Get_BOQ_Line2(intLineNo IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Line_NoCost">
+--
+   function Get_BOQ_Line_NoCost(intLineNo IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Est_Cost">
+--
+   function Get_BOQ_Est_Cost(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Est_Quantity">
+--
+   function Get_BOQ_Est_Quantity(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Est_Rate">
+--
+   function Get_BOQ_Est_Rate(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Act_Cost">
+--
+   function Get_BOQ_Act_Cost(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Act_Quantity">
+--
+   function Get_BOQ_Act_Quantity(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_BOQ_Act_Rate">
+--
+   function Get_BOQ_Act_Rate(intBOQLine IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Road_Desc">
+--
+   function Get_Road_Desc(WorkOrderNo IN VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Wol_Road_Desc">
+--
+   function Get_Wol_Road_Desc(WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Code">
+--
+   function Get_Item_Code(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Name">
+--
+   function Get_Item_Name(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Desc">
+--
+   function Get_Item_Desc(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Unit">
+--
+   function Get_Item_Unit(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Qty">
+--
+   function Get_Item_Qty(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Rate">
+--
+   function Get_Item_Rate(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Item_Cost">
+--
+   function Get_Item_Cost(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Code">
+--
+   function Wol_Boq_Code(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Name">
+--
+   function Wol_Boq_Name(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Desc">
+--
+   function Wol_Boq_Desc(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Unit">
+--
+   function Wol_Boq_Unit(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Eqty">
+--
+   function Wol_Boq_Eqty(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Aqty">
+--
+   function Wol_Boq_Aqty(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Erate">
+--
+   function Wol_Boq_Erate(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Arate">
+--
+   function Wol_Boq_Arate(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Ecost">
+--
+   function Wol_Boq_Ecost(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Boq_Acost">
+--
+   function Wol_Boq_Acost(intBoqNo IN INTEGER,intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Wol_Acost">
+--
+   function Wol_Acost(intLineNo IN INTEGER,WorkOrderNo IN VARCHAR2) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Initcap">
+--
+   function Get_Initcap(StrVal IN VARCHAR2) Return VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Desc_Min">
+--
+   function Get_Defect_Desc_Min(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Special">
+--
+   function Get_Defect_Special(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Repair_Target">
+--
+   function Get_Repair_Target(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Repair_Desc_Min">
+--
+   function Get_Repair_Desc_Min(WorkOrderLine IN INTEGER)RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Attr">
+--
+   function Get_Defect_Attr(intAttrNos IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Attr_Text ">
+--
+   function Get_Defect_Attr_Text(intAttrNos IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Attr_Params">
+--
+   function Get_Defect_Attr_Params(intAttrNos IN INTEGER,WorkOrderLine IN INTEGER) RETURN VARCHAR2;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_WO_Enquiry">
+--
+   function Get_WO_Enquiry(WorkOrderNo IN VARCHAR2) RETURN INTEGER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="Get_Defect_Enquiry">
+--
+   function Get_Defect_Enquiry(WorkOrderLine IN INTEGER) RETURN INTEGER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PRAGMA>
+-- 
+  Pragma Restrict_References(Get_Std_Text, WNDS, WNPS);
+  Pragma Restrict_References(Get_Work_Order, WNDS, WNPS);
+  Pragma Restrict_References(Get_Network_Ind, WNDS, WNPS);
+  Pragma Restrict_References(Get_Road_Group, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Order_Total, WNDS, WNPS);
+  Pragma Restrict_References(Get_Order_Sub_Total, WNDS, WNPS);
+  Pragma Restrict_References(Get_Order_Bal_Sum, WNDS, WNPS);
+  Pragma Restrict_References(Get_Contract, WNDS, WNPS);
+  Pragma Restrict_References(Get_Contractor_Addr, WNDS, WNPS);
+  Pragma Restrict_References(Get_Contract_No, WNDS, WNPS);
+  Pragma Restrict_References(Get_Contractor, WNDS, WNPS);
+  Pragma Restrict_References(Authorised_By, WNDS, WNPS);
+  Pragma Restrict_References(Raised_By, WNDS, WNPS);
+  Pragma Restrict_References(Scheme_Type, WNDS, WNPS);
+  Pragma Restrict_References(Get_Work_Order_Line , WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Loc_Full, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Loc, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Loc_Minimum, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Unit, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Qty, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Rate, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Est_Value, WNDS, WNPS);
+  Pragma Restrict_References(Get_Repair_Treat, WNDS, WNPS);
+  Pragma Restrict_References(Get_Repair_Desc, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Id, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Priority, WNDS, WNPS);
+  Pragma Restrict_References(Get_Wol_Id, WNDS, WNPS);
+  Pragma Restrict_References(Get_Wol_Link, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Wol_SectNo, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Wol_Road_Section, WNDS, WNPS);
+  Pragma Restrict_References(Get_Wol_Item_No, WNDS, WNPS);
+  Pragma Restrict_References(Get_Work_Category, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Activity, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Code_Descr, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Treatment_Desc, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Line, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Qty, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Unit, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Total, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Line_Total, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Rate, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Item, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Desc, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Line, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Line2, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Line_NoCost, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Est_Cost, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Est_Quantity, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Est_Rate, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Act_Cost, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Act_Quantity, WNDS, WNPS);
+  Pragma Restrict_References(Get_BOQ_Act_Rate, WNDS, WNPS);
+  Pragma Restrict_References(Get_Road_Desc, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Wol_Road_Desc, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Item_Code , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Name , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Desc , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Unit , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Qty  , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Rate , WNDS, WNPS);
+  Pragma Restrict_References(Get_Item_Cost , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Code  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Name  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Desc  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Unit  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Eqty  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Aqty  , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Erate , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Arate , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Ecost , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Boq_Acost , WNDS, WNPS);
+  Pragma Restrict_References(Wol_Acost  , WNDS, WNPS);
+  Pragma Restrict_References(Get_Initcap, WNDS,  WNPS);
+  Pragma Restrict_References(Get_Defect_Desc_Min, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Special, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Repair_Target, WNDS, WNPS);
+  Pragma Restrict_References(Get_Repair_Desc_Min, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Attr, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Attr_Text, WNDS, WNPS, TRUST);
+  Pragma Restrict_References(Get_Defect_Attr_Text, WNDS, WNPS);
+  Pragma Restrict_References(Get_WO_Enquiry, WNDS, WNPS);
+  Pragma Restrict_References(Get_Defect_Enquiry, WNDS, WNPS);
+--
+--</PRAGMA>
+-----------------------------------------------------------------------------
+--<CONSTANTS>
+--
+  ORA_TAB VARCHAR2(1):=CHR(9);
+  ORA_LF  VARCHAR2(1):=CHR(10);
+  ORA_COST_FORMAT VARCHAR2(20):='9,999,999.99';
+
+  MC_AREA VARCHAR2(20) 	:='DEF_AREA';
+  MC_LENGTH VARCHAR2(20) 	:='DEF_LENGTH';
+  MC_NUMBER VARCHAR2(20) 	:='DEF_AREA';
+
+  MC_MODULE VARCHAR2(100);
+--</CONSTANTS>
+-----------------------------------------------------------------------------
+end WWO;
+/
