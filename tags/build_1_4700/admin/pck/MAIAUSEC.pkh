@@ -1,0 +1,51 @@
+CREATE OR REPLACE PACKAGE maiausec AS 
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkh-arc   1.7   Jul 01 2013 16:26:48   James.Wadsworth  $
+--       Module Name      : $Workfile:   MAIAUSEC.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   1.7  $
+--
+-----------------------------------------------------------------------------
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+
+g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   1.7  $';
+
+  FUNCTION get_version RETURN VARCHAR2;
+--
+  FUNCTION get_body_version
+    RETURN VARCHAR2;
+--
+au_vc varchar2(2000);
+au_list int_array;
+FUNCTION get_string (p_au_col_name  IN varchar2  ) RETURN varchar2; 
+FUNCTION get_au_list return int_array_type; 
+FUNCTION DSR_6_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION BUD_12_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION ICB_13_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION MAW_17_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION DEF_18_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION ARE_20_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION DEF_22_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION WOL_23_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION DLD_34_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION ARE_42_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION SCH_45_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION MAI_46_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION REP_47_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION LFR_49_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION SCH_61_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+FUNCTION REP_62_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2; 
+--
+--Manual
+--
+function CONTRACTS_PREDICATE_READ( schema_in varchar2, name_in varchar2) RETURN varchar2;
+
+--
+END maiausec;
+/
