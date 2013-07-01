@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_cyclic_wo AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_cyclic_wo.pkb-arc   4.0   Apr 27 2012 18:35:18   Mike.Huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_cyclic_wo.pkb-arc   4.1   Jul 01 2013 16:25:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_cyclic_wo.pkb  $
---       Date into PVCS   : $Date:   Apr 27 2012 18:35:18  $
---       Date fetched Out : $Modtime:   Apr 27 2012 18:27:46  $
---       PVCS Version     : $Revision:   4.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:20:04  $
+--       PVCS Version     : $Revision:   4.1  $
 --
------------------------------------------------------------------------------
---  Copyright (c) exor corporation ltd, 2007
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   4.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   4.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_cyclic_wo';
 --
 -----------------------------------------------------------------------------

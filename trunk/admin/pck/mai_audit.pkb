@@ -3,17 +3,17 @@ CREATE OR REPLACE package body mai_audit as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.2   Apr 07 2008 15:50:12   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.3   Jul 01 2013 16:25:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_audit.pkb  $
---       Date into SCCS   : $Date:   Apr 07 2008 15:50:12  $
---       Date fetched Out : $Modtime:   Apr 07 2008 11:56:16  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai_audit.pck	1.1 08/23/00'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
   old_rec old_vals;

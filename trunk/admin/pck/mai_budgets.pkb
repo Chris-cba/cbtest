@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.4   May 19 2011 10:13:52   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_budgets.pkb-arc   2.5   Jul 01 2013 16:25:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_budgets.pkb  $
---       Date into SCCS   : $Date:   May 19 2011 10:13:52  $
---       Date fetched Out : $Modtime:   May 19 2011 10:11:54  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
 --   Originally taken from (#)budgets.pck	1.13 12/18/02'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE BODY Mai_Budgets AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.4  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.5  $';
 
 --
 -----------------------------------------------------------------------------
