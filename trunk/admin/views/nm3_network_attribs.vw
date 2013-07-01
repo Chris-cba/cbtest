@@ -14,12 +14,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/nm3_network_attribs.vw-arc   3.0   Nov 05 2009 10:35:06   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/nm3_network_attribs.vw-arc   3.1   Jul 01 2013 15:55:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   nm3_network_attribs.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:06  $
---       Date fetched Out : $Modtime:   Nov 04 2009 16:11:38  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:17:26  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
           ni.iit_ne_id            element_id
         , ni.iit_chr_attrib35     hierarchy

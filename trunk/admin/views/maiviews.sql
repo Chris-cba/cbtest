@@ -2,12 +2,14 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.14   Jul 25 2011 09:24:10   Chris.Baugh  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.15   Jul 01 2013 15:55:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into PVCS   : $Date:   Jul 25 2011 09:24:10  $
---       Date fetched Out : $Modtime:   Jul 25 2011 09:24:44  $
---       Version          : $Revision:   2.14  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:17:08  $
+--       Version          : $Revision:   2.15  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
 SET echo OFF
 SET term OFF

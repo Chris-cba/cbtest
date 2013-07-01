@@ -4,12 +4,14 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/mai_insp_load_batches_v.vw-arc   3.0   Mar 02 2011 15:31:28   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/mai_insp_load_batches_v.vw-arc   3.1   Jul 01 2013 15:55:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_insp_load_batches_v.vw  $
---       Date into PVCS   : $Date:   Mar 02 2011 15:31:28  $
---       Date fetched Out : $Modtime:   Dec 01 2010 11:10:50  $
---       Version          : $Revision:   3.0  $
--------------------------------------------------------------------------
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:16:40  $
+--       Version          : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
        milb.milb_batch_id
       ,milb.milb_hp_process_id
       ,hp.hp_formatted_process_id

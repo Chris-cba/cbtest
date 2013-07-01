@@ -2,15 +2,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.2   Jan 20 2010 14:47:24   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.3   Jul 01 2013 15:55:26   James.Wadsworth  $
 --       Module Name      : $Workfile:   inv_items_all_section.sql  $
---       Date into SCCS   : $Date:   Jan 20 2010 14:47:24  $
---       Date fetched Out : $Modtime:   Jan 20 2010 14:46:18  $
---       SCCS Version     : $Revision:   3.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 15:55:26  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:04:42  $
+--       SCCS Version     : $Revision:   3.3  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2009
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --Creates the inv_items_all_section view using a
