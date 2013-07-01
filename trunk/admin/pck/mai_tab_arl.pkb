@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_arl IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_arl.pkb-arc   2.0   Jun 13 2007 17:36:50   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_arl.pkb-arc   2.1   Jul 01 2013 16:26:00   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_tab_arl.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:50  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:00  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -21,11 +21,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_arl IS
 --
 -----------------------------------------------------------------------------
 --
---	Copyright (c) exor corporation ltd, 2004
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.0  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_arl';

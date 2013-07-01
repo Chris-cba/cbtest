@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai_tab_arl IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_arl.pkh-arc   2.1   Oct 19 2007 12:46:46   jwadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_arl.pkh-arc   2.2   Jul 01 2013 16:26:00   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_tab_arl.pkh  $
---       Date into SCCS   : $Date:   Oct 19 2007 12:46:46  $
---       Date fetched Out : $Modtime:   Oct 19 2007 12:46:18  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:00  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -22,13 +22,13 @@ CREATE OR REPLACE PACKAGE mai_tab_arl IS
 --
 -----------------------------------------------------------------------------
 --
---	Copyright (c) exor corporation ltd, 2004
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
 --</PACKAGE>
 --<GLOBVAR>
-   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.2  $"';
 --  g_sccsid is the SCCS ID for the package
 --
 --</GLOBVAR>

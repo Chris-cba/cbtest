@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_dpr IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkb-arc   2.1   Jan 07 2013 09:51:32   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_dpr.pkb-arc   2.2   Jul 01 2013 16:26:00   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_tab_dpr.pkb  $
---       Date into SCCS   : $Date:   Jan 07 2013 09:51:32  $
---       Date fetched Out : $Modtime:   Dec 20 2012 09:26:50  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:00  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -21,11 +21,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_dpr IS
 --
 -----------------------------------------------------------------------------
 --
---	Copyright (c) exor corporation ltd, 2004
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"@$Revision:   2.1  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"@$Revision:   2.2  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_dpr';
