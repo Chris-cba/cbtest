@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.2   Jan 07 2013 09:50:32   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.3   Jul 01 2013 16:25:56   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_gmis_load.pkb  $
---       Date into SCCS   : $Date:   Jan 07 2013 09:50:32  $
---       Date fetched Out : $Modtime:   Jul 20 2012 11:26:48  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:20:58  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.20
 --
 --
@@ -17,12 +17,12 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --   Gmis survery file loader package
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2004
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_gmis_load';
@@ -85,11 +85,12 @@ BEGIN
    htp.p('--   Gmis survery file loader package');
    htp.p('--');
    htp.p('-----------------------------------------------------------------------------');
-   htp.p('--	Copyright (c) exor corporation ltd, 2004');
+   htp.p('--	Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved');
    htp.p('-----------------------------------------------------------------------------');
    htp.p('--');
    htp.p('-->');
 END sccs_tags;
+
 --
 -----------------------------------------------------------------------------
 --

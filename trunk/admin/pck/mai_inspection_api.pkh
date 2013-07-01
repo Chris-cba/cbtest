@@ -5,18 +5,18 @@ CREATE OR REPLACE PACKAGE mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.11   Mar 14 2011 12:24:40   mike.huitson  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkh-arc   3.12   Jul 01 2013 16:25:56   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkh  $
---       Date into PVCS   : $Date:   Mar 14 2011 12:24:40  $
---       Date fetched Out : $Modtime:   Mar 14 2011 11:55:06  $
---       PVCS Version     : $Revision:   3.11  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:21:26  $
+--       PVCS Version     : $Revision:   3.12  $
 --
------------------------------------------------------------------------------
---      Copyright (c) exor corporation ltd, 2009
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.11  $';
+g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.12  $';
 --
 gr_defect_rec  defects%ROWTYPE;
 --</GLOBVAR>

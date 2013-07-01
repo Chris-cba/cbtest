@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.35   Feb 25 2013 16:43:14   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36   Jul 01 2013 16:25:56   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 25 2013 16:43:14  $
---       Date fetched Out : $Modtime:   Feb 25 2013 16:35:30  $
---       PVCS Version     : $Revision:   3.35  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:25:56  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:21:16  $
+--       PVCS Version     : $Revision:   3.36  $
 --
------------------------------------------------------------------------------
---  Copyright (c) exor corporation ltd, 2007
------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.35  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
