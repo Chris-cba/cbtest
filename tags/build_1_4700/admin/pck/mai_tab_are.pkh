@@ -1,0 +1,163 @@
+CREATE OR REPLACE PACKAGE mai_tab_are IS
+--<PACKAGE>
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_are.pkh-arc   2.1   Jul 01 2013 16:26:00   James.Wadsworth  $
+--       Module Name      : $Workfile:   mai_tab_are.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:00  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.1  $
+--       Based on SCCS Version     : 1.1
+--
+--
+--   Author : Darren Cope
+--
+--   Generated package DO NOT MODIFY
+--
+--   nm3get_gen header : @(#)mai_tab_are.pkh	1.1 03/09/04
+--   nm3get_gen body   : @(#)mai_tab_are.pkh	1.1 03/09/04
+--
+-----------------------------------------------------------------------------
+--
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--
+-----------------------------------------------------------------------------
+--
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+--  g_sccsid is the SCCS ID for the package
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get">
+--
+--   Function to get using ARE_INDEX_P1 index
+--
+FUNCTION get (pi_are_report_id     activities_report.are_report_id%TYPE
+             ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+             ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+             ) RETURN activities_report%ROWTYPE;
+PRAGMA RESTRICT_REFERENCES (get, WNPS, WNDS);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins">
+-- Inserts a ROWTYPE record into activities_report
+-- Returns the ROWTYPE record as inserted - trigger modified values
+--
+PROCEDURE ins (p_rec_are IN OUT activities_report%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="lock_gen">
+--
+--   Function to lock using ARE_INDEX_P1 index
+--
+FUNCTION lock_gen (pi_are_report_id     activities_report.are_report_id%TYPE
+                  ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                  ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                  ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                  ) RETURN ROWID;
+--
+--   Procedure to lock using ARE_INDEX_P1 index
+--
+PROCEDURE lock_gen (pi_are_report_id     activities_report.are_report_id%TYPE
+                   ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                   ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                   ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                   );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="del">
+--
+--   Procedure to del using ARE_INDEX_P1 index
+--
+PROCEDURE del (pi_are_report_id     activities_report.are_report_id%TYPE
+              ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+              ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+              ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+              );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="debug">
+-- Debug a ROWTYPE record
+PROCEDURE debug (pi_rec_are activities_report%ROWTYPE,p_level PLS_INTEGER DEFAULT 3);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="next_are_batch_id_seq">
+-- Returns ARE_BATCH_ID_SEQ.NEXTVAL
+FUNCTION next_are_batch_id_seq RETURN PLS_INTEGER;
+--
+PRAGMA RESTRICT_REFERENCES (next_are_batch_id_seq, WNPS, WNDS);
+--
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="curr_are_batch_id_seq">
+-- Returns ARE_BATCH_ID_SEQ.CURRVAL
+FUNCTION curr_are_batch_id_seq RETURN PLS_INTEGER;
+--
+PRAGMA RESTRICT_REFERENCES (curr_are_batch_id_seq, WNPS, WNDS);
+--
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="next_are_report_id_seq">
+-- Returns ARE_REPORT_ID_SEQ.NEXTVAL
+FUNCTION next_are_report_id_seq RETURN PLS_INTEGER;
+--
+PRAGMA RESTRICT_REFERENCES (next_are_report_id_seq, WNPS, WNDS);
+--
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="curr_are_report_id_seq">
+-- Returns ARE_REPORT_ID_SEQ.CURRVAL
+FUNCTION curr_are_report_id_seq RETURN PLS_INTEGER;
+--
+PRAGMA RESTRICT_REFERENCES (curr_are_report_id_seq, WNPS, WNDS);
+--
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_tab_are;
+/
