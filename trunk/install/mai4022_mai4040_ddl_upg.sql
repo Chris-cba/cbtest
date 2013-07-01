@@ -9,14 +9,14 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4022_mai4040_ddl_upg.sql-arc   2.0   Jan 22 2008 10:25:56   jwadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai4022_mai4040_ddl_upg.sql-arc   2.1   Jul 01 2013 16:03:04   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai4022_mai4040_ddl_upg.sql  $
---       Date into PVCS   : $Date:   Jan 22 2008 10:25:56  $
---       Date fetched Out : $Modtime:   Jan 22 2008 10:25:14  $
---       Version          : $Revision:   2.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:04  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
+--       Version          : $Revision:   2.1  $
 --
 ------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2007
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 
 
