@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mairepl AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairepl.pkb-arc   2.1   May 21 2010 18:12:56   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairepl.pkb-arc   2.2   Jul 01 2013 16:26:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   mairepl.pkb  $
---       Date into SCCS   : $Date:   May 21 2010 18:12:56  $
---       Date fetched Out : $Modtime:   May 21 2010 17:59:14  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
@@ -23,12 +23,12 @@ CREATE OR REPLACE PACKAGE BODY mairepl AS
 --  Originally taken from '@(#)mairepl.pck 1.13 01/11/02';
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.1  $"';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mairepl';
