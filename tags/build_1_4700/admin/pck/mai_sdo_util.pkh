@@ -1,0 +1,237 @@
+CREATE OR REPLACE PACKAGE mai_sdo_util
+IS
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_sdo_util.pkh-arc   2.3   Jul 01 2013 16:25:58   James.Wadsworth  $
+--       Module Name      : $Workfile:   mai_sdo_util.pkh  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:25:58  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.7
+--
+--   Author : A. Edwards
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--
+   g_sccsid   CONSTANT VARCHAR2 (80) := '@(#)mai_sdo_util.pkh	1.7 05/08/07';
+--
+   g_table_name         CONSTANT user_tables.table_name%TYPE       := 'DEFECTS';
+   g_wol_table_name     CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES';
+   g_view_name          CONSTANT user_tables.table_name%TYPE       := 'V_MAI_DEFECTS';
+   g_view_ne_id_col     CONSTANT user_tab_columns.column_name%TYPE := 'DEFECT_ROAD_ID';
+   g_view_st_chain_col  CONSTANT user_tab_columns.column_name%TYPE := 'DEFECT_START_CHAIN';
+   g_wol_view_name      CONSTANT user_tables.table_name%TYPE       := 'V_WORK_ORDER_LINES';
+   g_sdo_pk             CONSTANT user_tables.table_name%TYPE       := 'DEFECT_ID';
+   g_wol_sdo_pk         CONSTANT user_tables.table_name%TYPE       := 'WOL_ID';
+   g_pk_column          CONSTANT user_tab_columns.column_name%TYPE := 'DEF_DEFECT_ID';
+   g_wol_pk_column      CONSTANT user_tab_columns.column_name%TYPE := 'WOL_ID';
+   g_feature_tab_xy     CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_XY_SDO';
+   g_feature_tab_lr     CONSTANT user_tables.table_name%TYPE       := 'MAI_DEFECTS_LR_SDO';
+   g_wol_feature_tab    CONSTANT user_tables.table_name%TYPE       := 'WORK_ORDER_LINES_SDO';
+   g_shape_col          CONSTANT user_tab_columns.column_name%TYPE := 'GEOLOC';
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+   FUNCTION get_version
+      RETURN VARCHAR2;
+
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+   FUNCTION get_body_version
+      RETURN VARCHAR2;
+
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--  PROCEDURES/FUNCTIONS migrated from IM_FUNCS package
+--
+-----------------------------------------------------------------------------
+--<PROC NAME="get_hco_descr">
+-- This function returns the hco_meaning for the specified domain value. The third
+--  (optional) parameter allows you to specify the NVL value either from a predefined
+--  set or your own value
+--
+--   Predefined values are -  "UK" - Unknown
+--                            "NS" - Not Set
+--                            "NU" - Not Used
+--
+   FUNCTION get_hco_meaning
+               ( pi_hdo_domain hig_domains.hdo_domain%TYPE
+               , pi_hco_code   hig_codes.hco_code%TYPE
+               , pi_nvl_code   VARCHAR2 DEFAULT NULL )
+     RETURN hig_codes.hco_meaning%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_interval_desc">
+-- This function returns the description for the specified domain value
+--
+   FUNCTION get_interval_desc
+               ( pi_int_code intervals.int_code%TYPE)
+     RETURN intervals.int_descr%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_treatment_descr">
+-- Get the treatment description
+--
+   FUNCTION get_treatment_descr
+               ( pi_tre_treat_code treatments.tre_treat_code%TYPE)
+     RETURN treatments.tre_descr%TYPE;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_estimated_cost_of_defect">
+-- Obtain the Estimated cost for a defect repair
+--
+   FUNCTION get_estimated_cost_of_defect
+               ( pi_def_defect_id  defects.def_defect_id%TYPE
+               , pi_rep_action_cat repairs.rep_action_cat%TYPE)
+     RETURN NUMBER;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_actual_cost_of_defect">
+-- Obtain the actual cost for a defect repair
+--
+   FUNCTION get_actual_cost_of_defect
+               ( pi_def_defect_id  defects.def_defect_id%TYPE
+               , pi_rep_action_cat repairs.rep_action_cat%TYPE )
+     RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_admin_unit_descr">
+-- This function returns the name for a specified admin unit
+--
+   FUNCTION get_admin_unit_descr
+               ( pi_hau_admin_unit hig_admin_units.hau_admin_unit%TYPE)
+     RETURN hig_admin_units.hau_name%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_base_sdo">
+   PROCEDURE make_base_sdo_layer
+               ( pi_theme_name    IN nm_themes_all.nth_theme_name%TYPE
+               , pi_asset_type    IN nm_inv_types.nit_inv_type%TYPE
+               , pi_asset_descr   IN nm_inv_types.nit_descr%TYPE
+               , pi_x_column      IN user_tab_columns.column_name%TYPE
+               , pi_y_column      IN user_tab_columns.column_name%TYPE
+               , pi_lr_ne_column  IN user_tab_columns.column_name%TYPE
+               , pi_lr_st_chain   IN user_tab_columns.column_name%TYPE
+               , pi_snapping_trig IN VARCHAR2 DEFAULT 'TRUE');
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_wol_feature_tab">
+FUNCTION get_wol_feature_tab
+  RETURN user_tables.table_name%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_feature_table_from_gdo">
+FUNCTION get_feature_table_from_gdo(pi_session_id IN gis_data_objects.gdo_session_id%TYPE)
+  RETURN nm_themes_all.nth_feature_table%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wol_has_shape">
+FUNCTION wol_has_shape(pi_theme_id IN nm_themes_all.nth_theme_id%TYPE
+                      ,pi_wol_id   IN work_order_lines.wol_id%TYPE)
+  RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="wo_has_shape">
+FUNCTION wo_has_shape(pi_theme_id       IN nm_themes_all.nth_theme_id%TYPE
+                     ,pi_works_order_no IN work_orders.wor_works_order_no%TYPE)
+  RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="generate_wol_shape">  
+PROCEDURE generate_wol_shape(pi_wol_id   IN work_order_lines.wol_id%TYPE
+                            ,pi_tab_xy   IN nm3sdo_gdo.tab_xys
+                            ,pi_geo_type IN nm_theme_gtypes.ntg_gtype%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="generate_wol_shape">
+PROCEDURE generate_wol_shape(pi_wol_id    IN work_order_lines.wol_id%TYPE
+                            ,pi_rse_he_id IN work_order_lines.wol_rse_he_id%TYPE
+                            ,pi_defect_id IN work_order_lines.wol_def_defect_id%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="maintain_wol_sdo_trg">
+PROCEDURE maintain_wol_sdo_trg(pi_wol_id    IN work_order_lines.wol_id%TYPE
+                              ,pi_rse_he_id IN work_order_lines.wol_rse_he_id%TYPE
+                              ,pi_defect_id IN work_order_lines.wol_def_defect_id%TYPE
+                              ,pi_trg_mode  IN VARCHAR2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_base_wol_sdo_layer">   
+PROCEDURE make_base_wol_sdo_layer(pi_theme_name  IN  nm_themes_all.nth_theme_name%TYPE
+                                 ,pi_asset_type  IN  nm_inv_types.nit_inv_type%TYPE
+                                 ,pi_asset_descr IN  nm_inv_types.nit_descr%TYPE);
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_defect_secure_view">
+  PROCEDURE make_defect_secure_view;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="make_defect_secure_view">
+  PROCEDURE make_wol_secure_view;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_lookups">
+  PROCEDURE create_lookups
+             ( pi_asset_type   IN   nm_inv_types.nit_inv_type%TYPE );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_wol_lookups">
+  PROCEDURE create_wol_lookups
+             ( pi_asset_type   IN   nm_inv_types.nit_inv_type%TYPE );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_wol_themes">
+PROCEDURE get_wol_themes(pi_works_order_no IN  work_orders.wor_works_order_no%TYPE
+                        ,pi_wol_id         IN  work_order_lines.wol_id%TYPE
+                        ,pi_module         IN  hig_modules.hmo_module%TYPE
+                        ,pi_join_to_msv    IN  BOOLEAN
+                        ,po_nth_theme_id   OUT NUMBER
+                        ,po_lov_sql        OUT VARCHAR2);
+--</PROC>
+END mai_sdo_util;
+/
