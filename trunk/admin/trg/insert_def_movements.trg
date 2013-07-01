@@ -8,17 +8,17 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/insert_def_movements.trg-arc   3.0   Nov 05 2009 11:18:50   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/insert_def_movements.trg-arc   3.1   Jul 01 2013 15:52:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   insert_def_movements.trg  $
---       Date into PVCS   : $Date:   Nov 05 2009 11:18:50  $
---       Date fetched Out : $Modtime:   Nov 05 2009 11:08:26  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:52:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.1  $
 --
 --   Inserts a def_movements record when defect status or priority
 --   changes.
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2009
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
  if :new.def_status_code != :old.def_status_code or

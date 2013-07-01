@@ -8,15 +8,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/delete_wols.trg-arc   3.1   Oct 20 2010 11:15:32   Mike.Alexander  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/delete_wols.trg-arc   3.2   Jul 01 2013 15:52:52   James.Wadsworth  $
 --       Module Name      : $Workfile:   delete_wols.trg  $
---       Date into PVCS   : $Date:   Oct 20 2010 11:15:32  $
---       Date fetched Out : $Modtime:   Oct 20 2010 11:15:08  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:52:52  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
+--       Version          : $Revision:   3.2  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) exor corporation ltd, 2010
+--    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
    CURSOR get_defects IS
