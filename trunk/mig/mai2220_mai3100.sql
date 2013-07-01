@@ -2,15 +2,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai3100.sql-arc   2.0   Jun 13 2007 16:46:24   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai3100.sql-arc   2.1   Jul 01 2013 16:00:08   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai2220_mai3100.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:46:24  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:45:44  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:08  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:28:26  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 undefine exor_base
 undefine run_file

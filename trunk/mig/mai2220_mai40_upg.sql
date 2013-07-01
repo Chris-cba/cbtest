@@ -4,15 +4,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai40_upg.sql-arc   2.1   Oct 02 2008 09:55:58   Ian Turnbull  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/mig/mai2220_mai40_upg.sql-arc   2.2   Jul 01 2013 16:00:08   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai2220_mai40_upg.sql  $
---       Date into SCCS   : $Date:   Oct 02 2008 09:55:58  $
---       Date fetched Out : $Modtime:   Oct 02 2008 09:54:58  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:00:08  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:28:26  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version : 1.5
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2008
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 -- 
