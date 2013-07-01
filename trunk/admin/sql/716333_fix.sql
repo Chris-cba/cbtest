@@ -1,10 +1,14 @@
 -- PVCS Identifiers :-
 --
--- pvcsid : $Header:   //vm_latest/archives/mai/admin/sql/716333_fix.sql-arc   3.0   Sep 24 2008 11:04:56   jwadsworth  $
+-- pvcsid : $Header:   //vm_latest/archives/mai/admin/sql/716333_fix.sql-arc   3.1   Jul 01 2013 15:52:36   James.Wadsworth  $
 -- Module Name : $Workfile:   716333_fix.sql  $
--- Date into PVCS : $Date:   Sep 24 2008 11:04:56  $
--- Date fetched Out : $Modtime:   Sep 24 2008 11:04:32  $
--- PVCS Version : $Revision:   3.0  $
+-- Date into PVCS : $Date:   Jul 01 2013 15:52:36  $
+-- Date fetched Out : $Modtime:   Jul 01 2013 13:58:36  $
+-- PVCS Version : $Revision:   3.1  $
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
+
 insert into hig_option_list
       (hol_id
       ,hol_product

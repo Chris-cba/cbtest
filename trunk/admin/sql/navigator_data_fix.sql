@@ -2,13 +2,15 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/sql/navigator_data_fix.sql-arc   3.0   Nov 16 2010 09:39:56   Mike.Alexander  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/sql/navigator_data_fix.sql-arc   3.1   Jul 01 2013 15:52:36   James.Wadsworth  $
 --       Module Name      : $Workfile:   navigator_data_fix.sql  $
---       Date into PVCS   : $Date:   Nov 16 2010 09:39:56  $
---       Date fetched Out : $Modtime:   Nov 16 2010 09:38:18  $
---       PVCS Version     : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:52:36  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 13:58:52  $
+--       PVCS Version     : $Revision:   3.1  $
 --
---------------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 -- This script can be run on any schema irrespective of the Licensed Products
 DECLARE
 --
