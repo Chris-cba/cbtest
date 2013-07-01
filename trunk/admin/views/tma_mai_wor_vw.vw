@@ -11,15 +11,17 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/tma_mai_wor_vw.vw-arc   3.0   Nov 05 2009 10:35:06   gjohnson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/tma_mai_wor_vw.vw-arc   3.1   Jul 01 2013 15:55:28   James.Wadsworth  $
 --       Module Name      : $Workfile:   tma_mai_wor_vw.vw  $
---       Date into PVCS   : $Date:   Nov 05 2009 10:35:06  $
---       Date fetched Out : $Modtime:   Nov 04 2009 16:12:48  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Jul 01 2013 15:55:28  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:18:30  $
+--       Version          : $Revision:   3.1  $
 --
 --       View supports MAI to TMA integration and is referenced initially in MAI3900
 --
--------------------------------------------------------------------------
+------------------------------------------------------------------
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+------------------------------------------------------------------
 --
         wor_works_order_no
        ,wor_descr
