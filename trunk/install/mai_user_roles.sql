@@ -2,15 +2,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_user_roles.sql-arc   2.0   Jun 13 2007 16:32:34   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_user_roles.sql-arc   2.1   Jul 01 2013 16:02:10   James.Wadsworth  $
 --       Module Name      : $Workfile:   mai_user_roles.sql  $
---       Date into SCCS   : $Date:   Jun 13 2007 16:32:34  $
---       Date fetched Out : $Modtime:   Jun 13 2007 16:31:50  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:02:10  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:44  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 -- Grant all the privs for each role
 BEGIN
