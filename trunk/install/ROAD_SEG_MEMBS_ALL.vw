@@ -1,13 +1,13 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/ROAD_SEG_MEMBS_ALL.vw-arc   1.2   Mar 19 2013 09:46:58   Graeme.Johnson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/install/ROAD_SEG_MEMBS_ALL.vw-arc   1.3   Jul 01 2013 16:03:54   James.Wadsworth  $
 --       Module Name      : $Workfile:   ROAD_SEG_MEMBS_ALL.vw  $
---       Date into PVCS   : $Date:   Mar 19 2013 09:46:58  $
---       Date fetched Out : $Modtime:   Mar 19 2013 09:30:56  $
---       PVCS Version     : $Revision:   1.2  $
+--       Date into PVCS   : $Date:   Jul 01 2013 16:03:54  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 14:32:44  $
+--       PVCS Version     : $Revision:   1.3  $
 --
 ----------------------------------------------------------------------------
---   Copyright (c) 2012 Bentley Systems Incorporated.
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ----------------------------------------------------------------------------
 --
 CREATE OR REPLACE FORCE VIEW ROAD_SEG_MEMBS_ALL

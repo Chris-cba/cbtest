@@ -1,5 +1,5 @@
-REM Copyright (c) Exor Corporation Ltd, 2003
-REM '$Revision:   2.0  $'
+REM Copyright 2013 Bentley Systems Incorporated. All rights reserved.
+REM '$Revision:   2.1  $'
 --
 undefine log_extension
 col         log_extension new_value log_extension noprint

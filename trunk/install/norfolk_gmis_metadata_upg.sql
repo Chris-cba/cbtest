@@ -1,5 +1,5 @@
-REM Copyright (c) Exor Corporation Ltd, 2003
-REM '$Header:   //vm_latest/archives/mai/install/norfolk_gmis_metadata_upg.sql-arc   2.0   Jun 13 2007 16:32:40   smarshall  $'
+REM Copyright 2013 Bentley Systems Incorporated. All rights reserved.
+REM '$Header:   //vm_latest/archives/mai/install/norfolk_gmis_metadata_upg.sql-arc   2.1   Jul 01 2013 16:03:54   James.Wadsworth  $'
 --
 SET FEEDBACK OFF
 --

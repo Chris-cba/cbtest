@@ -1,4 +1,4 @@
-define sccsid = '$Revision:   2.0  $'
+define sccsid = '$Revision:   2.1  $'
 undefine exor_base
 undefine run_file
 undefine terminator
