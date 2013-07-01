@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maimerge AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maimerge.pkb-arc   2.1   May 21 2010 18:12:56   mhuitson  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maimerge.pkb-arc   2.2   Jul 01 2013 16:26:50   James.Wadsworth  $
 --       Module Name      : $Workfile:   maimerge.pkb  $
---       Date into SCCS   : $Date:   May 21 2010 18:12:56  $
---       Date fetched Out : $Modtime:   May 21 2010 17:59:46  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:50  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.5
 --
 -----------------------------------------------------------------------------
@@ -24,12 +24,12 @@ CREATE OR REPLACE PACKAGE BODY maimerge AS
 -- 01-AUG-2003 SW Updated to incorporate changes made to original up to v1.13
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.1  $"';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'maimerge';

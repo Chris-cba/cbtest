@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.2   May 27 2011 09:45:44   Steve.Cooper  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.3   Jul 01 2013 16:26:50   James.Wadsworth  $
 --       Module Name      : $Workfile:   mairecal.pkb  $
---       Date into SCCS   : $Date:   May 27 2011 09:45:44  $
---       Date fetched Out : $Modtime:   May 25 2011 13:09:00  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:50  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.3
 --
 --	This package contains procedures and functions which are required by
@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
 --  Now taken from '@(#)mairecal.pck	1.5 01/30/03';
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 /* History
@@ -30,7 +30,7 @@ CREATE OR REPLACE PACKAGE BODY mairecal AS
                 this fixes the bug that start point was not considered in recalibrate
 */
 
-   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.2  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.3  $';
    g_package_name    CONSTANT  varchar2(30)   := 'mairecal';
 --
    l_rmmsflag                  hig_options.hop_value%TYPE := hig.get_sysopt('RMMSFLAG');

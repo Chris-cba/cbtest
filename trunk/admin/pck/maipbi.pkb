@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY maipbi AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipbi.pkb-arc   2.0   Jun 13 2007 17:36:52   smarshall  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipbi.pkb-arc   2.1   Jul 01 2013 16:26:50   James.Wadsworth  $
 --       Module Name      : $Workfile:   maipbi.pkb  $
---       Date into SCCS   : $Date:   Jun 13 2007 17:36:52  $
---       Date fetched Out : $Modtime:   Jun 13 2007 17:36:22  $
---       SCCS Version     : $Revision:   2.0  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:50  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.1  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maipbi.pck	1.5 01/07/00'
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2002
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
  -----------------------------------------------------------------------------

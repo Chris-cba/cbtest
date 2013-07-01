@@ -2,17 +2,17 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.11   Jan 09 2013 10:52:14   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipkb.sql-arc   2.12   Jul 01 2013 16:26:50   James.Wadsworth  $
 --       Module Name      : $Workfile:   maipkb.sql  $
---       Date into SCCS   : $Date:   Jan 09 2013 10:52:14  $
---       Date fetched Out : $Modtime:   Jan 09 2013 10:52:08  $
---       SCCS Version     : $Revision:   2.11  $
+--       Date into SCCS   : $Date:   Jul 01 2013 16:26:50  $
+--       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
+--       SCCS Version     : $Revision:   2.12  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
---	Copyright (c) exor corporation ltd, 2003
+--   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
--- Copyright (c) 2003 exor corporation.
+-- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 --
 -- This script creates all package wrapped bodies for the Maintenance Manager product.
 -- It should be executed during upgrades and new installations.
