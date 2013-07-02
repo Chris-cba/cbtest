@@ -1,6 +1,7 @@
 
 /* SCCS ID keywords, do not remove */
 /* "@(#)r4strtoc.c	1.1 09/08/03"                       */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /* ora_char_to_str.c      O R A _ C H A R _ T O _ S T R
 

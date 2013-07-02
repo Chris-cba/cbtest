@@ -1,6 +1,8 @@
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r7cha.pc	1.1 09/16/03"; */
-static char *sccsid = "$Workfile:   r7cha.pc  $ $Revision:   2.1  $ $Modtime:   Oct 18 2011 16:05:02  $";
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "$Workfile:   r7cha.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:21:30  $";
 
 /************************************************************ 
 * Standard I/O definition header file.                      *
