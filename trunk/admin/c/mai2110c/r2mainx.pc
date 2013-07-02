@@ -3,7 +3,9 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainx.pc	1.6 02/06/07"; */
-static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.7  $ $Modtime:   May 10 2013 09:12:00  $";
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "$Workfile:   r2mainx.pc  $ $Revision:   2.8  $ $Modtime:   Jul 02 2013 09:56:04  $";
 
 #define BOOLEAN int
 #define FALSE 0
