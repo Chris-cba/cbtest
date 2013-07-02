@@ -1,9 +1,9 @@
-
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 /* static char *sccsid = "@(#)r4pdef.c	1.4 06/01/07"; */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4pdef.c  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4pdef.c  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:10:26  $";
 
 /* ===========================================================================
  * prodefect.c              P R O D E F E C T

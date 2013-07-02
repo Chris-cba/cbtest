@@ -1,9 +1,9 @@
-
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r4prep.c	1.4 01/10/07"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4prep.c  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4prep.c  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:11:08  $";
 
 /* ===========================================================================
  * prorepair.c                   P R O R E P A I R
