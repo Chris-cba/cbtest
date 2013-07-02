@@ -1,8 +1,9 @@
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r4gdef.pc	1.7 06/01/07"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4gdef.pc  $ $Revision:   2.1  $ $Modtime:   Nov 26 2007 12:05:48  $";
+static char *sccsid = "$Workfile:   r4gdef.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:09:18  $";
 
 /* ***********************************************************************
  * getdefect.pc           G E T D E F E C T   &  P U T D E F E C T     

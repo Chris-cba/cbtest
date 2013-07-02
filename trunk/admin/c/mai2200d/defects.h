@@ -1,8 +1,10 @@
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
 /* "@(#)defects.h	1.2 12/12/06"                       */
 
 /*PVCS keyword, do not remove         */
-/* $Workfile:   defects.h  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $ */
+/* $Workfile:   defects.h  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:07:46  $ */
 
 /* defects.h  DEFECTS table Host variables */
 /* =============================================================================

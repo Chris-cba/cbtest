@@ -1,9 +1,9 @@
-
 /* SCCS ID keywords, do not remove */
 /* "@(#)deftypes.h	1.1 09/08/03"  */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove         */
-/* $Workfile:   deftypes.h  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $ */
+/* $Workfile:   deftypes.h  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:08:00  $ */
 
 /* ==========================================================================
  * deftypes.h   DEF_TYPES  table Host variables  

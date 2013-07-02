@@ -79,6 +79,8 @@ static char *sccsid = "@(#)r3phfile.pc	1.2 12/08/06";
 * DESCRIPTION  : client-server conversion
 */
 
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
 #include <stdio.h>
 #include <string.h>
 #include "rmms.h"
