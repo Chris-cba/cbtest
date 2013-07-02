@@ -1,0 +1,409 @@
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r7rsd.pc	1.1 09/16/03"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "$Workfile:   r7rsd.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:22:14  $";
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include <errno.h>
+#include "rmms.h"
+
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+#define FORMFEED "\n\f\n"
+
+extern char pipe_msg[254];
+extern char *EXRepOutpath;
+char GBErrMsg[255];
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+  VARCHAR sys_flag[2];
+  int hctotrs, h_ch_tot_def, h_ch_length,h_he_id,h_count;
+  int h_def_chk_nulls,h_gap_chk_nulls,h_end_ch_chk_nulls;
+EXEC SQL END DECLARE SECTION;
+
+FILE *def_rs_rep(he_id,section,tot_def_rs,tot_rs,pc_def_rs)
+  char *section;
+  int he_id,tot_def_rs,tot_rs,pc_def_rs;
+  {
+  static FILE *fp;
+  static char date[25], county[41];
+  static BOOLEAN rep_file_open = FALSE;
+  FILE *open_rs_def_rep();
+  void set_def_rs_head();
+  void setdrbody(he_id,section,fp);
+
+  if(!rep_file_open)   /* Report file not open for this run */
+    {
+    if((fp = open_rs_def_rep()) == NULL)
+      {
+      return(fp);              /* Couldn't open report file */
+      }
+    rep_file_open = TRUE;      /* Don't try to open again   */
+    rmmstype(date,county);     /* Populate from USER_DEFNS  */
+    }
+
+  /* Set header for section    */
+  set_def_rs_head(date,county,section,tot_def_rs,tot_rs,pc_def_rs,fp);
+
+  if((tot_def_rs == 0) && (tot_rs == 0)) /* No defects or roadstuds    */
+    {
+    fprintf (fp,FORMFEED);
+    }
+  else
+    {
+    setdrbody(he_id,section,fp);/* Output report body details*/
+    }
+
+  if(fflush(fp) == EOF)
+    {
+    printf ("\nERROR: Unable to flush information to");
+    printf (" log file BPR-8204\n");
+    strcpy(pipe_msg,"ERROR: Unable to flush information to ");
+    strcat(pipe_msg,"log file BPR-8204");
+    write_pipe(NULL,pipe_msg);
+    
+    return(FALSE);
+    }
+    
+  return(fp); /* Everything OK, return normal */
+  } /*def_rs_rep*/
+
+/********************************************************************
+*                                                                   *
+* Function : open_rs_def_rep()                                      *
+*                                                                   *
+* Purpose  :                                                        *
+*                                                                   *
+*   The function open_rs_def_rep() is responsible for checking the  *
+*   existence of defective roadstud report files and opening a new  *
+*   unique one with write permission. The format of this report file*
+*   is RSREPxxx.LIS where xxx is a unique number. The function sets *
+*   up a loop which goes from 1 to 300 (xxx) checking the existance *
+*   of the file. If it finds that the file does not exist, ittries  *
+*   to open the file for writing. If this fails, it returns NULL and*
+*   puts out an error indicating the failure. If it succeeds, it    *
+*   displays a message indicating the name of the file. If the file *
+*   has not been opened by the end of the loop, a message is output *
+*   indicating that the file is not available and returns NULL. If  *
+*   the file has been opened successfully, the file pointer is      *
+*   returned. If the function returns NULL, def_rs_rep() will detect*
+*   the error and return FALSE to its calling function.             *
+*                                                                   *
+*********************************************************************/
+
+FILE *open_rs_def_rep()
+  {
+  FILE *fp;
+  #ifndef IBM
+    FILE *fopen();
+  #endif
+  int i;
+  char repfname[16];
+
+  if(fopen(EXRepOutpath,"r") == NULL)   /* Report file does not exist. */
+    {
+    if((fp=fopen(EXRepOutpath,"w")) == NULL)
+      {
+      /* Can't open for writing    */
+      sprintf(GBErrMsg,"%s %s",EXRepOutpath,strerror(errno));
+      puts(GBErrMsg);
+      write_pipe(GBErrMsg);
+      EXEC SQL ROLLBACK WORK;
+      jobend(EXJobId,1,GBErrMsg);
+      EXEC SQL COMMIT WORK;
+      dblogoff();
+      exit(EX_FAIL);
+      }
+    } 
+
+  printf("\nINFO: Output file name ");
+  printf(" is : %s BPR-0536\n",EXRepOutpath);
+  strcpy(pipe_msg,"INFO: Output File Name is : ");
+  strcat(pipe_msg,EXRepOutpath);
+  strcat(pipe_msg," BPR-0536");
+  write_pipe(NULL,pipe_msg);
+
+  return(fp);        /* Return file pointer of opened file */
+  } /*open_rs_def_rep*/
+
+/********************************************************************
+*                                                                   *
+* Function : set_def_rs_head()                                      *
+*                                                                   *
+* Purpose  :                                                        *
+*                                                                   *
+*   This function sets up the report header information for the     *
+*   relevant section. It uses a string variable called line for     *
+*   building each report line and, using pointers, sets it up with  *
+*   the necessary information. The function is called with a mixture*
+*   of call by value and call by reference parameters.              *
+*                                                                   *
+*********************************************************************/
+
+void set_def_rs_head(date,county,section,tot_def_rs,tot_rs,pc_def_rs,fp)
+  char *date,*county,*section;
+  int tot_def_rs,tot_rs,pc_def_rs;
+  FILE *fp;
+  {
+  extern char dbase_string[6];
+  char line[80];
+  int i;
+  static int page_no = 1;
+
+  for (i=0; i<80; i++)
+    {
+    line[i] = ' ';       /* Fill line with blanks */
+    }
+
+  line[0] = '\0';
+  strcat(line,dbase_string);
+  line[strlen(dbase_string)]=' ';
+  line[27] = '\0';
+  strcat(line,"DEFECTIVE ROADSTUD REPORT");
+  line[52] = ' ';          /* Remove current null terminator */
+  line[64] = '\0';         /* Replace NT at desired position */
+  strcat(line,"Page ");
+
+  fprintf(fp,"\n\n\n%s%d\n",line,page_no++); /* Print report title line */
+
+  for (i=0;i<10;i++)       /* Remove database type from line */
+    {
+    line[i] = ' ';
+    }
+
+  for (i=27; i<52; i++)    /* Set up underline for title     */
+    {
+    line[i] = '-';
+    }
+
+  line[i] = '\0';          /* Null terminate                 */
+
+  fprintf(fp,"%s\n",line);  /* Print underline                */
+
+  fprintf(fp,"\n\nCounty     %s",county);
+  fprintf(fp,"\nDate       %s",date);
+  fprintf(fp,"\nSection    %s",section);
+  if(strcmp(dbase_string,"RoMIS")==0)
+    {
+    switch (sys_flag.arr[0])
+      {
+      case 'L': fprintf(fp,"\nRun for Local Roads Only\n\n");
+                break;
+      case 'D': fprintf(fp,"\nRun for DTp Roads Only\n\n");
+                break;
+      case '%': fprintf(fp,"\nRun for Local and DTp Roads\n\n");
+                break;
+      }
+    }
+  else
+    {
+    fprintf(fp,"\n\n");
+    }
+
+  fprintf(fp,"\nTotal number of Defective Roadstuds");
+  fprintf(fp," on Section   %5d",tot_def_rs);
+  fprintf(fp,"\nTotal number of Roadstuds on Section");
+  fprintf(fp,"             %5d",tot_rs);
+  fprintf(fp,"\nPercentage of Defective Roadstuds on");
+  fprintf(fp," Section        %2d",pc_def_rs);
+
+  if(tot_rs != 0)
+    {
+    line[20] = '\0';
+    strcat(line,"DETAIL OF ROADSTUD DEFECTS BY CHAINAGE");
+    fprintf(fp,"\n\n\n%s",line);
+
+    for(i=20; i<58; i++)     /* Set up underline      */
+      {
+      line[i] = '-';
+      }
+    line[i] = '\0';           /* Null terminate        */
+    fprintf(fp,"\n%s\n",line);
+
+    line[0] = '\0';           /* Clear out line        */
+    /* Set 1st line of report body title */
+    strcat(line,"Chainage            Defective          ");
+    strcat(line,"Number of          Percentage");
+    fprintf(fp,"\n%s",line);
+
+    line[0] = '\0';            /* Clear out line       */
+    /* Set 2nd line of report body title */
+    strcat(line,"                  ");  /* 18 Spaces */
+    strcat(line,"  Roadstuds          Roadstuds         ");
+    strcat(line," Defective");
+    fprintf(fp,"\n%s\n\n",line);
+    }
+  } /*set_def_rs_head*/
+
+/********************************************************************
+*                                                                   *
+* Function : setdrbody()                                      *
+*                                                                   *
+* Purpose  :                                                        *
+*                                                                   *
+*   The parameters to this function are section (which consist of   *
+*   agency,linkcode and section number) and fp (the file pointer of *
+*   the report file). The purpose of this function is to print out  *
+*   the details of roadstud defects by chainage. The details        *
+*   required are chainage, defective roadstuds in chainage, number  *
+*   of roadstuds in chainage and percentage defective in the        *
+*   chainage. The chainage should be in steps of section length / 10*
+*   Since the section parameter being passed consists of agency,    *
+*   linkcode and section the first thing to be done is to extract   *
+*   each of these into individual fields (to be used in the         *
+*   retrieval later). The next thing to be done is the actual       *
+*   database retrieval. Since the chainage spreads in steps of      *
+*   section length / 10, the retrieval will need to be performed 10 *
+*   times. The defective roadstud report file should be update with *
+*   the relevant details on each pass of the loop.                  *
+*                                                                   *
+*********************************************************************/
+
+void setdrbody(he_id,section,fp)
+  int he_id;
+  char *section;
+  FILE *fp;
+  {
+  int def_nulls_tot = 0;
+  int gap_nulls_tot = 0;
+  int end_ch_nulls_tot = 0;
+  short int fp_except_error = 0;
+  
+  h_he_id = he_id;
+
+  EXEC SQL
+    SELECT AVG(s.rse_length)
+      INTO :h_ch_length          
+      FROM road_sections s
+     WHERE s.rse_he_id = :h_he_id
+       AND rse_sys_flag LIKE UPPER(:sys_flag)
+         ;
+  oraerror("setdrbody : cursor 1");
+
+  for(h_count = 1; h_count < 11; h_count++)
+    {
+    /* Retrieve relevant information for each section chainage being reported */
+    EXEC SQL
+      SELECT ROUND(NVL(SUM(((LEAST(i.iit_end_chain,((:h_ch_length / 10) * :h_count)) 
+                             - GREATEST(i.iit_st_chain,((:h_ch_length / 10) * (:h_count-1))))
+                            /nvl(i.iit_gap,1)))
+                      ,0) + DECODE(:h_count,1,1,0))
+            ,NVL(SUM(DECODE(i.iit_gap,null,1,0)),0)
+            ,NVL(SUM(DECODE(i.iit_end_chain,null,1,0)),0)
+       INTO :hctotrs
+           ,:h_gap_chk_nulls
+           ,:h_end_ch_chk_nulls
+       FROM inv_items i
+      WHERE iit_ity_inv_code = 'RS'
+        AND iit_class = 2
+        AND iit_end_chain > ((:h_ch_length / 10) * (:h_count - 1))      
+        AND iit_st_chain <= ((:h_ch_length / 10) * :h_count )  
+        AND iit_rse_he_id = :h_he_id
+        AND iit_end_date IS NULL
+        AND iit_ity_sys_flag LIKE UPPER(:sys_flag)
+          ;
+    oraerror("setdrbody : cursor 2");
+
+    EXEC SQL
+      SELECT NVL(SUM(NVL(d.def_number,1)),0)
+            ,NVL(SUM(DECODE(d.def_number,NULL,1,0)),0)
+        INTO :h_ch_tot_def
+            ,:h_def_chk_nulls
+        FROM defects d 
+       WHERE def_rse_he_id = :h_he_id
+         AND def_atv_acty_area_code = 'RS'
+         AND def_mand_adv = 'A'
+         AND def_date_compl IS NULL
+         AND def_superseded_flag = 'N'
+         AND def_st_chain >= ((:h_ch_length / 10) * (:h_count - 1))
+         AND def_st_chain < ((:h_ch_length / 10) * :h_count)
+         AND def_ity_sys_flag LIKE UPPER(:sys_flag)
+         AND NOT EXISTS(SELECT 'on works order'
+                          FROM work_order_lines w
+                         WHERE w.wol_def_defect_id = d.def_defect_id)
+           ;
+    oraerror("setdrbody : cursor 3");
+
+    def_nulls_tot = def_nulls_tot + h_def_chk_nulls;
+    gap_nulls_tot = gap_nulls_tot + h_gap_chk_nulls;
+    end_ch_nulls_tot = end_ch_nulls_tot + h_end_ch_chk_nulls;
+
+    /* Print chainage gap being reported  */
+    fprintf (fp,"%7.1f - %7.1f"
+               ,((float)((float)h_ch_length / 10) * (h_count - 1))
+               ,((float) ((float) h_ch_length / 10) * h_count)); 
+
+    /* Print total defects and roadstuds in chainage */
+    /* fprintf (fp,"       %5d              %5.2f", */
+    fprintf (fp,"       %5d              %5d",h_ch_tot_def,hctotrs);
+
+    /* Print percentage defective in chainage  */
+    if((h_ch_tot_def == 0) && (hctotrs == 0))
+      {
+      fprintf (fp,"                   0\n");
+      }
+    else if(hctotrs  == 0) 
+      {
+      fprintf (fp,"                  ##\n");
+      fp_except_error = 1;}
+    else
+      {
+      fprintf(fp,"               %5d\n"
+                ,(int)(((float)h_ch_tot_def / (float)hctotrs) * 100));
+      }
+
+    } /* End for loop */
+   
+  if(fp_except_error == 1)
+    {
+    fprintf(fp,"\n\n\nERROR: ## attempt to divide by zero (trapped floating point exception) BPR-0544");
+    }
+            
+  if(def_nulls_tot != 0)
+    {
+    fprintf(fp,"\n\n\nWARNING: %d null defect numbers found. BPR-0541\n",def_nulls_tot);
+    }
+            
+  if(gap_nulls_tot != 0)
+    {
+    fprintf(fp,"\n\n\nWARNING: %d null inventory spacings found. BPR-0542\n",gap_nulls_tot);
+    }
+
+  if(end_ch_nulls_tot != 0)
+    {
+    fprintf(fp,"\n\n\nERROR: %d null inventory end chainages found. BPR-0543\n",end_ch_nulls_tot);
+    }
+ 
+  /* Output warning to inform the user that the figures presented */
+  /* may not appear to be accurate because of rounding problems.  */
+
+  fprintf(fp,"\nN.B. The figures presented in the header part of this");
+  fprintf(fp," report may not exactly\n");
+  fprintf(fp,"     match those displayed in the detail lines. This");
+  fprintf(fp," problem is caused by\n");
+  fprintf(fp,"     rounding errors when calculating the detail lines.\n");
+  fprintf(fp,"\nTo comply with the \"Code of Practice\" use the above");
+  fprintf(fp," information together with\na section map");
+  fprintf(fp," to determine if:\n\n");
+  fprintf(fp,"1. Greater than 10%% of roadstuds are defective on a bend");
+  fprintf(fp," portion of the \n   section.\n");
+  fprintf(fp,"2. Greater than 25%% of roadstuds are defective on a straight");
+  fprintf(fp," portion of the \n   section.\n\n\n");
+  fprintf(fp,"If necessary, use the batch procedure BPR2775 to set the");
+  fprintf(fp," appropriate action \nrequired by dates for the permanent");
+  fprintf(fp," actions.");
+
+  fprintf (fp,FORMFEED);
+  } /*setdrbody*/
+

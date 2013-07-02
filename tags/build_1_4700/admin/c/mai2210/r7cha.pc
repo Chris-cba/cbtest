@@ -1,0 +1,690 @@
+/* SCCS ID keywords, do not remove */
+/* static char *sccsid = "@(#)r7cha.pc	1.1 09/16/03"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "$Workfile:   r7cha.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:21:30  $";
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+#include "rmms.h"
+
+extern char pipe_msg[254];
+
+/************************************************************ 
+* SQL communication header file.                            *
+* Declared  external                                        *
+************************************************************/ 
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+  VARCHAR sys_flag[2];
+  VARCHAR h_agency[5];
+  VARCHAR h_linkcode[7];
+  VARCHAR h_sect_no[3];
+  int     no_sections;
+  int     no_inserts;
+  VARCHAR cha_grp_type[5];
+  VARCHAR grp_name[20];
+  VARCHAR h_dummy[15];
+  VARCHAR sect_id[16];
+  int     c1_he_id[100];
+  VARCHAR c1_dtp_id[100][16];
+  int     q_he_id;
+  int     total_defects;
+  int     total_ars;
+  int     heid;
+  short   i_dummy;
+  char *select_string;
+  VARCHAR rse_type[2];
+  VARCHAR rse_unique[31];
+  VARCHAR rse_gty_group_type[31];
+
+EXEC SQL VAR select_string IS STRING(1024);
+EXEC SQL END DECLARE SECTION;
+
+/* Variables used for setting used for RS/Defect totals    */ 
+  int     c1_per_defects[100];
+  int     c1_tot_defects[100];
+  int     c1_tot[100];
+
+/************************************************************ 
+* Indicator of selection type all section or group          *
+************************************************************/ 
+char cha_sel_type;
+
+/************************************************************ 
+ *Function : sel_chart()                                    *
+ *                                                          *
+ * Accept user input of inventory selection crieria.        *
+ *                                                          *
+ *  * If % validate and continue.                           *
+ *                                                          *
+ *  * If '.'                                                *
+ *       If chart sections  selected == 0 quit              *
+ *           else continue                                  *
+ *                                                          *
+ *  * Retain selection for second run                       *
+ *                                                          *
+ *  * If '.' use first run selection of chart               *
+ *    else                                                  *
+ *    re-accept chart     criteria                          *
+ *  * User may select up to 25 valid chart sections, groups *
+ *    or all sections in database.                          *
+ ************************************************************/ 
+
+int sel_chart() 
+  {
+  extern char dbase_string[6];
+  char opt;
+
+  /* No of sections selected */
+  static int no_sec_req;
+
+  heid = atoi((char *)EXParam[1].arr);
+  sys_flag.arr[0] = (char *)EXParam[0].arr[0];
+  sys_flag.arr[1] = '\0';
+  sys_flag.len = 1;
+
+  EXEC SQL
+  SELECT rse_type
+        ,rse_unique
+        ,rse_gty_group_type
+    INTO :rse_type
+        ,:rse_unique
+        ,:rse_gty_group_type
+    FROM road_segs
+   WHERE rse_he_id = :heid
+       ;
+  oraerror("get_rse_unique");
+
+  rse_type.arr[rse_type.len] = '\0';
+  rse_unique.arr[rse_unique.len] = '\0';
+  rse_gty_group_type.arr[rse_gty_group_type.len] = '\0';
+
+  switch(rse_type.arr[0])
+    {
+    /************************************************************ 
+    * If chart selection  'A' set selection type to 'A' - all  *
+    * count the sections on database and return number         *
+    * if previous 'A' set repeat and return number previous    *
+    ************************************************************/
+    case 'A' : cha_sel_type = 'A';    
+               no_sec_req = tot_chart_sections();
+               return(no_sec_req);
+               break;
+    /************************************************************ 
+    * If chart selection  'G' set selection type to 'G' - group*
+    * call select group type/group                             *
+    * count the sections selected    and return number         *
+    ************************************************************/
+    case 'G' : cha_sel_type = 'G';
+               no_sec_req=get_groups();       
+               return(no_sec_req);
+               break;
+    /************************************************************ 
+    * If chart selection  'S' set selection type to 'S' - sect *
+    * call select sections                                     *
+    * count the sections selected and return number            *
+    ************************************************************/
+    case 'S' : cha_sel_type = 'S';
+               no_sec_req=get_sects();
+               return(no_sec_req);
+               break;            
+    /************************************************************ 
+    * If chart selection  '.'                                  *
+    * repeat previous selections and options                   *
+    ************************************************************/
+    case '.' : return(no_sec_req);
+               break;            
+    /************************************************************ 
+    * If chart selection  'E' close report file                *
+    * logoff Oracle                                            *
+    * unconditional exit                                       *
+    ************************************************************/
+    case 'E' : return(0);
+               break;      
+    /************************************************************ 
+    * Code should not allow default but just in case           *
+    * close report file                                        *
+    * logoff Oracle                                            *
+    * unconditional exit                                       *
+    ************************************************************/
+    default : /* Whoops */
+              EXEC SQL ROLLBACK WORK;
+              jobend(EXJobId,1,"Invalid GRI Parameter number 3");
+              EXEC SQL COMMIT WORK;
+              dblogoff();
+              exit(EX_FAIL);
+    }
+  } /*sel_chart*/
+
+
+/************************************************************ 
+ *Function : tot_chart_sections()                           *
+ *                                                          *
+ * Returns total active sections on database                *
+ * from view ROAD_SECTIONS                                  *
+ ************************************************************/ 
+int tot_chart_sections()
+  {
+  EXEC SQL
+    SELECT COUNT(*) 
+      INTO :no_sections
+      FROM road_sections
+     WHERE rse_sys_flag LIKE UPPER(:sys_flag)
+         ;
+
+  return(no_sections);
+  } /*tot_chart_sections*/
+
+/************************************************************ 
+ *Function : get_groups()                                   *
+ *                                                          *
+ * Returns total sections in groups selected                *
+ * from view ROAD_GROUPS and tab ROAD_SEG_MEMBS             *
+ * flag repeat indicates repeat of previous                 *
+ ************************************************************/ 
+int get_groups()    
+  {
+  char grp_type[5];
+  short int valid_group=0;
+  static short int fst_call=1;
+  int i;
+  char *ptr, *tok;
+
+  ptr=malloc(100);
+  strcpy(ptr,"G,");
+  strcat(ptr,(char *)rse_gty_group_type.arr);
+  strcat(ptr,",");
+  strcat(ptr,(char *)rse_unique.arr);
+
+  tok=strtok(ptr,","); /* This will be the 'G' for group */
+  if(tok)
+    {
+    tok=strtok(NULL,","); /* This should be the group type */
+    }
+
+  if(!tok)
+    {
+    EXEC SQL ROLLBACK WORK;
+    jobend(EXJobId,1,"Invalid GRI Parameter number 3. No group type");
+    EXEC SQL COMMIT WORK;
+    dblogoff();
+    exit(EX_FAIL);
+    }
+
+  cha_grp_type.len = strlen(tok);
+  strcpy((char *)cha_grp_type.arr,tok);
+
+  EXEC SQL SELECT 'Valid Group'        
+             INTO :h_dummy:i_dummy
+             FROM GROUP_TYPES
+            WHERE GTY_GROUP_TYPE = :cha_grp_type
+                ; 
+  oraerror("get_groups : cursor 1");
+  if(sqlca.sqlerrd[2] ==0)
+    {
+    EXEC SQL ROLLBACK WORK;
+    jobend(EXJobId,1,"Invalid GRI Parameter number 3. Invalid group type");
+    EXEC SQL COMMIT WORK;
+    dblogoff();
+    exit(EX_FAIL);
+    }
+
+  tok=strtok(NULL,",");
+  if(!tok)
+    {
+    EXEC SQL ROLLBACK WORK;
+    jobend(EXJobId,1,"Invalid GRI Parameter number 3. No group name");
+    EXEC SQL COMMIT WORK;
+    dblogoff();
+    exit(EX_FAIL);
+    }
+
+  /************************************************************ 
+  * Delete from IFF_SECT_STACK
+  ***********************************************************/ 
+  EXEC SQL DELETE FROM IFF_SECT_STACK
+            WHERE ISS_SESSION = USERENV('SESSIONID')
+                ;
+  oraerror("get_groups : cursor 2");
+
+  EXEC SQL COMMIT WORK;
+  oraerror("get_groups : cursor 3");
+
+  no_sections = 0;
+
+  while (tok)
+    {
+    grp_name.len = strlen(tok);
+    strcpy((char *)grp_name.arr,tok);
+   
+    /************************************************************ 
+    *Insert into IFF_SECT_STACK section members of group       *
+    * if 0 sections Error. count all sections 0 on first loop. *
+    * don't insert duplicates                                  *
+    ***********************************************************/ 
+    EXEC SQL EXECUTE
+    DECLARE
+      CURSOR c1
+          IS
+      SELECT rgp.rse_he_id
+        FROM ROAD_GROUPS RGP
+       WHERE RGP.RSE_SYS_FLAG like upper(:sys_flag)
+         AND RGP.RSE_TYPE = 'G'
+         AND RGP.RSE_GTY_GROUP_TYPE = upper(:cha_grp_type)
+         AND RGP.RSE_START_DATE <= SYSDATE
+         AND NVL(RGP.RSE_END_DATE,to_date('01-01-2099','DD-MM-YYYY')) >= SYSDATE
+         AND RGP.RSE_GROUP like upper(:grp_name)
+           ;
+      c1_rec  c1%rowtype;
+    BEGIN
+      :no_inserts := 0;
+      for c1_rec in c1 loop
+        DECLARE
+          cursor c2
+              is
+          SELECT RSM2.RSM_RSE_HE_ID_OF, RSM2.RSM_TYPE
+            FROM ROAD_SEG_MEMBS RSM2
+           WHERE SYSDATE BETWEEN TO_DATE(TO_CHAR(RSM2.RSM_START_DATE,'DD-MON-YY'))
+                             AND NVL(RSM2.RSM_END_DATE,SYSDATE)
+         CONNECT BY PRIOR RSM2.RSM_RSE_HE_ID_OF = RSM2.RSM_RSE_HE_ID_IN
+                      AND SYSDATE BETWEEN TO_DATE(TO_CHAR(RSM2.RSM_START_DATE,'DD-MON-YY'))
+                                      AND NVL(RSM2.RSM_END_DATE,SYSDATE)
+           START WITH RSM2.RSM_RSE_HE_ID_IN = c1_rec.rse_he_id
+                  AND SYSDATE BETWEEN TO_DATE(TO_CHAR(RSM2.RSM_START_DATE,'DD-MON-YY'))
+                                  AND NVL(RSM2.RSM_END_DATE,SYSDATE) ;
+
+          c2_rec c2%rowtype;
+        BEGIN
+          for c2_rec in c2 loop
+            if c2_rec.rsm_type = 'S'
+             then
+                INSERT
+                  INTO IFF_SECT_STACK
+                      (ISS_SESSION
+                      ,ISS_RSE_HE_ID
+                      ,ISS_RSE_LINKCODE
+                      ,ISS_RSE_SECT_NO
+                      ,ISS_RSE_PUS_NODE_ID_ST
+                      ,ISS_RSE_DESCR
+                      ,ISS_RSE_PUS_NODE_ID_END)
+                SELECT USERENV('SESSIONID')
+                      ,RSE.RSE_HE_ID
+                      ,RSE.RSE_AGENCY||RSE.RSE_LINKCODE
+                      ,RSE.RSE_SECT_NO
+                      ,RSE.RSE_PUS_NODE_ID_ST
+                      ,RSE.RSE_DESCR
+                      ,RSE.RSE_PUS_NODE_ID_END
+                  FROM ROAD_SECTIONS  RSE
+                 WHERE rse.rse_he_id = c2_rec.rsm_rse_he_id_of
+                   AND NOT EXISTS(SELECT 'In a previous group'
+                                    FROM iff_sect_stack iss
+                                   WHERE rse.rse_he_id = iss.iss_rse_he_id
+                                     AND iss_session = USERENV('SESSIONID'))
+                     ;
+
+                :no_inserts := SQL%ROWCOUNT + :no_inserts;
+            END IF;
+          END LOOP;
+        END;
+      END LOOP;
+    END;
+    END-EXEC;
+
+    oraerror("get_groups : cursor 4");
+    no_sections = no_sections + no_inserts;
+
+    tok=strtok(NULL,",");
+    } /* End bracket of while (tok) loop */
+    
+  return(no_sections);
+  } /*get_groups*/
+
+
+/************************************************************ 
+ *Function : get_sects()                                    *
+ *                                                          *
+ * Returns total sections selected                          *
+ * from view ROAD_SECTIONS                                  *
+ ************************************************************/ 
+
+int get_sects()    
+  {
+  int i;
+  char *ptr,*tok;
+
+  ptr=malloc(40);
+  strcpy((char *)sect_id.arr,(char *)rse_unique.arr);
+  sect_id.len = rse_unique.len;
+
+  if(sect_id.len == 0)
+    {
+    EXEC SQL ROLLBACK WORK;
+    printf ("Invalid GRI Parameter number 3. No sections\n");
+    write_pipe(NULL,"Invalid GRI Parameter number 3. No sections");
+    jobend(EXJobId,1,"Invalid GRI Parameter number 3. No sections");
+    EXEC SQL COMMIT WORK;
+    dblogoff();
+    exit(EX_FAIL);
+    }
+
+  /************************************************************ 
+   * Delete from IFF_SECT_STACK
+   ***********************************************************/ 
+  EXEC SQL
+    DELETE FROM IFF_SECT_STACK
+     WHERE ISS_SESSION = USERENV('SESSIONID')
+         ;
+  oraerror("get_sect : cursor 1");
+  EXEC SQL COMMIT WORK;
+  oraerror("get_sect : cursor 2");
+
+  no_sections = 0;
+
+  EXEC SQL INSERT INTO IFF_SECT_STACK 
+            (  ISS_SESSION 
+              ,ISS_RSE_HE_ID 
+              ,ISS_RSE_LINKCODE  
+              ,ISS_RSE_SECT_NO   
+              ,ISS_RSE_PUS_NODE_ID_ST   
+              ,ISS_RSE_PUS_NODE_ID_END 
+              ,ISS_RSE_DESCR)
+            SELECT 
+               USERENV('SESSIONID') 
+              ,RSE.RSE_HE_ID 
+              ,RSE.RSE_AGENCY||RSE_LINKCODE     
+              ,RSE.RSE_SECT_NO   
+              ,RSE.RSE_PUS_NODE_ID_ST   
+              ,RSE.RSE_PUS_NODE_ID_END 
+              ,RSE.RSE_DESCR
+            FROM  ROAD_SECTIONS RSE
+            WHERE RSE.RSE_SYS_FLAG like upper(:sys_flag)
+            AND   RSE_TYPE = 'S'
+            AND   RSE.RSE_START_DATE <= SYSDATE
+            AND NVL(RSE.RSE_END_DATE,to_date('01-01-2099','DD-MM-YYYY')) 
+                       >= SYSDATE
+            AND   RSE.RSE_UNIQUE like :sect_id
+            AND NOT EXISTS 
+                (SELECT 'Previously selected section'
+                 FROM   IFF_SECT_STACK ISS
+                 WHERE  RSE.RSE_HE_ID = ISS.ISS_RSE_HE_ID
+                 AND    ISS_SESSION = USERENV('SESSIONID'));
+
+  oraerror("get_sect : cursor 3");
+  if(sqlca.sqlerrd[2] == 0) 
+    {
+    printf("\nERROR : Invalid combination of agency/linkcode/section BPR-0493\n");
+    write_pipe(NULL,"ERROR: Invalid combination of agency/linkcode/section");
+    }
+  else
+    {
+    no_sections = no_sections + sqlca.sqlerrd[2];
+    }
+ 
+  return(no_sections);
+  } /*get_sects*/
+
+/************************************************************ 
+ * Function :fch_sec()                                      *
+ *                                                          *
+ * Fetches section info from the previous inserted rows     *
+ * from IFF_SECT_STACK  return -1 when finished rows.       *
+ ************************************************************/ 
+int c1_this_fetch;
+int c1_count;
+int c1_so_far; 
+short int c1_eof;
+
+int fch_sec(id,dtp_id,per_defects,tot_defects,tot_rs) 
+  int  *id,*per_defects,*tot_defects,*tot_rs;
+  char *dtp_id;
+  {
+  void sec_qry();
+  *id          = c1_he_id[c1_count];
+  *per_defects = c1_per_defects[c1_count];
+  *tot_defects = c1_tot_defects[c1_count];
+  *tot_rs      = c1_tot[c1_count];
+
+  c1_dtp_id[c1_count].arr[c1_dtp_id[c1_count].len] = '\0';
+  strcpy(dtp_id,(char *)c1_dtp_id[c1_count].arr);
+
+  c1_count++;
+
+  if(c1_count >= c1_this_fetch)
+    {
+    if(c1_eof == -1)
+      return(-1);
+    else
+      sec_qry();
+    }
+  return(1);
+  } /*fch_sec*/
+
+/************************************************************ 
+ * Function :set_sec_qry()                                  *
+ *                                                          *
+ * Sets up start query conditions for query from            *
+ * IFF_SEC_STACK                                            *
+ ************************************************************/ 
+
+static char *sel_sections =  
+"select\
+        s.iss_rse_linkcode||'\'||s.iss_rse_sect_no,\
+        s.iss_rse_he_id\
+     from  iff_sect_stack s\
+     where s.iss_session = userenv('sessionid')\
+      order by s.iss_rse_he_id";
+
+static char *sel_all_sections = 
+"select\
+        s.rse_agency||s.rse_linkcode||'\'||s.rse_sect_no,\
+        s.rse_he_id\
+      from  road_sections s\
+      where s.rse_sys_flag like upper(:sys_flag)\
+      order by s.rse_he_id";
+
+
+void set_sec_qry()
+  {
+  void sec_qry();
+
+  if(cha_sel_type == 'A')
+    {
+    select_string = (char *) sel_all_sections;
+    }
+  else
+    {
+    select_string = (char *) sel_sections;
+    }
+
+  EXEC SQL PREPARE S1 FROM :select_string;
+  oraerror("set_sec_qry : cursor 1");
+
+  EXEC SQL DECLARE C1 CURSOR FOR S1;
+  oraerror("set_sec_qry : cursor 2");
+
+  if(cha_sel_type == 'A')
+    {
+    EXEC SQL OPEN C1 USING :sys_flag;
+    }
+  else
+    {
+    EXEC SQL OPEN C1;
+    }
+  oraerror("set_sec_qry : cursor 3");
+
+  c1_this_fetch = 0;
+  c1_count = 0;
+  c1_so_far = 0; 
+  sec_qry();
+  } /*set_sec_qry*/
+
+/************************************************************ 
+ * Function :sec_qry()                                      *
+ *                                                          *
+ * Querys rows into array for use by fch_sec() function     *
+ * from IFF_SECT_STACK                                      *
+ ************************************************************/ 
+
+void sec_qry()
+  {
+  #ifdef IBM
+    static int i;
+  #else
+    int i;
+  #endif
+
+  EXEC SQL
+     FETCH C1
+      INTO :c1_dtp_id
+          ,:c1_he_id;
+  oraerror("sec_qry : cursor 1");
+
+  c1_this_fetch = sqlca.sqlerrd[2] - c1_so_far;
+  c1_so_far     = sqlca.sqlerrd[2];
+  c1_count      = 0;
+  c1_eof        = (sqlca.sqlcode == EOFTCH ) ? -1 : 1;
+
+  for(i=0; i<c1_this_fetch;i++)
+    { 
+    q_he_id = c1_he_id[i];
+
+    EXEC SQL
+      SELECT NVL(SUM(NVL(d.def_number,1)),0)
+        INTO :total_defects  
+        FROM defects d
+       WHERE d.def_rse_he_id = :q_he_id
+         AND d.def_atv_acty_area_code = 'RS'
+         AND d.def_mand_adv = 'A'
+         AND d.def_date_compl IS NULL
+         AND d.def_superseded_flag = 'N'
+         AND d.def_ity_sys_flag LIKE UPPER(:sys_flag) 
+         AND NOT EXISTS(SELECT 'On works order' 
+                          FROM work_order_lines w
+                         WHERE w.wol_def_defect_id = d.def_defect_id)
+           ;
+    oraerror("sec_qry : cursor 2");
+
+    EXEC SQL
+      SELECT NVL(SUM((iit_end_chain - iit_st_chain) / nvl(iit_gap,1)),0) + 1
+        INTO :total_ars
+        FROM inv_items i
+       WHERE i.iit_ity_inv_code = 'RS'
+         AND i.iit_rse_he_id = :q_he_id
+         AND i.iit_class = 2
+         AND i.iit_ity_sys_flag LIKE UPPER(:sys_flag) 
+         AND i.iit_end_date IS NULL
+           ;
+    oraerror("sec_qry : cursor 3");
+
+    c1_tot_defects[i] = total_defects;
+    c1_tot[i] = total_ars;
+    c1_per_defects[i] = total_ars == 0 ? 0 : (int)((float)total_defects) / ((float)total_ars) * 100; 
+    }
+  } /*sec_qry*/
+
+
+/************************************************************ 
+ *Function : ins_sects                                      *
+ *                                                          *
+ *  Inserts valid section selections into the table         *
+ *  IFF_SECT_STACK                                          *
+ ************************************************************/ 
+
+int ins_sect(sect_sel)    
+  char *sect_sel;
+  {
+  int i;
+  for(i=0;i<strlen(sect_sel);i++)
+    {
+    sect_id.arr[i]=rmcaseup(sect_sel[i]);
+    }
+  sect_id.len = strlen((char *)sect_id.arr);
+
+  /* Split out the agency code from the section identifier */
+  for (i=0;i<4;i++)
+    {
+    h_agency.arr[i] = sect_id.arr[i];
+    }
+  h_agency.arr[4] = '\0';
+  h_agency.len=strlen((char *)h_agency.arr);
+
+  /* Split out the linkcode from the section identifier */
+  for (i=0;i<6;i++)
+    {
+    h_linkcode.arr[i] = sect_id.arr[i+4];
+    }
+  h_linkcode.arr[6]='\0';
+  h_linkcode.len=strlen((char *)h_linkcode.arr);
+
+  /* Split out the section number from the section identifier */
+  for (i=0;i<2;i++)
+    {
+    h_sect_no.arr[i] = sect_id.arr[i+10];
+    }
+  h_sect_no.arr[2]='\0';
+  h_sect_no.len=strlen((char *)h_sect_no.arr);
+
+
+  /************************************************************ 
+   *Insert into IFF_SECT_STACK section members of group       *
+   * if 0 sections Error. count all sections 0 on first loop. *
+   * don't insert duplicates                                  *
+   ***********************************************************/ 
+
+  EXEC SQL
+    INSERT INTO iff_sect_stack 
+               (iss_session
+               ,iss_rse_he_id
+               ,iss_rse_linkcode
+               ,iss_rse_sect_no) 
+         SELECT USERENV('SESSIONID')
+               ,rse_he_id
+               ,rse.rse_agency||rse_linkcode
+               ,rse_sect_no 
+           FROM road_sections rse
+          WHERE rse.rse_sys_flag LIKE UPPER(:sys_flag)
+            AND rse.rse_type = 'S'
+            AND rse.rse_start_date <= SYSDATE
+            AND NVL(rse.rse_end_date,TO_DATE('01-01-2099','DD-MM-YYYY')) >= SYSDATE
+            AND rse.rse_agency = :h_agency
+            AND rse.rse_linkcode = :h_linkcode
+            AND rse.rse_sect_no = :h_sect_no
+            AND NOT EXISTS(SELECT 'Previously selected section'
+                             FROM iff_sect_stack iss
+                            WHERE iss_session = USERENV('SESSIONID')
+                              AND iss.iss_rse_he_id = rse.rse_he_id)
+              ;
+  oraerror("ins_sect : cursor 1");
+
+  if(sqlca.sqlerrd[2] == 0) 
+    {  
+    printf("\nERROR : Invalid combination of agency/linkcode/section ");
+    printf("BPR-0493\n");
+    strcpy(pipe_msg,"ERROR : Invalid combination of ");
+    strcat(pipe_msg,"agency/linkcode/section BPR-0493");
+    write_pipe(NULL,pipe_msg);
+    }
+
+  return(sqlca.sqlerrd[2]);
+  } /*ins_sect*/
+
+void set_sys_flag()
+  {
+  sys_flag.arr[0]='D';
+  sys_flag.arr[1]='\0';
+  sys_flag.len=1;
+  } /*set_sys_flag*/
