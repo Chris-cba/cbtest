@@ -1,0 +1,138 @@
+/* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "@(#)r5hea.pc	1.1 09/16/03"; 
+/*
+   CHANGE HISTORY :-
+   DATE         : 01-SEP-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : 1.7 > 2.1 database conversion
+
+   DATE         : 04-11-97
+   CHANGED BY   : G Fletcher
+   DESCRIPTION  : client-server conversion
+*/
+
+/************************************************************ 
+* Standard I/O definition header file.                      *
+************************************************************/ 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include "rmms.h"
+
+/************************************************************ 
+* SQL communication header file.                            *
+* Declared  external                                        *
+************************************************************/ 
+#define SQLCA_STORAGE_CLASS extern
+EXEC SQL INCLUDE sqlext.h;
+
+#define EOFTCH 1403       /* Constant to define the number to      */
+                          /* indicate that a SQL fetch is complete */
+                          /* Should be placed in RMMS.H            */
+
+/************************************************************ 
+* SQL common declaration area for PRO*C host variables      *
+************************************************************/ 
+EXEC SQL BEGIN DECLARE SECTION;
+  VARCHAR iif_source[21];
+  VARCHAR iif_date[7];
+  VARCHAR iif_hh_date[7];
+  VARCHAR h_agent_code[5];
+EXEC SQL END DECLARE SECTION;
+
+extern short EXDebug;
+extern char *EXRepOutpath;
+extern char pipe_msg[254];
+char GBErrMsg[255];
+
+/************************************************************ 
+ * Function : open_iif_rep()                                *
+ *                                                          *
+ * Opens ouput file and writes header record to ouput       *
+ * based on information in tab USER_DEFNS.                  *
+ *                                                          *
+ ************************************************************/ 
+
+FILE *open_iif_rep(hh_date)
+char *hh_date;
+{
+FILE *fp; 
+#ifndef IBM
+FILE *fopen();
+#endif
+  int    i;
+  char maint_agent[5];
+
+      if (fopen(EXRepOutpath,"r") == NULL)   /* Report file does not exist. */
+      {
+          if ((fp=fopen(EXRepOutpath,"w")) == NULL)
+          {              /* Can't open for writing    */
+			sprintf(GBErrMsg,"%s %s",EXRepOutpath,strerror(errno));
+                        puts(GBErrMsg);
+	   		EXEC SQL ROLLBACK WORK;
+	   		jobend(EXJobId,1,GBErrMsg);
+	   		EXEC SQL COMMIT WORK;
+	   		dblogoff();
+	   		exit(EX_FAIL);
+		  }
+      }
+  
+  
+  printf("\nINFO: Output file name ");
+  printf(" is : %s BPR-0536\n",EXRepOutpath);
+  strcpy(pipe_msg,"INFO: Output File Name is : ");
+  strcat(pipe_msg,EXRepOutpath);
+  strcat(pipe_msg," BPR-0536");
+  write_pipe(NULL,pipe_msg);
+
+  EXEC SQL SELECT HOP_VALUE
+           INTO :iif_source
+           FROM HIG_OPTIONS
+		   WHERE HOP_NAME='IIF_SOURCE'
+		   AND HOP_PRODUCT='MAI';
+
+  if (sqlca.sqlcode == 0)
+    iif_source.arr[iif_source.len] = '\0';
+  else
+ 	strcpy((char *)iif_source.arr,"RMMSINV");
+
+  EXEC SQL SELECT HUS_AGENT_CODE
+           into   :h_agent_code
+           from   HIG_USERS
+           where  HUS_USERNAME = user;
+
+
+  EXEC SQL SELECT TO_CHAR(SYSDATE,'DDMMYY'),
+                  TO_CHAR(SYSDATE,'YYMMDD')
+			INTO :iif_date,
+                 :iif_hh_date
+			FROM DUAL;
+
+  h_agent_code.arr[h_agent_code.len] = '\0';
+  strcpy(maint_agent,h_agent_code.arr);
+  iif_date.arr[iif_date.len]     = '\0';
+  iif_hh_date.arr[iif_hh_date.len]     = '\0';
+  if (par_set('H','C') == 1)
+  { fprintf(fp,"\"A,INVENT\"");}
+  else
+  { fprintf(fp,"\"A,%7s,%s,%4s\"",iif_source.arr,iif_date.arr,maint_agent);}
+
+  strcpy(hh_date,(char *)iif_hh_date.arr);  
+  return(fp);        /* Return file pointer of opened file */
+ }
+
+
+
+iif_close(fp)
+FILE *fp;
+{
+fclose(fp);
+return(SUCCESS);
+}
+
+
+
+
