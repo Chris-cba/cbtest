@@ -1,8 +1,9 @@
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 /* "@(#)r1validz.h	1.1 09/08/03"                       */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1validz.h  $ $Revision:   2.2  $ $Modtime:   Dec 04 2012 20:18:42  $" */
+/* "$Workfile:   r1validz.h  $ $Revision:   2.3  $ $Modtime:   Jul 02 2013 09:37:06  $" */
 
 /* r1validc.h
 contains C functions for checking the format of husky hunter Z load records
