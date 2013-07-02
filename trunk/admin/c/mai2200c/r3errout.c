@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "rmms.h"
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
 static char *sccsid = "@(#)r3errout.c	1.2 12/08/06";
 
 

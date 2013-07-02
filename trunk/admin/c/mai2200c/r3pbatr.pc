@@ -1,5 +1,6 @@
-
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
 static char *sccsid = "@(#)r3pbatr.pc	1.2 12/08/06";
 
 /* ============================================================================
