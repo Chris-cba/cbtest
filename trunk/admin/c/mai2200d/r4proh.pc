@@ -1,9 +1,9 @@
-
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r4proh.pc	1.2 09/27/06"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.2  $ $Modtime:   Aug 12 2009 14:02:26  $";
+static char *sccsid = "$Workfile:   r4proh.pc  $ $Revision:   2.3  $ $Modtime:   Jul 02 2013 10:12:20  $";
 
 
 /* ============================================================================

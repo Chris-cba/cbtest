@@ -53,9 +53,10 @@
  */
 
 /* static char *sccsid = "@(#)r4prosrec.pc	1.2 11/05/03"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4prosrec.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4prosrec.pc  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:14:40  $";
 
 
 #include <stdio.h>                   /* Include standard header file    */

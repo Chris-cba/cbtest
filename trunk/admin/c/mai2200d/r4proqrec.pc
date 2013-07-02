@@ -34,9 +34,10 @@
  *==============================================================================
  */
 /* static char *sccsid = "@(#)r4proqrec.pc	1.1 09/08/03"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4proqrec.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4proqrec.pc  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:13:10  $";
 
 #include <stdio.h>                   /* Include gstandard header file   */
 #include "rmms.h"                    /* Standard rmms header file       */

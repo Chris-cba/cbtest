@@ -1,8 +1,9 @@
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r4psect.pc	1.7 01/19/07"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4psect.pc  $ $Revision:   2.0  $ $Modtime:   Jun 15 2007 14:39:14  $";
+static char *sccsid = "$Workfile:   r4psect.pc  $ $Revision:   2.1  $ $Modtime:   Jul 02 2013 10:19:06  $";
 
 #include <stdio.h>
 

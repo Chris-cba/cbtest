@@ -1,9 +1,9 @@
-
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r4prog.pc	1.4 02/15/07"; */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 
 /*PVCS keyword, do not remove */
-static char *sccsid = "$Workfile:   r4prog.pc  $ $Revision:   2.1  $ $Modtime:   Aug 06 2009 11:16:02  $";
+static char *sccsid = "$Workfile:   r4prog.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:11:44  $";
 
 /* ============================================================================
  *          [ PROGREC - Prosess 'G' (Header) Records ]
