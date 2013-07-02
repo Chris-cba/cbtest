@@ -7,6 +7,8 @@
 #       Date fetched Out : 07/06/07 11:30:23
 #       SCCS Version     : 1.1
 #
+# Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. 
+#
 # ***********************************************************************
 # 
 #   % make -f <makefile> <module> [USERID=<user>/<pass>] 

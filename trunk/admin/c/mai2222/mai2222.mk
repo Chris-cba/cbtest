@@ -8,6 +8,8 @@
 #       Date fetched Out : 07/06/07 11:29:32
 #       SCCS Version     : 1.1
 #
+# Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+#
 # ***********************************************************************
 #
 # To make this module :
