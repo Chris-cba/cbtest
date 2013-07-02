@@ -13,7 +13,9 @@
 **********************************************************************/
 
 /* static char *sccsid="@(#)mai2105.pc	1.1 09/16/03"; */
-static char *sccsid = "$Workfile:   mai2105.pc  $ $Revision:   2.1  $ $Modtime:   Aug 07 2009 16:51:46  $";
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "$Workfile:   mai2105.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 09:53:18  $";
 
 #include <stdio.h>
 #include <ctype.h>
