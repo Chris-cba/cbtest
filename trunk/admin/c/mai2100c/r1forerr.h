@@ -1,8 +1,9 @@
 /* SCCS ID keywords, do not remove */
+/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
 /* "@(#)r1forerr.h	1.1 09/08/03"                       */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1forerr.h  $ $Revision:   2.2  $ $Modtime:   Dec 04 2012 20:18:42  $" */
+/* "$Workfile:   r1forerr.h  $ $Revision:   2.3  $ $Modtime:   Jul 02 2013 09:34:28  $" */
 
 /* Modification history :-
  * DATE         : 3-11-97
