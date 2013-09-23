@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.36   Jul 01 2013 16:25:52   James.Wadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.37   Sep 23 2013 11:22:08   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:42  $
---       SCCS Version     : $Revision:   2.36  $
+--       Date into SCCS   : $Date:   Sep 23 2013 11:22:08  $
+--       Date fetched Out : $Modtime:   Sep 23 2013 10:40:40  $
+--       SCCS Version     : $Revision:   2.37  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,11 +20,12 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.36  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.37  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
 g_filepath  varchar2(250) := 'CIM_DIR'; --hig.get_useopt('INTERPATH', USER);
+g_multifinal   varchar2(250) := hig.get_sysopt('CIMMULTIF');
 g_wol_index integer;
 g_wor_index integer;
 --
@@ -3698,7 +3699,11 @@ BEGIN
   validate_contractor(p_ih_id);
   validate_claim_check_rec(p_ih_id);
   validate_claim_type(p_ih_id);
-  validate_claim_unique(p_ih_id);
+  -- D-125250
+  if g_multifinal = 'N'
+  then
+   validate_claim_unique(p_ih_id);
+  end if; 
   validate_claim_date(p_ih_id);
   validate_claim_wor_no(p_ih_id);
   validate_claim_wor_con(p_ih_id);
@@ -3726,7 +3731,11 @@ IF hig.get_sysopt('XTRIFLDS') IN ('2-1-3', '2-4-0') THEN
 ELSE
   validate_claim_rate(p_ih_id);
 END IF;
-  validate_claim_not_complete(p_ih_id);
+  -- D-125250 
+  if g_multifinal = 'N'
+  then
+     validate_claim_not_complete(p_ih_id);
+  end if;
   validate_interim_no(p_ih_id);
   validate_claim_complete(p_ih_id);
   validate_completed_dates(p_ih_id);
@@ -4887,7 +4896,8 @@ BEGIN
 		  --				   
           add_to_budget(wol_rec.wol_id
                        ,wol_rec.wol_bud_id
-                       ,lv_claim_value);  
+                       ,lv_claim_value
+					   ,c2rec.icwor_claim_type);  
       END LOOP;
       
       IF lt_wol_over_budget.count > 0 
@@ -5456,9 +5466,11 @@ END IF;
                            SUM(wol_est_labour)
                           ,SUM(wol_act_cost)
                           ,maiwo.bal_sum(SUM(wol_act_cost), oun_cng_disc_group)
-                          ,DECODE(wor_date_closed, NULL,
-                           DECODE(maiwo.works_order_complete(wor_works_order_no),
-                          'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), wor_date_closed)
+                          ,DECODE(g_multifinal, 'N', DECODE(wor_date_closed, NULL, DECODE(maiwo.works_order_complete(wor_works_order_no),
+                                                                                          'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL), 
+																				   wor_date_closed)
+                                                   , DECODE(maiwo.works_order_complete(wor_works_order_no),
+                                                            'TRUE', NVL(MAX(wol_date_complete), SYSDATE), NULL) )      
                           ,DECODE(wor_date_closed, NULL, l_user_id, wor_closed_by_id)
                       FROM   work_order_lines
                           ,interface_claims_wor
