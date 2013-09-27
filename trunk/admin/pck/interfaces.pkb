@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.37   Sep 23 2013 11:22:08   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.38   Sep 27 2013 10:18:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 23 2013 11:22:08  $
---       Date fetched Out : $Modtime:   Sep 23 2013 10:40:40  $
---       SCCS Version     : $Revision:   2.37  $
+--       Date into SCCS   : $Date:   Sep 27 2013 10:18:40  $
+--       Date fetched Out : $Modtime:   Sep 27 2013 10:18:22  $
+--       SCCS Version     : $Revision:   2.38  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.37  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.38  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -1658,27 +1658,31 @@ BEGIN
             AND    woc_claim_ref = icwor_con_claim_ref )
   AND    icwor_ih_id = p_ih_id;
 
-IF SQL%rowcount > 0 THEN
-  validate_wo_item(p_ih_id,'WOR',2);
-END IF;
+  IF SQL%rowcount > 0 THEN
+    validate_wo_item(p_ih_id,'WOR',2);
+  END IF;
 
-  UPDATE interface_claims_wol
-  SET    icwol_error = SUBSTR(icwol_error||'A Final Claim has already been processed for this work order line. ', 1, 254)
-        ,icwol_status = 'R'
-  WHERE  EXISTS ( SELECT 1
-            FROM     claim_payments
-                ,work_order_claims
-                ,interface_claims_wor
-            WHERE     woc_con_id = cp_woc_con_id
-            AND    woc_claim_ref = cp_woc_claim_ref
-            AND    woc_claim_type = 'F'
-            AND     cp_wol_id = icwol_wol_id
-            AND    icwol_con_claim_ref = icwor_con_claim_ref
-            AND     icwol_con_id = icwor_con_id
-            AND    icwol_ih_id = icwor_ih_id
-            AND    icwor_claim_type != 'P' ) -- only perform check for non-post invoices
-  AND    icwol_ih_id = p_ih_id;
+  -- D-125250
+  if g_multifinal = 'N'
+  then
 
+     UPDATE interface_claims_wol
+     SET    icwol_error = SUBSTR(icwol_error||'A Final Claim has already been processed for this work order line. ', 1, 254)
+           ,icwol_status = 'R'
+     WHERE  EXISTS ( SELECT 1
+               FROM     claim_payments
+                   ,work_order_claims
+                   ,interface_claims_wor
+               WHERE     woc_con_id = cp_woc_con_id
+               AND    woc_claim_ref = cp_woc_claim_ref
+               AND    woc_claim_type = 'F'
+               AND     cp_wol_id = icwol_wol_id
+               AND    icwol_con_claim_ref = icwor_con_claim_ref
+               AND     icwol_con_id = icwor_con_id
+               AND    icwol_ih_id = icwor_ih_id
+               AND    icwor_claim_type != 'P' ) -- only perform check for non-post invoices
+     AND    icwol_ih_id = p_ih_id;
+  end if;
 END;
 
 ---------------------------------------------------------------------
@@ -2268,13 +2272,14 @@ PROCEDURE validate_interim_no(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
 
   UPDATE interface_claims_wor icwor1
-  SET    icwor_error = SUBSTR(icwor_error||'An interim invoice with a higher or equal number exists for at least one WOL on this invoice. ', 1, 254)
+  SET    icwor_error = SUBSTR(icwor_error||DECODE(icwor_claim_type, 'I','An interim', 'A Final')|| 
+                              ' invoice with a higher or equal number exists for at least one WOL on this invoice. ', 1, 254)
         ,icwor_status = 'R'
   WHERE  EXISTS (SELECT 1    -- an interim invoice with a higher no. has already been processed for this WOL
                  FROM   work_order_claims
                  ,claim_payments
                  ,interface_claims_wol
-                 WHERE  woc_claim_type = 'I'
+                 WHERE  woc_claim_type = icwor_claim_type
              AND    woc_interim_no >= icwor1.icwor_interim_no
              AND    cp_woc_claim_ref = woc_claim_ref
              AND    cp_woc_con_id = woc_con_id
@@ -2297,7 +2302,7 @@ BEGIN
              AND    icwor1.icwor_ih_id = icwor2.icwor_ih_id
              AND    icwor2.icwor_interim_no >= icwor1.icwor_interim_no
              AND    icwor2.icwor_con_claim_ref != icwor1.icwor_con_claim_ref)
-  AND    icwor_claim_type = 'I'
+  AND    icwor_claim_type IN ('I', 'F')
   AND    icwor_ih_id = p_ih_id;
 
 END;
@@ -3699,11 +3704,7 @@ BEGIN
   validate_contractor(p_ih_id);
   validate_claim_check_rec(p_ih_id);
   validate_claim_type(p_ih_id);
-  -- D-125250
-  if g_multifinal = 'N'
-  then
-   validate_claim_unique(p_ih_id);
-  end if; 
+  validate_claim_unique(p_ih_id);
   validate_claim_date(p_ih_id);
   validate_claim_wor_no(p_ih_id);
   validate_claim_wor_con(p_ih_id);
