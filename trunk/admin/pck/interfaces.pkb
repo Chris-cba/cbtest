@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.38   Sep 27 2013 10:18:40   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.39   Oct 07 2013 09:39:48   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 27 2013 10:18:40  $
---       Date fetched Out : $Modtime:   Sep 27 2013 10:18:22  $
---       SCCS Version     : $Revision:   2.38  $
+--       Date into SCCS   : $Date:   Oct 07 2013 09:39:48  $
+--       Date fetched Out : $Modtime:   Oct 07 2013 09:42:32  $
+--       SCCS Version     : $Revision:   2.39  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.38  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.39  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2280,7 +2280,7 @@ BEGIN
                  ,claim_payments
                  ,interface_claims_wol
                  WHERE  woc_claim_type = icwor_claim_type
-             AND    woc_interim_no >= icwor1.icwor_interim_no
+             AND    woc_interim_no >= NVL(icwor1.icwor_interim_no,0)
              AND    cp_woc_claim_ref = woc_claim_ref
              AND    cp_woc_con_id = woc_con_id
              AND    icwol_wol_id = cp_wol_id
@@ -2300,7 +2300,7 @@ BEGIN
              AND    icwor1.icwor_works_order_no = icwor2.icwor_works_order_no
              AND    icwor1.icwor_claim_type = icwor2.icwor_claim_type
              AND    icwor1.icwor_ih_id = icwor2.icwor_ih_id
-             AND    icwor2.icwor_interim_no >= icwor1.icwor_interim_no
+             AND    icwor2.icwor_interim_no >= NVL(icwor1.icwor_interim_no,0)
              AND    icwor2.icwor_con_claim_ref != icwor1.icwor_con_claim_ref)
   AND    icwor_claim_type IN ('I', 'F')
   AND    icwor_ih_id = p_ih_id;
@@ -4887,6 +4887,7 @@ BEGIN
 					        interface_claims_wol_all
                     WHERE  icwol_wol_id = wol_id
                         AND  icwol_ih_id = p_ih_id
+						AND  icwol_status = 'P'
                         AND  icwol_con_claim_ref = c2rec.icwor_con_claim_ref
                         AND  wol_works_order_no = c2rec.icwor_works_order_no ) 
       LOOP
