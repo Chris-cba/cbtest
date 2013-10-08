@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.11   Jul 01 2013 16:26:48   James.Wadsworth  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.12   Oct 08 2013 16:08:38   Rob.Coupe  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   1.11  $
+--       Date into SCCS   : $Date:   Oct 08 2013 16:08:38  $
+--       Date fetched Out : $Modtime:   Oct 08 2013 16:07:54  $
+--       SCCS Version     : $Revision:   1.12  $
 --
 -----------------------------------------------------------------------------
 --    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.11  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.12  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN
@@ -40,6 +40,19 @@ g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.11  $"';
     RETURN l_retval; 
  END get_string; 
  
+ FUNCTION get_ne_string (p_au_col_name  IN varchar2 ) RETURN varchar2 IS 
+ l_retval varchar2(2000); 
+ BEGIN 
+  l_retval := 'exists (SELECT  1 '||CHR(10)|| 
+              'FROM  HIG_ADMIN_GROUPS, NM_ELEMENTS '||CHR(10)||
+              'WHERE  HAG_PARENT_ADMIN_UNIT  = Sys_Context('||''''||'NM3CORE'||''''||','||''''||'USER_ADMIN_UNIT'||''''||')'||CHR(10)|| 
+              '  AND   HAG_CHILD_ADMIN_UNIT = NE_ADMIN_UNIT'||
+              '  AND   NE_ID = '||p_au_col_name||CHR(10)|| 
+              ' ) '||CHR(10); 
+    RETURN l_retval; 
+ END get_ne_string; 
+
+
  FUNCTION get_up_string (p_au_col_name  IN varchar2 ) RETURN varchar2 IS 
  l_retval varchar2(2000); 
  BEGIN 
@@ -97,7 +110,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( DEF_RSE_HE_ID)'); 
+       RETURN get_ne_string('DEF_RSE_HE_ID'); 
     END IF; 
  END; 
 function ARE_20_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -106,7 +119,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( ARE_RSE_HE_ID)'); 
+       RETURN get_ne_string('ARE_RSE_HE_ID'); 
     END IF; 
  END; 
 function DEF_22_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -115,7 +128,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( DEF_RSE_HE_ID)'); 
+       RETURN get_ne_string('DEF_RSE_HE_ID'); 
     END IF; 
  END; 
 function WOL_23_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -124,7 +137,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( WOL_RSE_HE_ID)'); 
+       RETURN get_ne_string('WOL_RSE_HE_ID'); 
     END IF; 
  END; 
 function DLD_34_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -133,7 +146,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( DLD_RSE_HE_ID)'); 
+       RETURN get_ne_string('DLD_RSE_HE_ID'); 
     END IF; 
  END; 
 function ARE_42_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -142,7 +155,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( ARE_RSE_HE_ID)'); 
+       RETURN get_ne_string('ARE_RSE_HE_ID'); 
     END IF; 
  END; 
 function SCH_45_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -151,7 +164,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( SCHR_RSE_HE_ID)'); 
+       RETURN get_ne_string('SCHR_RSE_HE_ID'); 
     END IF; 
  END; 
 function MAI_46_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -160,7 +173,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( MAI2325_RSE_HE_ID)'); 
+       RETURN get_ne_string('MAI2325_RSE_HE_ID'); 
     END IF; 
  END; 
 function REP_47_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -169,7 +182,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( REP_RSE_HE_ID)'); 
+       RETURN get_ne_string('REP_RSE_HE_ID'); 
     END IF; 
  END; 
 function LFR_49_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -178,7 +191,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( LFR_RSE_HE_ID)'); 
+       RETURN get_ne_string('LFR_RSE_HE_ID'); 
     END IF; 
  END; 
 function SCH_61_predicate_read( schema_in varchar2, name_in varchar2) RETURN varchar2 IS 
@@ -196,7 +209,7 @@ BEGIN
      THEN 
        RETURN NULL; 
     ELSE 
-       RETURN get_string('get_admin_unit( REP_RSE_HE_ID)'); 
+       RETURN get_ne_string('REP_RSE_HE_ID'); 
     END IF; 
  END; 
 ---
@@ -211,17 +224,17 @@ BEGIN
        RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
                 'where oun_org_id = con_contr_org_id )'||')'||
                 ' or exists ( select 1 from contractor_users where cou_oun_org_id = oun_org_id '||
-                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||							
+                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||                            
                 ' and cou_hus_user_id = Sys_Context('||''''||'NM3CORE'||''''||','||''''||'USER_ID'||''''||') )'||CHR(10)|| 
                 ' or exists ( select 1 from contractor_roles, hig_user_roles '||
                 ' where cor_oun_org_id = oun_org_id and cor_role = hur_role '||
-                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||				
+                ' AND Sys_Context('||''''||'NM3SQL'||''''||','||''''||'CONSECMODE'||''''||') = '||''''||'U'||''''||                
                 ' and hur_username = Sys_Context('||''''||'NM3_SECURITY_CTX'||''''||','||''''||'USERNAME'||''''||') ) ';
 /*
 
-	RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
+    RETURN '('||get_string('oun_admin_org_id')||' OR exists ( select 1 from contracts '||
                 'where oun_org_id = con_contr_org_id )'||')' ; -- or oun_admin_org_id is null ';
-*/				
+*/                
     END IF; 
  END;
 
