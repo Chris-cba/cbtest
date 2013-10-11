@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.39   Oct 07 2013 09:39:48   Chris.Baugh  $
+--       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.40   Oct 11 2013 11:47:36   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 07 2013 09:39:48  $
---       Date fetched Out : $Modtime:   Oct 07 2013 09:42:32  $
---       SCCS Version     : $Revision:   2.39  $
+--       Date into SCCS   : $Date:   Oct 11 2013 11:47:36  $
+--       Date fetched Out : $Modtime:   Oct 11 2013 11:50:46  $
+--       SCCS Version     : $Revision:   2.40  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.39  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.40  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -2230,21 +2230,38 @@ END;
 
 PROCEDURE validate_claim_not_complete(p_ih_id IN interface_headers.ih_id%TYPE) IS
 BEGIN
-
-  UPDATE interface_claims_wol
-  SET    icwol_error = SUBSTR(icwol_error||'Work already complete. ', 1, 254)
-        ,icwol_status = 'R'
-  WHERE  EXISTS (SELECT 1
-                 FROM   work_order_lines
-                 ,interface_claims_wor
-                 WHERE  wol_id = icwol_wol_id
-                 AND    wol_status_code = g_wol_comp_status
-             AND    icwor_works_order_no = wol_works_order_no
-             AND    icwor_claim_type IN ('F', 'I')
-             AND    icwor_con_claim_ref = icwol_con_claim_ref
-             AND    icwor_con_id = icwol_con_id
-             AND    icwor_ih_id = p_ih_id)
-  AND    icwol_ih_id = p_ih_id;
+  if g_multifinal = 'N'
+  then
+     UPDATE interface_claims_wol
+     SET    icwol_error = SUBSTR(icwol_error||'Work already complete. ', 1, 254)
+           ,icwol_status = 'R'
+     WHERE  EXISTS (SELECT 1
+                    FROM   work_order_lines
+                    ,interface_claims_wor
+                    WHERE  wol_id = icwol_wol_id
+                    AND    wol_status_code = g_wol_comp_status
+                AND    icwor_works_order_no = wol_works_order_no
+                AND    icwor_claim_type IN ('F', 'I')
+                AND    icwor_con_claim_ref = icwol_con_claim_ref
+                AND    icwor_con_id = icwol_con_id
+                AND    icwor_ih_id = p_ih_id)
+     AND    icwol_ih_id = p_ih_id;
+   else
+     UPDATE interface_claims_wol
+     SET    icwol_error = SUBSTR(icwol_error||'Work already complete. ', 1, 254)
+           ,icwol_status = 'R'
+     WHERE  EXISTS (SELECT 1
+                    FROM   work_order_lines
+                    ,interface_claims_wor
+                    WHERE  wol_id = icwol_wol_id
+                    AND    wol_status_code = g_wol_comp_status
+                AND    icwor_works_order_no = wol_works_order_no
+                AND    icwor_claim_type = 'I'
+                AND    icwor_con_claim_ref = icwol_con_claim_ref
+                AND    icwor_con_id = icwol_con_id
+                AND    icwor_ih_id = p_ih_id)
+     AND    icwol_ih_id = p_ih_id;
+   end if;
 
   UPDATE interface_claims_wol
   SET    icwol_error = SUBSTR(icwol_error||'Date complete cannot be null for final invoices. ', 1, 254)
@@ -3732,11 +3749,7 @@ IF hig.get_sysopt('XTRIFLDS') IN ('2-1-3', '2-4-0') THEN
 ELSE
   validate_claim_rate(p_ih_id);
 END IF;
-  -- D-125250 
-  if g_multifinal = 'N'
-  then
-     validate_claim_not_complete(p_ih_id);
-  end if;
+  validate_claim_not_complete(p_ih_id);
   validate_interim_no(p_ih_id);
   validate_claim_complete(p_ih_id);
   validate_completed_dates(p_ih_id);
