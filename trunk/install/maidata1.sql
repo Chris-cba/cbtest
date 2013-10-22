@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.31   Jul 01 2013 16:03:32   James.Wadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata1.sql-arc   2.32   Oct 22 2013 15:40:16   Chris.Baugh  $
 --       Module Name      : $Workfile:   maidata1.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:03:32  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:36  $
---       Version          : $Revision:   2.31  $
+--       Date into PVCS   : $Date:   Oct 22 2013 15:40:16  $
+--       Date fetched Out : $Modtime:   Oct 22 2013 15:18:08  $
+--       Version          : $Revision:   2.32  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 27-SEP-2012 11:00
+--       Generation Date  : 22-OCT-2013 15:18
 --
 --   Product metadata script
 --   As at Release 4.6.0.0
 --
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) exor corporation ltd, 2013
 --
 --   TABLES PROCESSED
 --   ================
@@ -13729,6 +13729,28 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'CIMMULTIF'
+       ,'MAI'
+       ,'Allow Multi Final CIM Invoices'
+       ,'If set to Y, CIM processing will allow for a Final invoice file to be processed, after a previous Final has been processed'
+       ,''
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'CIMMULTIF');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'CLAIMDEF'
        ,'MAI'
        ,'Default status for new claims'
@@ -14895,6 +14917,50 @@ INSERT INTO HIG_OPTION_LIST
        ,HOL_USER_OPTION
        )
 SELECT 
+        'PED4CHRASS'
+       ,'MAI'
+       ,'PEDIF file 4 Char Asset Codes'
+       ,'If set to Y, the 2 character mai Asset Codes will be translated to the 4 Character nm3 equivalents when creating the PEDIF file. If set to N the 2 character codes will be exported as normal.'
+       ,'Y_OR_N'
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'PED4CHRASS');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
+        'PEDDATEATR'
+       ,'MAI'
+       ,'PEDIF file Date Attributes'
+       ,'If set to Y, any date attributes (record type 12) will be exported with a of type "D" and a length of 11 when creating the PEDIF file. If set to N the date attributes will be exported with a type of "S" and a length of 7 as was previously the case before the introduction of this option.'
+       ,'Y_OR_N'
+       ,'VARCHAR2'
+       ,'N'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_LIST
+                   WHERE HOL_ID = 'PEDDATEATR');
+--
+INSERT INTO HIG_OPTION_LIST
+       (HOL_ID
+       ,HOL_PRODUCT
+       ,HOL_NAME
+       ,HOL_REMARKS
+       ,HOL_DOMAIN
+       ,HOL_DATATYPE
+       ,HOL_MIXED_CASE
+       ,HOL_USER_OPTION
+       )
+SELECT 
         'PEDFILE'
        ,'MAI'
        ,'Mai3863 Edif Filename'
@@ -15948,6 +16014,16 @@ INSERT INTO HIG_OPTION_VALUES
        ,HOV_VALUE
        )
 SELECT 
+        'CIMMULTIF'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'CIMMULTIF');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
         'CLAIMDEF'
        ,'A' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
@@ -16452,6 +16528,26 @@ SELECT
        ,'ALL' FROM DUAL
  WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
                    WHERE HOV_ID = 'NOTREFOUND');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'PED4CHRASS'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'PED4CHRASS');
+--
+INSERT INTO HIG_OPTION_VALUES
+       (HOV_ID
+       ,HOV_VALUE
+       )
+SELECT 
+        'PEDDATEATR'
+       ,'N' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_OPTION_VALUES
+                   WHERE HOV_ID = 'PEDDATEATR');
 --
 INSERT INTO HIG_OPTION_VALUES
        (HOV_ID
