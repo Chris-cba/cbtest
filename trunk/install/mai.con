@@ -1,18 +1,18 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.10   Jul 01 2013 16:02:12   James.Wadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.con-arc   2.11   Oct 22 2013 11:31:00   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
---       PVCS Version     : $Revision:   2.10  $
+--       Date into PVCS   : $Date:   Oct 22 2013 11:31:00  $
+--       Date fetched Out : $Modtime:   Oct 22 2013 11:29:46  $
+--       PVCS Version     : $Revision:   2.11  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Tue Jun 01  10:38:38 2010 by Server Generator 10.1.2.9.28
-
+-- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
+  
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
  ADD (CONSTRAINT ATV_PK PRIMARY KEY 
@@ -290,6 +290,13 @@ ALTER TABLE WORK_ORDERS
 /
      
 
+PROMPT Creating Foreign Key on 'AUTO_DEFECT_SELECTION_PRIORITY'
+ALTER TABLE AUTO_DEFECT_SELECTION_PRIORITY ADD (CONSTRAINT
+ ADSP_FK_NAU FOREIGN KEY 
+  (ADSP_ADMIN_UNIT) REFERENCES NM_ADMIN_UNITS_ALL
+  (NAU_ADMIN_UNIT))
+/
+
 PROMPT Creating Foreign Key on 'BUDGETS'
 ALTER TABLE BUDGETS ADD (CONSTRAINT
  BUD_FYR_FK FOREIGN KEY 
@@ -311,10 +318,24 @@ ALTER TABLE CONTRACTOR_USERS ADD (CONSTRAINT
   (HUS_USER_ID))
 /
 
+PROMPT Creating Foreign Key on 'DEFECT_PRIORITIES'
+ALTER TABLE DEFECT_PRIORITIES ADD (CONSTRAINT
+ DPR_FK_NAU FOREIGN KEY 
+  (DPR_ADMIN_UNIT) REFERENCES NM_ADMIN_UNITS_ALL
+  (NAU_ADMIN_UNIT))
+/
+
 PROMPT Creating Foreign Key on 'DEF_SUPERSEDING_RULES'
 ALTER TABLE DEF_SUPERSEDING_RULES ADD (CONSTRAINT
  DSR_NAU_FK FOREIGN KEY 
   (DSR_ADMIN_UNIT) REFERENCES NM_ADMIN_UNITS_ALL
+  (NAU_ADMIN_UNIT))
+/
+
+PROMPT Creating Foreign Key on 'DOC_DEF_PRIORITIES'
+ALTER TABLE DOC_DEF_PRIORITIES ADD (CONSTRAINT
+ DDP_FK_NAU FOREIGN KEY 
+  (DDP_DPR_ADMIN_UNIT) REFERENCES NM_ADMIN_UNITS_ALL
   (NAU_ADMIN_UNIT))
 /
 

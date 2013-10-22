@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.10   Jul 01 2013 16:02:12   James.Wadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.11   Oct 22 2013 11:31:00   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
---       PVCS Version     : $Revision:   2.10  $
+--       Date into PVCS   : $Date:   Oct 22 2013 11:31:00  $
+--       Date fetched Out : $Modtime:   Oct 22 2013 11:28:30  $
+--       PVCS Version     : $Revision:   2.11  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Oct 15  15:34:24 2010 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
   
 
 PROMPT Creating Index 'ATV_INDEX_P2'
@@ -65,9 +65,15 @@ CREATE UNIQUE INDEX ARL_INDEX_P1 ON ACT_REPORT_LINES
  ,ARL_ATV_ACTY_AREA_CODE)
 /
 
+PROMPT Creating Index 'ADSP_FK_NAU_IND'
+CREATE INDEX ADSP_FK_NAU_IND ON AUTO_DEFECT_SELECTION_PRIORITY
+ (ADSP_ADMIN_UNIT)
+/
+
 PROMPT Creating Index 'ADSP_UNIQUE_IND'
 CREATE UNIQUE INDEX ADSP_UNIQUE_IND ON AUTO_DEFECT_SELECTION_PRIORITY
- (ADSP_ATV_ACTY_AREA_CODE
+ (ADSP_ADMIN_UNIT
+ ,ADSP_ATV_ACTY_AREA_CODE
  ,ADSP_DEFECT_CODE
  ,ADSP_FLEX_ATTRIB
  ,ADSP_CNTRL_VALUE)
@@ -267,9 +273,15 @@ CREATE INDEX DEF_IND_SUP ON DEFECTS
  (DEF_SUPERSEDED_ID)
 /
 
+PROMPT Creating Index 'DPR_FK_NAU_IND'
+CREATE INDEX DPR_FK_NAU_IND ON DEFECT_PRIORITIES
+ (DPR_ADMIN_UNIT)
+/
+
 PROMPT Creating Index 'DPR_INDEX_P1'
 CREATE UNIQUE INDEX DPR_INDEX_P1 ON DEFECT_PRIORITIES
- (DPR_ATV_ACTY_AREA_CODE
+ (DPR_ADMIN_UNIT
+ ,DPR_ATV_ACTY_AREA_CODE
  ,DPR_PRIORITY
  ,DPR_ACTION_CAT)
 /
@@ -289,9 +301,15 @@ CREATE UNIQUE INDEX DTY_INDEX_P1 ON DEF_TYPES
  ,DTY_DTP_FLAG)
 /
 
+PROMPT Creating Index 'DDP_FK_NAU_IND'
+CREATE INDEX DDP_FK_NAU_IND ON DOC_DEF_PRIORITIES
+ (DDP_DPR_ADMIN_UNIT)
+/
+
 PROMPT Creating Index 'DDP_INDEX_P1'
 CREATE UNIQUE INDEX DDP_INDEX_P1 ON DOC_DEF_PRIORITIES
- (DDP_DPR_ACTY_AREA_CODE
+ (DDP_DPR_ADMIN_UNIT
+ ,DDP_DPR_ACTY_AREA_CODE
  ,DDP_DPR_PRIORITY
  ,DDP_DPR_ACTION_CAT
  ,DDP_DOC_COMPL_CPR_ID)

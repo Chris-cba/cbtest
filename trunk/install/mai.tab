@@ -1,17 +1,17 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.31   Jul 01 2013 16:02:12   James.Wadsworth  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.32   Oct 22 2013 11:31:00   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:02:12  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
---       PVCS Version     : $Revision:   2.31  $
+--       Date into PVCS   : $Date:   Oct 22 2013 11:31:00  $
+--       Date fetched Out : $Modtime:   Oct 22 2013 11:25:12  $
+--       PVCS Version     : $Revision:   2.32  $
 --
 -----------------------------------------------------------------------------
 -- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
--- Generated for Oracle 10g on Fri Sep 21  17:08:07 2012 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
  
 
 
@@ -123,6 +123,7 @@ CREATE TABLE AUTO_DEFECT_SELECTION_PRIORITY
  ,ADSP_CNTRL_VALUE VARCHAR2(2) NOT NULL
  ,ADSP_PRIORITY VARCHAR2(4)
  ,ADSP_PRIORITY_RANK NUMBER
+ ,ADSP_ADMIN_UNIT NUMBER(9) NOT NULL
  )
 /
 
@@ -516,6 +517,7 @@ CREATE TABLE DEFECT_PRIORITIES
  ,DPR_USE_NEXT_INSP VARCHAR2(1) NOT NULL
  ,DPR_PRINT_TARGETS VARCHAR2(1) NOT NULL
  ,DPR_TIME_MANDATORY VARCHAR2(1) NOT NULL
+ ,DPR_ADMIN_UNIT NUMBER(9) NOT NULL
  )
 /
 
@@ -649,6 +651,7 @@ CREATE TABLE DOC_DEF_PRIORITIES
  ,DDP_DOC_COMPL_CPR_ID VARCHAR2(4)
  ,DDP_DPR_INT_CODE VARCHAR2(4) NOT NULL
  ,DDP_DPR_USE_WORKING_DAYS VARCHAR2(1) NOT NULL
+ ,DDP_DPR_ADMIN_UNIT NUMBER(9) NOT NULL
  )
 /
 
