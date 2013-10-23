@@ -1,17 +1,6 @@
------------------------------------------------------------------------------
---   PVCS Identifiers :-
+-- C:\mhtemp\mai.tab
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.tab-arc   2.32   Oct 22 2013 11:31:00   Chris.Baugh  $
---       Module Name      : $Workfile:   mai.tab  $
---       Date into PVCS   : $Date:   Oct 22 2013 11:31:00  $
---       Date fetched Out : $Modtime:   Oct 22 2013 11:25:12  $
---       PVCS Version     : $Revision:   2.32  $
---
------------------------------------------------------------------------------
--- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
------------------------------------------------------------------------------
---
--- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
+-- Generated for Oracle 10g on Wed Oct 23  09:28:57 2013 by Server Generator 10.1.2.9.28
  
 
 
@@ -1768,6 +1757,51 @@ CREATE TABLE INV_TYPE_TRANSLATIONS
  ,ITY_CLOSE_EXISTING VARCHAR2(1)
  ,ITY_INCL_ROAD_SEGS VARCHAR2(1) NOT NULL
  ,NIT_INV_TYPE VARCHAR2(4)
+ ,ITY_HHPOS100 VARCHAR2(32)
+ ,ITY_HHPOS101 VARCHAR2(32)
+ ,ITY_HHPOS102 VARCHAR2(32)
+ ,ITY_HHPOS103 VARCHAR2(32)
+ ,ITY_HHPOS104 VARCHAR2(32)
+ ,ITY_HHPOS105 VARCHAR2(32)
+ ,ITY_HHPOS106 VARCHAR2(32)
+ ,ITY_HHPOS107 VARCHAR2(32)
+ ,ITY_HHPOS108 VARCHAR2(32)
+ ,ITY_HHPOS109 VARCHAR2(32)
+ ,ITY_HHPOS110 VARCHAR2(32)
+ ,ITY_HHPOS111 VARCHAR2(32)
+ ,ITY_HHPOS112 VARCHAR2(32)
+ ,ITY_HHPOS113 VARCHAR2(32)
+ ,ITY_HHPOS114 VARCHAR2(32)
+ ,ITY_HHPOS115 VARCHAR2(32)
+ ,ITY_HHPOS116 VARCHAR2(32)
+ ,ITY_HHPOS117 VARCHAR2(32)
+ ,ITY_HHPOS118 VARCHAR2(32)
+ ,ITY_HHPOS119 VARCHAR2(32)
+ ,ITY_HHPOS120 VARCHAR2(32)
+ ,ITY_HHPOS76 VARCHAR2(32)
+ ,ITY_HHPOS77 VARCHAR2(32)
+ ,ITY_HHPOS78 VARCHAR2(32)
+ ,ITY_HHPOS79 VARCHAR2(32)
+ ,ITY_HHPOS80 VARCHAR2(32)
+ ,ITY_HHPOS81 VARCHAR2(32)
+ ,ITY_HHPOS82 VARCHAR2(32)
+ ,ITY_HHPOS83 VARCHAR2(32)
+ ,ITY_HHPOS84 VARCHAR2(32)
+ ,ITY_HHPOS85 VARCHAR2(32)
+ ,ITY_HHPOS86 VARCHAR2(32)
+ ,ITY_HHPOS87 VARCHAR2(32)
+ ,ITY_HHPOS88 VARCHAR2(32)
+ ,ITY_HHPOS89 VARCHAR2(32)
+ ,ITY_HHPOS90 VARCHAR2(32)
+ ,ITY_HHPOS91 VARCHAR2(32)
+ ,ITY_HHPOS92 VARCHAR2(32)
+ ,ITY_HHPOS93 VARCHAR2(32)
+ ,ITY_HHPOS94 VARCHAR2(32)
+ ,ITY_HHPOS95 VARCHAR2(32)
+ ,ITY_HHPOS96 VARCHAR2(32)
+ ,ITY_HHPOS97 VARCHAR2(32)
+ ,ITY_HHPOS98 VARCHAR2(32)
+ ,ITY_HHPOS99 VARCHAR2(32)
  )
 /
 
