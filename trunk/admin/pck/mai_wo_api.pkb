@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.34   Jul 01 2013 16:26:02   James.Wadsworth  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.35   Nov 07 2013 09:18:26   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:26:02  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:23:02  $
---       PVCS Version     : $Revision:   3.34  $
+--       Date into PVCS   : $Date:   Nov 07 2013 09:18:26  $
+--       Date fetched Out : $Modtime:   Nov 06 2013 15:35:50  $
+--       PVCS Version     : $Revision:   3.35  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.34  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.35  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1934,6 +1934,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
        AND bud_icb_item_code = icb_item_code
        AND bud_icb_sub_item_code = icb_sub_item_code
        AND bud_icb_sub_sub_item_code = icb_sub_sub_item_code
+	   AND bud_agency = icb_agency_code
        AND bud_sys_flag = icb_dtp_flag
        AND icb_type_of_scheme = lv_scheme_type
        AND EXISTS(SELECT 1
