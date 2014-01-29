@@ -24,11 +24,11 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.10   Jul 01 2013 15:55:04   James.Wadsworth  $
+       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_bill_of_quantities.vw-arc   3.11   Jan 29 2014 15:29:00   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_bill_of_quantities.vw  $
-       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:04  $
-       --       Date fetched Out : $Modtime:   Jul 01 2013 14:09:12  $
-       --       Version          : $Revision:   3.10  $
+       --       Date into PVCS   : $Date:   Jan 29 2014 15:29:00  $
+       --       Date fetched Out : $Modtime:   Jan 28 2014 10:42:14  $
+       --       Version          : $Revision:   3.11  $
        -- Foundation view displaying bill of quantities for a defect
        -------------------------------------------------------------------------
        -- SM 03042009
@@ -36,7 +36,6 @@ SELECT -------------------------------------------------------------------------
        ------------------------------------------------------------------
        --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
        ------------------------------------------------------------------
-
        bi.boq_id                                                                  bill_of_quantities_id
       ,bi.boq_parent_id                                                           bill_of_quantities_parent_id
       ,bi.boq_defect_id                                                           defect_id
