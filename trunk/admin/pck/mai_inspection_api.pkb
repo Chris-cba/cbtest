@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.37   Apr 03 2014 11:14:46   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:25:56  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:21:16  $
---       PVCS Version     : $Revision:   3.36  $
+--       Date into PVCS   : $Date:   Apr 03 2014 11:14:46  $
+--       Date fetched Out : $Modtime:   Jan 28 2014 13:23:56  $
+--       PVCS Version     : $Revision:   3.37  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.37  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -859,41 +859,74 @@ BEGIN
   */
   
   FOR i IN 1 .. pi_com_tab.count LOOP
-    /*
-    ||Insert DOCS entry.
-    */
-    lv_table := 'DOCS';
-    --
-    INSERT
-      INTO DOCS
-          (doc_id
-          ,doc_title
-          ,doc_category
-          ,doc_dtp_code
-          ,doc_date_issued
-          ,doc_descr
-          ,doc_reference_code)
-    VALUES(pi_com_tab(i).com_doc_id
-          ,pi_com_tab(i).com_title
-          ,pi_com_tab(i).com_category
-          ,pi_com_tab(i).com_dtp_code
-          ,pi_com_tab(i).com_date_issued
-          ,pi_com_tab(i).com_descr
-          ,pi_com_tab(i).com_reference_code);
-          
-    /*
-    ||Insert DOC_ASSOCS entry.
-    */
-    lv_table := 'DOC_ASSOCS';
-    --
-    ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
-                  ,pi_rec_id     =>pi_rse_he_id
-                  ,pi_table_name =>'ROAD_SEGMENTS_ALL');
-    --
-    ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
-                  ,pi_rec_id     =>pi_are_report_id
-                  ,pi_table_name =>'ACTIVITIES_REPORT');
 
+    If hig.get_sysopt('NEWDOCMAN') = 'Y'
+    Then
+        /*
+        ||Create eB Document and associations.
+        */ 
+        Declare
+        --
+           l_association_rec nm3_doc_man.g_association_rec;
+           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
+           l_eB_doc_id       Number ;
+        --
+        Begin
+        -- 
+           l_association_rec.featue_table_name := 'ROAD_SEGMENTS_ALL';
+           l_association_rec.feature_id        := pi_rse_he_id;
+           l_association_tab(1)                := l_association_rec;
+           l_association_tab.extend ;
+
+           l_association_rec.featue_table_name := 'ACTIVITIES_REPORT';
+           l_association_rec.feature_id        := pi_are_report_id;
+           l_association_tab(2)                := l_association_rec;
+           
+           nm3_doc_man.create_document_and_assocs(pi_template_id     => hig.get_sysopt('COMMTEMPLA') 
+                                                 ,pi_prefix          => Null
+                                                 ,pi_title           => pi_com_tab(i).com_title
+                                                 ,pi_remarks         => pi_com_tab(i).com_descr
+                                                 ,pi_date_issued     => pi_com_tab(i).com_date_issued
+                                                 ,pi_association_tab => l_association_tab    
+                                                 ,po_document_id     => l_eB_doc_id );
+        End ;
+    Else
+        /*
+        ||Insert DOCS entry.
+        */
+        lv_table := 'DOCS';
+        --
+        INSERT
+          INTO DOCS
+              (doc_id
+              ,doc_title
+              ,doc_category
+              ,doc_dtp_code
+              ,doc_date_issued
+              ,doc_descr
+              ,doc_reference_code)
+        VALUES(pi_com_tab(i).com_doc_id
+              ,pi_com_tab(i).com_title
+              ,pi_com_tab(i).com_category
+              ,pi_com_tab(i).com_dtp_code
+              ,pi_com_tab(i).com_date_issued
+              ,pi_com_tab(i).com_descr
+              ,pi_com_tab(i).com_reference_code);    
+          
+        /*
+        ||Insert DOC_ASSOCS entry.
+        */
+        lv_table := 'DOC_ASSOCS';
+        --
+        ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
+                      ,pi_rec_id     =>pi_rse_he_id
+                      ,pi_table_name =>'ROAD_SEGMENTS_ALL');
+        --
+        ins_doc_assocs(pi_doc_id     =>pi_com_tab(i).com_doc_id
+                      ,pi_rec_id     =>pi_are_report_id
+                      ,pi_table_name =>'ACTIVITIES_REPORT');
+   
+    End If  ;
   END LOOP;
   --
 EXCEPTION
@@ -906,23 +939,55 @@ END ins_comment;
 --
 PROCEDURE ins_defect_doc(pi_das_tab      IN  das_tab) IS
 
-  lv_table   VARCHAR2(10);
+  lv_table    VARCHAR2(10);
   
 BEGIN
 
   /*
   ||Process all Comments
   */
-  
+  as_xlsx.clear_workbook;
+  as_xlsx.new_sheet;
   FOR i IN 1 .. pi_das_tab.count LOOP
-  nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
-    /*
-    ||Insert DOCS entry.
-    */
-    lv_table := 'DOCS';
-    --
-    INSERT
-      INTO DOCS
+    If hig.get_sysopt('NEWDOCMAN') = 'Y'
+    Then
+        lv_table := 'eB DOCS';
+        /*
+        ||Create eB Document and associations.
+        */ 
+        Declare
+        --
+           l_association_rec nm3_doc_man.g_association_rec;
+           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
+           l_eB_doc_id       Number ;
+        --
+        Begin
+        -- 
+           l_association_rec.featue_table_name := 'DEFECTS';
+           l_association_rec.feature_id        := pi_das_tab(i).das_def_defect_id ;
+           l_association_tab(1)                := l_association_rec;
+           
+           nm3_doc_man.create_document_and_assocs(pi_template_id     => hig.get_sysopt('DEFPHOTTEM') 
+                                                 ,pi_prefix          => pi_das_tab(i).das_location
+                                                 ,pi_title           => pi_das_tab(i).das_title
+                                                 ,pi_remarks         => pi_das_tab(i).das_descr
+                                                 ,pi_date_issued     => pi_das_tab(i).das_date_issued
+                                                 ,pi_association_tab => l_association_tab    
+                                                 ,po_document_id     => l_eB_doc_id );
+
+    
+           nm_debug.debug('Defect Assoc eB Doc Id = '||l_eB_doc_id);
+           
+        End ;
+    Else
+        nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
+        /*
+        ||Insert DOCS entry.
+        */
+        lv_table := 'DOCS';
+        --
+        INSERT
+        INTO DOCS
           (doc_id
           ,doc_title
           ,doc_category
@@ -933,7 +998,7 @@ BEGIN
           ,doc_dlc_id
           ,doc_descr
           ,doc_reference_code)
-    VALUES(pi_das_tab(i).das_doc_id
+        VALUES(pi_das_tab(i).das_doc_id
           ,pi_das_tab(i).das_title
           ,pi_das_tab(i).das_category
           ,pi_das_tab(i).das_dtp_code
@@ -944,16 +1009,17 @@ BEGIN
           ,pi_das_tab(i).das_descr
           ,pi_das_tab(i).das_reference_code);
           
-    /*
-    ||Insert DOC_ASSOCS entry.
-    */
-    lv_table := 'DOC_ASSOCS';
-    --
-    ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
-                  ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
-                  ,pi_table_name =>'DEFECTS');
-    --
-  END LOOP;
+        /*
+        ||Insert DOC_ASSOCS entry.
+        */
+        lv_table := 'DOC_ASSOCS';
+        --
+        ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
+                      ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
+                      ,pi_table_name =>'DEFECTS');
+    END IF ;					  
+    --    
+  END LOOP;  
   --
 EXCEPTION
   WHEN others
@@ -2592,18 +2658,20 @@ BEGIN
       || Validate Doc Type
       */
       lv_doc_type := NVL(lt_das_tab(i).das_dtp_code, hig.get_sysopt('DEFDOCTYPE'));
-      
-      IF NOT validate_doc_type(pi_dtp_code       => lv_doc_type
+      If hig.get_sysopt('NEWDOCMAN') != 'Y'
+      Then
+          IF NOT validate_doc_type(pi_dtp_code       => lv_doc_type
                               ,pi_effective_date => pi_effective_date)
-       THEN
-         lv_ner_id := 9286;
-         RAISE doc_assoc_error;
-      ELSE
-         -- In case the Product option is used, ensure this is reflected
-         -- in the lt_das_table entry
-         lt_das_tab(i).das_dtp_code := lv_doc_type;
-      END IF;
-         
+          THEN
+             lv_ner_id := 9286;
+             RAISE doc_assoc_error;
+          ELSE
+              -- In case the Product option is used, ensure this is reflected
+              -- in the lt_das_table entry
+             lt_das_tab(i).das_dtp_code := lv_doc_type;
+          END IF;
+       
+      END IF;   
       /*
       ||Assign Default Title, if title not supplied
       */
@@ -2617,13 +2685,13 @@ BEGIN
       || Validate Category
       */
       IF lt_das_tab(i).das_category IS NOT NULL
-       THEN
-        IF NOT validate_doc_category(pi_hco_code       => lt_das_tab(i).das_category
-                                    ,pi_effective_date => pi_effective_date)
-         THEN
-           lv_ner_id := 9287;
-           RAISE doc_assoc_error;
-        END IF;
+      THEN
+          IF NOT validate_doc_category(pi_hco_code       => lt_das_tab(i).das_category
+                                      ,pi_effective_date => pi_effective_date)
+          THEN
+              lv_ner_id := 9287;
+              RAISE doc_assoc_error;
+          END IF;       
       END IF;
       /*
       ||Default Date Issued.
@@ -2649,19 +2717,27 @@ BEGIN
       /*
       || Validate location
       */
-      lv_doc_locn := NVL(lt_das_tab(i).das_location, hig.get_sysopt('DEFDOCLOCN'));
-      IF NOT validate_file_location(pi_dlc_name    => lv_doc_locn 
-                                   ,po_dlc_dmd_id  => lt_das_tab(i).das_dlc_dmd_id
-                                   ,po_dlc_id      => lt_das_tab(i).das_dlc_id)
-       THEN
-         lv_ner_id := 9289;
-         RAISE doc_assoc_error;
-      ELSE
-         -- In case the Product option is used, ensure this is reflected
-         -- in the lt_das_table entry
-         lt_das_tab(i).das_location := lv_doc_locn;
-      END IF; 
-      
+      If hig.get_sysopt('NEWDOCMAN') = 'Y'
+      Then
+          If lt_das_tab(i).das_location Is Null
+          Then
+              lv_ner_id := 9289;
+              RAISE doc_assoc_error;
+          End If;
+      Else      
+          lv_doc_locn := NVL(lt_das_tab(i).das_location, hig.get_sysopt('DEFDOCLOCN'));
+          IF NOT validate_file_location(pi_dlc_name    => lv_doc_locn 
+                                       ,po_dlc_dmd_id  => lt_das_tab(i).das_dlc_dmd_id
+                                       ,po_dlc_id      => lt_das_tab(i).das_dlc_id)
+          THEN
+             lv_ner_id := 9289;
+             RAISE doc_assoc_error;
+          ELSE
+              -- In case the Product option is used, ensure this is reflected
+              -- in the lt_das_table entry
+              lt_das_tab(i).das_location := lv_doc_locn;
+          END IF; 
+      END IF ;            
     EXCEPTION
       WHEN doc_assoc_error
        THEN
