@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.37   Apr 03 2014 11:14:46   Linesh.Sorathia  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.38   Apr 07 2014 15:03:46   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 03 2014 11:14:46  $
---       Date fetched Out : $Modtime:   Jan 28 2014 13:23:56  $
---       PVCS Version     : $Revision:   3.37  $
+--       Date into PVCS   : $Date:   Apr 07 2014 15:03:46  $
+--       Date fetched Out : $Modtime:   Apr 07 2014 15:02:36  $
+--       PVCS Version     : $Revision:   3.38  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.37  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.38  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -946,8 +946,6 @@ BEGIN
   /*
   ||Process all Comments
   */
-  as_xlsx.clear_workbook;
-  as_xlsx.new_sheet;
   FOR i IN 1 .. pi_das_tab.count LOOP
     If hig.get_sysopt('NEWDOCMAN') = 'Y'
     Then
