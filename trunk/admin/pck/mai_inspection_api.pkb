@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.38   Apr 07 2014 15:03:46   Linesh.Sorathia  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.39   Sep 04 2014 14:12:58   Peter.Bibby  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Apr 07 2014 15:03:46  $
---       Date fetched Out : $Modtime:   Apr 07 2014 15:02:36  $
---       PVCS Version     : $Revision:   3.38  $
+--       Date into PVCS   : $Date:   Sep 04 2014 14:12:58  $
+--       Date fetched Out : $Modtime:   Sep 04 2014 14:12:24  $
+--       PVCS Version     : $Revision:   3.39  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.38  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.39  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1015,7 +1015,7 @@ BEGIN
         ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
                       ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
                       ,pi_table_name =>'DEFECTS');
-    END IF ;					  
+    END IF ;                      
     --    
   END LOOP;  
   --
@@ -1431,7 +1431,7 @@ FUNCTION validate_priority(pi_priority           IN defects.def_priority%TYPE
                           ,pi_atv_acty_area_code IN activities.atv_acty_area_code%TYPE
                           ,pi_action_cat         IN repairs.rep_action_cat%TYPE DEFAULT 'P'
                           ,pi_effective_date     IN DATE
-						  ,pi_rse_he_id          IN defects.def_rse_he_id%TYPE)
+                          ,pi_rse_he_id          IN defects.def_rse_he_id%TYPE)
   RETURN BOOLEAN IS
   --
   CURSOR C1 IS
@@ -2066,7 +2066,7 @@ BEGIN
   IF NOT validate_priority(pi_priority           => lr_defect_rec.def_priority
                           ,pi_atv_acty_area_code => lr_defect_rec.def_atv_acty_area_code
                           ,pi_effective_date     => pi_are_date_work_done
-						  ,pi_rse_he_id          => lr_defect_rec.def_rse_he_id)
+                          ,pi_rse_he_id          => lr_defect_rec.def_rse_he_id)
    THEN
       --
       raise_application_error(-20027,'Invalid Priority Specified. Priority ['||lr_defect_rec.def_priority
@@ -2640,9 +2640,11 @@ PROCEDURE validate_doc_assocs(pi_effective_date IN     date
   lv_ner_id          nm_errors.ner_id%TYPE;
   lv_doc_type        doc_types.dtp_code%TYPE := NULL;
   lv_doc_locn        doc_locations.dlc_location_name%TYPE;
+  lv_doc_cat         docs.doc_category%TYPE;
   --
   doc_assoc_error    EXCEPTION;
   --
+  
 BEGIN
   --
   lt_das_tab := pio_das_tab;
@@ -2655,7 +2657,7 @@ BEGIN
       /*
       || Validate Doc Type
       */
-      lv_doc_type := NVL(lt_das_tab(i).das_dtp_code, hig.get_sysopt('DEFDOCTYPE'));
+      lv_doc_type := NVL(lt_das_tab(i).das_dtp_code, hig.get_user_or_sys_opt('DEFDOCTYPE'));
       If hig.get_sysopt('NEWDOCMAN') != 'Y'
       Then
           IF NOT validate_doc_type(pi_dtp_code       => lv_doc_type
@@ -2682,14 +2684,21 @@ BEGIN
       /*
       || Validate Category
       */
-      IF lt_das_tab(i).das_category IS NOT NULL
-      THEN
-          IF NOT validate_doc_category(pi_hco_code       => lt_das_tab(i).das_category
-                                      ,pi_effective_date => pi_effective_date)
-          THEN
-              lv_ner_id := 9287;
-              RAISE doc_assoc_error;
-          END IF;       
+      lv_doc_cat := NVL(lt_das_tab(i).das_category, hig.get_user_or_sys_opt('DEFDOCCAT'));
+      
+      IF lv_doc_cat IS NOT NULL
+       THEN
+        IF NOT validate_doc_category(pi_hco_code       => lv_doc_cat
+                                    ,pi_effective_date => pi_effective_date)
+         THEN
+           lv_ner_id := 9287;
+           RAISE doc_assoc_error;
+        ELSE
+           -- In case the Product option is used, ensure this is reflected
+           -- in the lt_das_table entry
+           lt_das_tab(i).das_category := lv_doc_cat;              
+        END IF;
+   
       END IF;
       /*
       ||Default Date Issued.
@@ -2723,7 +2732,7 @@ BEGIN
               RAISE doc_assoc_error;
           End If;
       Else      
-          lv_doc_locn := NVL(lt_das_tab(i).das_location, hig.get_sysopt('DEFDOCLOCN'));
+          lv_doc_locn := NVL(lt_das_tab(i).das_location, hig.get_user_or_sys_opt('DEFDOCLOCN'));
           IF NOT validate_file_location(pi_dlc_name    => lv_doc_locn 
                                        ,po_dlc_dmd_id  => lt_das_tab(i).das_dlc_dmd_id
                                        ,po_dlc_id      => lt_das_tab(i).das_dlc_id)
