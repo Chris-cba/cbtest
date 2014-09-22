@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.39   Sep 04 2014 14:12:58   Peter.Bibby  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.40   Sep 22 2014 10:22:54   Linesh.Sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Sep 04 2014 14:12:58  $
---       Date fetched Out : $Modtime:   Sep 04 2014 14:12:24  $
---       PVCS Version     : $Revision:   3.39  $
+--       Date into PVCS   : $Date:   Sep 22 2014 10:22:54  $
+--       Date fetched Out : $Modtime:   Sep 22 2014 10:21:44  $
+--       PVCS Version     : $Revision:   3.40  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.39  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.40  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -958,14 +958,27 @@ BEGIN
            l_association_rec nm3_doc_man.g_association_rec;
            l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
            l_eB_doc_id       Number ;
+           l_admin_unit      Number ;
+           l_eB_template_id  Number ;
+           Cursor c_admin_unit
+           Is
+           Select hp_area_id
+           From   hig_processes
+           Where hp_process_id = hig_process_api.get_current_process_id ; 
         --
         Begin
         -- 
+           --Get the admin unit of the process to load eB document against it.
+           Open  c_admin_unit;
+           Fetch c_admin_unit Into l_admin_unit;
+           Close c_admin_unit;
+
+           l_eB_template_id  := Nvl(nm3_doc_man.get_eb_template_for_au(l_admin_unit),hig.get_sysopt('DEFPHOTTEM'));
            l_association_rec.featue_table_name := 'DEFECTS';
            l_association_rec.feature_id        := pi_das_tab(i).das_def_defect_id ;
            l_association_tab(1)                := l_association_rec;
            
-           nm3_doc_man.create_document_and_assocs(pi_template_id     => hig.get_sysopt('DEFPHOTTEM') 
+           nm3_doc_man.create_document_and_assocs(pi_template_id     => l_eB_template_id 
                                                  ,pi_prefix          => pi_das_tab(i).das_location
                                                  ,pi_title           => pi_das_tab(i).das_title
                                                  ,pi_remarks         => pi_das_tab(i).das_descr
