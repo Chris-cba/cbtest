@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.36   Nov 07 2014 14:19:20   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.37   Nov 07 2014 14:23:16   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 07 2014 14:19:20  $
---       Date fetched Out : $Modtime:   Nov 07 2014 14:17:52  $
---       PVCS Version     : $Revision:   3.36  $
+--       Date into PVCS   : $Date:   Nov 07 2014 14:23:16  $
+--       Date fetched Out : $Modtime:   Nov 07 2014 14:20:34  $
+--       PVCS Version     : $Revision:   3.37  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.37  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -5366,7 +5366,7 @@ BEGIN
          /*
          || Identify date to use to identify Repairs to include on a WO
          */
-         IF lt_criteria.mawr_use_inspection_date = 'Y'
+         IF lt_criteria(i).mawr_use_inspection_date = 'Y'
           THEN 
            OPEN c_insp_date;
            FETCH c_insp_date INTO lv_wo_comparison_date;
