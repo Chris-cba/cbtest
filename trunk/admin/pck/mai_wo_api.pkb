@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.35   Nov 07 2013 09:18:26   Chris.Baugh  $
+--       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.36   Nov 07 2014 14:19:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 07 2013 09:18:26  $
---       Date fetched Out : $Modtime:   Nov 06 2013 15:35:50  $
---       PVCS Version     : $Revision:   3.35  $
+--       Date into PVCS   : $Date:   Nov 07 2014 14:19:20  $
+--       Date fetched Out : $Modtime:   Nov 07 2014 14:17:52  $
+--       PVCS Version     : $Revision:   3.36  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.35  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -5261,15 +5261,23 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
                              )
   IS
   --
+  CURSOR c_insp_date IS
+  SELECT are_date_work_done
+    FROM activities_report,
+         defects
+   WHERE are_report_id = def_are_report_id
+     AND def_defect_id = pi_defect_id;
+  --   
   TYPE wo_criteria_rec IS RECORD
-     (mawr_id                 mai_auto_wo_rules.mawr_id%TYPE
-     ,mawr_scheme_type        mai_auto_wo_rules.mawr_scheme_type%TYPE
-     ,mawr_bud_id             mai_auto_wo_rules.mawr_bud_id%TYPE
-     ,mawr_con_id             mai_auto_wo_rules.mawr_con_id%TYPE
-     ,mawr_aggregate_repairs  mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
-     ,mawc_auto_instruct      mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
-	 ,mawr_start_date         mai_auto_wo_rules.mawr_start_date%TYPE
-	 ,mawr_end_date           mai_auto_wo_rules.mawr_end_date%TYPE
+     (mawr_id                   mai_auto_wo_rules.mawr_id%TYPE
+     ,mawr_scheme_type          mai_auto_wo_rules.mawr_scheme_type%TYPE
+     ,mawr_bud_id               mai_auto_wo_rules.mawr_bud_id%TYPE
+     ,mawr_con_id               mai_auto_wo_rules.mawr_con_id%TYPE
+     ,mawr_aggregate_repairs    mai_auto_wo_rules.mawr_aggregate_repairs%TYPE
+     ,mawr_use_inspection_date  mai_auto_wo_rules.mawr_use_inspection_date%TYPE
+     ,mawc_auto_instruct        mai_auto_wo_rule_criteria.mawc_auto_instruct%TYPE
+  	 ,mawr_start_date           mai_auto_wo_rules.mawr_start_date%TYPE
+	   ,mawr_end_date             mai_auto_wo_rules.mawr_end_date%TYPE
 	 );
   TYPE wo_criteria_tab IS TABLE OF wo_criteria_rec INDEX BY BINARY_INTEGER;
   --
@@ -5279,6 +5287,7 @@ PROCEDURE check_auto_wo_rules(pi_defect_id       IN  defects.def_defect_id%TYPE
   lv_mawr_id            mai_auto_wo_rules.mawr_id%TYPE := NULL;
   lv_multiple_criteria  BOOLEAN := FALSE;
   lv_outside_budget     BOOLEAN := FALSE;
+  lv_wo_comparison_date DATE;
   --
 BEGIN
   /*
@@ -5304,6 +5313,7 @@ BEGIN
           ,mawr_bud_id
           ,mawr_con_id
           ,mawr_aggregate_repairs
+          ,NVL(mawr_use_inspection_date, 'N')
           ,NVL(mawc_auto_instruct, 'N')
           ,mawr_start_date
           ,mawr_end_date
@@ -5350,78 +5360,95 @@ BEGIN
      || Check if the budget dates are the reason for no match
      */
      IF lt_criteria.count > 0 
-       THEN
-	      FOR i IN 1 .. lt_criteria.count LOOP
-		     IF pi_rep_date_due BETWEEN lt_criteria(i).mawr_start_date AND
-                                        NVL(lt_criteria(i).mawr_end_date, pi_rep_date_due)
-			    THEN
-				   NULL;
-			 ELSE
-			    lt_criteria.DELETE(i);
-				lv_outside_budget := TRUE;
-		     END IF;
-		  END LOOP;
+     THEN
+	     FOR i IN 1 .. lt_criteria.count LOOP
+
+         /*
+         || Identify date to use to identify Repairs to include on a WO
+         */
+         IF lt_criteria.mawr_use_inspection_date = 'Y'
+          THEN 
+           OPEN c_insp_date;
+           FETCH c_insp_date INTO lv_wo_comparison_date;
+           IF c_insp_date%NOTFOUND 
+            THEN
+             nm_debug.debug('Could not identify Inspection Date for Defect '||pi_defect_id);
+           END IF;
+           CLOSE c_insp_date;
+         ELSE
+           lv_wo_comparison_date := pi_rep_date_due;
+         END IF;
+
+         IF TRUNC(lv_wo_comparison_date) BETWEEN TRUNC(lt_criteria(i).mawr_start_date) AND
+                                           NVL(TRUNC(lt_criteria(i).mawr_end_date), TRUNC(lv_wo_comparison_date))
+	   		 THEN
+	   			   NULL;
+	   		 ELSE
+	   		   lt_criteria.DELETE(i);
+	   			 lv_outside_budget := TRUE;
+	   	   END IF;
+         
+		   END LOOP;
      END IF;
 	 
      IF lt_criteria.count = 0
-       THEN
-         nm_debug.debug('No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id);
-		 IF lv_outside_budget
-		   THEN
-		      po_error := 'No Automatic Work Order Rules defined for Repair target date '||TO_CHAR(pi_rep_date_due, 'DD-MON-YYYY');
-         END IF;
+      THEN
+       nm_debug.debug('No matching Automatic Work Order creation criteria found for Defect '||pi_defect_id);
+		   IF lv_outside_budget
+		    THEN
+		     po_error := 'No Automatic Work Order Rules defined for Repair target date '||TO_CHAR(lv_wo_comparison_date, 'DD-MON-YYYY');
+       END IF;
 		 
-		 po_create_wo := 'N';
+		   po_create_wo := 'N';
      ELSE
-         FOR i IN 1 .. lt_criteria.LAST LOOP
-           IF lt_criteria.EXISTS(i) THEN
+       FOR i IN 1 .. lt_criteria.LAST LOOP
+         IF lt_criteria.EXISTS(i) THEN
 
-				/*
-				|| If mawr_id does not match previous non-null value, got
-				|| multiple matching rules
-				*/
-				IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id
-				  THEN
-				   lv_multiple_criteria := TRUE;
-				   EXIT;
-				END IF;
-
-				/*
-				|| Check if any auto instruct = 'Y' for any matching criteria
-				*/
-				IF lt_criteria(i).mawc_auto_instruct = 'Y'
-				  THEN
-				   po_auto_instruct := 'Y';
-
-				END IF;
-
-				po_rule_id      := lt_criteria(i).mawr_id;
-				po_scheme_type  := lt_criteria(i).mawr_scheme_type;
-				po_bud_id       := lt_criteria(i).mawr_bud_id;
-				po_con_id       := lt_criteria(i).mawr_con_id;
-				po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
-
-				lv_mawr_id := lt_criteria(i).mawr_id;
+				   /*
+				   || If mawr_id does not match previous non-null value, got
+				   || multiple matching rules
+				   */
+				   IF NVL(lv_mawr_id, lt_criteria(i).mawr_id) != lt_criteria(i).mawr_id
+				    THEN
+				     lv_multiple_criteria := TRUE;
+				     EXIT;
+				   END IF;
+           
+				   /*
+				   || Check if any auto instruct = 'Y' for any matching criteria
+				   */
+				   IF lt_criteria(i).mawc_auto_instruct = 'Y'
+				    THEN
+				     po_auto_instruct := 'Y';
+           END IF;
+           
+				   po_rule_id      := lt_criteria(i).mawr_id;
+				   po_scheme_type  := lt_criteria(i).mawr_scheme_type;
+				   po_bud_id       := lt_criteria(i).mawr_bud_id;
+				   po_con_id       := lt_criteria(i).mawr_con_id;
+				   po_aggregate    := lt_criteria(i).mawr_aggregate_repairs;
+           
+				   lv_mawr_id := lt_criteria(i).mawr_id;
 			
-			END IF;
+			   END IF;
 
-         END LOOP;
-         --
-         IF lv_multiple_criteria
-          THEN
-             po_rule_id     := NULL;
-             po_scheme_type := NULL;
-             po_bud_id      := NULL;
-             po_con_id      := NULL;
-             po_aggregate   := NULL;
-             po_error       := 'Multiple Automatic Work Order creation criteria found for Defect '||pi_defect_id||
-                               ' Repair Type '||pi_rep_action_cat;
-             po_create_wo   := 'N';
-         ELSE
-             po_create_wo := 'Y';
-         END IF;
+       END LOOP;
+       --
+       IF lv_multiple_criteria
+        THEN
+           po_rule_id     := NULL;
+           po_scheme_type := NULL;
+           po_bud_id      := NULL;
+           po_con_id      := NULL;
+           po_aggregate   := NULL;
+           po_error       := 'Multiple Automatic Work Order creation criteria found for Defect '||pi_defect_id||
+                             ' Repair Type '||pi_rep_action_cat;
+           po_create_wo   := 'N';
+       ELSE
+           po_create_wo := 'Y';
+       END IF;
 
-      END IF;
+     END IF;
          --
   END;
 
