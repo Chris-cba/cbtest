@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai_4700_fix7.sql-arc   3.0   Dec 03 2014 10:07:56   Mike.Huitson  $
+--       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai_4700_fix7.sql-arc   3.1   Dec 03 2014 15:32:30   Mike.Huitson  $
 --       Module Name      : $Workfile:   mai_4700_fix7.sql  $
---       Date into PVCS   : $Date:   Dec 03 2014 10:07:56  $
---       Date fetched Out : $Modtime:   Dec 03 2014 09:54:48  $
---       Version          : $Revision:   3.0  $
+--       Date into PVCS   : $Date:   Dec 03 2014 15:32:30  $
+--       Date fetched Out : $Modtime:   Dec 03 2014 15:32:08  $
+--       Version          : $Revision:   3.1  $
 ------------------------------------------------------------------
 --   Copyright (c) 2014 Bentley Systems Incorporated. All rights reserved
 --------------------------------------------------------------------------------
@@ -70,10 +70,10 @@ WHENEVER SQLERROR CONTINUE
 --------------------------------------------------------------------------------
 --
 SET TERM ON 
-PROMPT log_mai_4700_fix4.sql 
+PROMPT log_mai_4700_fix7.sql 
 --
 SET FEEDBACK ON
-start log_mai_4700_fix4.sql
+start log_mai_4700_fix7.sql
 SET FEEDBACK OFF
 SPOOL OFF
 EXIT
