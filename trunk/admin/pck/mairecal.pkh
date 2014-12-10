@@ -3,11 +3,11 @@ AS
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.4   Oct 28 2014 13:12:38   Mike.Huitson  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.5   10 Dec 2014 12:20:04   Mike.Huitson  $
   --       Module Name      : $Workfile:   mairecal.pkh  $
-  --       Date into SCCS   : $Date:   Oct 28 2014 13:12:38  $
-  --       Date fetched Out : $Modtime:   Oct 28 2014 11:43:44  $
-  --       SCCS Version     : $Revision:   2.4  $
+  --       Date into SCCS   : $Date:   10 Dec 2014 12:20:04  $
+  --       Date fetched Out : $Modtime:   09 Dec 2014 21:54:18  $
+  --       SCCS Version     : $Revision:   2.5  $
   --       Based onSCCS Version     : 1.1
   -----------------------------------------------------------------------------
   --  This package contains procedures and functions which are required by
@@ -19,7 +19,7 @@ AS
   -----------------------------------------------------------------------------
   --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
-  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.4  $"';
+  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.5  $"';
   --  g_sccsid is the SCCS ID for the package
   --
   -----------------------------------------------------------------------------
@@ -74,6 +74,13 @@ AS
   PROCEDURE mai_reclassify(pi_old_ne_id      IN nm_elements.ne_id%TYPE
                           ,pi_new_ne_id      IN nm_elements.ne_id%TYPE
                           ,pi_effective_date IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE resize_data(pi_ne_id       IN nm_elements.ne_id%TYPE
+                       ,pi_orig_length IN NUMBER
+                       ,pi_new_length  IN NUMBER);
 
   --
   -----------------------------------------------------------------------------
