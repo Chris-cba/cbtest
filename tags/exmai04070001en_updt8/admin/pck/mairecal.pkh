@@ -1,0 +1,92 @@
+CREATE OR REPLACE PACKAGE mairecal
+AS
+  -----------------------------------------------------------------------------
+  --   PVCS Identifiers :-
+  --
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.5   10 Dec 2014 12:20:04   Mike.Huitson  $
+  --       Module Name      : $Workfile:   mairecal.pkh  $
+  --       Date into SCCS   : $Date:   10 Dec 2014 12:20:04  $
+  --       Date fetched Out : $Modtime:   09 Dec 2014 21:54:18  $
+  --       SCCS Version     : $Revision:   2.5  $
+  --       Based onSCCS Version     : 1.1
+  -----------------------------------------------------------------------------
+  --  This package contains procedures and functions which are required by
+  --  the Shift / Recalibrate process within Network Manager.
+  --  Maintenance Manager specific functionality can be found here,
+  --  whilst the core functionality of the network processes can be found
+  --  in the HIGRECAL package.
+  --  Originally taken from '@(#)mairecal.pck 1.4 08/07/98';
+  -----------------------------------------------------------------------------
+  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  -----------------------------------------------------------------------------
+  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.5  $"';
+  --  g_sccsid is the SCCS ID for the package
+  --
+  -----------------------------------------------------------------------------
+  --
+  -- This function returns the current SCCS version
+  FUNCTION get_version RETURN varchar2;
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  -- This function returns the current SCCS version of the package body
+  FUNCTION get_body_version RETURN varchar2;
+
+  --
+  -----------------------------------------------------------------------------
+  --**** SHIFT PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE check_data(p_rse_he_id    IN     NUMBER -- section to shift
+                      ,p_new_length   IN     NUMBER -- new shift length
+                      ,p_from_chain   IN     NUMBER -- chainage from which to shift
+                      ,p_chain_adjust IN     NUMBER -- chainage to shift by
+                      ,p_errors       IN OUT NUMBER
+                      ,p_error_string IN OUT VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE shift_data(p_rse_he_id    IN NUMBER   -- section to shift
+                      ,p_new_length   IN NUMBER   -- not required here
+                      ,p_from_chain   IN NUMBER   -- chainage from which to shift
+                      ,p_chain_adjust IN NUMBER); -- chainage to shift by
+
+  --
+  -----------------------------------------------------------------------------
+  --**** RECALIBRATE PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE recal_data(pi_ne_id             IN NUMBER
+                      ,pi_recal_start_point IN NUMBER
+                      ,pi_length_ratio      IN NUMBER
+                      ,pi_dec_places        IN NUMBER);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE mai_reversal(p_effective_date IN DATE DEFAULT TO_DATE(SYS_CONTEXT('NM3CORE','EFFECTIVE_DATE'),'DD-MON-YYYY'));
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE mai_reclassify(pi_old_ne_id      IN nm_elements.ne_id%TYPE
+                          ,pi_new_ne_id      IN nm_elements.ne_id%TYPE
+                          ,pi_effective_date IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE resize_data(pi_ne_id       IN nm_elements.ne_id%TYPE
+                       ,pi_orig_length IN NUMBER
+                       ,pi_new_length  IN NUMBER);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PRAGMA RESTRICT_REFERENCES(get_version, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, WNPS, WNDS);
+  --
+END mairecal;
+/
