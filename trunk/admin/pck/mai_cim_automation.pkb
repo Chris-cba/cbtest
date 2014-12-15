@@ -3,11 +3,11 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.10   Jul 01 2013 16:25:54   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.11   Dec 15 2014 10:46:00   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:25:54  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       Version          : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Dec 15 2014 10:46:00  $
+--       Date fetched Out : $Modtime:   Dec 12 2014 15:48:16  $
+--       Version          : $Revision:   3.11  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.10  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.11  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;
@@ -462,12 +462,12 @@ BEGIN
                          EXCEPTION
                          WHEN OTHERS
                          THEN
-                             nm3ftp.logout(l_conn);                             
+                             utl_tcp.close_all_connections;                             
                              Raise_Application_Error(-20001,'Error '||Sqlerrm);
                          END ;
                       END IF ;
                   END LOOP; -- Ftp Loop
-                  nm3ftp.logout(l_conn);
+                  utl_tcp.close_all_connections;
               END IF ; 
            EXCEPTION
                WHEN OTHERS THEN
@@ -606,7 +606,7 @@ BEGIN
                                                                                ,pi_message    => 'Error while archiving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
                                                                                ,pi_summary_flag => 'Y' ); 
                                                  END ;    
-                                                 nm3ftp.logout(l_arc_conn);
+                                                 utl_tcp.close_all_connections;
                                               EXCEPTION
                                                   WHEN OTHERS THEN
                                                   l_continue  := False ;
@@ -621,13 +621,13 @@ BEGIN
                                   END IF ;
                               END IF ; -- file name not null
                           END LOOP; -- loop through all the files in the ftp folder
-                          nm3ftp.logout(l_conn);                 
+                          utl_tcp.close_all_connections;                 
                       END IF ; -- Valid connection 
                    --
                    EXCEPTION
                    WHEN OTHERS
                    THEN
-                       nm3ftp.logout(l_conn);
+                       utl_tcp.close_all_connections;
                        Raise_Application_Error(-20001,'Error '||Sqlerrm);
                    END ;    
                END LOOP;
@@ -801,7 +801,7 @@ BEGIN
                                                                                ,pi_message    => 'Error while archiving file '||l_file_name||' for Contractor '||oun.oun_contractor_id||' '||Sqlerrm 
                                                                                ,pi_summary_flag => 'Y' ); 
                                                  END ;   
-                                                 nm3ftp.logout(l_arc_conn); 
+                                                 utl_tcp.close_all_connections; 
                                               EXCEPTION
                                                   WHEN OTHERS THEN
                                                   l_continue  := False ;
@@ -816,13 +816,13 @@ BEGIN
                                   END IF ;
                               END IF;
                           END LOOP; 
-                          nm3ftp.logout(l_conn);                 
+                          utl_tcp.close_all_connections;                 
                       END IF ;  
                    --
                    EXCEPTION
                    WHEN OTHERS
                    THEN
-                       nm3ftp.logout(l_conn);
+                       utl_tcp.close_all_connections;
                        Raise_Application_Error(-20001,'Error '||Sqlerrm);
                    END ;    
                END LOOP;
