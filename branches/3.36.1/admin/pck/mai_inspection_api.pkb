@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY HIGHWAYS.mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36.1.0   Sep 04 2014 11:29:24   Peter.Bibby  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36.1.1   Feb 27 2015 06:01:38   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Sep 04 2014 11:29:24  $
---       Date fetched Out : $Modtime:   Sep 03 2014 14:26:06  $
---       PVCS Version     : $Revision:   3.36.1.0  $
+--       Date into PVCS   : $Date:   Feb 27 2015 06:01:38  $
+--       Date fetched Out : $Modtime:   Feb 26 2015 13:50:54  $
+--       PVCS Version     : $Revision:   3.36.1.1  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36.1.0  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36.1.1  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -1363,6 +1363,36 @@ END validate_defect_type;
 --
 -----------------------------------------------------------------------------
 --
+FUNCTION get_auto_def_priority(pi_rse_he_id          IN defects.def_rse_he_id%TYPE
+                              ,pi_sys_flag           IN VARCHAR2
+                              ,pi_atv_acty_area_code IN activities.atv_acty_area_code%TYPE
+                              ,pi_defect_type        IN def_types.dty_defect_code%TYPE)
+  RETURN defects.def_priority%TYPE IS
+  --
+  l_def_priority defects.def_priority%TYPE;
+  -- 
+BEGIN
+  l_def_priority := mai.get_auto_def_priority(p_rse_he_id     => pi_rse_he_id
+                                             ,p_network_type  => pi_sys_flag
+                                             ,p_activity_code => pi_atv_acty_area_code
+                                             ,p_defect_code   => pi_defect_type);
+  RETURN l_def_priority;
+  --
+EXCEPTION
+    WHEN no_data_found
+     THEN
+        hig.raise_ner(pi_appl               => 'MAI'
+                     ,pi_id                 => 907
+                     ,pi_supplementary_info => 'Activity ['||pi_atv_acty_area_code
+                                               ||'] Defect Code ['||pi_defect_type||']'
+                     );
+  WHEN others
+   THEN
+      RAISE;
+END get_auto_def_priority;
+--
+-----------------------------------------------------------------------------
+--
 FUNCTION validate_priority(pi_priority           IN defects.def_priority%TYPE
                           ,pi_atv_acty_area_code IN activities.atv_acty_area_code%TYPE
                           ,pi_action_cat         IN repairs.rep_action_cat%TYPE DEFAULT 'P'
@@ -1989,6 +2019,17 @@ BEGIN
       --
   END IF;
   /*
+  ||Check for Auto Defect Priority setting
+  */
+  IF hig.get_user_or_sys_opt('DEFAUTOPRI') = 'A'
+   THEN
+    --
+    lr_defect_rec.def_priority := get_auto_def_priority(pi_rse_he_id          => lr_defect_rec.def_rse_he_id
+                                                       ,pi_sys_flag           => lr_rse.rse_sys_flag
+                                                       ,pi_atv_acty_area_code => lr_defect_rec.def_atv_acty_area_code
+                                                       ,pi_defect_type        => lr_defect_rec.def_defect_code);
+  END IF;
+  /*
   ||Validate Priority.
   */
   nm_debug.debug('Priority');
@@ -1998,7 +2039,7 @@ BEGIN
       raise_application_error(-20026,'No Priority Specified.');
       --
   END IF;
-  --
+  -- 
   IF NOT validate_priority(pi_priority           => lr_defect_rec.def_priority
                           ,pi_atv_acty_area_code => lr_defect_rec.def_atv_acty_area_code
                           ,pi_effective_date     => pi_are_date_work_done
