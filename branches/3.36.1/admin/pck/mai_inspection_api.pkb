@@ -1,20 +1,20 @@
-CREATE OR REPLACE PACKAGE BODY HIGHWAYS.mai_inspection_api AS
+CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 -----------------------------------------------------------------------------
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36.1.1   Feb 27 2015 06:01:38   Chris.Baugh  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.36.1.2   Mar 05 2015 11:49:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 27 2015 06:01:38  $
---       Date fetched Out : $Modtime:   Feb 26 2015 13:50:54  $
---       PVCS Version     : $Revision:   3.36.1.1  $
+--       Date into PVCS   : $Date:   Mar 05 2015 11:49:22  $
+--       Date fetched Out : $Modtime:   Mar 05 2015 11:53:56  $
+--       PVCS Version     : $Revision:   3.36.1.2  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36.1.1  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.36.1.2  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
