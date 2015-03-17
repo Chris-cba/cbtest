@@ -2,18 +2,18 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/maidata4.sql-arc   2.19   Jul 01 2013 16:03:34   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/maidata4.sql-arc   2.20   Mar 17 2015 15:53:24   Shivani.Gaind  $
 --       Module Name      : $Workfile:   maidata4.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:03:34  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:38  $
---       Version          : $Revision:   2.19  $
+--       Date into PVCS   : $Date:   Mar 17 2015 15:53:24  $
+--       Date fetched Out : $Modtime:   Mar 17 2015 14:42:54  $
+--       Version          : $Revision:   2.20  $
 --       Table Owner      : MAI_METADATA
---       Generation Date  : 27-SEP-2012 11:00
+--       Generation Date  : 17-MAR-2015 14:42
 --
 --   Product metadata script
---   As at Release 4.6.0.0
+--   As at Release 4.7.1.0
 --
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) exor corporation ltd, 2015
 --
 --   TABLES PROCESSED
 --   ================
@@ -30,6 +30,7 @@
 --   HIG_ALERT_RECIPIENT_RULES
 --   HIG_FLEX_ATTRIBUTES
 --   NM_INV_TYPE_ROLES
+--   HIG_ALERT_TYPE_MAIL_LOOKUP
 --
 -----------------------------------------------------------------------------
 
@@ -20684,6 +20685,215 @@ SELECT
  WHERE NOT EXISTS (SELECT 1 FROM NM_INV_TYPE_ROLES
                    WHERE ITR_INV_TYPE = 'WOR$'
                     AND  ITR_HRO_ROLE = 'MAI_USER');
+--
+--
+--
+----------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------
+-- HIG_ALERT_TYPE_MAIL_LOOKUP
+--
+-- select * from mai_metadata.hig_alert_type_mail_lookup
+-- order by hatml_id
+--
+----------------------------------------------------------------------------------------
+
+SET TERM ON
+PROMPT hig_alert_type_mail_lookup
+SET TERM OFF
+
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -17
+       ,'DEF$'
+       ,'Asset Primary Key'
+       ,'select  iit_primary_key from nm_inv_items_all where iit_ne_id = :1'
+       ,'DEF_IIT_ITEM_ID'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -17);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -16
+       ,'DEF$'
+       ,'Inspector'
+       ,'select hc.hus_name from hig_users hc,activities_report are where are.are_peo_person_id_actioned = hc.hus_user_id and are.are_report_id=:1'
+       ,'def_are_report_id'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -16);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -15
+       ,'DEF$'
+       ,'Initiation Type'
+       ,'select hc.hco_meaning from hig_codes hc, activities_report are where hc.hco_domain =''INITIATION_TYPE'' and sysdate between nvl( hc.hco_start_date, sysdate ) and nvl( hc.hco_end_date, sysdate ) and hc.hco_code = are.are_initiation_type and are.are_report_id = :1'
+       ,'def_are_report_id'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120240','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -15);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -14
+       ,'DEF$'
+       ,'Asset Type'
+       ,'select nt.nit_descr from nm_inv_items_all ni,nm_inv_types_all nt where ni.iit_ne_id = :1 and nt.nit_inv_type=ni.iit_inv_type'
+       ,'DEF_IIT_ITEM_ID'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -14);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -13
+       ,'DEF$'
+       ,'Asset Description'
+       ,'select iit_descr from nm_inv_items_all  where iit_ne_id = :1'
+       ,'DEF_IIT_ITEM_ID'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -13);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -12
+       ,'WOR$'
+       ,'Contractor Contact'
+       ,'select ou.oun_contact_name from contracts c , org_units ou where con_id=:1  and ou.oun_org_unit_type = ''CO'' and ou.oun_org_id = c.con_contr_org_id'
+       ,'wor_con_id'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120241','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -12);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -11
+       ,'WOR$'
+       ,'Contractor Name'
+       ,'select ou.oun_name from contracts c, org_units ou where con_id =:1 and ou.oun_org_unit_type = ''CO'' and ou.oun_org_id = c.con_contr_org_id'
+       ,'wor_con_id'
+       ,to_date('20150317120242','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120242','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -11);
+--
+INSERT INTO HIG_ALERT_TYPE_MAIL_LOOKUP
+       (HATML_ID
+       ,HATML_INV_TYPE
+       ,HATML_SCREEN_TEXT
+       ,HATML_QUERY
+       ,HATML_QUERY_COL
+       ,HATML_DATE_CREATED
+       ,HATML_CREATED_BY
+       ,HATML_DATE_MODIFIED
+       ,HATML_MODIFIED_BY
+       )
+SELECT 
+        -10
+       ,'WOR$'
+       ,'Contractor Phone'
+       ,'select ou.oun_phone from contracts c,org_units ou where con_id = :1 and ou.oun_org_unit_type=''CO'' and ou.oun_org_id=c.con_contr_org_id'
+       ,'wor_con_id'
+       ,to_date('20150317120242','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA'
+       ,to_date('20150317120242','YYYYMMDDHH24MISS')
+       ,'MAI_METADATA' FROM DUAL
+ WHERE NOT EXISTS (SELECT 1 FROM HIG_ALERT_TYPE_MAIL_LOOKUP
+                   WHERE HATML_ID = -10);
 --
 --
 --
