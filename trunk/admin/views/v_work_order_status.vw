@@ -8,24 +8,26 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.5   Jul 01 2013 15:55:48   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/v_work_order_status.vw-arc   3.6   Sep 21 2015 16:01:28   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_work_order_status.vw  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:55:48  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:26:08  $
---       Version          : $Revision:   3.5  $
+--       Date into PVCS   : $Date:   Sep 21 2015 16:01:28  $
+--       Date fetched Out : $Modtime:   Sep 21 2015 12:04:40  $
+--       Version          : $Revision:   3.6  $
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-       wor.wor_works_order_no wor_works_order_no
-      ,NVL(wos.wor_status,(SELECT hsc_status_code --DRAFT
-                             FROM hig_status_codes
-                            WHERE hsc_domain_code = 'WORK_ORDER_LINES'
-                              AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
-                                                     AND NVL(hsc_end_date,TRUNC(SYSDATE))
-                              AND hsc_allow_feature1 = 'Y'
-                              AND hsc_allow_feature10 = 'Y'
-                              AND rownum = 1)) wor_status
+       wor.wor_works_order_no wor_works_order_no,
+       NVL(wos.wor_status, DECODE(wor_date_closed,
+                                             NULL, (SELECT hsc_status_code                          --DRAFT
+                                                      FROM hig_status_codes
+                                                     WHERE hsc_domain_code = 'WORK_ORDER_LINES'
+                                                       AND TRUNC(SYSDATE) BETWEEN NVL(hsc_start_date,TRUNC(SYSDATE))
+                                                                              AND NVL(hsc_end_date,TRUNC (SYSDATE))
+                                                       AND hsc_allow_feature1 = 'Y'
+                                                       AND hsc_allow_feature10 = 'Y'
+                                                       AND ROWNUM = 1),
+                                  'CANCELLED')) wor_status
   FROM work_orders wor
       ,(SELECT wol_works_order_no
               ,CASE WHEN (paid + not_done) = wols
