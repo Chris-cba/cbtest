@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.35   Feb 27 2015 09:03:04   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.36   Sep 21 2015 16:03:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Feb 27 2015 09:03:04  $
---       Date fetched Out : $Modtime:   Feb 24 2015 11:54:34  $
---       SCCS Version     : $Revision:   2.35  $
+--       Date into SCCS   : $Date:   Sep 21 2015 16:03:20  $
+--       Date fetched Out : $Modtime:   Sep 21 2015 11:57:52  $
+--       SCCS Version     : $Revision:   2.36  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 ------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.35  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.36  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4417,6 +4417,101 @@ FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
                                 ,p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
                                 ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
   RETURN VARCHAR2 IS
+  --
+  pragma autonomous_transaction;
+  
+  cursor c1 is
+    select con_code
+          ,nvl(con_last_wor_no,0) + 1
+    from   contracts
+    where  con_id = p_con_id
+    for    update of con_last_wor_no;
+--
+  cursor c2 is
+    select hau_unit_code
+          ,nvl(hau_last_wor_no,0) + 1
+    from   hig_admin_units
+    where  hau_admin_unit = p_admin_unit
+    for    update of hau_last_wor_no;
+
+--
+  l_wor_no      work_orders.wor_works_order_no%type;
+  l_con_code    contracts.con_code%type;
+  l_con_wor_no  contracts.con_last_wor_no%type;
+  l_unit_code   hig_admin_units.hau_unit_code%type;
+  l_hau_wor_no  hig_admin_units.hau_last_wor_no%type;
+  record_locked exception;
+  pragma        exception_init(record_locked, -54);
+  nm_error      exception;
+  l_error       number;
+begin
+  if p_worrefgen = 'C' then
+    open  c1;
+    fetch c1 into l_con_code
+                 ,l_con_wor_no;
+    if c1%found then
+      if length(l_con_code||'/'||to_char(l_con_wor_no)) > 16 then
+        l_error := '291';
+        raise nm_error;
+        --plib$error(291, 'M_MGR'); -- error in generating WO no
+        --plib$fail;
+      end if;
+      l_wor_no := l_con_code||'/'||to_char(l_con_wor_no);
+      update contracts
+      set    con_last_wor_no = nvl(con_last_wor_no, 0) + 1
+      where  current of c1;
+    end if;
+    close c1;
+    return l_wor_no;
+  elsif p_worrefgen = 'A' then
+    open  c2;
+    fetch c2 into l_unit_code
+                 ,l_hau_wor_no;
+    if c2%found then
+      if length(l_unit_code||'/'||to_char(l_hau_wor_no)) > 16 then
+        l_error := '291';
+        raise nm_error;
+        --plib$error(291, 'M_MGR'); -- error in generating WO no
+        --plib$fail;
+      end if;
+      l_wor_no := l_unit_code||'/'||to_char(l_hau_wor_no);
+      update hig_admin_units
+      set    hau_last_wor_no = nvl(hau_last_wor_no, 0) + 1
+      where  current of c2;
+    end if;
+    close c2;
+  end if;
+
+  IF l_wor_no IS NULL AND p_raise_not_found THEN
+      hig.raise_ner(pi_appl => 'MAI'
+                 ,pi_id   => 917);
+  END IF;
+
+  commit;
+  
+  return l_wor_no;
+exception
+  when record_locked then
+    l_error := 138;
+    if p_worrefgen = 'C' then
+      --:b1.con_code := null;
+      null;
+    elsif p_worrefgen = 'A' then
+    null;
+      --:b1.rse_group := null;
+      --:b1.h_rse_admin_unit := -1;
+    end if;
+    raise nm_error;
+  when nm_error then
+    return l_wor_no;
+end;
+/*
+FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
+                                ,p_admin_unit     IN hig_admin_units.hau_admin_unit%type
+                                ,p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
+                                ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
+  RETURN VARCHAR2 IS
+  --
   cursor c1 is
     select con_code
           ,nvl(con_last_wor_no,0) + 1
@@ -4502,7 +4597,7 @@ exception
   when nm_error then
     return l_wor_no;
 end;
-
+*/
 --
 ---------------------------------------------------------------------------------------------------
 --
@@ -6561,13 +6656,6 @@ BEGIN
                             ||'WHERE ihc_atv_acty_area_code = rep_atv_acty_area_code '
                             ||'AND ihc_atv_acty_area_code = def_atv_acty_area_code '
                             ||'AND ihc_icb_id = '||pi_icb_id||') '
-               ||'AND EXISTS(SELECT 1 '
-                            ||'FROM activities_report '
-                           ||'WHERE TRUNC(are_date_work_done) BETWEEN NVL(:pi_from_date,TRUNC(are_date_work_done)) '
-                                                               ||'AND NVL(:pi_to_date,TRUNC(are_date_work_done)) '
-                             ||'AND TRUNC(are_date_work_done) <= TRUNC(:pi_wor_date_raised) '
-                             ||'AND are_report_id = def_are_report_id) '
-
   ;
   /*
   ||Check the sys_flag parameter.
@@ -6779,10 +6867,7 @@ BEGIN
   ||Execute the query.
   */
   EXECUTE IMMEDIATE lv_query 
-  BULK COLLECT INTO lt_defects
-  USING pi_from_date
-       ,pi_to_date
-       ,pi_wor_date_raised;
+  BULK COLLECT INTO lt_defects;
   /*
   ||Clear any records from previous searches.
   */
