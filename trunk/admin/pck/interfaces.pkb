@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.40   Oct 11 2013 11:47:36   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.41   Oct 01 2015 14:33:24   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 11 2013 11:47:36  $
---       Date fetched Out : $Modtime:   Oct 11 2013 11:50:46  $
---       SCCS Version     : $Revision:   2.40  $
+--       Date into SCCS   : $Date:   Oct 01 2015 14:33:24  $
+--       Date fetched Out : $Modtime:   Sep 30 2015 09:35:18  $
+--       SCCS Version     : $Revision:   2.41  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.40  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.41  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -3384,7 +3384,7 @@ PROCEDURE completion_file_ph1( p_contractor_id    IN varchar2
 l_count number := 0;
 l_auto_load    Boolean := FALSE;
 BEGIN
-
+nm_debug.debug_on;
   BEGIN
     --
     if check_filename(l_filename) then
@@ -3417,21 +3417,22 @@ BEGIN
         p_error := l_invalid_filename;
       WHEN no_data_found THEN  --end of file
         UTL_FILE.FCLOSE(l_fhand);
-            IF hig.get_sysopt('XTRIFLDS') IN ('2-4-0')
-              THEN
-               l_auto_load := TRUE;
-                auto_load_file(l_ih_id
-                              ,l_record
-                              ,l_error);
+        IF hig.get_sysopt('XTRIFLDS') IN ('2-4-0')
+        THEN
+          l_auto_load := TRUE;
+          auto_load_file(l_ih_id
+                        ,l_record
+                        ,l_error);
 
-                -- emailing now covered by alerts clb 24062013 email_errors(l_ih_id,'WC');--email section for future use
-   			    check_details_ok(l_ih_id, 'WC', l_details_ok);
-                IF l_details_ok != 'Y'
-				THEN
-				   p_error := 'Errors encountered';
-				END IF;
-                close_lines(l_ih_id);--complete work order lines
-            END IF;
+          -- emailing now covered by alerts clb 24062013 email_errors(l_ih_id,'WC');--email section for future use
+   			  check_details_ok(l_ih_id, 'WC', l_details_ok);
+          IF l_details_ok != 'Y'
+				  THEN
+				    p_error := 'Errors encountered';
+				  END IF;
+          
+          close_lines(l_ih_id);--complete work order lines
+        END IF;
 
       WHEN others THEN
         p_error := SQLERRM;
@@ -3466,6 +3467,7 @@ PROCEDURE completion_file_ph2(p_ih_id IN interface_headers.ih_id%TYPE) IS
       where ic_ih_id = pi_ih_id
       and ic_wol_id = wol_id
       and ic_defect_id = wol_def_defect_id
+      and ic_status = 'P'
       AND    NOT  (ic_works_order_no like 'FAU%CLM' OR
                           ic_works_order_no  like 'WOR%CLM');
 
