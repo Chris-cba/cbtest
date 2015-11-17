@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.37   Nov 07 2014 14:23:16   Chris.Baugh  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.38   Nov 17 2015 11:25:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 07 2014 14:23:16  $
---       Date fetched Out : $Modtime:   Nov 07 2014 14:20:34  $
---       PVCS Version     : $Revision:   3.37  $
+--       Date into PVCS   : $Date:   Nov 17 2015 11:25:54  $
+--       Date fetched Out : $Modtime:   Nov 16 2015 11:24:44  $
+--       PVCS Version     : $Revision:   3.38  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.37  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.38  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;
@@ -1225,6 +1225,11 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
                                   ,po_defects_not_on_wo OUT def_rep_list_not_on_wo_tab)
   IS
   --
+  CURSOR c_get_con_details IS
+  SELECT NVL(con_recalc_due_date, 'N')
+    FROM contracts
+   WHERE con_id = pi_con_id;
+
   lv_work_order_no  work_orders.wor_works_order_no%TYPE;
   --
   lv_sys_flag           VARCHAR2(1);
@@ -1248,6 +1253,7 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
   lv_bud_rse_he_id      nm_elements_all.ne_id%TYPE;
   lv_icb_id             item_code_breakdowns.icb_id%TYPE;
   lv_date_raised        work_orders.wor_date_raised%TYPE;
+  lv_recalc_due_date    contracts.con_recalc_due_date%TYPE;
   lv_est_complete       work_orders.wor_est_complete%TYPE;
   --
   lv_wor_est_cost          work_orders.wor_est_cost%TYPE := NULL;
@@ -1903,6 +1909,12 @@ PROCEDURE create_defect_work_order(pi_user_id           IN  hig_users.hus_user_i
     nm_debug.debug('get_def_available');
     get_def_available;
     --
+
+    -- Check if wol_target date should be populated
+    OPEN c_get_con_details;
+    FETCH c_get_con_details INTO lv_recalc_due_date;
+    CLOSE c_get_con_details;
+
   END init_defaults;
   --
   FUNCTION validate_budget(pi_budget_id   IN budgets.bud_id%TYPE
@@ -2271,9 +2283,14 @@ nm_debug.debug('generate WOLs');
       lt_wol(i).wol_bud_id               := lt_selected_repairs(i).bud_id;
       lt_wol(i).wol_est_cost             := NULL;
       lt_wol(i).wol_est_labour           := 0;
-	  lt_wol(i).wol_target_date          := lt_selected_repairs(i).rep_date_due;
-	  lt_wol(i).wol_boq_perc_item_code   := lt_selected_repairs(i).rep_boq_perc_item_code;
-	  lt_wol(i).wol_wol_perc_item_code   := lt_selected_repairs(i).rep_wol_perc_item_code;
+      IF lv_recalc_due_date = 'N'
+      THEN
+        lt_wol(i).wol_target_date        := lt_selected_repairs(i).rep_date_due;
+      ELSE
+        lt_wol(i).wol_target_date        := NULL;
+      END IF;
+      lt_wol(i).wol_boq_perc_item_code   := lt_selected_repairs(i).rep_boq_perc_item_code;
+      lt_wol(i).wol_wol_perc_item_code   := lt_selected_repairs(i).rep_wol_perc_item_code;
       /*
       ||Reset The Null BOQ Cost WOL Level Flag.
       */
