@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.36   Sep 21 2015 16:03:20   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.37   Nov 17 2015 11:14:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 21 2015 16:03:20  $
---       Date fetched Out : $Modtime:   Sep 21 2015 11:57:52  $
---       SCCS Version     : $Revision:   2.36  $
+--       Date into SCCS   : $Date:   Nov 17 2015 11:14:14  $
+--       Date fetched Out : $Modtime:   Nov 16 2015 13:45:10  $
+--       SCCS Version     : $Revision:   2.37  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 ------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.36  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.37  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4418,21 +4418,21 @@ FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
                                 ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
   RETURN VARCHAR2 IS
   --
-  pragma autonomous_transaction;
+  PRAGMA AUTONOMOUS_TRANSACTION;
   
-  cursor c1 is
-    select con_code
-          ,nvl(con_last_wor_no,0) + 1
-    from   contracts
-    where  con_id = p_con_id
-    for    update of con_last_wor_no;
+  CURSOR c1 IS
+  SELECT con_code
+        ,nvl(con_last_wor_no,0) + 1
+    FROM contracts
+   WHERE con_id = p_con_id
+     FOR UPDATE OF con_last_wor_no;
 --
-  cursor c2 is
-    select hau_unit_code
-          ,nvl(hau_last_wor_no,0) + 1
-    from   hig_admin_units
-    where  hau_admin_unit = p_admin_unit
-    for    update of hau_last_wor_no;
+  CURSOR c2 is
+  SELECT hau_unit_code
+        ,nvl(hau_last_wor_no,0) + 1
+    FROM hig_admin_units
+   WHERE hau_admin_unit = p_admin_unit
+     FOR UPDATE OF hau_last_wor_no;
 
 --
   l_wor_no      work_orders.wor_works_order_no%type;
@@ -4440,164 +4440,93 @@ FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
   l_con_wor_no  contracts.con_last_wor_no%type;
   l_unit_code   hig_admin_units.hau_unit_code%type;
   l_hau_wor_no  hig_admin_units.hau_last_wor_no%type;
-  record_locked exception;
-  pragma        exception_init(record_locked, -54);
-  nm_error      exception;
-  l_error       number;
-begin
-  if p_worrefgen = 'C' then
-    open  c1;
-    fetch c1 into l_con_code
-                 ,l_con_wor_no;
-    if c1%found then
-      if length(l_con_code||'/'||to_char(l_con_wor_no)) > 16 then
-        l_error := '291';
-        raise nm_error;
-        --plib$error(291, 'M_MGR'); -- error in generating WO no
-        --plib$fail;
-      end if;
-      l_wor_no := l_con_code||'/'||to_char(l_con_wor_no);
-      update contracts
-      set    con_last_wor_no = nvl(con_last_wor_no, 0) + 1
-      where  current of c1;
-    end if;
-    close c1;
-    return l_wor_no;
-  elsif p_worrefgen = 'A' then
-    open  c2;
-    fetch c2 into l_unit_code
-                 ,l_hau_wor_no;
-    if c2%found then
-      if length(l_unit_code||'/'||to_char(l_hau_wor_no)) > 16 then
-        l_error := '291';
-        raise nm_error;
-        --plib$error(291, 'M_MGR'); -- error in generating WO no
-        --plib$fail;
-      end if;
-      l_wor_no := l_unit_code||'/'||to_char(l_hau_wor_no);
-      update hig_admin_units
-      set    hau_last_wor_no = nvl(hau_last_wor_no, 0) + 1
-      where  current of c2;
-    end if;
-    close c2;
-  end if;
-
-  IF l_wor_no IS NULL AND p_raise_not_found THEN
-      hig.raise_ner(pi_appl => 'MAI'
-                 ,pi_id   => 917);
-  END IF;
-
-  commit;
   
-  return l_wor_no;
-exception
-  when record_locked then
-    l_error := 138;
-    if p_worrefgen = 'C' then
-      --:b1.con_code := null;
-      null;
-    elsif p_worrefgen = 'A' then
-    null;
-      --:b1.rse_group := null;
-      --:b1.h_rse_admin_unit := -1;
-    end if;
-    raise nm_error;
-  when nm_error then
-    return l_wor_no;
-end;
-/*
-FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
-                                ,p_admin_unit     IN hig_admin_units.hau_admin_unit%type
-                                ,p_worrefgen      IN varchar2 DEFAULT hig.get_user_or_sys_opt('WORREFGEN')
-                                ,p_raise_not_found IN BOOLEAN DEFAULT FALSE)
-  RETURN VARCHAR2 IS
+  record_locked EXCEPTION;
+  PRAGMA        EXCEPTION_INIT(record_locked, -54);
+  nm_error      EXCEPTION;
+  l_error       NUMBER;
   --
-  cursor c1 is
-    select con_code
-          ,nvl(con_last_wor_no,0) + 1
-    from   contracts
-    where  con_id = p_con_id
-    for    update of con_last_wor_no
-           nowait;
---
-  cursor c2 is
-    select hau_unit_code
-          ,nvl(hau_last_wor_no,0) + 1
-    from   hig_admin_units
-    where  hau_admin_unit = p_admin_unit
-    for    update of hau_last_wor_no
-           nowait;
-
---
-  l_wor_no      work_orders.wor_works_order_no%type;
-  l_con_code    contracts.con_code%type;
-  l_con_wor_no  contracts.con_last_wor_no%type;
-  l_unit_code   hig_admin_units.hau_unit_code%type;
-  l_hau_wor_no  hig_admin_units.hau_last_wor_no%type;
-  record_locked exception;
-  pragma        exception_init(record_locked, -54);
-  nm_error      exception;
-  l_error       number;
-begin
-  if p_worrefgen = 'C' then
-    open  c1;
-    fetch c1 into l_con_code
+BEGIN
+  --
+  IF p_worrefgen = 'C' 
+  THEN
+    --
+    OPEN  c1;
+    FETCH c1 INTO l_con_code
                  ,l_con_wor_no;
-    if c1%found then
-      if length(l_con_code||'/'||to_char(l_con_wor_no)) > 16 then
+    IF c1%FOUND 
+    THEN
+      --
+      IF LENGTH(l_con_code||'/'||TO_CHAR(l_con_wor_no)) > 16 
+      THEN
+        --
         l_error := '291';
-        raise nm_error;
-        --plib$error(291, 'M_MGR'); -- error in generating WO no
-        --plib$fail;
-      end if;
-      l_wor_no := l_con_code||'/'||to_char(l_con_wor_no);
-      update contracts
-      set    con_last_wor_no = nvl(con_last_wor_no, 0) + 1
-      where  current of c1;
-    end if;
-    close c1;
-    return l_wor_no;
-  elsif p_worrefgen = 'A' then
-    open  c2;
-    fetch c2 into l_unit_code
+        RAISE nm_error;
+        --
+      END IF;
+      --
+      l_wor_no := l_con_code||'/'||TO_CHAR(l_con_wor_no);
+      --
+      UPDATE contracts
+         SET con_last_wor_no = NVL(con_last_wor_no, 0) + 1
+       WHERE CURRENT OF c1;
+      --
+    END IF;
+    CLOSE c1;
+    --
+    COMMIT;
+    RETURN l_wor_no;
+    --
+  ELSIF p_worrefgen = 'A' 
+  THEN
+    --
+    OPEN  c2;
+    FETCH c2 INTO l_unit_code
                  ,l_hau_wor_no;
-    if c2%found then
-      if length(l_unit_code||'/'||to_char(l_hau_wor_no)) > 16 then
+    IF c2%FOUND 
+    THEN
+      --
+      IF LENGTH(l_unit_code||'/'||TO_CHAR(l_hau_wor_no)) > 16 
+      THEN
+        --
         l_error := '291';
-        raise nm_error;
-        --plib$error(291, 'M_MGR'); -- error in generating WO no
-        --plib$fail;
-      end if;
-      l_wor_no := l_unit_code||'/'||to_char(l_hau_wor_no);
-      update hig_admin_units
-      set    hau_last_wor_no = nvl(hau_last_wor_no, 0) + 1
-      where  current of c2;
-    end if;
-    close c2;
+        RAISE nm_error;
+        --
+      END IF;
+      --
+      l_wor_no := l_unit_code||'/'||TO_CHAR(l_hau_wor_no);
+      --
+      UPDATE hig_admin_units
+         SET hau_last_wor_no = NVL(hau_last_wor_no, 0) + 1
+       WHERE CURRENT OF c2;
+      --
+    END IF;
+    CLOSE c2;
   end if;
 
-  IF l_wor_no IS NULL AND p_raise_not_found THEN
+  IF l_wor_no IS NULL AND p_raise_not_found 
+  THEN
       hig.raise_ner(pi_appl => 'MAI'
                  ,pi_id   => 917);
   END IF;
 
-  return l_wor_no;
-exception
-  when record_locked then
+  COMMIT;
+  RETURN l_wor_no;
+  --
+EXCEPTION
+  WHEN record_locked THEN
+    --
+    ROLLBACK;
     l_error := 138;
-    if p_worrefgen = 'C' then
-      --:b1.con_code := null;
-      null;
-    elsif p_worrefgen = 'A' then
-    null;
-      --:b1.rse_group := null;
-      --:b1.h_rse_admin_unit := -1;
-    end if;
-    raise nm_error;
-  when nm_error then
-    return l_wor_no;
-end;
-*/
+    RAISE nm_error;
+    --
+  WHEN nm_error THEN
+    --
+    ROLLBACK;
+    RETURN l_wor_no;
+    --
+END;
+
 --
 ---------------------------------------------------------------------------------------------------
 --
