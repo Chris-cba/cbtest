@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4500_fix15.sql-arc   1.0   Jun 02 2015 05:14:48   Upendra.Hukeri  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4500_fix15.sql-arc   1.1   Dec 14 2015 06:48:30   Upendra.Hukeri  $
 --       Module Name      : $Workfile:   mai_4500_fix15.sql  $ 
---       Date into PVCS   : $Date:   Jun 02 2015 05:14:48  $
---       Date fetched Out : $Modtime:   Jun 02 2015 04:47:52  $
---       Version     	  : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Dec 14 2015 06:48:30  $
+--       Date fetched Out : $Modtime:   Dec 14 2015 06:47:28  $
+--       Version     	  : $Revision:   1.1  $
 --
 ----------------------------------------------------------------------------------------------------
 --   Copyright (c) 2015 Bentley Systems Incorporated. All rights reserved.
@@ -55,7 +55,7 @@ DECLARE
 		SELECT 'Y'
 		FROM   hig_upgrades
 		WHERE  hup_product = 'NET'
-		AND    remarks = 'NET 4500 FIX 44';
+		AND    remarks = 'NET 4500 FIX 44 (Build 2)';
 	--
 	l_dummy_c1 VARCHAR2(1);
 	--
@@ -73,14 +73,14 @@ BEGIN
 									,p_VERSION        => '4.5.0.0'
 									);
 	--
-	-- 	Check that NET 4500 FIX 44 has already been applied
+	-- 	Check that NET 4500 FIX 44 (Build 2) has already been applied
 	--
 	OPEN  c1;
 	FETCH c1 INTO l_dummy_c1;
 	CLOSE c1;
 	--
 	IF l_dummy_c1 IS NULL THEN
-		RAISE_APPLICATION_ERROR(-20001,'NET 4500 FIX 44 must be applied before proceeding - contact exor support for further information');
+		RAISE_APPLICATION_ERROR(-20001,'NET 4500 FIX 44 (Build 2) must be applied before proceeding - contact exor support for further information');
 	END IF;
 	--
 END;
