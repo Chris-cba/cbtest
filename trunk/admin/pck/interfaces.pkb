@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.41   Oct 01 2015 14:33:24   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.42   Feb 04 2016 13:29:06   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Oct 01 2015 14:33:24  $
---       Date fetched Out : $Modtime:   Sep 30 2015 09:35:18  $
---       SCCS Version     : $Revision:   2.41  $
+--       Date into SCCS   : $Date:   Feb 04 2016 13:29:06  $
+--       Date fetched Out : $Modtime:   Feb 03 2016 15:31:12  $
+--       SCCS Version     : $Revision:   2.42  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.41  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.42  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -904,9 +904,24 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
    WHERE  wol_id = c_wol_id
        AND sta_item_code = wol_wol_perc_item_code
        ;
-   --
-   lv_wol_boq_perc_item_code   varchar2(300);
-   lv_wol_wol_perc_item_code   varchar2(300);
+  --
+  CURSOR c_doc_assocs(c_table_name   doc_assocs.das_table_name%TYPE,
+                      c_rec_id       doc_assocs.das_rec_id%TYPE)
+      IS
+  SELECT d.*
+    FROM docs d,
+         doc_assocs da
+   WHERE d.doc_id = da.das_doc_id
+     AND da.das_rec_id = c_rec_id
+     AND da.das_table_name = c_table_name;
+  --
+  lr_docs                     docs%ROWTYPE;
+  lv_name                     doc_locations.dlc_name%TYPE;
+  lv_location                 doc_locations.dlc_location_name%TYPE;
+  lv_meaning                  doc_locations.dlc_location_name%TYPE;
+  lv_url                      doc_locations.dlc_pathname%TYPE;
+  lv_wol_boq_perc_item_code   varchar2(300);
+  lv_wol_wol_perc_item_code   varchar2(300);
   --
 BEGIN
   --
@@ -943,6 +958,32 @@ BEGIN
             UTL_FILE.PUT_LINE(l_fhand, '07,'||REPLACE(l_wor_rec.iwor_remarks,',','~'));
             l_no_of_recs := l_no_of_recs + 1;
         END IF;
+        
+        --
+        -- Add associated Docs
+        FOR l_da_rec IN c_doc_assocs('WORK_ORDERS',
+                                     l_wor_rec.iwor_works_order_no) LOOP
+          --                           
+          lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
+                                   , pi_ret_ext => FALSE
+                                   );
+          --   
+          doc_locations_api.get_dlc_location 
+                         ( pi_doc_id             => l_da_rec.doc_id
+                         , po_name               => lv_name
+                         , po_location           => lv_location
+                         , po_meaning            => lv_meaning );
+          --
+          UTL_FILE.PUT_LINE(l_fhand, '08,'||
+                                     l_da_rec.doc_file||','||
+                                     l_da_rec.doc_descr||','||
+                                     lv_url||','||
+                                     lv_meaning);
+          --
+          l_no_of_recs := l_no_of_recs + 1;
+          --
+        END LOOP;
+        --        
         IF hig.get_sysopt('CPAFORMAT') = '1'
          THEN
             FOR l_wol_rec IN woldef(l_wor_rec.iwor_transaction_id
@@ -973,6 +1014,31 @@ BEGIN
                     l_no_of_recs := l_no_of_recs + 1;
                     --
               END IF;                
+              --
+              --
+              -- Add associated Docs
+              FOR l_da_rec IN c_doc_assocs('DEFECTS',
+                                           l_wol_rec.iwol_def_defect_id) LOOP
+                --                           
+                lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
+                                         , pi_ret_ext => FALSE
+                                         );
+                --   
+                doc_locations_api.get_dlc_location 
+                               ( pi_doc_id             => l_da_rec.doc_id
+                               , po_name               => lv_name
+                               , po_location           => lv_location
+                               , po_meaning            => lv_meaning );
+                --
+                UTL_FILE.PUT_LINE(l_fhand, '12,'||
+                                           l_da_rec.doc_file||','||
+                                           l_da_rec.doc_descr||','||
+                                           lv_url||','||
+                                           lv_meaning);
+                --
+                l_no_of_recs := l_no_of_recs + 1;
+                --
+              END LOOP;
               --
               IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3','2-4-0')
                THEN
@@ -1048,6 +1114,31 @@ BEGIN
                     l_no_of_recs := l_no_of_recs + 1;
                     --
               END IF;
+              --
+              --
+              -- Add associated Docs
+              FOR l_da_rec IN c_doc_assocs('DEFECTS',
+                                           l_wol_rec.iwol_def_defect_id) LOOP
+                --                           
+                lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
+                                         , pi_ret_ext => FALSE
+                                         );
+                --   
+                doc_locations_api.get_dlc_location 
+                               ( pi_doc_id             => l_da_rec.doc_id
+                               , po_name               => lv_name
+                               , po_location           => lv_location
+                               , po_meaning            => lv_meaning );
+                --
+                UTL_FILE.PUT_LINE(l_fhand, '12,'||
+                                           l_da_rec.doc_file||','||
+                                           l_da_rec.doc_descr||','||
+                                           lv_url||','||
+                                           lv_meaning);
+                --
+                l_no_of_recs := l_no_of_recs + 1;
+                --
+              END LOOP;
               --               
               IF hig.get_sysopt('XTRIFLDS') NOT IN ('2-1-3', '2-4-0')
                THEN
