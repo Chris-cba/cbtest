@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.41   Mar 02 2015 08:50:24   Chris.Baugh  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.42   Jul 04 2016 14:53:46   linesh.sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Mar 02 2015 08:50:24  $
---       Date fetched Out : $Modtime:   Feb 27 2015 07:31:30  $
---       PVCS Version     : $Revision:   3.41  $
+--       Date into PVCS   : $Date:   Jul 04 2016 14:53:46  $
+--       Date fetched Out : $Modtime:   Apr 27 2016 10:23:48  $
+--       PVCS Version     : $Revision:   3.42  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.41  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.42  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 --
 insert_error  EXCEPTION;
@@ -867,12 +867,39 @@ BEGIN
         */ 
         Declare
         --
+           l_eB_doc_id       Number ;
+           l_eB_template_id  Number ;
+           l_scope_id        Number;
+           l_admin_unit      Number ;
            l_association_rec nm3_doc_man.g_association_rec;
            l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
-           l_eB_doc_id       Number ;
+           
+           Cursor c_admin_unit
+           Is
+           Select hp_area_id
+           From   hig_processes
+           Where  hp_process_id = hig_process_api.get_current_process_id ; 
+
+           Cursor c_scope_id (pi_admin_unit_id NUMBER)
+           Is
+           Select dasm_scope_id
+           From   dm_admin_unit_scope_map
+           Where  dasm_admin_unit_id = pi_admin_unit_id ; 
         --
         Begin
         -- 
+           --Get the admin unit of the process to load eB document against it.
+           Open  c_admin_unit;
+           Fetch c_admin_unit Into l_admin_unit;
+           Close c_admin_unit;
+
+           --Get the eB scope id mapped to admin unit.
+           Open  c_scope_id(l_admin_unit);
+           Fetch c_scope_id Into l_scope_id;
+           Close c_scope_id;   
+           l_scope_id := NVL(l_scope_id,1)        ;
+
+           l_eB_template_id  := hig.get_sysopt('COMMTEMPLA');
            l_association_rec.featue_table_name := 'ROAD_SEGMENTS_ALL';
            l_association_rec.feature_id        := pi_rse_he_id;
            l_association_tab(1)                := l_association_rec;
@@ -881,14 +908,17 @@ BEGIN
            l_association_rec.featue_table_name := 'ACTIVITIES_REPORT';
            l_association_rec.feature_id        := pi_are_report_id;
            l_association_tab(2)                := l_association_rec;
-           
-           nm3_doc_man.create_document_and_assocs(pi_template_id     => hig.get_sysopt('COMMTEMPLA') 
-                                                 ,pi_prefix          => Null
-                                                 ,pi_title           => pi_com_tab(i).com_title
-                                                 ,pi_remarks         => pi_com_tab(i).com_descr
-                                                 ,pi_date_issued     => pi_com_tab(i).com_date_issued
-                                                 ,pi_association_tab => l_association_tab    
-                                                 ,po_document_id     => l_eB_doc_id );
+
+           nm3_doc_man.create_document_and_assocs
+           (pi_template_id     => l_eB_template_id,
+            pi_scope_id        => NVL(l_scope_id,1),
+            pi_prefix          => NULL ,
+            pi_title           => pi_com_tab(i).com_title,
+            pi_remarks         => pi_com_tab(i).com_descr, 
+            pi_date_issued     => pi_com_tab(i).com_date_issued, 
+            pi_association_tab => l_association_tab, 
+            pi_called_by       =>  1 ,
+            po_document_id     => l_eB_doc_id) ;
         End ;
     Else
         /*
@@ -954,17 +984,26 @@ BEGIN
         ||Create eB Document and associations.
         */ 
         Declare
-        --
-           l_association_rec nm3_doc_man.g_association_rec;
-           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
+        --           
            l_eB_doc_id       Number ;
            l_admin_unit      Number ;
            l_eB_template_id  Number ;
+           l_scope_id        NUmber;
+           l_association_rec nm3_doc_man.g_association_rec;
+           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
+
+           
            Cursor c_admin_unit
            Is
            Select hp_area_id
            From   hig_processes
-           Where hp_process_id = hig_process_api.get_current_process_id ; 
+           Where  hp_process_id = hig_process_api.get_current_process_id ; 
+
+           Cursor c_scope_id (pi_admin_unit_id NUMBER)
+           Is
+           Select dasm_scope_id
+           From   dm_admin_unit_scope_map
+           Where  dasm_admin_unit_id = pi_admin_unit_id ; 
         --
         Begin
         -- 
@@ -973,20 +1012,26 @@ BEGIN
            Fetch c_admin_unit Into l_admin_unit;
            Close c_admin_unit;
 
-           l_eB_template_id  := Nvl(nm3_doc_man.get_eb_template_for_au(l_admin_unit),hig.get_sysopt('DEFPHOTTEM'));
+           --Get the eB scope id mapped to admin unit.
+           Open  c_scope_id(l_admin_unit);
+           Fetch c_scope_id Into l_scope_id;
+           Close c_scope_id;          
+
+           l_eB_template_id  := hig.get_sysopt('DEFPHOTTEM');
            l_association_rec.featue_table_name := 'DEFECTS';
            l_association_rec.feature_id        := pi_das_tab(i).das_def_defect_id ;
            l_association_tab(1)                := l_association_rec;
            
-           nm3_doc_man.create_document_and_assocs(pi_template_id     => l_eB_template_id 
-                                                 ,pi_prefix          => pi_das_tab(i).das_location
-                                                 ,pi_title           => pi_das_tab(i).das_title
-                                                 ,pi_remarks         => pi_das_tab(i).das_descr
-                                                 ,pi_date_issued     => pi_das_tab(i).das_date_issued
-                                                 ,pi_association_tab => l_association_tab    
-                                                 ,po_document_id     => l_eB_doc_id );
-
-    
+           nm3_doc_man.create_document_and_assocs
+           (pi_template_id     => l_eB_template_id,
+            pi_scope_id        => NVL(l_scope_id,1),
+            pi_prefix          => pi_das_tab(i).das_location ,
+            pi_title           => pi_das_tab(i).das_title,
+            pi_remarks         => pi_das_tab(i).das_descr, 
+            pi_date_issued     => pi_das_tab(i).das_date_issued, 
+            pi_association_tab => l_association_tab, 
+            pi_called_by       =>  1 ,
+            po_document_id     => l_eB_doc_id) ;
            nm_debug.debug('Defect Assoc eB Doc Id = '||l_eB_doc_id);
            
         End ;
