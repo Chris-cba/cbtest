@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.29.1.0   Apr 26 2016 09:46:06   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.29.1.1   Sep 14 2016 11:33:06   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Apr 26 2016 09:46:06  $
---       Date fetched Out : $Modtime:   Apr 20 2016 16:28:46  $
---       SCCS Version     : $Revision:   2.29.1.0  $
+--       Date into SCCS   : $Date:   Sep 14 2016 11:33:06  $
+--       Date fetched Out : $Modtime:   Sep 14 2016 11:25:32  $
+--       SCCS Version     : $Revision:   2.29.1.1  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.29.1.0  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.29.1.1  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -4405,16 +4405,14 @@ FUNCTION generate_works_order_no(p_con_id         IN contracts.con_id%type
         ,nvl(con_last_wor_no,0) + 1
    FROM contracts
   WHERE con_id = p_con_id
-    FOR UPDATE OF con_last_wor_no
-        NOWAIT;
+    FOR UPDATE OF con_last_wor_no;
 --
   CURSOR c2 IS
   SELECT hau_unit_code
         ,nvl(hau_last_wor_no,0) + 1
     FROM hig_admin_units
    WHERE hau_admin_unit = p_admin_unit
-     FOR UPDATE OF hau_last_wor_no
-         NOWAIT;
+     FOR UPDATE OF hau_last_wor_no;
 
 --
   l_wor_no      work_orders.wor_works_order_no%type;
