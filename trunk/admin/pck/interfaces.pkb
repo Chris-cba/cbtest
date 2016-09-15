@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.42   Feb 04 2016 13:29:06   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.43   Sep 15 2016 13:54:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Feb 04 2016 13:29:06  $
---       Date fetched Out : $Modtime:   Feb 03 2016 15:31:12  $
---       SCCS Version     : $Revision:   2.42  $
+--       Date into SCCS   : $Date:   Sep 15 2016 13:54:52  $
+--       Date fetched Out : $Modtime:   Sep 14 2016 14:42:52  $
+--       SCCS Version     : $Revision:   2.43  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.42  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.43  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -880,6 +880,7 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
   l_cnt     Number ;
   l_clm_rec Number ;
   l_clm_tot Number ;
+  
   CURSOR   c_get_oun
   IS
   SELECT  *
@@ -916,13 +917,40 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
      AND da.das_table_name = c_table_name;
   --
   lr_docs                     docs%ROWTYPE;
-  lv_name                     doc_locations.dlc_name%TYPE;
-  lv_location                 doc_locations.dlc_location_name%TYPE;
-  lv_meaning                  doc_locations.dlc_location_name%TYPE;
-  lv_url                      doc_locations.dlc_pathname%TYPE;
   lv_wol_boq_perc_item_code   varchar2(300);
   lv_wol_wol_perc_item_code   varchar2(300);
   --
+  PROCEDURE create_doc_assocs_rec(pi_rec_type    VARCHAR2
+                                 ,pi_doc_id      docs.doc_id%TYPE
+                                 ,pi_doc_file    docs.doc_file%TYPE
+                                 ,pi_doc_descr   docs.doc_descr%TYPE) 
+    IS
+    --
+    lv_url        doc_locations.dlc_pathname%TYPE;
+    lv_name       doc_locations.dlc_name%TYPE;
+    lv_location   doc_locations.dlc_location_name%TYPE;
+    lv_meaning    doc_locations.dlc_location_name%TYPE;
+    --
+  BEGIN
+    --
+    lv_url := doc.get_doc_url( pi_doc_id  => pi_doc_id
+                             , pi_ret_ext => FALSE
+                             );
+    --   
+    doc_locations_api.get_dlc_location 
+                   ( pi_doc_id             => pi_doc_id
+                   , po_name               => lv_name
+                   , po_location           => lv_location
+                   , po_meaning            => lv_meaning );
+    --
+    UTL_FILE.PUT_LINE(l_fhand, pi_rec_type||','||
+                               pi_doc_file||','||
+                               pi_doc_descr||','||
+                               lv_url||','||
+                               lv_meaning);
+    --
+  END create_doc_assocs_rec;
+  --  
 BEGIN
   --
   nm3ctx.set_context('CIM_ERROR_TEXT',Null);
@@ -964,21 +992,11 @@ BEGIN
         FOR l_da_rec IN c_doc_assocs('WORK_ORDERS',
                                      l_wor_rec.iwor_works_order_no) LOOP
           --                           
-          lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
-                                   , pi_ret_ext => FALSE
-                                   );
-          --   
-          doc_locations_api.get_dlc_location 
-                         ( pi_doc_id             => l_da_rec.doc_id
-                         , po_name               => lv_name
-                         , po_location           => lv_location
-                         , po_meaning            => lv_meaning );
-          --
-          UTL_FILE.PUT_LINE(l_fhand, '08,'||
-                                     l_da_rec.doc_file||','||
-                                     l_da_rec.doc_descr||','||
-                                     lv_url||','||
-                                     lv_meaning);
+          create_doc_assocs_rec(pi_rec_type    => '08'
+                               ,pi_doc_id      => l_da_rec.doc_id
+                               ,pi_doc_file    => l_da_rec.doc_file
+                               ,pi_doc_descr   => l_da_rec.doc_descr
+                               );
           --
           l_no_of_recs := l_no_of_recs + 1;
           --
@@ -1016,25 +1034,29 @@ BEGIN
               END IF;                
               --
               --
-              -- Add associated Docs
+              -- Add associated WOL Docs
+              FOR l_da_rec IN c_doc_assocs('WORK_ORDER_LINES',
+                                           l_wol_rec.iwol_id) LOOP
+                --                           
+                create_doc_assocs_rec(pi_rec_type    => '12'
+                                     ,pi_doc_id      => l_da_rec.doc_id
+                                     ,pi_doc_file    => l_da_rec.doc_file
+                                     ,pi_doc_descr   => l_da_rec.doc_descr
+                                     );
+                --
+                l_no_of_recs := l_no_of_recs + 1;
+                --
+              END LOOP;
+              
+              -- Add associated Defects Docs
               FOR l_da_rec IN c_doc_assocs('DEFECTS',
                                            l_wol_rec.iwol_def_defect_id) LOOP
                 --                           
-                lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
-                                         , pi_ret_ext => FALSE
-                                         );
-                --   
-                doc_locations_api.get_dlc_location 
-                               ( pi_doc_id             => l_da_rec.doc_id
-                               , po_name               => lv_name
-                               , po_location           => lv_location
-                               , po_meaning            => lv_meaning );
-                --
-                UTL_FILE.PUT_LINE(l_fhand, '12,'||
-                                           l_da_rec.doc_file||','||
-                                           l_da_rec.doc_descr||','||
-                                           lv_url||','||
-                                           lv_meaning);
+                create_doc_assocs_rec(pi_rec_type    => '12'
+                                     ,pi_doc_id      => l_da_rec.doc_id
+                                     ,pi_doc_file    => l_da_rec.doc_file
+                                     ,pi_doc_descr   => l_da_rec.doc_descr
+                                     );
                 --
                 l_no_of_recs := l_no_of_recs + 1;
                 --
@@ -1116,25 +1138,29 @@ BEGIN
               END IF;
               --
               --
-              -- Add associated Docs
+              -- Add associated WOL Docs
+              FOR l_da_rec IN c_doc_assocs('WORK_ORDER_LINES',
+                                           l_wol_rec.iwol_id) LOOP
+                --                           
+                create_doc_assocs_rec(pi_rec_type    => '12'
+                                     ,pi_doc_id      => l_da_rec.doc_id
+                                     ,pi_doc_file    => l_da_rec.doc_file
+                                     ,pi_doc_descr   => l_da_rec.doc_descr
+                                     );
+                --
+                l_no_of_recs := l_no_of_recs + 1;
+                --
+              END LOOP;
+              
+              -- Add associated Defects Docs
               FOR l_da_rec IN c_doc_assocs('DEFECTS',
                                            l_wol_rec.iwol_def_defect_id) LOOP
-                --                           
-                lv_url := doc.get_doc_url( pi_doc_id  => l_da_rec.doc_id
-                                         , pi_ret_ext => FALSE
-                                         );
-                --   
-                doc_locations_api.get_dlc_location 
-                               ( pi_doc_id             => l_da_rec.doc_id
-                               , po_name               => lv_name
-                               , po_location           => lv_location
-                               , po_meaning            => lv_meaning );
                 --
-                UTL_FILE.PUT_LINE(l_fhand, '12,'||
-                                           l_da_rec.doc_file||','||
-                                           l_da_rec.doc_descr||','||
-                                           lv_url||','||
-                                           lv_meaning);
+                create_doc_assocs_rec(pi_rec_type    => '12'
+                                     ,pi_doc_id      => l_da_rec.doc_id
+                                     ,pi_doc_file    => l_da_rec.doc_file
+                                     ,pi_doc_descr   => l_da_rec.doc_descr
+                                     );
                 --
                 l_no_of_recs := l_no_of_recs + 1;
                 --
