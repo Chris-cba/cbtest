@@ -4,18 +4,19 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.42   Jul 04 2016 14:53:46   linesh.sorathia  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.43   Jan 30 2017 10:30:14   linesh.sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jul 04 2016 14:53:46  $
---       Date fetched Out : $Modtime:   Apr 27 2016 10:23:48  $
---       PVCS Version     : $Revision:   3.42  $
+--       Date into PVCS   : $Date:   Jan 30 2017 10:30:14  $
+--       Date fetched Out : $Modtime:   Jan 29 2017 18:43:16  $
+--       PVCS Version     : $Revision:   3.43  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.42  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.43  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
+g_file_handle   UTL_FILE.FILE_TYPE;
 --
 insert_error  EXCEPTION;
 --
@@ -976,74 +977,17 @@ BEGIN
   /*
   ||Process all Comments
   */
-  FOR i IN 1 .. pi_das_tab.count LOOP
-    If hig.get_sysopt('NEWDOCMAN') = 'Y'
-    Then
-        lv_table := 'eB DOCS';
-        /*
-        ||Create eB Document and associations.
-        */ 
-        Declare
-        --           
-           l_eB_doc_id       Number ;
-           l_admin_unit      Number ;
-           l_eB_template_id  Number ;
-           l_scope_id        NUmber;
-           l_association_rec nm3_doc_man.g_association_rec;
-           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
-
-           
-           Cursor c_admin_unit
-           Is
-           Select hp_area_id
-           From   hig_processes
-           Where  hp_process_id = hig_process_api.get_current_process_id ; 
-
-           Cursor c_scope_id (pi_admin_unit_id NUMBER)
-           Is
-           Select dasm_scope_id
-           From   dm_admin_unit_scope_map
-           Where  dasm_admin_unit_id = pi_admin_unit_id ; 
-        --
-        Begin
-        -- 
-           --Get the admin unit of the process to load eB document against it.
-           Open  c_admin_unit;
-           Fetch c_admin_unit Into l_admin_unit;
-           Close c_admin_unit;
-
-           --Get the eB scope id mapped to admin unit.
-           Open  c_scope_id(l_admin_unit);
-           Fetch c_scope_id Into l_scope_id;
-           Close c_scope_id;          
-
-           l_eB_template_id  := hig.get_sysopt('DEFPHOTTEM');
-           l_association_rec.featue_table_name := 'DEFECTS';
-           l_association_rec.feature_id        := pi_das_tab(i).das_def_defect_id ;
-           l_association_tab(1)                := l_association_rec;
-           
-           nm3_doc_man.create_document_and_assocs
-           (pi_template_id     => l_eB_template_id,
-            pi_scope_id        => NVL(l_scope_id,1),
-            pi_prefix          => pi_das_tab(i).das_location ,
-            pi_title           => pi_das_tab(i).das_title,
-            pi_remarks         => pi_das_tab(i).das_descr, 
-            pi_date_issued     => pi_das_tab(i).das_date_issued, 
-            pi_association_tab => l_association_tab, 
-            pi_called_by       =>  1 ,
-            po_document_id     => l_eB_doc_id) ;
-           nm_debug.debug('Defect Assoc eB Doc Id = '||l_eB_doc_id);
-           
-        End ;
-    Else
-        nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
-        /*
-        ||Insert DOCS entry.
-        */
-        lv_table := 'DOCS';
-        --
-        INSERT
-        INTO DOCS
+  IF  hig.get_sysopt('NEWDOCMAN') != 'Y'
+  THEN
+      FOR i IN 1 .. pi_das_tab.count LOOP
+          nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
+          /*
+          ||Insert DOCS entry.
+          */
+          lv_table := 'DOCS';
+          --
+          INSERT
+          INTO DOCS
           (doc_id
           ,doc_title
           ,doc_category
@@ -1054,7 +998,7 @@ BEGIN
           ,doc_dlc_id
           ,doc_descr
           ,doc_reference_code)
-        VALUES(pi_das_tab(i).das_doc_id
+          VALUES(pi_das_tab(i).das_doc_id
           ,pi_das_tab(i).das_title
           ,pi_das_tab(i).das_category
           ,pi_das_tab(i).das_dtp_code
@@ -1064,18 +1008,223 @@ BEGIN
           ,pi_das_tab(i).das_dlc_id
           ,pi_das_tab(i).das_descr
           ,pi_das_tab(i).das_reference_code);
-          
-        /*
-        ||Insert DOC_ASSOCS entry.
-        */
-        lv_table := 'DOC_ASSOCS';
-        --
-        ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
-                      ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
-                      ,pi_table_name =>'DEFECTS');
-    END IF ;                      
-    --    
-  END LOOP;  
+        
+          /*
+         ||Insert DOC_ASSOCS entry.
+         */
+         lv_table := 'DOC_ASSOCS';
+         --
+         ins_doc_assocs(pi_doc_id     =>pi_das_tab(i).das_doc_id
+                       ,pi_rec_id     =>pi_das_tab(i).das_def_defect_id
+                       ,pi_table_name =>'DEFECTS');
+         --    
+      END LOOP;  
+  ELSE
+      Declare
+        --           
+           l_eB_doc_id       Number ;
+           l_admin_unit      Number ;
+           l_eB_template_id  Number ;
+           l_scope_id        NUmber;
+           l_association_rec nm3_doc_man.g_association_rec;
+           l_association_tab nm3_doc_man.g_association_tab := nm3_doc_man.g_association_tab(null);
+           TYPE excel_record IS RECORD (defect_id NUMBER, prefix VARCHAR2(1000), title VARCHAR2(4000));
+           excel_rec excel_record;
+           TYPE file_record IS RECORD (defect_id NUMBER, filename VARCHAR2(1000));
+           file_rec file_record ;
+           previous_defect_id Number ;
+           TYPE exceltable IS TABLE OF excel_record INDEX BY BINARY_INTEGER;
+           TYPE filetable IS TABLE OF file_record INDEX BY BINARY_INTEGER ;
+           exceltab exceltable ;
+           filetab filetable ;
+           counter Number := 1 ;  
+           l_found BOOLEAN ;
+           l_filenames1 VARCHAR2(4000);
+           l_filenames2 VARCHAR2(4000);
+           l_filenames3 VARCHAR2(4000);
+           l_filenames4 VARCHAR2(4000);
+           filecounter Number := 1 ;
+           l_doc_title VARCHAR2(4000) ;
+                                                  
+           Cursor c_admin_unit
+           Is
+           Select hp_area_id
+           From   hig_processes
+           Where  hp_process_id = hig_process_api.get_current_process_id ; 
+              
+           Cursor c_scope_id (pi_admin_unit_id NUMBER)
+           Is
+           Select dasm_scope_id
+           From   dm_admin_unit_scope_map
+           Where  dasm_admin_unit_id = pi_admin_unit_id ; 
+        Begin
+           FOR i IN 1 .. pi_das_tab.count 
+           LOOP
+              nm_debug.debug('Defect Assoc Doc Id = '||pi_das_tab(i).das_doc_id);
+              lv_table := 'eB DOCS';
+              /*
+              ||Create eB Document and associations.
+              */             
+              --Get the admin unit of the process to load eB document against it.
+              Open  c_admin_unit;
+              Fetch c_admin_unit Into l_admin_unit;
+              Close c_admin_unit;
+              
+              --Get the eB scope id mapped to admin unit.
+              Open  c_scope_id(l_admin_unit);
+              Fetch c_scope_id Into l_scope_id;
+              Close c_scope_id;          
+                
+              l_eB_template_id  := hig.get_sysopt('DEFPHOTTEM');
+              l_association_rec.featue_table_name := 'DEFECTS';
+              l_association_rec.feature_id        := pi_das_tab(i).das_def_defect_id ;
+              l_association_tab(1)                := l_association_rec;
+              l_doc_title := hig.get_sysopt('DEFPHOTLM')||' - Defect '||pi_das_tab(i).das_def_defect_id ;
+              IF hig.get_sysopt('DEFPHOTFSM') = 'N'
+              THEN
+                  nm3_doc_man.create_document_and_assocs
+                  (pi_template_id     => l_eB_template_id,
+                  pi_scope_id        => NVL(l_scope_id,1),
+                  pi_prefix          => pi_das_tab(i).das_location , 
+                  pi_title           => l_doc_title,
+                  pi_remarks         => pi_das_tab(i).das_descr, 
+                  pi_date_issued     => pi_das_tab(i).das_date_issued, 
+                  pi_association_tab => l_association_tab, 
+                  pi_called_by       =>  1 ,
+                  po_document_id     => l_eB_doc_id) ;
+                  Utl_File.Put_Line(g_file_handle,pi_das_tab(i).das_location||','||l_doc_title||',Not Approved,PHOTOGRAPH,GLOBAL,A,,,,,,,,,,,,,Y,MASTER,S,,,,,,'||pi_das_tab(i).das_file ); 
+              ELSE
+                  IF counter = 1 
+                  THEN
+                      nm3_doc_man.create_document_and_assocs
+                      (pi_template_id     => l_eB_template_id,
+                      pi_scope_id        => NVL(l_scope_id,1),
+                      pi_prefix          => 'DefectBeforePhoto - '||pi_das_tab(i).das_def_defect_id ,
+                      pi_title           => l_doc_title,
+                      pi_remarks         => pi_das_tab(i).das_descr, 
+                      pi_date_issued     => pi_das_tab(i).das_date_issued, 
+                      pi_association_tab => l_association_tab, 
+                      pi_called_by       =>  1 ,
+                      po_document_id     => l_eB_doc_id) ;
+                                    
+                      excel_rec.defect_id := pi_das_tab(i).das_def_defect_id  ;
+                      excel_rec.prefix := 'DefectBeforePhoto - '||pi_das_tab(i).das_def_defect_id; 
+                      excel_rec.title := l_doc_title ;
+                                       
+                      exceltab(exceltab.count+1) := excel_rec; 
+                      file_rec.defect_id := pi_das_tab(i).das_def_defect_id ;
+                      file_rec.filename := pi_das_tab(i).das_file;
+                      filetab(filetab.count+1) := file_rec;
+                  ELSE   
+                     IF previous_defect_id = pi_das_tab(i).das_def_defect_id
+                     THEN
+                         file_rec.defect_id := pi_das_tab(i).das_def_defect_id ;
+                         file_rec.filename := pi_das_tab(i).das_file;    
+                         filetab(filetab.count+1) := file_rec;
+                     ELSE
+                         l_found := False;
+                         FOR j in 1..exceltab.Count 
+                         LOOP
+                             excel_rec := exceltab(j);              
+                             IF excel_rec.defect_id = pi_das_tab(i).das_def_defect_id
+                             THEN
+                                 l_found := true;
+                                 EXIT;
+                             END IF ;
+                         END LOOP;          
+                         IF NOT l_found 
+                         THEN
+                             nm3_doc_man.create_document_and_assocs
+                             (pi_template_id     => l_eB_template_id,
+                             pi_scope_id        => NVL(l_scope_id,1),
+                             pi_prefix          => 'DefectBeforePhoto - '||pi_das_tab(i).das_def_defect_id ,
+                             pi_title           => l_doc_title,
+                             pi_remarks         => pi_das_tab(i).das_descr, 
+                             pi_date_issued     => pi_das_tab(i).das_date_issued, 
+                             pi_association_tab => l_association_tab, 
+                             pi_called_by       =>  1 ,
+                             po_document_id     => l_eB_doc_id) ;
+                                                
+                             excel_rec.defect_id := pi_das_tab(i).das_def_defect_id  ;
+                             excel_rec.prefix := 'DefectBeforePhoto - '||pi_das_tab(i).das_def_defect_id; 
+                             excel_rec.title := l_doc_title ;
+                         END IF ;     
+                         file_rec.defect_id := pi_das_tab(i).das_def_defect_id ;
+                         file_rec.filename := pi_das_tab(i).das_file;
+                         filetab(filetab.count+1) := file_rec;
+                     END IF ;  
+                 END IF ;
+                 counter := counter + 1 ;
+                 previous_defect_id := pi_das_tab(i).das_def_defect_id ; 
+                 nm_debug.debug('Defect Assoc eB Doc Id = '||l_eB_doc_id); 
+              END IF ;          
+          END LOOP;
+          IF hig.get_sysopt('DEFPHOTFSM') = 'Y'
+          THEN
+              IF exceltab.Count > 0 
+              THEN
+                  FOR i IN 1..exceltab.Count 
+                  LOOP
+                      l_filenames1 := Null ;
+                      l_filenames2 := Null ;
+                      l_filenames3 := Null ;
+                      l_filenames4 := Null ;
+                      filecounter := 1;
+                      excel_rec := exceltab(i);
+                      FOR j IN 1..filetab.Count
+                      LOOP
+                          file_rec := filetab(j);
+                          IF file_rec.defect_id = excel_rec.defect_id 
+                          THEN
+                              IF filecounter = 1
+                              THEN
+                                  l_filenames1 :=  file_rec.filename ;
+                              ELSIF filecounter = 6
+                              THEN 
+                                  l_filenames2 :=  file_rec.filename ;   
+                              ELSIF filecounter = 11
+                              THEN 
+                                  l_filenames3 :=  file_rec.filename ;
+                              ELSIF filecounter = 16
+                              THEN 
+                                  l_filenames4 :=  file_rec.filename ;
+                              ELSIF filecounter BETWEEN 2 and 5
+                              THEN 
+                                  l_filenames1 := l_filenames1||','||file_rec.filename ;
+                              ELSIF filecounter BETWEEN 6 and 10
+                              THEN 
+                                  l_filenames2 := l_filenames2||','||file_rec.filename ;
+                              ELSIF filecounter BETWEEN 11 and 15
+                              THEN 
+                                  l_filenames3 := l_filenames3||','||file_rec.filename ;
+                              ELSIF filecounter BETWEEN 16 and 20
+                              THEN 
+                                  l_filenames4 := l_filenames4||','||file_rec.filename ;
+                              END IF ;
+                              filecounter := filecounter + 1 ;                                       
+                          END IF ;
+                      END LOOP ;                  
+                      If l_filenames1 IS NOT NULL
+                      THEN
+                          Utl_File.Put_Line(g_file_handle,excel_rec.prefix||','||excel_rec.title||',Not Approved,PHOTOGRAPH,GLOBAL,A,,,,,,,,,,,,,Y,MASTER,S,,,,,,'||l_filenames1 ); 
+                      END IF ;
+                      If l_filenames2 IS NOT NULL
+                      THEN
+                          Utl_File.Put_Line(g_file_handle,excel_rec.prefix||','||excel_rec.title||',Not Approved,PHOTOGRAPH,GLOBAL,A,,,,,,,,,,,,,Y,MASTER,S,,,,,,'||l_filenames2 ); 
+                      END IF ;
+                      If l_filenames3 IS NOT NULL
+                      THEN
+                          Utl_File.Put_Line(g_file_handle,excel_rec.prefix||','||excel_rec.title||',Not Approved,PHOTOGRAPH,GLOBAL,A,,,,,,,,,,,,,Y,MASTER,S,,,,,,'||l_filenames3 ); 
+                      END IF ;
+                      If l_filenames4 IS NOT NULL
+                      THEN
+                          Utl_File.Put_Line(g_file_handle,excel_rec.prefix||','||excel_rec.title||',Not Approved,PHOTOGRAPH,GLOBAL,A,,,,,,,,,,,,,Y,MASTER,S,,,,,,'||l_filenames4 ); 
+                      END IF ;
+                  END LOOP;
+              END IF;
+          END IF ;
+       End ; 
+  END IF ;
   --
 EXCEPTION
   WHEN others
@@ -4075,6 +4224,7 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
   lt_boqs         boq_tab;
   lt_ins_boqs     boq_items_tab;
   lt_das_tab      das_tab;
+
   --
   invalid_inspection  EXCEPTION;
   --
@@ -4132,6 +4282,12 @@ BEGIN
   ||Loop Through The Supplied Defects.
   */
   nm_debug.debug('Supplied defect count = '||pio_insp_rec.insp_defects.count);
+  -- Create eb's documnt loader file for 
+  IF hig.get_sysopt('NEWDOCMAN') = 'Y'
+  THEN
+      g_file_handle := Utl_File.Fopen('MAI_INSP_DIRECTORY',lr_insp_rec.are_report_id||'_'||To_Char(Sysdate,'ddmmyyyhh24miss')||'.csv','W');
+      Utl_File.Put_Line(g_file_handle,'Prefix,Title,Status,Class Code,Scope,Flag,G,H,I,J,K,L,M,N,O,P,Q,R,Create New,Copy No,Copy Type,V,W,X,Y,Z,File1,File2,File3,File4,File5');
+  END IF ;
   FOR i IN 1..pio_insp_rec.insp_defects.count LOOP
     --
     BEGIN
@@ -4477,6 +4633,10 @@ BEGIN
   END IF;
   --
   --
+  IF hig.get_sysopt('NEWDOCMAN') = 'Y'
+  THEN
+      Utl_File.Fclose(g_file_handle);
+  END IF ;
   nm_debug.debug('Create Inspection returns'||lv_error_flag);
   po_error_flag := lv_error_flag;
   pio_insp_rec.insp_record := lr_insp_rec;
@@ -4486,6 +4646,18 @@ EXCEPTION
    THEN
       ROLLBACK;
       po_error_flag := 'Y';
+      IF hig.get_sysopt('NEWDOCMAN') = 'Y'
+      THEN
+          BEGIN
+             IF Utl_File.Is_Open(g_file_handle)
+             THEN
+                 Utl_File.Fclose(g_file_handle);
+             END IF ;
+          EXCEPTION
+             WHEN OTHERS THEN 
+             NULL;
+          END ;
+      END IF ;
       --RAISE;
 END create_inspection;
 --
