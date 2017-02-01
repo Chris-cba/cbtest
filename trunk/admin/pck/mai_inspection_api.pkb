@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.43   Jan 30 2017 10:30:14   linesh.sorathia  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.44   Feb 01 2017 12:58:08   linesh.sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jan 30 2017 10:30:14  $
---       Date fetched Out : $Modtime:   Jan 29 2017 18:43:16  $
---       PVCS Version     : $Revision:   3.43  $
+--       Date into PVCS   : $Date:   Feb 01 2017 12:58:08  $
+--       Date fetched Out : $Modtime:   Feb 01 2017 12:39:40  $
+--       PVCS Version     : $Revision:   3.44  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.43  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.44  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 g_file_handle   UTL_FILE.FILE_TYPE;
 --
@@ -4206,6 +4206,7 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
   lv_insp_sys_flag    VARCHAR2(1);
   lv_error_flag       VARCHAR2(1);
   lv_effective_date   DATE;
+  lv_admin_unit_code  VARCHAR2(100);
   --
   lv_entity_type   VARCHAR2(10);
   lv_boqs_created  NUMBER;
@@ -4225,8 +4226,17 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
   lt_ins_boqs     boq_items_tab;
   lt_das_tab      das_tab;
 
+
+   Cursor c_admin_unit
+   Is
+   Select nau_unit_code
+   From   hig_processes hp, nm_admin_units
+   Where  hp_process_id = hig_process_api.get_current_process_id 
+   And    nau_admin_unit =  hp_area_id ; 
+
   --
   invalid_inspection  EXCEPTION;
+  missing_dir_exception EXCEPTION;
   --
 BEGIN
   --
@@ -4285,7 +4295,18 @@ BEGIN
   -- Create eb's documnt loader file for 
   IF hig.get_sysopt('NEWDOCMAN') = 'Y'
   THEN
-      g_file_handle := Utl_File.Fopen('MAI_INSP_DIRECTORY',lr_insp_rec.are_report_id||'_'||To_Char(Sysdate,'ddmmyyyhh24miss')||'.csv','W');
+      --Get the admin unit code from the the hig process.
+      Open  c_admin_unit;
+      Fetch c_admin_unit Into lv_admin_unit_code;
+      Close c_admin_unit;
+      BEGIN
+         g_file_handle := Utl_File.Fopen('DOC_MANAGER_BLDR_BEFORE_'||lv_admin_unit_code,lr_insp_rec.are_report_id||'_'||To_Char(Sysdate,'ddmmyyyhh24miss')||'.csv','W');
+      EXCEPTION 
+      WHEN others
+      THEN
+          --raise_application_error(-20001,'Missing Directory '||SQLERRM);
+          Raise missing_dir_exception ;
+      END ;
       Utl_File.Put_Line(g_file_handle,'Prefix,Title,Status,Class Code,Scope,Flag,G,H,I,J,K,L,M,N,O,P,Q,R,Create New,Copy No,Copy Type,V,W,X,Y,Z,File1,File2,File3,File4,File5');
   END IF ;
   FOR i IN 1..pio_insp_rec.insp_defects.count LOOP
@@ -4636,12 +4657,26 @@ BEGIN
   IF hig.get_sysopt('NEWDOCMAN') = 'Y'
   THEN
       Utl_File.Fclose(g_file_handle);
+      BEGIN         
+         dbms_scheduler.create_job (
+         job_name           =>  'CSV_TO_EXCEL',
+         job_type           =>  'EXECUTABLE',
+         job_action         =>  'c:\windows\system32\cmd.exe /c E:\bentley_dir\iamap01\bulkloader\area04\run.cmd',
+         start_date         =>  SYSTIMESTAMP,
+         enabled            =>  true);
+      EXCEPTION
+      WHEN OTHERS THEN
+          RAISE_APPLICATION_ERROR(-20001,'Error while converting CSV to XLSX'||SQLERRM);
+      END ;
   END IF ;
   nm_debug.debug('Create Inspection returns'||lv_error_flag);
   po_error_flag := lv_error_flag;
   pio_insp_rec.insp_record := lr_insp_rec;
   --
 EXCEPTION
+  WHEN missing_dir_exception 
+  THEN
+      RAISE_APPLICATION_ERROR(-20001,'Missing Directory :'||SQLERRM); 
   WHEN OTHERS
    THEN
       ROLLBACK;
@@ -4657,6 +4692,7 @@ EXCEPTION
              WHEN OTHERS THEN 
              NULL;
           END ;
+           
       END IF ;
       --RAISE;
 END create_inspection;
