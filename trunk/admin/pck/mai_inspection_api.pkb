@@ -4,19 +4,20 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.44   Feb 01 2017 12:58:08   linesh.sorathia  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.45   Feb 02 2017 14:21:34   linesh.sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 01 2017 12:58:08  $
---       Date fetched Out : $Modtime:   Feb 01 2017 12:39:40  $
---       PVCS Version     : $Revision:   3.44  $
+--       Date into PVCS   : $Date:   Feb 02 2017 14:21:34  $
+--       Date fetched Out : $Modtime:   Feb 02 2017 13:30:40  $
+--       PVCS Version     : $Revision:   3.45  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.44  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.45  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 g_file_handle   UTL_FILE.FILE_TYPE;
+g_dir_path      VARCHAR2(4000) ;
 --
 insert_error  EXCEPTION;
 --
@@ -4229,10 +4230,11 @@ PROCEDURE create_inspection(pio_insp_rec  IN OUT insp_rec
 
    Cursor c_admin_unit
    Is
-   Select nau_unit_code
-   From   hig_processes hp, nm_admin_units
+   Select nau_unit_code,hdir_path
+   From   hig_processes hp, nm_admin_units, hig_directories
    Where  hp_process_id = hig_process_api.get_current_process_id 
-   And    nau_admin_unit =  hp_area_id ; 
+   And    nau_admin_unit =  hp_area_id 
+   AND    UPPER('DOC_MANAGER_BLDR_BEFORE_'||nau_unit_code) = UPPER(hdir_name); 
 
   --
   invalid_inspection  EXCEPTION;
@@ -4297,7 +4299,7 @@ BEGIN
   THEN
       --Get the admin unit code from the the hig process.
       Open  c_admin_unit;
-      Fetch c_admin_unit Into lv_admin_unit_code;
+      Fetch c_admin_unit Into lv_admin_unit_code, g_dir_path ;
       Close c_admin_unit;
       BEGIN
          g_file_handle := Utl_File.Fopen('DOC_MANAGER_BLDR_BEFORE_'||lv_admin_unit_code,lr_insp_rec.are_report_id||'_'||To_Char(Sysdate,'ddmmyyyhh24miss')||'.csv','W');
@@ -4661,7 +4663,7 @@ BEGIN
          dbms_scheduler.create_job (
          job_name           =>  'CSV_TO_EXCEL',
          job_type           =>  'EXECUTABLE',
-         job_action         =>  'c:\windows\system32\cmd.exe /c E:\bentley_dir\iamap01\bulkloader\area04\run.cmd',
+         job_action         =>  'c:\windows\system32\cmd.exe /c '||g_dir_path||'run.cmd',
          start_date         =>  SYSTIMESTAMP,
          enabled            =>  true);
       EXCEPTION
