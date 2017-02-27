@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.29.1.1   Sep 14 2016 11:33:06   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkb-arc   2.29.1.2   Feb 27 2017 16:03:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.pkb  $
---       Date into SCCS   : $Date:   Sep 14 2016 11:33:06  $
---       Date fetched Out : $Modtime:   Sep 14 2016 11:25:32  $
---       SCCS Version     : $Revision:   2.29.1.1  $
+--       Date into SCCS   : $Date:   Feb 27 2017 16:03:12  $
+--       Date fetched Out : $Modtime:   Feb 27 2017 16:01:48  $
+--       SCCS Version     : $Revision:   2.29.1.2  $
 --       Based on SCCS Version     : 1.33
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY mai AS
 -----------------------------------------------------------------------------
 --
 -- Return the SCCS id of the package
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.29.1.1  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.29.1.2  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name      CONSTANT  varchar2(30)   := 'mai';
@@ -6617,13 +6617,6 @@ BEGIN
                             ||'WHERE ihc_atv_acty_area_code = rep_atv_acty_area_code '
                             ||'AND ihc_atv_acty_area_code = def_atv_acty_area_code '
                             ||'AND ihc_icb_id = '||pi_icb_id||') '
-               ||'AND EXISTS(SELECT 1 '
-                            ||'FROM activities_report '
-                           ||'WHERE TRUNC(are_date_work_done) BETWEEN NVL(:pi_from_date,TRUNC(are_date_work_done)) '
-                                                               ||'AND NVL(:pi_to_date,TRUNC(are_date_work_done)) '
-                             ||'AND TRUNC(are_date_work_done) <= TRUNC(:pi_wor_date_raised) '
-                             ||'AND are_report_id = def_are_report_id) '
-
   ;
   /*
   ||Check the sys_flag parameter.
@@ -6871,10 +6864,7 @@ BEGIN
   ||Execute the query.
   */
   EXECUTE IMMEDIATE lv_query 
-  BULK COLLECT INTO lt_defects
-  USING pi_from_date
-       ,pi_to_date
-       ,pi_wor_date_raised;
+  BULK COLLECT INTO lt_defects;
   /*
   ||Clear any records from previous searches.
   */
