@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.46   Feb 13 2017 12:29:12   linesh.sorathia  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.47   Apr 04 2017 15:40:28   linesh.sorathia  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Feb 13 2017 12:29:12  $
---       Date fetched Out : $Modtime:   Feb 13 2017 11:48:16  $
---       PVCS Version     : $Revision:   3.46  $
+--       Date into PVCS   : $Date:   Apr 04 2017 15:40:28  $
+--       Date fetched Out : $Modtime:   Apr 04 2017 14:56:08  $
+--       PVCS Version     : $Revision:   3.47  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.46  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.47  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 g_file_handle   UTL_FILE.FILE_TYPE;
 g_dir_path      VARCHAR2(4000) ;
@@ -4668,7 +4668,8 @@ BEGIN
          enabled            =>  true);
       EXCEPTION
       WHEN OTHERS THEN
-          RAISE_APPLICATION_ERROR(-20001,'Error while converting CSV to XLSX'||SQLERRM);
+          --As the batch will run again 
+          NULL ;
       END ;
   END IF ;
   nm_debug.debug('Create Inspection returns'||lv_error_flag);
