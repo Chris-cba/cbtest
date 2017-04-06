@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.43   Sep 15 2016 13:54:52   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkb-arc   2.44   Apr 06 2017 11:18:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   interfaces.pkb  $
---       Date into SCCS   : $Date:   Sep 15 2016 13:54:52  $
---       Date fetched Out : $Modtime:   Sep 14 2016 14:42:52  $
---       SCCS Version     : $Revision:   2.43  $
+--       Date into SCCS   : $Date:   Apr 06 2017 11:18:56  $
+--       Date fetched Out : $Modtime:   Apr 06 2017 10:33:56  $
+--       SCCS Version     : $Revision:   2.44  $
 --       Based on SCCS Version     : 1.37
 --
 --
@@ -20,7 +20,7 @@ CREATE OR REPLACE PACKAGE BODY interfaces IS
 --
 
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.43  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.44  $';
 
   c_csv_currency_format CONSTANT varchar2(13) := 'FM99999990.00';
 
@@ -914,7 +914,24 @@ FUNCTION write_wor_file(p_contractor_id IN varchar2
          doc_assocs da
    WHERE d.doc_id = da.das_doc_id
      AND da.das_rec_id = c_rec_id
-     AND da.das_table_name = c_table_name;
+     AND da.das_table_name = c_table_name
+     AND NVL(d.doc_date_expires, SYSDATE+1) >= SYSDATE;
+  --
+  CURSOR c_def_doc_assocs(c_wol_rec_id       doc_assocs.das_rec_id%TYPE,
+                          c_def_rec_id       doc_assocs.das_rec_id%TYPE)
+      IS
+  SELECT d.*
+    FROM docs d,
+         doc_assocs da
+   WHERE d.doc_id = da.das_doc_id
+     AND da.das_rec_id = c_def_rec_id
+     AND da.das_table_name = 'DEFECTS'
+     AND NVL(d.doc_date_expires, SYSDATE+1) >= SYSDATE
+     AND NOT EXISTS (SELECT 1
+                       FROM doc_assocs da2
+                      WHERE da2.das_table_name = 'WORK_ORDER_LINES'
+                        AND da2.das_doc_id = da.das_doc_id
+                        AND da2.das_rec_id = c_wol_rec_id);
   --
   lr_docs                     docs%ROWTYPE;
   lv_wol_boq_perc_item_code   varchar2(300);
@@ -1049,8 +1066,8 @@ BEGIN
               END LOOP;
               
               -- Add associated Defects Docs
-              FOR l_da_rec IN c_doc_assocs('DEFECTS',
-                                           l_wol_rec.iwol_def_defect_id) LOOP
+              FOR l_da_rec IN c_def_doc_assocs(l_wol_rec.iwol_id,
+                                               l_wol_rec.iwol_def_defect_id) LOOP
                 --                           
                 create_doc_assocs_rec(pi_rec_type    => '12'
                                      ,pi_doc_id      => l_da_rec.doc_id
@@ -1153,8 +1170,8 @@ BEGIN
               END LOOP;
               
               -- Add associated Defects Docs
-              FOR l_da_rec IN c_doc_assocs('DEFECTS',
-                                           l_wol_rec.iwol_def_defect_id) LOOP
+              FOR l_da_rec IN c_def_doc_assocs(l_wol_rec.iwol_id,
+                                               l_wol_rec.iwol_def_defect_id) LOOP
                 --
                 create_doc_assocs_rec(pi_rec_type    => '12'
                                      ,pi_doc_id      => l_da_rec.doc_id
