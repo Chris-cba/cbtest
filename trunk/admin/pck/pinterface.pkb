@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.3   Jul 01 2013 16:26:54   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.4   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   pinterface.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:27:18  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)pinterface.pck	1.3 05/18/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
   --
   debug          boolean:=TRUE;
@@ -62,7 +62,27 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 -- File Types are : 'S' - Sections
 --                  'W' - Work Orders
 --                  'I' - Invoice details
---                  'C' - Completions
+--         
+--
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   2.4  $';
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version
+  RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version
+  RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
 --
 Procedure Get_Params(job_id in number)
 is

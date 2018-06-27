@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY maisplit
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.8   Nov 04 2014 17:55:40   Mike.Huitson  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maisplit.pkb-arc   2.9   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
   --       Module Name      : $Workfile:   maisplit.pkb  $
-  --       Date into SCCS   : $Date:   Nov 04 2014 17:55:40  $
-  --       Date fetched Out : $Modtime:   Nov 04 2014 17:11:26  $
-  --       SCCS Version     : $Revision:   2.8  $
+  --       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
+  --       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+  --       SCCS Version     : $Revision:   2.9  $
   --       Based onSCCS Version     : 1.7
   --
   -- This package contains procedures and functions which are required by
@@ -18,12 +18,12 @@ CREATE OR REPLACE PACKAGE BODY maisplit
   -- in the HIGSPLIT package.
   -- Originally taken from '@(#)maisplit.pck 1.14 01/11/02';
   -----------------------------------------------------------------------------
-  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
   --
   --all global package variables here
   --
-  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.8  $';
+  g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.9  $';
   --  g_body_sccsid is the SCCS ID for the package body
   --
   g_package_name    CONSTANT  varchar2(30)   := 'maisplit';

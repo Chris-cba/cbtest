@@ -3,19 +3,36 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.5   Jul 01 2013 16:26:56   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.6   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:56  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
---       SCCS Version     : $Revision:   2.5  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:25:18  $
+--       SCCS Version     : $Revision:   2.6  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
 --   Originally taken from @(#)works_func.pck	1.17 12/10/02
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.6  $';
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+
 function strGetErrorMsg(strMessage IN VARCHAR2) RETURN VARCHAR2 is
 	strReturn VARCHAR2(255);
 Begin

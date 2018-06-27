@@ -5,21 +5,21 @@ CREATE OR REPLACE PACKAGE P$Interface AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/pinterface.pkh-arc   2.1   Jul 01 2013 16:26:54   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/pinterface.pkh-arc   2.2   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   pinterface.pkh  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:54  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 13:01:16  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)pinterface.pck	1.3 05/18/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.1  $';
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.2  $';
 --  g_sccsid is the SCCS ID for the package
 --</GLOBVAR>
 --
@@ -70,6 +70,17 @@ CREATE OR REPLACE PACKAGE P$Interface AS
    ==========================================================================
 */
 -----------------------------------------------------------------------------
+--<PROC NAME="get_version">
+--
+   function get_version return varchar2;
+--</PROC>
+------------------------------------------------------------------------------
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-------------------------------------------------------------------------------
 --<PROC NAME="Create_File">
 --
    Procedure Create_File(loc_in  varchar2

@@ -3,11 +3,11 @@ AS
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maisplit.pkh-arc   2.2   Nov 04 2014 17:55:40   Mike.Huitson  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maisplit.pkh-arc   2.3   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
   --       Module Name      : $Workfile:   maisplit.pkh  $
-  --       Date into SCCS   : $Date:   Nov 04 2014 17:55:40  $
-  --       Date fetched Out : $Modtime:   Oct 30 2014 15:48:26  $
-  --       SCCS Version     : $Revision:   2.2  $
+  --       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
+  --       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+  --       SCCS Version     : $Revision:   2.3  $
   --       Based onSCCS Version     : 1.2
   --
   -- This package contains procedures and functions which are required by
@@ -17,9 +17,9 @@ AS
   -- in the HIGSPLIT package.
   -- Originally taken from '@(#)maisplit.pck 1.14 01/11/02';
   -----------------------------------------------------------------------------
-  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
-  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.2  $';
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
   --  g_sccsid is the SCCS ID for the package
   --
   -----------------------------------------------------------------------------
