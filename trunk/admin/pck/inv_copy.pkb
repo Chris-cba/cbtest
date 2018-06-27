@@ -3,18 +3,21 @@ CREATE OR REPLACE PACKAGE BODY Inv_Copy AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/inv_copy.pkb-arc   2.1   Jul 01 2013 16:25:52   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/inv_copy.pkb-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   inv_copy.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:04:20  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)inv_copy.pck	1.3 10/22/01'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
+
+g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
+
      TYPE inv_rec IS RECORD
       (IIT_CREATED_DATE          inv_items_all.IIT_CREATED_DATE%TYPE,
        IIT_CRE_DATE              inv_items_all.IIT_CRE_DATE%TYPE,
@@ -157,10 +160,20 @@ CREATE OR REPLACE PACKAGE BODY Inv_Copy AS
        IIT_DATE_ATTRIB94         inv_items_all.IIT_DATE_ATTRIB94%TYPE,
        IIT_DATE_ATTRIB95         inv_items_all.IIT_DATE_ATTRIB95%TYPE);
 
+-----------------------------------------------------------------------------
+--
 FUNCTION get_version RETURN VARCHAR2 IS
 BEGIN
   RETURN g_sccsid;
 END;
+--
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
 
 PROCEDURE create_hier(p_item IN inv_items_all.iit_item_id%TYPE
                      ,p_asset_id IN inv_items_all.iit_primary_key%TYPE) IS

@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_act IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_tab_act.pkb-arc   2.1   Jul 01 2013 16:25:58   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_act.pkb-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_tab_act.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:58  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:46  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -21,11 +21,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_act IS
 --
 -----------------------------------------------------------------------------
 --
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.1  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.2  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_act';

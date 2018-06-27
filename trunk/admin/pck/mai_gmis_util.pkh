@@ -3,11 +3,11 @@ create or replace package mai_gmis_util as
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_util.pkh-arc   2.1   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_util.pkh-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_gmis_util.pkh  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:56  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.4
 --
 --
@@ -16,7 +16,7 @@ create or replace package mai_gmis_util as
 --    Other supporting funcs and procs for gmis interface
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
@@ -25,7 +25,7 @@ create or replace package mai_gmis_util as
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.1  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.2  $"';
 
 --</GLOBVAR>
 --

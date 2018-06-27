@@ -3,17 +3,17 @@ CREATE OR REPLACE package body mai_audit as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.3   Jul 01 2013 16:25:54   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.4   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_audit.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:54  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:02:20  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai_audit.pck	1.1 08/23/00'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
   old_rec old_vals;
@@ -31,12 +31,28 @@ CREATE OR REPLACE package body mai_audit as
   select wol_works_order_no
   from work_order_lines
   where wol_id = p_wol_id;
-----------------------------------------------------------------------------------------
-  FUNCTION  get_version RETURN VARCHAR2 IS
-  BEGIN
-    RETURN  g_sccsid;
-  END;
+-------------------------------------------------------------------------------------
+g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
 
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN varchar2 IS
+BEGIN
+   RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+  
+  
+----------------------------------------------------------------------------------------
+  
   function is_audited(p_column_name in wo_audit_columns.wac_column_name%type)
   return boolean is
   i integer;

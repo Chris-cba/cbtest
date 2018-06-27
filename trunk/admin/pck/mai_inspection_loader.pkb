@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_loader AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.21   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_loader.pkb-arc   3.22   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_inspection_loader.pkb  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:25:56  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:21:36  $
---       PVCS Version     : $Revision:   3.21  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+--       PVCS Version     : $Revision:   3.22  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.21  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.22  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_loader';
 --
 c_process_type_name CONSTANT VARCHAR2(30)   := 'Maintenance Inspection Loader';

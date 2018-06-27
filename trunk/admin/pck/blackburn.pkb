@@ -3,15 +3,15 @@ CREATE OR REPLACE PACKAGE BODY Blackburn AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.3   Jul 01 2013 16:32:44   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/blackburn.pkb-arc   2.4   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   blackburn.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:32:44  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:29:04  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:21:22  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.2
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
   Type sections_tabtype is table of varchar2(150) index by binary_integer;
@@ -59,6 +59,22 @@ CREATE OR REPLACE PACKAGE BODY Blackburn AS
 --                  'W' - Work Orders
 --                  'I' - Invoice details
 --                  'C' - Completions
+--
+-----------------------------------------------------------------------------
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
+
+--
+FUNCTION get_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN VARCHAR2 IS
+BEGIN
+  RETURN g_body_sccsid;
+END get_body_version;
 --
 -----------------------------------------------------------------------------
 --

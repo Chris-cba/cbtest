@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/imf_mai_pkh.sql-arc   3.1   Jul 01 2013 16:32:44   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/imf_mai_pkh.sql-arc   3.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   imf_mai_pkh.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:32:44  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:31:56  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 13:05:30  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version : 
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
 SET echo OFF

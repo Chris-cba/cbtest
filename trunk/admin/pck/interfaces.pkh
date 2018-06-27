@@ -6,24 +6,36 @@ CREATE OR REPLACE PACKAGE interfaces IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.6   Jul 01 2013 16:25:52   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/interfaces.pkh-arc   2.7   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   interfaces.pkh  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:52  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:42  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:56:12  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on SCCS Version     : 1.16
 ----
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)interfaces.pck	1.26 08/19/03'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
-    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.6  $"';
+    g_sccsid	CONSTANT	Varchar2(2000) := '"$Revision:   2.7  $"';
     g_file_handle             utl_file.file_type ;
     extract_filename 		varchar2(2000);
 --</GLOBVAR>
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
 --
 -------------------------------------------------------------------------------
 --

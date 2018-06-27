@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.3   Jul 01 2013 16:25:56   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_load.pkb-arc   2.4   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_gmis_load.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:25:56  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:20:58  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.20
 --
 --
@@ -17,12 +17,12 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_load AS
 --   Gmis survery file loader package
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
 --
-   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
+   g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_gmis_load';
@@ -85,7 +85,7 @@ BEGIN
    htp.p('--   Gmis survery file loader package');
    htp.p('--');
    htp.p('-----------------------------------------------------------------------------');
-   htp.p('--	Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved');
+   htp.p('--	Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved');
    htp.p('-----------------------------------------------------------------------------');
    htp.p('--');
    htp.p('-->');
