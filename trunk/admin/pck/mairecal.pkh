@@ -3,11 +3,11 @@ AS
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.5   10 Dec 2014 12:20:04   Mike.Huitson  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkh-arc   2.6   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
   --       Module Name      : $Workfile:   mairecal.pkh  $
-  --       Date into SCCS   : $Date:   10 Dec 2014 12:20:04  $
-  --       Date fetched Out : $Modtime:   09 Dec 2014 21:54:18  $
-  --       SCCS Version     : $Revision:   2.5  $
+  --       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
+  --       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+  --       SCCS Version     : $Revision:   2.6  $
   --       Based onSCCS Version     : 1.1
   -----------------------------------------------------------------------------
   --  This package contains procedures and functions which are required by
@@ -17,9 +17,9 @@ AS
   --  in the HIGRECAL package.
   --  Originally taken from '@(#)mairecal.pck 1.4 08/07/98';
   -----------------------------------------------------------------------------
-  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
-  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.5  $"';
+  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.6  $"';
   --  g_sccsid is the SCCS ID for the package
   --
   -----------------------------------------------------------------------------

@@ -2,19 +2,19 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/maipkh.sql-arc   2.13   Oct 23 2013 14:18:50   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/maipkh.sql-arc   2.14   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   maipkh.sql  $
---       Date into SCCS   : $Date:   Oct 23 2013 14:18:50  $
---       Date fetched Out : $Modtime:   Oct 23 2013 14:20:58  $
---       SCCS Version     : $Revision:   2.13  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 13:05:30  $
+--       SCCS Version     : $Revision:   2.14  $
 --       based on SCCS Version     : 1.10
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maipck.sql	1.22 11/27/02'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
--- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-- Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 --
 -- This script creates all package headers for the Maintenance Manager product.
 -- It should be executed during upgrades and new installations.

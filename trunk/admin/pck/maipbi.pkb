@@ -3,22 +3,45 @@ CREATE OR REPLACE PACKAGE BODY maipbi AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maipbi.pkb-arc   2.1   Jul 01 2013 16:26:50   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maipbi.pkb-arc   2.2   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   maipbi.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:50  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:29:04  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maipbi.pck	1.5 01/07/00'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
  -----------------------------------------------------------------------------
  -- Procedure to create and execute pbi code
  --
+--
+g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
+
+  -----------------------------------------------------------------------------
+  --
+  FUNCTION get_version
+    RETURN VARCHAR2 IS
+  BEGIN
+    RETURN g_sccsid;
+  END get_version;
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  FUNCTION get_body_version
+    RETURN VARCHAR2 IS
+  BEGIN
+    RETURN g_body_sccsid;
+  END get_body_version;
+
+  --
+  -----------------------------------------------------------------------------
+-- 
  procedure construct_pbi(p_qry_id in pbi_query.qry_id%type,code in out varchar2) as
  --
  -- This same rule is hard-coded into:

@@ -3,18 +3,38 @@ CREATE OR REPLACE package body maifinm AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maifinm.pkb-arc   2.1   Jul 01 2013 16:26:48   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maifinm.pkb-arc   2.2   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   maifinm.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:17:44  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 11:31:12  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maifinm.pck	1.1 06/17/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
+--
+g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.2  $"';
+
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN varchar2 IS
+BEGIN
+   RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+--
+
 FUNCTION calc_discount(
            p_disc_group   in  contractor_disc_bands.cnb_cng_disc_group%TYPE
           ,p_cost         in  work_orders.wor_act_cost%TYPE)

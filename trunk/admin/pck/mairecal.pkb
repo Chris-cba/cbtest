@@ -3,11 +3,11 @@ AS
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.5   10 Dec 2014 12:14:08   Mike.Huitson  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairecal.pkb-arc   2.6   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
   --       Module Name      : $Workfile:   mairecal.pkb  $
-  --       Date into SCCS   : $Date:   10 Dec 2014 12:14:08  $
-  --       Date fetched Out : $Modtime:   09 Dec 2014 21:54:18  $
-  --       SCCS Version     : $Revision:   2.5  $
+  --       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
+  --       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+  --       SCCS Version     : $Revision:   2.6  $
   --       Based on SCCS Version     : 1.3
   --
   --  This package contains procedures and functions which are required by
@@ -20,9 +20,9 @@ AS
   --  Originally taken from '@(#)mairecal.pck 1.4 08/07/98';
   --  Now taken from '@(#)mairecal.pck  1.5 01/30/03';
   -----------------------------------------------------------------------------
-  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
-  g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.5  $';
+  g_body_sccsid     CONSTANT  varchar2(2000) := '@(#)$Revision:   2.6  $';
   g_package_name    CONSTANT  varchar2(30)   := 'mairecal';
   --
   TYPE placement_tbl_rec IS RECORD(begin_mp  nm3type.tab_number
