@@ -5,11 +5,11 @@ CREATE OR REPLACE PACKAGE mai AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.14   Jul 01 2013 16:26:46   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai.pkh-arc   2.15   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai.pkh  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:46  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:18:54  $
---       SCCS Version     : $Revision:   2.14  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+--       SCCS Version     : $Revision:   2.15  $
 --       Based on SCCS Version     : 1.27
 --
 -- MAINTENANCE MANAGER application generic utilities
@@ -17,12 +17,12 @@ CREATE OR REPLACE PACKAGE mai AS
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai.pck 1.35 05/08/03'
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --</PACKAGE>
 --
 --<GLOBVAR>
-    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.14  $';
+    g_sccsid          CONSTANT  VARCHAR2(2000) := '$Revision:   2.15  $';
     g_language              VARCHAR2(30);
     g_thing_already_exists  VARCHAR2(2000);
     g_thing_does_not_exist  VARCHAR2(2000);

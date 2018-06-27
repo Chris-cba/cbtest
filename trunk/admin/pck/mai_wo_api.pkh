@@ -5,19 +5,19 @@ CREATE OR REPLACE PACKAGE mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.10   Jul 01 2013 16:26:02   James.Wadsworth  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_wo_api.pkh-arc   3.11   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_wo_api.pkh  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:26:02  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:23:10  $
---       PVCS Version     : $Revision:   3.10  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+--       PVCS Version     : $Revision:   3.11  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --</PACKAGE>
 --
 --<GLOBVAR>
-  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.10  $';
+  g_sccsid             CONSTANT VARCHAR2(2000) := '$Revision:   3.11  $';
   g_application_owner  VARCHAR2(30);
   gr_defect_rec        defects%ROWTYPE;
 --</GLOBVAR>

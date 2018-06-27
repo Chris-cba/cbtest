@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_user AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/pck/mai_users.pkb-arc   3.1   Jul 01 2013 16:26:02   James.Wadsworth  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_users.pkb-arc   3.2   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_users.pkb  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:26:02  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:22:40  $
---       PVCS Version     : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+--       PVCS Version     : $Revision:   3.2  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.1  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.2  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_user';
   --
 --

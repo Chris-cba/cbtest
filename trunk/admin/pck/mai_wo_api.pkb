@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_wo_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.38   Nov 17 2015 11:25:54   Chris.Baugh  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_wo_api.pkb-arc   3.39   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_wo_api.pkb  $
---       Date into PVCS   : $Date:   Nov 17 2015 11:25:54  $
---       Date fetched Out : $Modtime:   Nov 16 2015 11:24:44  $
---       PVCS Version     : $Revision:   3.38  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
+--       PVCS Version     : $Revision:   3.39  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.38  $';
+  g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.39  $';
   g_package_name  CONSTANT  varchar2(30)   := 'mai_api';
   --
   insert_error  EXCEPTION;

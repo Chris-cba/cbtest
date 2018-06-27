@@ -3,18 +3,37 @@ CREATE OR REPLACE PACKAGE BODY maiclose IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/maiclose.pkb-arc   2.2   Jul 01 2013 16:26:48   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiclose.pkb-arc   2.3   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   maiclose.pkb  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:26:48  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:19:40  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:05:32  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maiclose.pck  1.2 02/16/98';
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
+--
+g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.3  $"';
+
+-----------------------------------------------------------------------------
+--
+FUNCTION get_version RETURN varchar2 IS
+BEGIN
+   RETURN g_sccsid;
+END get_version;
+--
+-----------------------------------------------------------------------------
+--
+FUNCTION get_body_version RETURN varchar2 IS
+BEGIN
+   RETURN g_body_sccsid;
+END get_body_version;
+--
+-----------------------------------------------------------------------------
+--
 PROCEDURE check_data(p_id             IN     NUMBER
                     ,p_effective_date IN     DATE
                     ,p_errors         IN OUT NUMBER

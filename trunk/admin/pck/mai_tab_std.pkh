@@ -3,13 +3,14 @@ CREATE OR REPLACE PACKAGE mai_tab_std IS
 --
 -----------------------------------------------------------------------------
 --
---   SCCS Identifiers :-
+--   PVCS Identifiers :-
 --
---       sccsid           : @(#)mai_tab_std.pkh	1.1 03/09/04
---       Module Name      : mai_tab_std.pkh
---       Date into SCCS   : 04/03/09 11:19:33
---       Date fetched Out : 07/10/19 12:34:27
---       SCCS Version     : 1.1
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_std.pkh-arc   2.3   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
+--       Module Name      : $Workfile:   mai_tab_std.pkh  $
+--       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:47:38  $
+--       SCCS Version     : $Revision:   2.3  $
+--
 --
 --
 --   Author : Darren Cope
@@ -21,13 +22,13 @@ CREATE OR REPLACE PACKAGE mai_tab_std IS
 --
 -----------------------------------------------------------------------------
 --
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
 --</PACKAGE>
 --<GLOBVAR>
-   g_sccsid          CONSTANT  VARCHAR2(2000) := '"@(#)mai_tab_std.pkh	1.1 03/09/04"';
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.3  $"';
 --  g_sccsid is the SCCS ID for the package
 --
 --</GLOBVAR>

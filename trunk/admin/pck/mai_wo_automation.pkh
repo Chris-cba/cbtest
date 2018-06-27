@@ -4,14 +4,14 @@ AS
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.4   Jul 01 2013 16:32:42   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_wo_automation.pkh-arc   3.5   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_wo_automation.pkh  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:32:42  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:31:32  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Jun 27 2018 13:06:32  $
+--       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
+--       Version          : $Revision:   3.5  $
 --       Based on SCCS version : 
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 
 --</PACKAGE>
@@ -21,7 +21,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.4  $';
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.5  $';
 
 TYPE g_bud_rec_type IS RECORD (
      bud_code                  Varchar2(30)
