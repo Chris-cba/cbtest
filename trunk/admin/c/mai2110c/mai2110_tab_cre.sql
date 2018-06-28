@@ -1,13 +1,13 @@
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //vm_latest/archives/mai/admin/c/mai2110c/mai2110_tab_cre.sql-arc   2.3   Jul 02 2013 10:29:04   James.Wadsworth  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/c/mai2110c/mai2110_tab_cre.sql-arc   2.4   Jun 28 2018 11:01:40   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai2110_tab_cre.sql  $
---       Date into PVCS   : $Date:   Jul 02 2013 10:29:04  $
---       Date fetched Out : $Modtime:   Jul 02 2013 09:54:14  $
---       PVCS Version     : $Revision:   2.3  $
+--       Date into PVCS   : $Date:   Jun 28 2018 11:01:40  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 10:58:06  $
+--       PVCS Version     : $Revision:   2.4  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
 CREATE TABLE hhinv_temp_7883
