@@ -1,13 +1,15 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/imf_mai_inst.sql-arc   3.1   Jul 01 2013 16:00:24   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/imf_mai_inst.sql-arc   3.2   Jun 28 2018 07:41:26   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   imf_mai_inst.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 16:00:24  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 28 2018 07:41:26  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:34  $
+--       Version          : $Revision:   3.2  $
 --       Based on SCCS version : 
--------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
 
 undefine exor_base
 undefine run_file

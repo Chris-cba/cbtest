@@ -2,16 +2,18 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/icb_fgac_upg.sql-arc   2.1   Jul 01 2013 16:00:24   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/icb_fgac_upg.sql-arc   2.2   Jun 28 2018 07:41:26   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   icb_fgac_upg.sql  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:00:24  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:34  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 28 2018 07:41:26  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+--       SCCS Version     : $Revision:   2.2  $
 --       based on SCCS Version     : 1.1
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)icb_fgac_upg.sql	1.3 06/20/03';
 -----------------------------------------------------------------------------
-
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
 set define on
 set feedback off
 undefine run_file
