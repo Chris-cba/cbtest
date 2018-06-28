@@ -1,13 +1,13 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/sql/setup_user_options.sql-arc   3.1   Jul 01 2013 15:52:36   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/sql/setup_user_options.sql-arc   3.2   Jun 28 2018 04:12:46   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   setup_user_options.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:52:36  $
---       Date fetched Out : $Modtime:   Jul 01 2013 13:59:14  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:12:46  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:11:46  $
+--       Version          : $Revision:   3.2  $
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 
 Insert into HIG_USER_OPTION_LIST
