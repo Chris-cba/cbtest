@@ -1,13 +1,13 @@
 --   PVCS Identifiers :-
 --
---       pvcsid                 : $Header:   //vm_latest/archives/mai/admin/utl/compile_schema.sql-arc   2.2   Jul 01 2013 15:54:48   James.Wadsworth  $
+--       pvcsid                 : $Header:   //new_vm_latest/archives/mai/admin/utl/compile_schema.sql-arc   2.3   Jun 28 2018 04:42:12   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   compile_schema.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:54:48  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:03:12  $
---       PVCS Version     : $Revision:   2.2  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:42:12  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:41:24  $
+--       PVCS Version     : $Revision:   2.3  $
 --       Based on SCCS version : 
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 
 set verify off
@@ -90,7 +90,7 @@ select 'PROMPT --' FROM DUAL;
 select 'PROMPT --   Generated '||to_char(sysdate,'DD-Mon-YYYY HH24:MI:SS') FROM DUAL;
 select 'PROMPT --' FROM DUAL;
 select 'PROMPT -----------------------------------------------------------------------------' FROM DUAL;
-select 'PROMPT --	Copyright (c) exor corporation ltd, 2001' FROM DUAL;
+select 'PROMPT --	Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.' FROM DUAL;
 select 'PROMPT -----------------------------------------------------------------------------' FROM DUAL;
 select 'PROMPT --' FROM DUAL;
 select 'PROMPT --###############################################################################' FROM DUAL;
