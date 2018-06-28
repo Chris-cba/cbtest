@@ -1,8 +1,8 @@
 /* SCCS ID keywords, do not remove */
 /* static char *sccsid = "@(#)r7util.pc	1.1 09/16/03";*/
-/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 
-static char *sccsid = "$Workfile:   r7util.pc  $ $Revision:   2.2  $ $Modtime:   Jul 02 2013 10:22:26  $";
+static char *sccsid = "$Workfile:   r7util.pc  $ $Revision:   2.3  $ $Modtime:   Jun 28 2018 11:49:58  $";
 
 /************************************************************ 
 * Standard I/O definition and rmms header file.             *
