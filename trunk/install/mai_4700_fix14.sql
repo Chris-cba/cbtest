@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix14.sql-arc   1.1   Dec 14 2015 06:54:34   Upendra.Hukeri  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix14.sql-arc   1.2   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_4700_fix14.sql  $ 
---       Date into PVCS   : $Date:   Dec 14 2015 06:54:34  $
+--       Date into PVCS   : $Date:   Jun 28 2018 07:41:56  $
 --       Date fetched Out : $Modtime:   Dec 14 2015 06:54:00  $
---       Version     	  : $Revision:   1.1  $
+--       Version     	  : $Revision:   1.2  $
 --
 ----------------------------------------------------------------------------------------------------
 --   Copyright (c) 2015 Bentley Systems Incorporated. All rights reserved.

@@ -1,11 +1,13 @@
 -- PVCS Identifiers :-
 --
--- pvcsid : $Header:   //vm_latest/archives/mai/install/mai_inst.sql-arc   2.0   Jan 21 2008 20:29:48   jwadsworth  $
+-- pvcsid : $Header:   //new_vm_latest/archives/mai/install/mai_inst.sql-arc   2.1   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
 -- Module Name : $Workfile:   mai_inst.sql  $
--- Date into PVCS : $Date:   Jan 21 2008 20:29:48  $
--- Date fetched Out : $Modtime:   Jan 21 2008 20:29:10  $
--- PVCS Version : $Revision:   2.0  $
+-- Date into PVCS : $Date:   Jun 28 2018 07:41:56  $
+-- Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+-- PVCS Version : $Revision:   2.1  $
 -- Based on SCCS version : 
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 -- Check that the user isn't sys or system
