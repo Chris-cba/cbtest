@@ -1,0 +1,85 @@
+/* SCCS ID keywords, do not remove */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
+
+static char *sccsid = "@(#)r7main.pc	1.1 09/16/03";
+
+/************************************************************ 
+* Standard I/O definition and rmms header file.             *
+************************************************************/ 
+#include <stdio.h>
+#include "rmms.h"
+
+EXEC SQL INCLUDE sqlext.h;
+
+/************************************************************ 
+* Indicator of selection type all section or group          *
+************************************************************/ 
+
+extern char cha_sel_type;
+
+short EXDebug;
+char *EXRepOutpath;
+char pipe_msg[254];
+
+/************************************************************ 
+* Help Text Definitions.                                    *
+************************************************************/ 
+
+char dbase_string[6];
+
+/************************************************************ 
+* Program Entry point.                                      *
+************************************************************/ 
+
+int main(argc,argv)
+char *argv[];
+int  argc;
+{
+   char sect_id[13];
+   int dbase_type();
+   void set_sys_flag();
+   FILE *rep_secs();    
+   FILE *fp;
+   int i;
+   int no_of_c_inv = 0 ,no_of_d_inv = 0 ,no_of_sec = 0;
+
+	jobmain(argc,argv);
+
+	get_params(2); 
+
+   if (dbase_type() == 3 || dbase_type() == 4)
+      strcpy(dbase_string,"RoMIS");
+   else
+      strcpy(dbase_string,"RMMS");
+
+   strcpy(sect_id,(char *)EXParam[1].arr);
+
+   if (sel_chart() == 0)
+   {
+	    EXEC SQL ROLLBACK WORK;
+		jobend(EXJobId,1,"Zero sections selected");
+		EXEC SQL COMMIT WORK;
+		dblogoff();
+		exit(1);
+	} 
+   fp = rep_secs();
+
+   printf ("Module successfully completed\n");
+   write_pipe(NULL,"Module successfully completed.");
+
+	jobend(EXJobId,0,"");
+	EXEC SQL COMMIT WORK;
+	dblogoff();
+
+	exit(EX_SUCC);
+}
+
+void usersigfunc(sig)
+int sig;
+{
+	printf("Signal %d received. Aborting ...",sig);
+        write_pipe(NULL,"Abort signal received. Module aborted");
+	EXEC SQL ROLLBACK WORK;
+	jobend(EXJobId,1,"Signal received causing abnormal program termination");
+	EXEC SQL COMMIT WORK;
+}
