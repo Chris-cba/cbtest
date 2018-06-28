@@ -2,15 +2,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mairoles.sql-arc   2.2   Jul 01 2013 16:16:26   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mairoles.sql-arc   2.3   Jun 28 2018 07:42:02   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mairoles.sql  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:16:26  $
---       Date fetched Out : $Modtime:   Jul 01 2013 16:13:42  $
---       PVCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Jun 28 2018 07:42:02  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+--       PVCS Version     : $Revision:   2.3  $
 --       based on SCCS Version     : 1.2
 --
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --   Originally taken from  '@(#)mairoles.sql	1.7 09/28/00';
 --   STP roles are now PMS roles, and have been moved to PMS upgrade scripts

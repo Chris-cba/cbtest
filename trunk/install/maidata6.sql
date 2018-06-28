@@ -22,8 +22,11 @@ MODE (A-Append R-Refresh)
 R
 
 ***************************************************************************/
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
 
-define sccsid = '$Revision:   2.3  $'
+define sccsid = '$Revision:   2.4  $'
 set define off;
 set feedback off;
 

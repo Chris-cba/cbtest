@@ -1,5 +1,5 @@
-REM Copyright 2013 Bentley Systems Incorporated. All rights reserved.
-REM @(#)$Header:   //vm_latest/archives/mai/install/maidata.par-arc   2.1   Jul 01 2013 16:03:32   James.Wadsworth  $
+REM   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+REM @(#)$Header:   //new_vm_latest/archives/mai/install/maidata.par-arc   2.2   Jun 28 2018 07:42:02   Gaurav.Gaurkar  $
 
 maidata1---------------------------------------------------------------------
 maidata1-- maidata1.sql
