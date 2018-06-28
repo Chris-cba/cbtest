@@ -1,5 +1,6 @@
 /* SCCS ID keyword, do not remove */
 /* @(#)utils.h	1.1 12/15/06 */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 
 #include <stdlib.h>
 #include <stdio.h>
