@@ -7,15 +7,15 @@ DECLARE
   --
   --   PVCS Identifiers :-
   --
-  --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.4   Jul 01 2013 15:52:50   James.Wadsworth  $
+  --       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/action_wor_status.trg-arc   3.5   Jun 28 2018 04:36:40   Gaurav.Gaurkar  $
   --       Module Name      : $Workfile:   action_wor_status.trg  $
-  --       Date into PVCS   : $Date:   Jul 01 2013 15:52:50  $
-  --       Date fetched Out : $Modtime:   Jul 01 2013 14:01:04  $
-  --       Version          : $Revision:   3.4  $
+  --       Date into PVCS   : $Date:   Jun 28 2018 04:36:40  $
+  --       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
+  --       Version          : $Revision:   3.5  $
   --
   --
   ------------------------------------------------------------------
-  --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
   ------------------------------------------------------------------
   --
   CURSOR c_actioned_wol(cp_wol_status_code  work_order_lines.wol_status_code%TYPE)
