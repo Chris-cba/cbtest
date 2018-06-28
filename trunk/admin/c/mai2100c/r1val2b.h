@@ -1,9 +1,9 @@
 /* SCCS ID keywords, do not remove */
-/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 /* "@(#)r1val2b.h	1.1 09/08/03"                       */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1val2b.h  $ $Revision:   2.3  $ $Modtime:   Jul 02 2013 09:35:22  $" */
+/* "$Workfile:   r1val2b.h  $ $Revision:   2.4  $ $Modtime:   Jun 28 2018 10:28:12  $" */
 
 /* code to account for 2nd HH load formats */
 /* B Validation

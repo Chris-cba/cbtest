@@ -1,9 +1,9 @@
 /* SCCS ID keywords, do not remove */
-/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 /* "@(#)r1val3b.h	1.1 09/08/03"                       */
 
 /* PVCS ID Keywords, do not remove */
-/* "$Workfile:   r1val3b.h  $ $Revision:   2.4  $ $Modtime:   Jul 02 2013 09:35:46  $" */
+/* "$Workfile:   r1val3b.h  $ $Revision:   2.5  $ $Modtime:   Jun 28 2018 10:28:12  $" */
 
 /* r1val3b.h
 contains C functions for checking the format of husky hunter B load records

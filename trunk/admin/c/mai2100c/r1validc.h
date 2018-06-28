@@ -2,11 +2,11 @@
 /* contains C functions for checking the format of husky hunter C load records */
 
 /* SCCS ID keywords, do not remove */
-/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 /* "@(#)r1validc.h	1.2 05/20/04"  */
 
 /* PVCS ID keywords, do not remove      */
-/* "$Workfile:   r1validc.h  $ $Revision:   2.6  $ $Modtime:   Jul 02 2013 09:36:44  $" */
+/* "$Workfile:   r1validc.h  $ $Revision:   2.7  $ $Modtime:   Jun 28 2018 10:28:12  $" */
 
 /* ---------------------------------------------------------------------- *
    Change History
