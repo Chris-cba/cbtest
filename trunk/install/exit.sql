@@ -2,13 +2,16 @@
 --
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/exit.sql-arc   2.1   Jul 01 2013 16:00:24   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/exit.sql-arc   2.2   Jun 28 2018 07:41:24   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   exit.sql  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:00:24  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:32  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 28 2018 07:41:24  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+--       SCCS Version     : $Revision:   2.2  $
 --       based on SCCS Version     : 1.1
 --
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 undefine leave_it
 col leave_it new_value leave_it noprint
