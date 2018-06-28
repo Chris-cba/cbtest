@@ -8,15 +8,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/update_doc_def_priorities.trg-arc   3.2   Jul 01 2013 15:53:18   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/update_doc_def_priorities.trg-arc   3.3   Jun 28 2018 04:36:42   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   update_doc_def_priorities.trg  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:53:18  $
---       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:36:42  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
+--       Version          : $Revision:   3.3  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 BEGIN
   if :new.dpr_int_code != :old.dpr_int_code or

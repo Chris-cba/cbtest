@@ -2,13 +2,13 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.11   Jul 01 2013 15:54:32   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/maitrgcre.sql-arc   2.12   Jun 28 2018 04:36:42   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   maitrgcre.sql  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:54:32  $
---       Date fetched Out : $Modtime:   Jul 01 2013 15:54:10  $
---       Version          : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:36:42  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
+--       Version          : $Revision:   2.12  $
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
 --

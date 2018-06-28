@@ -6,11 +6,11 @@ FOR EACH ROW
 ----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/trg/work_order_lines_ai_trg.trg-arc   2.1   Jul 01 2013 15:53:20   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/trg/work_order_lines_ai_trg.trg-arc   2.2   Jun 28 2018 04:36:42   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   work_order_lines_ai_trg.trg  $
---       Date into SCCS   : $Date:   Jul 01 2013 15:53:20  $
---       Date fetched Out : $Modtime:   Jul 01 2013 13:59:40  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 28 2018 04:36:42  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -18,7 +18,7 @@ FOR EACH ROW
 --   when adding a new instructed works order line
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 DECLARE
 
