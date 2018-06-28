@@ -5,13 +5,13 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/inv_type_colours.vw-arc   3.1   Jul 01 2013 15:55:26   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/inv_type_colours.vw-arc   3.2   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   inv_type_colours.vw  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:55:26  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:16:12  $
---       Version          : $Revision:   3.1  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:46:50  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
+--       Version          : $Revision:   3.2  $
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
  col_id,

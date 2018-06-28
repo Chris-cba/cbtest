@@ -70,14 +70,14 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.6   Jul 01 2013 15:55:04   James.Wadsworth  $
+       --       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/imf_mai_defect_repairs.vw-arc   3.7   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
        --       Module Name      : $Workfile:   imf_mai_defect_repairs.vw  $
-       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:04  $
-       --       Date fetched Out : $Modtime:   Jul 01 2013 14:10:02  $
-       --       Version          : $Revision:   3.6  $
+       --       Date into PVCS   : $Date:   Jun 28 2018 04:46:50  $
+       --       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
+       --       Version          : $Revision:   3.7  $
        -- Foundation view displaying maintenance defect repairs
        ------------------------------------------------------------------
-       --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+       --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
        ------------------------------------------------------------------
        def_defect_id                                     defect_id
       ,def_status_code                                   defect_status

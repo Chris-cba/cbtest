@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.6   Jul 01 2013 15:57:42   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/imf_mai_views.con-arc   3.7   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   imf_mai_views.con  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:57:42  $
---       Date fetched Out : $Modtime:   Jul 01 2013 15:57:08  $
---       Version          : $Revision:   3.6  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:46:50  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:45:56  $
+--       Version          : $Revision:   3.7  $
 --       Based on SCCS version : 
 ------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
 SET echo OFF

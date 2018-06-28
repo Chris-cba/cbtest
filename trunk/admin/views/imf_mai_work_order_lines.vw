@@ -59,14 +59,14 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.12   Jul 01 2013 15:55:24   James.Wadsworth  $
+       --       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/imf_mai_work_order_lines.vw-arc   3.13   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
        --       Module Name      : $Workfile:   imf_mai_work_order_lines.vw  $
-       --       Date into PVCS   : $Date:   Jul 01 2013 15:55:24  $
-       --       Date fetched Out : $Modtime:   Jul 01 2013 14:12:24  $
-       --       Version          : $Revision:   3.12  $
+       --       Date into PVCS   : $Date:   Jun 28 2018 04:46:50  $
+       --       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
+       --       Version          : $Revision:   3.13  $
        -- Foundation view displaying maintenance manager work order lines
        ------------------------------------------------------------------
-       --   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+       --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
        ------------------------------------------------------------------
        -- SM 03042009
        -- Added rowid=1 to ICB inline sql to cater for ICBFGAC product option
