@@ -19,14 +19,14 @@ SELECT
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/admin/views/v_mai3856_wol.vw-arc   3.2   Jul 01 2013 15:55:30   James.Wadsworth  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/v_mai3856_wol.vw-arc   3.3   Jun 28 2018 04:46:54   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   v_mai3856_wol.vw  $
---       Date into PVCS   : $Date:   Jul 01 2013 15:55:30  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:04:42  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Jun 28 2018 04:46:54  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
+--       Version          : $Revision:   3.3  $
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
         wol_id
