@@ -1,7 +1,9 @@
 -- C:\mhtemp\mai.tab
 --
 -- Generated for Oracle 10g on Wed Oct 23  09:28:57 2013 by Server Generator 10.1.2.9.28
- 
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
 
 
 PROMPT Creating Table 'ACTIVITIES'

@@ -1,8 +1,10 @@
 -- SCCS ID Keyword, do not remove
-define sccsid = '$Revision:   2.1  $';
+define sccsid = '$Revision:   2.2  $';
 --
 -- Generated for Oracle 8 on Tue Mar 30  13:12:43 2004 by Server Generator 6.0.3.3.0
- 
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
 
 PROMPT Creating View 'V_MAI3816_NOT'
 CREATE OR REPLACE FORCE VIEW V_MAI3816_NOT

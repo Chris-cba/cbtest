@@ -4,13 +4,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/install/mai_recreate.sql-arc   2.1   Jul 01 2013 16:02:10   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_recreate.sql-arc   2.2   Jun 28 2018 07:41:58   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai_recreate.sql  $
---       Date into SCCS   : $Date:   Jul 01 2013 16:02:10  $
---       Date fetched Out : $Modtime:   Jul 01 2013 14:32:44  $
---       SCCS Version     : $Revision:   2.1  $
+--       Date into SCCS   : $Date:   Jun 28 2018 07:41:58  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+--       SCCS Version     : $Revision:   2.2  $
 --       Based on SCCS Version     : 1.1
 --
+-----------------------------------------------------------------------------
+--   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 undefine exor_base
 undefine run_file

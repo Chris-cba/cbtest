@@ -1,14 +1,14 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //vm_latest/archives/mai/install/mai.ind-arc   2.11   Oct 22 2013 11:31:00   Chris.Baugh  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai.ind-arc   2.12   Jun 28 2018 07:41:58   Gaurav.Gaurkar  $
 --       Module Name      : $Workfile:   mai.ind  $
---       Date into PVCS   : $Date:   Oct 22 2013 11:31:00  $
---       Date fetched Out : $Modtime:   Oct 22 2013 11:28:30  $
---       PVCS Version     : $Revision:   2.11  $
+--       Date into PVCS   : $Date:   Jun 28 2018 07:41:58  $
+--       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
+--       PVCS Version     : $Revision:   2.12  $
 --
 -----------------------------------------------------------------------------
--- Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+-- Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 -- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
