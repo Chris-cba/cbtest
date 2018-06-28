@@ -3,9 +3,9 @@
 /*--------------------------------*/
 /* SCCS ID keyword, do not remove */
 /* static char *sccsid = "@(#)r2mainy.pc  1.12 02/06/07"; */
-/* Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved. */
+/* Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved. */
 
-static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.14  $ $Modtime:   Jul 02 2013 09:56:48  $";
+static char *sccsid = "$Workfile:   r2mainy.pc  $ $Revision:   2.15  $ $Modtime:   Jun 28 2018 10:58:06  $";
 
 #include <stdio.h>
 #include <string.h>
