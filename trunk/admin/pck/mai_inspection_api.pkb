@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.48   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.49   Jul 19 2018 10:55:06   Upendra.Hukeri  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
---       PVCS Version     : $Revision:   3.48  $
+--       Date into PVCS   : $Date:   Jul 19 2018 10:55:06  $
+--       Date fetched Out : $Modtime:   Jul 19 2018 10:54:34  $
+--       PVCS Version     : $Revision:   3.49  $
 --
 ------------------------------------------------------------------
 --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.48  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.49  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 g_file_handle   UTL_FILE.FILE_TYPE;
 g_dir_path      VARCHAR2(4000) ;
@@ -4656,6 +4656,7 @@ BEGIN
   END IF;
   --
   --
+  /*
   IF hig.get_sysopt('NEWDOCMAN') = 'Y'
   THEN
       Utl_File.Fclose(g_file_handle);
@@ -4672,6 +4673,8 @@ BEGIN
           NULL ;
       END ;
   END IF ;
+  */
+  --
   nm_debug.debug('Create Inspection returns'||lv_error_flag);
   po_error_flag := lv_error_flag;
   pio_insp_rec.insp_record := lr_insp_rec;
