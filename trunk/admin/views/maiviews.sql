@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.16   Jun 28 2018 04:46:52   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/maiviews.sql-arc   2.17   Jan 31 2019 10:35:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiviews.sql  $
---       Date into PVCS   : $Date:   Jun 28 2018 04:46:52  $
---       Date fetched Out : $Modtime:   Jun 28 2018 04:45:56  $
---       Version          : $Revision:   2.16  $
+--       Date into PVCS   : $Date:   Jan 31 2019 10:35:20  $
+--       Date fetched Out : $Modtime:   Jan 31 2019 10:34:42  $
+--       Version          : $Revision:   2.17  $
 ------------------------------------------------------------------
 --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
@@ -202,15 +202,6 @@ START '&run_file'
 PROMPT v5
 SET define ON
 SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v5.vw' run_file
-FROM dual
-/
-START '&run_file'
---
--------------------------------------------------------------------------
---
-PROMPT v_all_contractor_users
-SET define ON
-SELECT '&exor_base'||'mai'||'&terminator'||'admin'||'&terminator'||'views'||'&terminator'||'v_all_contractor_users.vw' run_file
 FROM dual
 /
 START '&run_file'
