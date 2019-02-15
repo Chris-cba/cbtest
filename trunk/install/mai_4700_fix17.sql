@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix17.sql-arc   1.0   Apr 06 2017 11:26:42   Chris.Baugh  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix17.sql-arc   1.1   Feb 15 2019 09:28:34   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_4700_fix17.sql  $
---       Date into PVCS   : $Date:   Apr 06 2017 11:26:42  $
---       Date fetched Out : $Modtime:   Apr 06 2017 11:13:18  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Feb 15 2019 09:28:34  $
+--       Date fetched Out : $Modtime:   Feb 15 2019 09:28:06  $
+--       Version          : $Revision:   1.1  $
 ------------------------------------------------------------------
 --   Copyright (c) 2017 Bentley Systems Incorporated. All rights reserved
 --------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ BEGIN
 --
   hig2.upgrade(p_product        => 'MAI'
               ,p_upgrade_script => 'log_mai_4700_fix17.sql'
-              ,p_remarks        => 'MAI 4700 FIX 17 (Build 3)'
+              ,p_remarks        => 'MAI 4700 FIX 17 (Build 4)'
               ,p_to_version     => Null);
 --
   COMMIT;
