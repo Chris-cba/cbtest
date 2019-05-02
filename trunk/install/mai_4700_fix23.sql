@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix23.sql-arc   1.0   May 01 2019 15:27:18   Chris.Baugh  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai_4700_fix23.sql-arc   1.1   May 02 2019 09:53:04   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_4700_fix23.sql  $
---       Date into PVCS   : $Date:   May 01 2019 15:27:18  $
---       Date fetched Out : $Modtime:   May 01 2019 14:20:10  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   May 02 2019 09:53:04  $
+--       Date fetched Out : $Modtime:   May 02 2019 09:51:08  $
+--       Version          : $Revision:   1.1  $
 ------------------------------------------------------------------
 --   Copyright (c) 2014 Bentley Systems Incorporated. All rights reserved
 --------------------------------------------------------------------------------
@@ -69,7 +69,13 @@ WHENEVER SQLERROR CONTINUE
 -- Package Bodies
 --------------------------------------------------------------------------------
 --
-
+SET TERM ON 
+PROMPT Creating package body maiwo
+SET TERM OFF
+--
+SET FEEDBACK ON
+start maiwo.pkw
+SET FEEDBACK OFF
 --
 ----------------------------------------------------------------------------------
 -- Update hig_upgrades with fix ID
@@ -79,7 +85,7 @@ BEGIN
 --
   hig2.upgrade(p_product        => 'MAI'
               ,p_upgrade_script => 'mai_4700_fix23.sql'
-              ,p_remarks        => 'MAI 4700 FIX 23 (Update 1)'
+              ,p_remarks        => 'MAI 4700 FIX 23 (Build 1)'
               ,p_to_version     => Null);
 --
   commit;
