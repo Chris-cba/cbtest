@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.13   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.14   May 02 2019 09:47:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
---       SCCS Version     : $Revision:   2.13  $
+--       Date into SCCS   : $Date:   May 02 2019 09:47:40  $
+--       Date fetched Out : $Modtime:   May 02 2019 09:44:34  $
+--       SCCS Version     : $Revision:   2.14  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.13  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.14  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -790,8 +790,8 @@ PROCEDURE add_percent_items(pi_parent_boqs   IN  boq_id_tab
   TYPE boq_items_tab IS TABLE OF boq_items%ROWTYPE INDEX BY BINARY_INTEGER;
   lt_perc_items  boq_items_tab;
   --
-  lv_est_cost      NUMBER(10,4);
-  lv_act_cost      NUMBER(10,4);
+  lv_est_cost      NUMBER(10,2);
+  lv_act_cost      NUMBER(10,2);
   lv_result        BOOLEAN := FALSE;
   lv_wor_est_cost  work_orders.wor_est_cost%TYPE;
   lv_check_value   NUMBER;
