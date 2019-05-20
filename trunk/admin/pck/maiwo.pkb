@@ -3,11 +3,11 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.14   May 02 2019 09:47:40   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.15   May 20 2019 08:42:12   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   May 02 2019 09:47:40  $
---       Date fetched Out : $Modtime:   May 02 2019 09:44:34  $
---       SCCS Version     : $Revision:   2.14  $
+--       Date into SCCS   : $Date:   May 20 2019 08:42:12  $
+--       Date fetched Out : $Modtime:   May 20 2019 08:39:24  $
+--       SCCS Version     : $Revision:   2.15  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@ CREATE OR REPLACE package body maiwo is
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.14  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.15  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
@@ -1080,8 +1080,8 @@ FUNCTION add_percent_item(p_parent       in boq_items.boq_id%TYPE
    WHERE sta_item_code = cp_item_code
        ;
   --
-  l_est_cost  NUMBER(10,4);
-  l_act_cost  NUMBER(10,4);
+  l_est_cost  NUMBER(10,2);
+  l_act_cost  NUMBER(10,2);
   l_boq_id    boq_items.boq_id%TYPE;
   l_attach    standard_items.sta_allow_percent%TYPE;
   l_result    BOOLEAN := FALSE;
@@ -1279,8 +1279,8 @@ FUNCTION recalc_percent_item(p_boq_item    IN boq_items.boq_id%TYPE
        ;
   --
   c_parent   get_top_id%ROWTYPE;
-  l_est_cost NUMBER(10,4);
-  l_act_cost NUMBER(10,4);
+  l_est_cost NUMBER(10,2);
+  l_act_cost NUMBER(10,2);
   l_code     hig_status_codes.hsc_status_code%TYPE := NULL;
   --
 BEGIN
@@ -1366,8 +1366,8 @@ end recalc_percent_item;
   start with boq_id = p_boq_id;
 
   c_parent   get_parent%rowtype;
-  l_est_cost number(10,4);
-  l_act_cost number(10,4);
+  l_est_cost number(10,2);
+  l_act_cost number(10,2);
   begin
     dbms_output.put_line('Called with BOQ of '||to_char(p_boq_id));
     open  get_parent;
