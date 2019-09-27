@@ -2,11 +2,11 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.2   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.3   Sep 27 2019 15:56:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inv_locations.sql  $
---       Date into SCCS   : $Date:   Jun 28 2018 07:41:56  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:56:18  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:48:26  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.2
 --
 --   Author : A Edwards
@@ -22,7 +22,7 @@
 --       UK group type for road sections (one level up from datums)
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 -- NM2_INV_LOCATIONS_PLA view
 -----------------------------------------------------------------------------
@@ -34,11 +34,11 @@ CREATE OR REPLACE FORCE VIEW nm2_inv_locations_pla ( iit_ne_id
    --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.2   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.3   Sep 27 2019 15:56:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inv_locations.sql  $
---       Date into SCCS   : $Date:   Jun 28 2018 07:41:56  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:56:18  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:48:26  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.2
    --
    --------------------------------------------------------------------------
@@ -59,11 +59,11 @@ CREATE OR REPLACE FORCE VIEW nm2_inv_locations ( iit_ne_id
    --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.2   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_inv_locations.sql-arc   2.3   Sep 27 2019 15:56:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inv_locations.sql  $
---       Date into SCCS   : $Date:   Jun 28 2018 07:41:56  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:56:18  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:48:26  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.2
    --
    --------------------------------------------------------------------------

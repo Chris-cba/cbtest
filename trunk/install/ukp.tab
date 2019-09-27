@@ -1,13 +1,13 @@
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/ukp.tab-arc   2.2   Jun 28 2018 07:42:08   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/ukp.tab-arc   2.3   Sep 27 2019 15:56:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   ukp.tab  $
---       Date into SCCS   : $Date:   Jun 28 2018 07:42:08  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:56:18  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:55:36  $
+--       SCCS Version     : $Revision:   2.3  $
 --       based on @(#)ukp.tab	1.21 05/03/07
 --
 -- Generated for Oracle 9i on Thu May 03  10:14:49 2007 by Server Generator 9.0.2.94.12
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 

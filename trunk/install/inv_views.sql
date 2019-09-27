@@ -4,15 +4,15 @@
 ----------------------------------------------------------------------------
 --   SCCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/inv_views.sql-arc   2.2   Jun 28 2018 07:41:26   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/inv_views.sql-arc   2.3   Sep 27 2019 15:56:18   Chris.Baugh  $
 --       Module Name      : $Workfile:   inv_views.sql  $
---       Date into SCCS   : $Date:   Jun 28 2018 07:41:26  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:56:18  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:41:20  $
+--       SCCS Version     : $Revision:   2.3  $
 --       based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 set head off
