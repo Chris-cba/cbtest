@@ -3,17 +3,17 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.4   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/pinterface.pkb-arc   2.5   Sep 27 2019 14:40:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   pinterface.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:27:18  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:22  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:36:52  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based onSCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)pinterface.pck	1.3 05/18/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
   --
   debug          boolean:=TRUE;
@@ -64,7 +64,7 @@ CREATE OR REPLACE PACKAGE BODY P$Interface AS
 --                  'I' - Invoice details
 --         
 --
-g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   2.4  $';
+g_body_sccsid   CONSTANT VARCHAR2(2000) := '$Revision:   2.5  $';
 --
 -----------------------------------------------------------------------------
 --

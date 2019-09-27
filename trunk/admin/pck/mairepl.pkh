@@ -3,11 +3,11 @@ AS
   -----------------------------------------------------------------------------
   --   PVCS Identifiers :-
   --
-  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairepl.pkh-arc   2.3   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mairepl.pkh-arc   2.4   Sep 27 2019 14:40:22   Chris.Baugh  $
   --       Module Name      : $Workfile:   mairepl.pkh  $
-  --       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
-  --       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
-  --       SCCS Version     : $Revision:   2.3  $
+  --       Date into SCCS   : $Date:   Sep 27 2019 14:40:22  $
+  --       Date fetched Out : $Modtime:   Sep 27 2019 14:34:32  $
+  --       SCCS Version     : $Revision:   2.4  $
   --       Based on SCCS Version     : 1.1
   --
   -- This package contains procedures and functions which are required by
@@ -17,9 +17,9 @@ AS
   -- eg Structures specific logic can be found in STRREPL.PCK .
   -- Originally taken from '@(#)mairepl.pck 1.13 01/11/02';
   -----------------------------------------------------------------------------
-  --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+  --   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
   -----------------------------------------------------------------------------
-  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.3  $"';
+  g_sccsid  CONSTANT  VARCHAR2(2000) := '"$Revision:   2.4  $"';
   --  g_sccsid is the SCCS ID for the package
   --
   -----------------------------------------------------------------------------

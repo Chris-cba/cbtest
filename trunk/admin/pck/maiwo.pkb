@@ -3,21 +3,21 @@ CREATE OR REPLACE package body maiwo is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.15   May 20 2019 08:42:12   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiwo.pkb-arc   2.16   Sep 27 2019 14:40:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiwo.pkb  $
---       Date into SCCS   : $Date:   May 20 2019 08:42:12  $
---       Date fetched Out : $Modtime:   May 20 2019 08:39:24  $
---       SCCS Version     : $Revision:   2.15  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:22  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:35:20  $
+--       SCCS Version     : $Revision:   2.16  $
 --       Based onSCCS Version     : 1.6
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maiwo.pck	1.13 08/04/03'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.15  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   2.16  $';
 
   g_package_name CONSTANT varchar2(30) := 'maiwo';
 
