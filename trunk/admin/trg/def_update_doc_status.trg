@@ -8,15 +8,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/def_update_doc_status.trg-arc   3.4   Jun 28 2018 04:36:40   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/def_update_doc_status.trg-arc   3.5   Sep 27 2019 15:18:06   Chris.Baugh  $
 --       Module Name      : $Workfile:   def_update_doc_status.trg  $
---       Date into PVCS   : $Date:   Jun 28 2018 04:36:40  $
---       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Sep 27 2019 15:18:06  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:17:00  $
+--       Version          : $Revision:   3.5  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
