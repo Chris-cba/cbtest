@@ -6,13 +6,13 @@ SELECT
 -------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/v_user_contractors.vw-arc   3.4   Jun 28 2018 04:46:54   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/v_user_contractors.vw-arc   3.5   Sep 27 2019 15:36:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   v_user_contractors.vw  $
---       Date into PVCS   : $Date:   Jun 28 2018 04:46:54  $
---       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
---       Version          : $Revision:   3.4  $
+--       Date into PVCS   : $Date:   Sep 27 2019 15:36:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:34:24  $
+--       Version          : $Revision:   3.5  $
 ------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
        cou_oun_org_id oun_org_id
