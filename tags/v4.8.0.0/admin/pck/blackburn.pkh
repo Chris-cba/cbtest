@@ -1,0 +1,175 @@
+CREATE OR REPLACE PACKAGE Blackburn AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/blackburn.pkh-arc   2.3   Sep 27 2019 14:39:30   Chris.Baugh  $
+--       Module Name      : $Workfile:   blackburn.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:30  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 13:23:18  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--
+/* Note: This package makes use of advanced pl/sql techniques and
+         packages which were made available in v2.3 . The file
+	 directories make use of the Oracle parameter UTL_FILE_DIR
+	 which MUST be set in the init.ora file.
+	 Multiple values may be assigned to the parameter. Oracle
+	 reccomend that the parameter be repeated and new values
+	 added, Oracle will actually concatenate these values and
+	 introduce a comma separator between each value. No end
+	 'slash' should be plpaced on any of the directory values.
+	 eg: UTL_FILE_DIR=c:\exor\output
+	     UTL_FILE_DIR=c:\exor\reports
+	     UTL_FILE_DIR=d:\temp
+	 With the above parameters set the user may elect to use
+	 any of the three directories ( providing that they exist
+	 on the machine ).
+	 Note : It is important that the Oracle directory structure
+	 entered into the Oracle parameter file (init.ora) is maintained
+	 in the same CASE as the directojry structure entered as a GRI
+	 parameter. I have found the download process to be unreliable
+	 ,resulting in an error to the effect that the output file
+	 cannot be created.
+	 The procedure should be supplied with upto 4 parameters.
+	 These parameters are as follows:
+	 Parameter Output Seq.
+         Parameter Destination
+         Parameter Filetype
+         Parameter Input File
+         If the user wishes, a sequence number may be entered, in which
+	 case a file will be created with the sequence number embeded as
+	 part of the filename. If the user does not enter a sequence
+	 number then one will be obtained internally.
+	 
+   ==========================================================================
+   Exor Corporation Limited(c)1999
+   Author : H.Buckley
+   Date   : March 1999
+   Module : mai3859
+   ==========================================================================
+   Originally taken from @(#)blackburn.pck	1.3 03/06/03
+*/
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN VARCHAR2;
+--
+-----------------------------------------------------------------------------
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN VARCHAR2;
+--
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="Create_File">
+--
+   Procedure Create_File(loc_in  varchar2
+                        ,file_in varchar2
+			,line_in varchar2);
+--</PROC>
+--
+-----------------------------------------------------------------------------						
+--
+--<PROC NAME="Main">
+--
+   Procedure Main( job_id in number);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="Get_NextLine">
+--
+   Procedure Get_NextLine( in_file  in utl_file.file_type
+                          ,out_line out varchar2
+			  ,not_eof  out boolean );
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="ProcessInvoiceRecords">
+--
+   Function ProcessInvoiceRecords(job_id in number)
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="ProcessWorkRecords">
+--
+   Function ProcessWorkRecords( job_id in number )
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="ProcessComplRecords">
+--
+   Function ProcessComplRecords(job_id in number )
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="ProcessSectRecords">
+--
+   Function ProcessSectRecords( Job_Id in number )
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="Close_File">
+--
+   Function Close_File(file_in in utl_file.file_type)
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="Writeln">
+--   
+   Function Writeln(File_Handle in utl_file.file_type,line_in  varchar2)
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="FileExists">
+--   
+   Function  FileExists(loc_in  varchar2
+                        ,file_in varchar2)
+   return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="is_open">
+--   
+   Function is_open(file_in utl_file.file_type) return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------					   
+--
+--<PROC NAME="GetField">
+--   
+   Function GetField( InString in varchar2,FldNo in number )
+   return varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+END Blackburn;
+/
