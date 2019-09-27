@@ -3,18 +3,18 @@ CREATE OR REPLACE PACKAGE BODY maiausec AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.12   Oct 08 2013 16:08:38   Rob.Coupe  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/MAIAUSEC.pkb-arc   1.13   Sep 27 2019 14:40:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   MAIAUSEC.pkb  $
---       Date into SCCS   : $Date:   Oct 08 2013 16:08:38  $
---       Date fetched Out : $Modtime:   Oct 08 2013 16:07:54  $
---       SCCS Version     : $Revision:   1.12  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:28:32  $
+--       SCCS Version     : $Revision:   1.13  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.12  $"';
+g_body_sccsid     CONSTANT VARCHAR2(2000) := '"$Revision:   1.13  $"';
 
   FUNCTION get_version RETURN VARCHAR2 IS
   BEGIN

@@ -3,20 +3,20 @@ CREATE OR REPLACE PACKAGE BODY maiclose IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiclose.pkb-arc   2.3   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiclose.pkb-arc   2.4   Sep 27 2019 14:40:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   maiclose.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
---       Date fetched Out : $Modtime:   Jun 27 2018 12:05:32  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:29:08  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.2
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maiclose.pck  1.2 02/16/98';
 ------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.3  $"';
+g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.4  $"';
 
 -----------------------------------------------------------------------------
 --

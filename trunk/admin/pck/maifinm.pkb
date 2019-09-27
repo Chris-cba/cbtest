@@ -3,20 +3,20 @@ CREATE OR REPLACE package body maifinm AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maifinm.pkb-arc   2.2   Jun 27 2018 13:06:38   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maifinm.pkb-arc   2.3   Sep 27 2019 14:40:20   Chris.Baugh  $
 --       Module Name      : $Workfile:   maifinm.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:38  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:31:12  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:29:46  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maifinm.pck	1.1 06/17/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
-g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.2  $"';
+g_body_sccsid  CONSTANT varchar2(2000) :='"$Revision:   2.3  $"';
 
 -----------------------------------------------------------------------------
 --
