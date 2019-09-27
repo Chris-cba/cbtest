@@ -1,0 +1,124 @@
+CREATE OR REPLACE PACKAGE maisplit
+AS
+  -----------------------------------------------------------------------------
+  --   PVCS Identifiers :-
+  --
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maisplit.pkh-arc   2.4   Sep 27 2019 14:40:22   Chris.Baugh  $
+  --       Module Name      : $Workfile:   maisplit.pkh  $
+  --       Date into SCCS   : $Date:   Sep 27 2019 14:40:22  $
+  --       Date fetched Out : $Modtime:   Sep 27 2019 14:35:04  $
+  --       SCCS Version     : $Revision:   2.4  $
+  --       Based onSCCS Version     : 1.2
+  --
+  -- This package contains procedures and functions which are required by
+  -- the Split process within Network Manager.
+  -- Maintenance Manager specific functionality can be found here,
+  -- whilst the core functionality of the network processes can be found
+  -- in the HIGSPLIT package.
+  -- Originally taken from '@(#)maisplit.pck 1.14 01/11/02';
+  -----------------------------------------------------------------------------
+  --   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+  -----------------------------------------------------------------------------
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.4  $';
+  --  g_sccsid is the SCCS ID for the package
+  --
+  -----------------------------------------------------------------------------
+  -- This function returns the current SCCS version
+  FUNCTION get_version RETURN varchar2;
+
+  --
+  -----------------------------------------------------------------------------
+  -- This function returns the current SCCS version of the package body
+  FUNCTION get_body_version RETURN varchar2;
+
+  --
+  -----------------------------------------------------------------------------
+  --**** SPLIT PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE check_data(p_id        IN     NUMBER
+                      ,p_chain     IN     NUMBER
+                      ,p_effective IN     DATE
+                      ,p_errors    IN OUT NUMBER
+                      ,p_err_text  IN OUT VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE create_new_insp (p_old_insp IN NUMBER
+                            ,p_new_insp IN NUMBER
+                            ,p_road     IN NUMBER
+                            ,p_start    IN NUMBER
+                            ,p_end      IN NUMBER
+                            ,p_actioned IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE create_new_defect(p_old_defect IN NUMBER
+                             ,p_new_defect IN NUMBER
+                             ,p_road       IN NUMBER
+                             ,p_new_insp   IN NUMBER
+                             ,p_st_chain   IN NUMBER
+                             ,p_actioned   IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE split_data(p_id        IN NUMBER
+                      ,p_chain     IN NUMBER
+                      ,p_effective IN DATE
+                      ,p_id1       IN NUMBER
+                      ,p_id2       IN NUMBER
+                      ,p_actioned  IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE split_schemes(p_id    IN road_segs.rse_he_id%TYPE
+                         ,p_id1   IN road_segs.rse_he_id%TYPE
+                         ,p_id2   IN road_segs.rse_he_id%TYPE
+                         ,p_chain IN scheme_roads.start_point%TYPE);
+
+  --
+  -----------------------------------------------------------------------------
+  --**** UNSPLIT PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE data_check(p_id            IN     NUMBER -- section to be checked
+                      ,p_actioned_date IN     VARCHAR2
+                      ,p_errors        IN OUT NUMBER
+                      ,p_error_string  IN OUT VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE check_data_unsplit(p_id1          IN      NUMBER  -- first split section
+                              ,p_id2          IN      NUMBER  -- second split section
+                              ,p_actioned     IN      VARCHAR2
+                              ,p_errors       IN OUT  NUMBER
+                              ,p_error_string IN OUT  VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE unsplit_data(p_id           IN NUMBER  -- section to be unsplit
+                        ,p_id1          IN NUMBER  -- first split section
+                        ,p_id2          IN NUMBER  -- second split section
+                        ,p_history_date IN VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  FUNCTION freq(p_int_code IN VARCHAR)
+    RETURN NUMBER;
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES (freq, WNDS, WNPS, RNPS);
+  --
+END maisplit;
+/
