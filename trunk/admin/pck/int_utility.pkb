@@ -3,19 +3,19 @@ CREATE OR REPLACE package body int_utility is
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/int_utility.pkb-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/int_utility.pkb-arc   2.3   Sep 27 2019 14:39:50   Chris.Baugh  $
 --       Module Name      : $Workfile:   int_utility.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:05:26  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:50  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:01:50  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 -- Originally taken from '@(#)intutil.pck	1.1 01/27/99'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
-g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
+g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.3  $"';
 -----------------------------------------------------------------------------
 --
 FUNCTION get_version RETURN VARCHAR2 IS

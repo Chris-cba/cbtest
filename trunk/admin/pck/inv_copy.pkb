@@ -3,20 +3,20 @@ CREATE OR REPLACE PACKAGE BODY Inv_Copy AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/inv_copy.pkb-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/inv_copy.pkb-arc   2.3   Sep 27 2019 14:39:50   Chris.Baugh  $
 --       Module Name      : $Workfile:   inv_copy.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:04:20  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:50  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:03:30  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)inv_copy.pck	1.3 10/22/01'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
-g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.2  $"';
+g_body_sccsid     CONSTANT  varchar2(2000) := '"$Revision:   2.3  $"';
 
      TYPE inv_rec IS RECORD
       (IIT_CREATED_DATE          inv_items_all.IIT_CREATED_DATE%TYPE,
