@@ -1,0 +1,175 @@
+create or replace package mai_gmis_util as
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_util.pkh-arc   2.3   Sep 27 2019 14:39:52   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_gmis_util.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:10:18  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.4
+--
+--
+--   Author : Darren Cope
+--
+--    Other supporting funcs and procs for gmis interface
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+
+  -----------
+  --constants
+  -----------
+  --g_sccsid is the SCCS ID for the package
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.3  $"';
+
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_hsc_code">
+-- This function returns the first hig_status_code
+-- according to the features code(s) and domain given
+FUNCTION get_hsc_code(p_domain             IN hig_status_codes.hsc_domain_code%TYPE
+                     ,p_allowable_features IN nm3type.tab_number) RETURN hig_status_codes.hsc_status_code%TYPE;
+FUNCTION get_hsc_code(p_domain             IN hig_status_codes.hsc_domain_code%TYPE
+                     ,p_allowable_feature  IN pls_integer) RETURN hig_status_codes.hsc_status_code%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="add_time">
+-- This function adds hours minutes and seconds to a date
+FUNCTION add_time(p_date    IN date
+                 ,p_hours   IN number DEFAULT NULL
+                 ,p_minutes IN number DEFAULT NULL
+                 ,p_seconds IN number DEFAULT NULL) RETURN date;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="defect_supersedable">
+-- Can the defect be superseded?
+FUNCTION defect_supersedable (p_sup_defect IN defects.def_defect_id%TYPE) RETURN boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="supersede_defect">
+-- Supercede p_sup_defect with p_new_defect
+PROCEDURE supersede_defect (p_sup_defect IN defects.def_defect_id%TYPE
+                           ,p_new_defect IN defects.def_defect_id%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="defect_completable">
+-- Can the defect be completed?
+FUNCTION defect_completable (p_defect_id IN defects.def_defect_id%TYPE) RETURN boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="complete_defect">
+-- Complete the defect
+PROCEDURE complete_defect(p_defect_id IN defects.def_defect_id%TYPE
+                         ,p_date      IN date DEFAULT NULL);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="touch_defect">
+-- Update the last updated date on a defects 
+PROCEDURE touch_defect(p_defect_id IN defects.def_defect_id%TYPE
+                      ,p_date IN date DEFAULT NULL);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="complete_repairs">
+-- Complete repairs for a defect
+PROCEDURE complete_repairs (p_defect_id IN defects.def_defect_id%TYPE
+                           ,p_date      IN date DEFAULT NULL);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_boq_rates">
+-- Compute costs for a given boq item
+PROCEDURE get_boq_rates(p_rec_boq IN OUT NOCOPY boq_items%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="add_arl">
+-- Add a area code to an inspection if it has not been already recorded
+PROCEDURE add_arl(pi_arl IN act_report_lines%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="defects_exist_on_section">
+-- return Y is there are defects on the given element and N if not
+FUNCTION defects_exist_on_section (p_ne_id IN nm_elements.ne_id%TYPE) RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_def_attribute">
+-- return the attribute value for a given def_type attribute
+FUNCTION get_def_attribute (pi_defect_id IN defects.def_defect_id%TYPE
+                           ,pi_attribute IN varchar2) RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_Parish">
+-- Called in view NM3_NETWORK_ATTRIBS
+FUNCTION get_Parish ( parcode IN HIG_CODES.hco_code%TYPE) RETURN VARCHAR;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="is_defect_in_completed_order">
+-- called in mai_gmis_load.process_defect()
+function is_defect_in_completed_order(
+ 	p_defect_id in DEFECTS.DEF_DEFECT_ID%type) return boolean;
+--</PROC>		
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="is_defect_in_active_order">
+-- called in mai_gmis_load.process_defect()
+function is_defect_in_active_order(
+	p_defect_id in DEFECTS.DEF_DEFECT_ID%type) return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+  PRAGMA RESTRICT_REFERENCES(get_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_gmis_util;
+/
