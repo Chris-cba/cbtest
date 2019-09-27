@@ -1,0 +1,116 @@
+CREATE OR REPLACE PACKAGE Inv_Copy AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/inv_copy.pkh-arc   2.3   Sep 27 2019 14:39:50   Chris.Baugh  $
+--       Module Name      : $Workfile:   inv_copy.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:50  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:03:52  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)inv_copy.pck	1.3 10/22/01'
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<TYPES>
+
+    TYPE drill IS TABLE OF VARCHAR2(2000)
+    INDEX BY BINARY_INTEGER;
+    drill_tab drill;
+    drill_level INTEGER := 0;
+    
+    TYPE r_hier IS RECORD
+    (old_item_id     inv_items_all.iit_item_id%TYPE,
+     old_primary_key inv_items_all.iit_primary_key%TYPE,
+     old_foreign_key inv_items_all.iit_foreign_key%TYPE,
+     new_item_id     inv_items_all.iit_item_id%TYPE,
+     new_primary_key inv_items_all.iit_primary_key%TYPE);
+    
+    TYPE hier IS TABLE OF r_hier
+     INDEX BY BINARY_INTEGER;
+     
+     hier_tab hier;
+     null_tab hier; -- dummy table used to clear contents of hier_tab
+     hier_count INTEGER := 0;
+     
+--</TYPES>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="copy_inventory">
+-- Procedure to create and execute pbi code
+   FUNCTION copy_inventory (p_item IN inv_items_all.iit_item_id%TYPE
+                           ,p_section IN road_segs.rse_he_id%TYPE
+                           ,p_st_chain IN inv_items_all.iit_st_chain%TYPE
+                           ,p_end_chain IN inv_items_all.iit_end_chain%TYPE
+                           ,p_xsp IN inv_items_all.iit_x_sect%TYPE
+                           ,p_attributes BOOLEAN DEFAULT FALSE
+                           ,p_children BOOLEAN DEFAULT FALSE
+                           ,p_asset_id IN inv_items_all.iit_primary_key%TYPE DEFAULT NULL)
+                            RETURN NUMBER;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="move_inventory">
+   FUNCTION move_inventory (p_item IN inv_items_all.iit_item_id%TYPE
+                           ,p_section IN road_segs.rse_he_id%TYPE
+                           ,p_st_chain IN inv_items_all.iit_st_chain%TYPE
+                           ,p_end_chain IN inv_items_all.iit_end_chain%TYPE
+                           ,p_xsp IN inv_items_all.iit_x_sect%TYPE
+                           ,p_attributes BOOLEAN DEFAULT FALSE
+                           ,p_children BOOLEAN DEFAULT FALSE
+                           ,p_asset_id IN inv_items_all.iit_primary_key%TYPE DEFAULT NULL)
+                            RETURN NUMBER;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="drill_down">
+    PROCEDURE drill_down (p_where IN VARCHAR2);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="drill_up">
+   FUNCTION drill_up RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES( Get_version, wnds);
+   PRAGMA RESTRICT_REFERENCES( drill_down, wnds);
+   PRAGMA RESTRICT_REFERENCES( drill_up, wnds);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END Inv_Copy;
+/

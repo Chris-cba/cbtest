@@ -1,0 +1,180 @@
+create or replace package higunit as
+--<PACKAGE>
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/higunit.pkh-arc   2.3   Sep 27 2019 14:39:50   Chris.Baugh  $
+--       Module Name      : $Workfile:   higunit.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:50  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 13:25:26  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.1
+--
+--
+--   Author D.Cope
+--
+--   wrapper package for higunit package.
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+  g_sccsid      CONSTANT  VARCHAR2(80) := '"$Revision:   2.3  $"';
+-- g_sccsid is the SCCS_ID
+  g_def_unit_id number := 1; -- := to_number(hig.get_sysopt( 'DEFUNITID' ) );
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_default_unit_id">
+  function get_default_unit_id return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_next_ud_domain_id">
+  function get_next_ud_domain_id return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_next_unit_id">
+  function get_next_unit_id return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_length_units">
+  function get_length_units return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_unit_name">
+  function get_unit_name    ( p_un_id in number ) return varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_unit_id">
+  function get_unit_id      ( p_un_name in varchar2 ) return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="convert_unit">
+  function convert_unit      ( p_un_id_in in number, p_un_id_out in number, p_value in number ) return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_unit_function">
+  function get_unit_function ( p_un_id_in in number, p_un_id_out in number ) return varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_uc">
+  function get_uc ( p_un_id_in in number, p_un_id_out in number ) return nm_unit_conversions%ROWTYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_gty_units">
+  function get_gty_units    ( p_gty in varchar2 ) return number;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="unit_exists">
+  function unit_exists ( p_domain_name in nm_unit_domains.ud_domain_name%type, p_unit_id in nm_units.un_unit_id%type ) return boolean;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_unit_mask">
+  function get_unit_mask ( p_unit_id in nm_units.un_unit_id%type ) return varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="build_unit_conversion_function">
+-- This procedure will execute the SQL specified in the specified nm_unit_conversions record
+--
+PROCEDURE build_unit_conversion_function
+                (pi_unit_id_in    IN nm_unit_conversions.uc_unit_id_in%TYPE
+                ,pi_unit_id_out   IN nm_unit_conversions.uc_unit_id_out%TYPE
+                );
+-- Possible exceptions raised are -
+-- -20001, nm_unit_conversions record not found
+-- Plus any other sql errors in the Dynamic sql
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="build_all_unit_conv_functions">
+-- This procedure rebuilds all nm_unit_conversions functions
+PROCEDURE build_all_unit_conv_functions;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_function_from_factor">
+-- This function returns the default text for the function specified based on the
+--  conversion factor passed
+--
+FUNCTION get_function_from_factor (p_function_name nm_unit_conversions.uc_function%TYPE
+                                  ,p_factor        nm_unit_conversions.uc_conversion_factor%TYPE
+                                  ) RETURN nm_unit_conversions.uc_conversion%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_formatted_value">
+-- This function returns the formatted value of p_value as per the format mask of
+--  the NM_UNITS record if one exists, otherwise just returns TO_CHAR(p_value)
+--
+FUNCTION get_formatted_value (p_value   NUMBER
+                             ,p_unit_id nm_units.un_unit_id%TYPE
+                             ) RETURN nm_units.un_format_mask%TYPE;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+  pragma restrict_references( get_version, WNDS, wnps );
+  pragma restrict_references( get_body_version, WNDS, wnps );
+  pragma restrict_references( get_default_unit_id, WNDS, wnps );
+  pragma restrict_references( get_next_ud_domain_id, WNDS, wnps );
+  pragma restrict_references( get_next_unit_id, WNDS, wnps );
+  pragma restrict_references( get_length_units, WNDS, wnps );
+  pragma restrict_references( get_unit_name, WNDS, wnps );
+  pragma restrict_references( get_unit_function, WNDS, wnps );
+  pragma restrict_references( get_gty_units, wnds, wnps );
+  pragma restrict_references( unit_exists, WNDS, wnps );
+  pragma restrict_references( convert_unit, WNDS, wnps );
+  pragma restrict_references( get_unit_mask, wnds, wnps );
+  pragma restrict_references( get_function_from_factor, wnds, wnps );
+  pragma restrict_references( get_uc, wnds, wnps );
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+end higunit;
+/
+
