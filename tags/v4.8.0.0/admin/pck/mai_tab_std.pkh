@@ -1,0 +1,123 @@
+CREATE OR REPLACE PACKAGE mai_tab_std IS
+--<PACKAGE>
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_std.pkh-arc   2.4   Sep 27 2019 14:39:56   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_tab_std.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:56  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:21:48  $
+--       SCCS Version     : $Revision:   2.4  $
+--
+--
+--
+--   Author : Darren Cope
+--
+--   Generated package DO NOT MODIFY
+--
+--   nm3get_gen header : @(#)mai_tab_std.pkh	1.1 03/09/04
+--   nm3get_gen body   : @(#)mai_tab_std.pkh	1.1 03/09/04
+--
+-----------------------------------------------------------------------------
+--
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+--
+-----------------------------------------------------------------------------
+--
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.4  $"';
+--  g_sccsid is the SCCS ID for the package
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get">
+--
+--   Function to get using STA_INDEX_P1 index
+--
+FUNCTION get (pi_sta_item_code     standard_items.sta_item_code%TYPE
+             ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+             ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+             ) RETURN standard_items%ROWTYPE;
+PRAGMA RESTRICT_REFERENCES (get, WNPS, WNDS);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins">
+-- Inserts a ROWTYPE record into standard_items
+-- Returns the ROWTYPE record as inserted - trigger modified values
+--
+PROCEDURE ins (p_rec_std IN OUT standard_items%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="lock_gen">
+--
+--   Function to lock using STA_INDEX_P1 index
+--
+FUNCTION lock_gen (pi_sta_item_code     standard_items.sta_item_code%TYPE
+                  ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                  ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                  ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                  ) RETURN ROWID;
+--
+--   Procedure to lock using STA_INDEX_P1 index
+--
+PROCEDURE lock_gen (pi_sta_item_code     standard_items.sta_item_code%TYPE
+                   ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                   ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                   ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                   );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="del">
+--
+--   Procedure to del using STA_INDEX_P1 index
+--
+PROCEDURE del (pi_sta_item_code     standard_items.sta_item_code%TYPE
+              ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+              ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+              ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+              );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="debug">
+-- Debug a ROWTYPE record
+PROCEDURE debug (pi_rec_std standard_items%ROWTYPE,p_level PLS_INTEGER DEFAULT 3);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_tab_std;
+/

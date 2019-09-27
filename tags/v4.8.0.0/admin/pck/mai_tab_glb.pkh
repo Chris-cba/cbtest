@@ -1,0 +1,123 @@
+CREATE OR REPLACE PACKAGE mai_tab_glb IS
+--<PACKAGE>
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_glb.pkh-arc   2.3   Sep 27 2019 14:39:56   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_tab_glb.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:56  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:20:58  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.1
+--
+--
+--   Author : Darren Cope
+--
+--   Generated package DO NOT MODIFY
+--
+--   nm3get_gen header : @(#)mai_tab_glb.pkh	1.1 03/09/04
+--   nm3get_gen body   : @(#)mai_tab_glb.pkh	1.1 03/09/04
+--
+-----------------------------------------------------------------------------
+--
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+--
+-----------------------------------------------------------------------------
+--
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.3  $"';
+--  g_sccsid is the SCCS ID for the package
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get">
+--
+--   Function to get using GLB_PK constraint
+--
+FUNCTION get (pi_glb_load_batch    mai_gmis_load_batches.glb_load_batch%TYPE
+             ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+             ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+             ) RETURN mai_gmis_load_batches%ROWTYPE;
+PRAGMA RESTRICT_REFERENCES (get, WNPS, WNDS);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins">
+-- Inserts a ROWTYPE record into mai_gmis_load_batches
+-- Returns the ROWTYPE record as inserted - trigger modified values
+--
+PROCEDURE ins (p_rec_glb IN OUT mai_gmis_load_batches%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="lock_gen">
+--
+--   Function to lock using GLB_PK constraint
+--
+FUNCTION lock_gen (pi_glb_load_batch    mai_gmis_load_batches.glb_load_batch%TYPE
+                  ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                  ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                  ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                  ) RETURN ROWID;
+--
+--   Procedure to lock using GLB_PK constraint
+--
+PROCEDURE lock_gen (pi_glb_load_batch    mai_gmis_load_batches.glb_load_batch%TYPE
+                   ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                   ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                   ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                   );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="del">
+--
+--   Procedure to del using GLB_PK constraint
+--
+PROCEDURE del (pi_glb_load_batch    mai_gmis_load_batches.glb_load_batch%TYPE
+              ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+              ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+              ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+              );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="debug">
+-- Debug a ROWTYPE record
+PROCEDURE debug (pi_rec_glb mai_gmis_load_batches%ROWTYPE,p_level PLS_INTEGER DEFAULT 3);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_tab_glb;
+/

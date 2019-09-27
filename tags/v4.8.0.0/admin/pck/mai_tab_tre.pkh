@@ -1,0 +1,123 @@
+CREATE OR REPLACE PACKAGE mai_tab_tre IS
+--<PACKAGE>
+--
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_tre.pkh-arc   2.3   Sep 27 2019 14:39:56   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai_tab_tre.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:56  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:22:34  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based on SCCS Version     : 1.1
+--
+--
+--   Author : Darren Cope
+--
+--   Generated package DO NOT MODIFY
+--
+--   nm3get_gen header : @(#)mai_tab_tre.pkh	1.1 03/09/04
+--   nm3get_gen body   : @(#)mai_tab_tre.pkh	1.1 03/09/04
+--
+-----------------------------------------------------------------------------
+--
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+--
+-----------------------------------------------------------------------------
+--
+--</PACKAGE>
+--<GLOBVAR>
+   g_sccsid          CONSTANT  VARCHAR2(2000) := '"$Revision:   2.3  $"';
+--  g_sccsid is the SCCS ID for the package
+--
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get">
+--
+--   Function to get using TRE_INDEX_P1 index
+--
+FUNCTION get (pi_tre_treat_code    treatments.tre_treat_code%TYPE
+             ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+             ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+             ) RETURN treatments%ROWTYPE;
+PRAGMA RESTRICT_REFERENCES (get, WNPS, WNDS);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins">
+-- Inserts a ROWTYPE record into treatments
+-- Returns the ROWTYPE record as inserted - trigger modified values
+--
+PROCEDURE ins (p_rec_tre IN OUT treatments%ROWTYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="lock_gen">
+--
+--   Function to lock using TRE_INDEX_P1 index
+--
+FUNCTION lock_gen (pi_tre_treat_code    treatments.tre_treat_code%TYPE
+                  ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                  ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                  ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                  ) RETURN ROWID;
+--
+--   Procedure to lock using TRE_INDEX_P1 index
+--
+PROCEDURE lock_gen (pi_tre_treat_code    treatments.tre_treat_code%TYPE
+                   ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+                   ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+                   ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+                   );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="del">
+--
+--   Procedure to del using TRE_INDEX_P1 index
+--
+PROCEDURE del (pi_tre_treat_code    treatments.tre_treat_code%TYPE
+              ,pi_raise_not_found   BOOLEAN     DEFAULT TRUE
+              ,pi_not_found_sqlcode PLS_INTEGER DEFAULT -20000
+              ,pi_locked_sqlcode    PLS_INTEGER DEFAULT -20000
+              );
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="debug">
+-- Debug a ROWTYPE record
+PROCEDURE debug (pi_rec_tre treatments%ROWTYPE,p_level PLS_INTEGER DEFAULT 3);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES (get_version, RNDS, WNPS, WNDS);
+   PRAGMA RESTRICT_REFERENCES (get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+END mai_tab_tre;
+/
