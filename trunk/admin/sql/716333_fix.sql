@@ -1,12 +1,12 @@
 -- PVCS Identifiers :-
 --
--- pvcsid : $Header:   //new_vm_latest/archives/mai/admin/sql/716333_fix.sql-arc   3.2   Jun 28 2018 04:12:44   Gaurav.Gaurkar  $
+-- pvcsid : $Header:   //new_vm_latest/archives/mai/admin/sql/716333_fix.sql-arc   3.3   Sep 27 2019 14:41:56   Chris.Baugh  $
 -- Module Name : $Workfile:   716333_fix.sql  $
--- Date into PVCS : $Date:   Jun 28 2018 04:12:44  $
--- Date fetched Out : $Modtime:   Jun 28 2018 04:11:46  $
--- PVCS Version : $Revision:   3.2  $
+-- Date into PVCS : $Date:   Sep 27 2019 14:41:56  $
+-- Date fetched Out : $Modtime:   Sep 27 2019 14:41:26  $
+-- PVCS Version : $Revision:   3.3  $
 ------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 
 insert into hig_option_list
