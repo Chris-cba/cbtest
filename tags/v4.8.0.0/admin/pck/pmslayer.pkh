@@ -1,0 +1,79 @@
+CREATE OR REPLACE PACKAGE PMSLAYER AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/pmslayer.pkh-arc   2.3   Sep 27 2019 14:40:24   Chris.Baugh  $
+--       Module Name      : $Workfile:   pmslayer.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:24  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:37:40  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)pmslayer.pck	1.1 10/02/97'
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+/*
+Title 	:	Generic dimension functions for Structural Projects.
+Purpose	:	This package contains SQL Selectable functions to calculate
+		dimensions associated with road XSP's.  The functions will
+		return Max Chainage length,Max Depth and Chainage Start Point
+		for a given XSP in a given Road seg.
+
+Author	:	I Smith
+Date	:	Sept 1997
+-----------------------------------------------------------------------------
+Mod Hist:	None
+*/
+-----------------------------------------------------------------------------
+--<PROC NAME="get_version">
+--
+   function get_version return varchar2;
+--</PROC>
+------------------------------------------------------------------------------
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+--<PROC NAME="MaxChainageLength">
+--
+     FUNCTION MaxChainageLength(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	                          XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+     RETURN NUMBER;
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="MaxXSPDepth">
+--
+    FUNCTION MaxXSPDepth(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	     	           XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+    RETURN NUMBER;	     	           
+--
+--</PROC>
+-----------------------------------------------------------------------------
+--<PROC NAME="ChainageStart">
+--
+    FUNCTION ChainageStart(HE_ID IN INV_ITEMS_ALL.IIT_RSE_HE_ID%TYPE,
+	                     XSP IN INV_ITEMS_ALL.IIT_X_SECT%TYPE)
+    RETURN NUMBER;
+--
+-----------------------------------------------------------------------------
+--<PRAGMA>
+    PRAGMA RESTRICT_REFERENCES(MaxChainageLength,WNDS,WNPS);
+    PRAGMA RESTRICT_REFERENCES(MaxXSPDepth,WNDS,WNPS);
+    PRAGMA RESTRICT_REFERENCES(ChainageStart,WNDS,WNPS);
+--</PRAGMA>
+-----------------------------------------------------------------------------
+END PMSLAYER;
+/
