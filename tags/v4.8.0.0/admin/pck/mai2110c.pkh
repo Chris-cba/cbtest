@@ -1,0 +1,278 @@
+create or replace package mai2110c authid current_user
+AS
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
+--
+--       pvcsid                 : $Header:   //new_vm_latest/archives/mai/admin/pck/mai2110c.pkh-arc   2.7   Sep 27 2019 14:39:58   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai2110c.pkh  $
+--       Date into PVCS   : $Date:   Sep 27 2019 14:39:58  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:26:24  $
+--       PVCS Version     : $Revision:   2.7  $
+--       Based on SCCS version :
+--
+--
+--   Author : M Huitson.
+--
+--   mai2110c
+--
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+
+  -----------
+  --constants
+  -----------
+  --g_sccsid is the SCCS ID for the package
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.7  $"';
+  TYPE hhinv_load_3_rec
+    IS RECORD(rec_seq_no                 hhinv_load_3.rec_seq_no               %TYPE
+             ,iit_he_id                  hhinv_load_3.he_id                    %TYPE
+             ,iit_st_chain               hhinv_load_3.st_chain                 %TYPE
+             ,iit_end_chain              hhinv_load_3.end_chain                %TYPE
+             ,iit_x_sect                 hhinv_load_3.x_sect                   %TYPE
+             ,iit_inv_code               hhinv_load_3.inv_code                 %TYPE
+             ,iit_peo_invent_by_id       hhinv_load_3.peo_invent_by_id         %TYPE
+             ,iit_start_date             hhinv_load_3.invent_date              %TYPE
+             ,iit_length                 hhinv_load_3.length                   %TYPE
+             ,iit_gap                    hhinv_load_3.gap                      %TYPE
+             ,iit_width                  hhinv_load_3.width                    %TYPE
+             ,iit_height                 hhinv_load_3.height                   %TYPE
+             ,iit_height_2               hhinv_load_3.height_2                 %TYPE
+             ,iit_distance               hhinv_load_3.distance                 %TYPE
+             ,iit_angle                  hhinv_load_3.angle                    %TYPE
+             ,iit_no_of_units            hhinv_load_3.no_of_units              %TYPE
+             ,iit_power                  hhinv_load_3.power                    %TYPE
+             ,iit_type                   hhinv_load_3.type                     %TYPE
+             ,iit_class                  hhinv_load_3.class                    %TYPE
+             ,iit_material               hhinv_load_3.material                 %TYPE
+             ,iit_colour                 hhinv_load_3.colour                   %TYPE
+             ,iit_owner                  hhinv_load_3.owner                    %TYPE
+             ,iit_method                 hhinv_load_3.method                   %TYPE
+             ,iit_options                hhinv_load_3.options                  %TYPE
+             ,iit_description            hhinv_load_3.description              %TYPE
+             ,iit_id_code                hhinv_load_3.id_code                  %TYPE
+             ,iit_diagram                hhinv_load_3.diagram                  %TYPE
+             ,iit_photo                  hhinv_load_3.photo                    %TYPE
+             ,iit_note                   hhinv_load_3.note                     %TYPE
+             ,iit_instal_date            hhinv_load_3.instal_date              %TYPE
+             ,iit_itemcode               hhinv_load_3.itemcode                 %TYPE
+             ,iit_xtra_char_1            hhinv_load_3.xtra_char_1              %TYPE
+             ,iit_xtra_date_1            hhinv_load_3.xtra_date_1              %TYPE
+             ,iit_xtra_domain_1          hhinv_load_3.xtra_domain_1            %TYPE
+             ,iit_xtra_number_1          hhinv_load_3.xtra_number_1            %TYPE
+             ,iit_ity_sys_flag           hhinv_load_3.ity_sys_flag             %TYPE
+             ,iit_coord_flag             nm_inv_items_all.iit_coord_flag       %TYPE
+             ,iit_primary_key            hhinv_load_3.primary_key              %TYPE
+             ,iit_foreign_key            hhinv_load_3.foreign_key              %TYPE
+             ,iit_descr                  hhinv_load_3.descr                    %TYPE
+             ,iit_located_by             hhinv_load_3.located_by               %TYPE
+             ,iit_position               hhinv_load_3.position                 %TYPE
+             ,iit_x_coord                hhinv_load_3.x_coord                  %TYPE
+             ,iit_y_coord                hhinv_load_3.y_coord                  %TYPE
+             ,iit_inv_ownership          hhinv_load_3.inv_ownership            %TYPE
+             ,iit_lco_lamp_config_id     hhinv_load_3.lco_lamp_config_id       %TYPE
+             ,iit_oun_org_id_elec_board  hhinv_load_3.oun_org_id_elec_board    %TYPE
+             ,iit_prov_flag              hhinv_load_3.prov_flag                %TYPE
+             ,iit_rev_by                 hhinv_load_3.rev_by                   %TYPE
+             ,iit_rev_date               hhinv_load_3.rev_date                 %TYPE
+             ,iit_offset                 hhinv_load_3.offset                   %TYPE
+             ,iit_x                      hhinv_load_3.x                        %TYPE
+             ,iit_y                      hhinv_load_3.y                        %TYPE
+             ,iit_z                      hhinv_load_3.z                        %TYPE 
+             ,iit_num_attrib16           hhinv_load_3.num_attrib16             %TYPE
+             ,iit_num_attrib17           hhinv_load_3.num_attrib17             %TYPE
+             ,iit_num_attrib18           hhinv_load_3.num_attrib18             %TYPE
+             ,iit_num_attrib19           hhinv_load_3.num_attrib19             %TYPE
+             ,iit_num_attrib20           hhinv_load_3.num_attrib20             %TYPE
+             ,iit_num_attrib21           hhinv_load_3.num_attrib21             %TYPE
+             ,iit_num_attrib22           hhinv_load_3.num_attrib22             %TYPE
+             ,iit_num_attrib23           hhinv_load_3.num_attrib23             %TYPE
+             ,iit_num_attrib24           hhinv_load_3.num_attrib24             %TYPE
+             ,iit_num_attrib25           hhinv_load_3.num_attrib25             %TYPE
+             ,iit_chr_attrib26           hhinv_load_3.chr_attrib26             %TYPE
+             ,iit_chr_attrib27           hhinv_load_3.chr_attrib27             %TYPE
+             ,iit_chr_attrib28           hhinv_load_3.chr_attrib28             %TYPE
+             ,iit_chr_attrib29           hhinv_load_3.chr_attrib29             %TYPE
+             ,iit_chr_attrib30           hhinv_load_3.chr_attrib30             %TYPE
+             ,iit_chr_attrib31           hhinv_load_3.chr_attrib31             %TYPE
+             ,iit_chr_attrib32           hhinv_load_3.chr_attrib32             %TYPE
+             ,iit_chr_attrib33           hhinv_load_3.chr_attrib33             %TYPE
+             ,iit_chr_attrib34           hhinv_load_3.chr_attrib34             %TYPE
+             ,iit_chr_attrib35           hhinv_load_3.chr_attrib35             %TYPE
+             ,iit_chr_attrib36           hhinv_load_3.chr_attrib36             %TYPE
+             ,iit_chr_attrib37           hhinv_load_3.chr_attrib37             %TYPE
+             ,iit_chr_attrib38           hhinv_load_3.chr_attrib38             %TYPE
+             ,iit_chr_attrib39           hhinv_load_3.chr_attrib39             %TYPE
+             ,iit_chr_attrib40           hhinv_load_3.chr_attrib40             %TYPE
+             ,iit_chr_attrib41           hhinv_load_3.chr_attrib41             %TYPE
+             ,iit_chr_attrib42           hhinv_load_3.chr_attrib42             %TYPE
+             ,iit_chr_attrib43           hhinv_load_3.chr_attrib43             %TYPE
+             ,iit_chr_attrib44           hhinv_load_3.chr_attrib44             %TYPE
+             ,iit_chr_attrib45           hhinv_load_3.chr_attrib45             %TYPE
+             ,iit_chr_attrib46           hhinv_load_3.chr_attrib46             %TYPE
+             ,iit_chr_attrib47           hhinv_load_3.chr_attrib47             %TYPE
+             ,iit_chr_attrib48           hhinv_load_3.chr_attrib48             %TYPE
+             ,iit_chr_attrib49           hhinv_load_3.chr_attrib49             %TYPE
+             ,iit_chr_attrib50           hhinv_load_3.chr_attrib50             %TYPE
+             ,iit_chr_attrib51           hhinv_load_3.chr_attrib51             %TYPE
+             ,iit_chr_attrib52           hhinv_load_3.chr_attrib52             %TYPE
+             ,iit_chr_attrib53           hhinv_load_3.chr_attrib53             %TYPE
+             ,iit_chr_attrib54           hhinv_load_3.chr_attrib54             %TYPE
+             ,iit_chr_attrib55           hhinv_load_3.chr_attrib55             %TYPE
+             ,iit_chr_attrib56           hhinv_load_3.chr_attrib56             %TYPE
+             ,iit_chr_attrib57           hhinv_load_3.chr_attrib57             %TYPE
+             ,iit_chr_attrib58           hhinv_load_3.chr_attrib58             %TYPE
+             ,iit_chr_attrib59           hhinv_load_3.chr_attrib59             %TYPE
+             ,iit_chr_attrib60           hhinv_load_3.chr_attrib60             %TYPE
+             ,iit_chr_attrib61           hhinv_load_3.chr_attrib61             %TYPE
+             ,iit_chr_attrib62           hhinv_load_3.chr_attrib62             %TYPE
+             ,iit_chr_attrib63           hhinv_load_3.chr_attrib63             %TYPE
+             ,iit_chr_attrib64           hhinv_load_3.chr_attrib64             %TYPE
+             ,iit_chr_attrib65           hhinv_load_3.chr_attrib65             %TYPE
+             ,iit_chr_attrib66           hhinv_load_3.chr_attrib66             %TYPE
+             ,iit_chr_attrib67           hhinv_load_3.chr_attrib67             %TYPE
+             ,iit_chr_attrib68           hhinv_load_3.chr_attrib68             %TYPE
+             ,iit_chr_attrib69           hhinv_load_3.chr_attrib69             %TYPE
+             ,iit_chr_attrib70           hhinv_load_3.chr_attrib70             %TYPE
+             ,iit_chr_attrib71           hhinv_load_3.chr_attrib71             %TYPE
+             ,iit_chr_attrib72           hhinv_load_3.chr_attrib72             %TYPE
+             ,iit_chr_attrib73           hhinv_load_3.chr_attrib73             %TYPE
+             ,iit_chr_attrib74           hhinv_load_3.chr_attrib74             %TYPE
+             ,iit_chr_attrib75           hhinv_load_3.chr_attrib75             %TYPE
+             ,iit_num_attrib76           hhinv_load_3.num_attrib76             %TYPE
+             ,iit_num_attrib77           hhinv_load_3.num_attrib77             %TYPE
+             ,iit_num_attrib78           hhinv_load_3.num_attrib78             %TYPE
+             ,iit_num_attrib79           hhinv_load_3.num_attrib79             %TYPE
+             ,iit_num_attrib80           hhinv_load_3.num_attrib80             %TYPE
+             ,iit_num_attrib81           hhinv_load_3.num_attrib81             %TYPE
+             ,iit_num_attrib82           hhinv_load_3.num_attrib82             %TYPE
+             ,iit_num_attrib83           hhinv_load_3.num_attrib83             %TYPE
+             ,iit_num_attrib84           hhinv_load_3.num_attrib84             %TYPE
+             ,iit_num_attrib85           hhinv_load_3.num_attrib85             %TYPE
+             ,iit_date_attrib86          hhinv_load_3.date_attrib86            %TYPE
+             ,iit_date_attrib87          hhinv_load_3.date_attrib87            %TYPE
+             ,iit_date_attrib88          hhinv_load_3.date_attrib88            %TYPE
+             ,iit_date_attrib89          hhinv_load_3.date_attrib89            %TYPE
+             ,iit_date_attrib90          hhinv_load_3.date_attrib90            %TYPE
+             ,iit_date_attrib91          hhinv_load_3.date_attrib91            %TYPE
+             ,iit_date_attrib92          hhinv_load_3.date_attrib92            %TYPE
+             ,iit_date_attrib93          hhinv_load_3.date_attrib93            %TYPE
+             ,iit_date_attrib94          hhinv_load_3.date_attrib94            %TYPE
+             ,iit_date_attrib95          hhinv_load_3.date_attrib95            %TYPE
+             ,iit_num_attrib96           hhinv_load_3.num_attrib96             %TYPE
+             ,iit_num_attrib97           hhinv_load_3.num_attrib97             %TYPE
+             ,iit_num_attrib98           hhinv_load_3.num_attrib98             %TYPE
+             ,iit_num_attrib99           hhinv_load_3.num_attrib99             %TYPE
+             ,iit_num_attrib100          hhinv_load_3.num_attrib100            %TYPE
+             ,iit_num_attrib101          hhinv_load_3.num_attrib101            %TYPE
+             ,iit_num_attrib102          hhinv_load_3.num_attrib102            %TYPE
+             ,iit_num_attrib103          hhinv_load_3.num_attrib103            %TYPE
+             ,iit_num_attrib104          hhinv_load_3.num_attrib104            %TYPE
+             ,iit_num_attrib105          hhinv_load_3.num_attrib105            %TYPE
+             ,iit_num_attrib106          hhinv_load_3.num_attrib106            %TYPE
+             ,iit_num_attrib107          hhinv_load_3.num_attrib107            %TYPE
+             ,iit_num_attrib108          hhinv_load_3.num_attrib108            %TYPE
+             ,iit_num_attrib109          hhinv_load_3.num_attrib109            %TYPE
+             ,iit_num_attrib110          hhinv_load_3.num_attrib110            %TYPE
+             ,iit_num_attrib111          hhinv_load_3.num_attrib111            %TYPE
+             ,iit_num_attrib112          hhinv_load_3.num_attrib112            %TYPE
+             ,iit_num_attrib113          hhinv_load_3.num_attrib113            %TYPE
+             ,iit_num_attrib114          hhinv_load_3.num_attrib114            %TYPE
+             ,iit_num_attrib115          hhinv_load_3.num_attrib115            %TYPE
+             ,iit_det_xsp                hhinv_load_3.det_xsp                  %TYPE)
+             ;
+  TYPE hhinv_load_3_tab IS TABLE OF hhinv_load_3_rec INDEX BY BINARY_INTEGER;
+  --
+  TYPE hhinv_load_2_rec
+    IS RECORD(rec_seq_no            hhinv_load_3.rec_seq_no         %TYPE
+             ,iit_he_id             hhinv_load_3.he_id              %TYPE
+             ,iit_st_chain          hhinv_load_3.st_chain           %TYPE
+             ,iit_end_chain         hhinv_load_3.end_chain          %TYPE
+             ,iit_x_sect            hhinv_load_3.x_sect             %TYPE
+             ,iit_inv_code          hhinv_load_3.inv_code           %TYPE
+             ,iit_peo_invent_by_id  hhinv_load_3.peo_invent_by_id   %TYPE
+             ,iit_start_date        hhinv_load_3.invent_date        %TYPE
+             ,iit_ity_sys_flag      hhinv_load_3.ity_sys_flag       %TYPE
+             ,iit_coord_flag        nm_inv_items_all.iit_coord_flag %TYPE
+             ,iit_primary_key       hhinv_load_3.primary_key        %TYPE)
+             ;
+  TYPE hhinv_load_2_tab IS TABLE OF hhinv_load_2_rec INDEX BY BINARY_INTEGER;
+  --
+  TYPE attr_rec
+    IS RECORD(rec_seq_no hhinv_load_3.rec_seq_no%TYPE
+             ,inv_code   hhinv_load_3.inv_code%TYPE
+             ,attribute  hhinv_load_3.attribute%TYPE
+             ,value      hhinv_load_3.value%TYPE
+             ,datatype   VARCHAR2(20))
+             ;
+  TYPE attr_rec_tab IS TABLE OF attr_rec INDEX BY BINARY_INTEGER;
+  --
+  TYPE nm_inv_tab IS TABLE OF nm_inv_items_all%ROWTYPE INDEX BY BINARY_INTEGER;
+  --
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN varchar2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="set_attrib_values">
+PROCEDURE set_attrib_values(po_attr_err OUT PLS_INTEGER);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="check_ukp_overlap">
+PROCEDURE check_ukp_overlap;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="ins_assets">
+PROCEDURE ins_assets(pi_run_num   IN  hhinv_sect_log.lst_run_num%TYPE
+                    ,po_rec_count OUT PLS_INTEGER
+                    ,po_sect_err  OUT PLS_INTEGER);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="create_asset">
+--PROCEDURE create_asset(pi_he_id     hhinv_load_3.he_id%TYPE
+--                      ,pi_st_chain  hhinv_load_3.st_chain%TYPE
+--                      ,pi_end_chain hhinv_load_3.end_chain%TYPE);
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="get_inv_location">
+FUNCTION get_inv_location(pi_ne_id IN NUMBER
+                         ,pi_start IN NUMBER
+                         ,pi_end   IN NUMBER)
+  RETURN nm_placement_array;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PRAGMA>
+  PRAGMA RESTRICT_REFERENCES(get_version     , RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, RNDS, WNPS, WNDS);
+--</PRAGMA>
+--
+-----------------------------------------------------------------------------
+--
+end mai2110c;
+/
