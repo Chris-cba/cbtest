@@ -4,17 +4,17 @@ CREATE OR REPLACE PACKAGE BODY mai_inspection_api AS
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.49   Jul 19 2018 10:55:06   Upendra.Hukeri  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_inspection_api.pkb-arc   3.50   Sep 27 2019 14:39:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_inspection_api.pkb  $
---       Date into PVCS   : $Date:   Jul 19 2018 10:55:06  $
---       Date fetched Out : $Modtime:   Jul 19 2018 10:54:34  $
---       PVCS Version     : $Revision:   3.49  $
+--       Date into PVCS   : $Date:   Sep 27 2019 14:39:54  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:11:22  $
+--       PVCS Version     : $Revision:   3.50  $
 --
 ------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 ------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.49  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   3.50  $';
 g_package_name  CONSTANT  varchar2(30)   := 'mai_inspection_api';
 g_file_handle   UTL_FILE.FILE_TYPE;
 g_dir_path      VARCHAR2(4000) ;

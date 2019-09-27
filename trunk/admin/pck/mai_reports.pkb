@@ -3,21 +3,21 @@ CREATE OR REPLACE package body maireports as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_reports.pkb-arc   2.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_reports.pkb-arc   2.3   Sep 27 2019 14:39:54   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_reports.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:58:04  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:54  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:13:50  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)maireports.pck	1.2 05/28/02'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.2  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.3  $';
 
 -----------------------------------------------------------------------------
 --
