@@ -3,15 +3,15 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.12   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_cim_automation.pkb-arc   3.13   Sep 27 2019 14:39:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkb  $
---       Date into PVCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
---       Version          : $Revision:   3.12  $
+--       Date into PVCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:06:18  $
+--       Version          : $Revision:   3.13  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
@@ -20,7 +20,7 @@ AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.12  $';
+  g_body_sccsid  CONSTANT varchar2(2000) := '$Revision:   3.13  $';
 
   g_package_name CONSTANT varchar2(30) := 'mai_cim_automation';
   l_failed       Varchar2(1) ;

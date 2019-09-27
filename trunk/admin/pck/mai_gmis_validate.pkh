@@ -3,11 +3,11 @@ CREATE OR REPLACE PACKAGE mai_gmis_validate AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkh-arc   2.3   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkh-arc   2.4   Sep 27 2019 14:39:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_gmis_validate.pkh  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:11:00  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.3
 --
 --
@@ -16,7 +16,7 @@ CREATE OR REPLACE PACKAGE mai_gmis_validate AS
 --   Validation funcs for gmis interface
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --</PACKAGE>
 --<GLOBVAR>
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE mai_gmis_validate AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.3  $"';
+  g_sccsid CONSTANT VARCHAR2(2000) := '"$Revision:   2.4  $"';
 
 --</GLOBVAR>
 --

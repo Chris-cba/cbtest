@@ -4,15 +4,15 @@ AS
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_cim_automation.pkh-arc   3.2   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_cim_automation.pkh-arc   3.3   Sep 27 2019 14:39:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_cim_automation.pkh  $
---       Date into PVCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 12:45:14  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:06:40  $
+--       Version          : $Revision:   3.3  $
 --       Based on SCCS version : 
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --</PACKAGE>
@@ -22,7 +22,7 @@ AS
   --constants
   -----------
   --g_sccsid is the SCCS ID for the package
-  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.2  $';
+  g_sccsid CONSTANT VARCHAR2(2000) := '$Revision:   3.3  $';
 
 --</GLOBVAR>
 --

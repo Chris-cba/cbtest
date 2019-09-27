@@ -3,17 +3,17 @@ CREATE OR REPLACE package body mai_audit as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.4   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_audit.pkb-arc   2.5   Sep 27 2019 14:39:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_audit.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:02:20  $
---       SCCS Version     : $Revision:   2.4  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:04:52  $
+--       SCCS Version     : $Revision:   2.5  $
 --       Based on SCCS Version     : 1.7
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai_audit.pck	1.1 08/23/00'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
   old_rec old_vals;
@@ -32,7 +32,7 @@ CREATE OR REPLACE package body mai_audit as
   from work_order_lines
   where wol_id = p_wol_id;
 -------------------------------------------------------------------------------------
-g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.4  $';
+g_body_sccsid     CONSTANT  varchar2(2000) := '$Revision:   2.5  $';
 
 -----------------------------------------------------------------------------
 --

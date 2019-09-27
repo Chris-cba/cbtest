@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_validate AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkb-arc   2.3   Jun 27 2018 13:06:30   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_gmis_validate.pkb-arc   2.4   Sep 27 2019 14:39:52   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_gmis_validate.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:30  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
---       SCCS Version     : $Revision:   2.3  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:52  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:10:36  $
+--       SCCS Version     : $Revision:   2.4  $
 --       Based on SCCS Version     : 1.3
 --
 --
@@ -17,7 +17,7 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_validate AS
 --   mai_gmis_validate body
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --all global package variables here
@@ -26,7 +26,7 @@ CREATE OR REPLACE PACKAGE BODY mai_gmis_validate AS
   --constants
   -----------
   --g_body_sccsid is the SCCS ID for the package body
-  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.3  $"';
+  g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.4  $"';
 
   g_package_name CONSTANT varchar2(30) := 'mai_gmis_validate';
 
