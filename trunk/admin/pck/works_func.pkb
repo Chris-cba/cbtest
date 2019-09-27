@@ -3,20 +3,20 @@ CREATE OR REPLACE Package Body WWO AS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.6   Jun 27 2018 13:06:40   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/works_func.pkb-arc   2.7   Sep 27 2019 14:40:24   Chris.Baugh  $
 --       Module Name      : $Workfile:   works_func.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:40  $
---       Date fetched Out : $Modtime:   Jun 27 2018 11:25:18  $
---       SCCS Version     : $Revision:   2.6  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:24  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:38:36  $
+--       SCCS Version     : $Revision:   2.7  $
 --       Based on     : 1.2
 --
 -----------------------------------------------------------------------------
 --   Originally taken from @(#)works_func.pck	1.17 12/10/02
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
-g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.6  $';
+g_body_sccsid   CONSTANT  varchar2(2000) := '$Revision:   2.7  $';
 -----------------------------------------------------------------------------
 --
 FUNCTION get_version RETURN VARCHAR2 IS
