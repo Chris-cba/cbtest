@@ -1,13 +1,13 @@
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.8   Jul 01 2013 15:47:26   James.Wadsworth  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/ctx/add_maiausec_policy.sql-arc   1.9   Sep 27 2019 13:20:22   Chris.Baugh  $
 --       Module Name      : $Workfile:   add_maiausec_policy.sql  $
---       Date into SCCS   : $Date:   Jul 01 2013 15:47:26  $
---       Date fetched Out : $Modtime:   Jul 01 2013 13:57:26  $
---       SCCS Version     : $Revision:   1.8  $
+--       Date into SCCS   : $Date:   Sep 27 2019 13:20:22  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 13:16:34  $
+--       SCCS Version     : $Revision:   1.9  $
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
 
@@ -16,7 +16,7 @@ SET SERVEROUTPUT ON SIZE 1000000
 DECLARE
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2013 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
    l_tab_policy_name     nm3type.tab_varchar30;
