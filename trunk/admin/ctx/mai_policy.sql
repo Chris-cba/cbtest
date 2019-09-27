@@ -5,16 +5,16 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/ctx/mai_policy.sql-arc   3.3   Jun 27 2018 10:38:10   Gaurav.Gaurkar  $
+--       pvcsid           : $Header:   //new_vm_latest/archives/mai/admin/ctx/mai_policy.sql-arc   3.4   Sep 27 2019 13:21:32   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_policy.sql  $
---       Date into PVCS   : $Date:   Jun 27 2018 10:38:10  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:32:40  $
---       PVCS Version     : $Revision:   3.3  $
+--       Date into PVCS   : $Date:   Sep 27 2019 13:21:32  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 13:18:54  $
+--       PVCS Version     : $Revision:   3.4  $
 --
 --   Create MAI security policies
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
   l_tab_policy_name     nm3type.tab_varchar30;
