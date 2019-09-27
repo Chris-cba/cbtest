@@ -24,14 +24,14 @@ AS
 SELECT -------------------------------------------------------------------------
        --   PVCS Identifiers :-
        --
-       --       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.8   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
+       --       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/views/imf_mai_inspections.vw-arc   3.9   Sep 27 2019 15:35:58   Chris.Baugh  $
        --       Module Name      : $Workfile:   imf_mai_inspections.vw  $
-       --       Date into PVCS   : $Date:   Jun 28 2018 04:46:50  $
-       --       Date fetched Out : $Modtime:   Jun 28 2018 04:45:54  $
-       --       Version          : $Revision:   3.8  $
+       --       Date into PVCS   : $Date:   Sep 27 2019 15:35:58  $
+       --       Date fetched Out : $Modtime:   Sep 27 2019 15:34:24  $
+       --       Version          : $Revision:   3.9  $
        -- Foundation view displaying maintenance inspections
        ------------------------------------------------------------------
-       --   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+       --   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
        ------------------------------------------------------------------
        are_report_id                                          inspection_id
       ,are_batch_id                                           inspection_batch_id
