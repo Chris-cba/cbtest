@@ -2,15 +2,15 @@
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.4   Jun 28 2018 04:46:50   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/views/inv_items_all_section.sql-arc   3.5   Sep 27 2019 15:36:14   Chris.Baugh  $
 --       Module Name      : $Workfile:   inv_items_all_section.sql  $
---       Date into SCCS   : $Date:   Jun 28 2018 04:46:50  $
---       Date fetched Out : $Modtime:   Jun 28 2018 04:45:56  $
---       SCCS Version     : $Revision:   3.4  $
+--       Date into SCCS   : $Date:   Sep 27 2019 15:36:14  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:34:24  $
+--       SCCS Version     : $Revision:   3.5  $
 --       Based on SCCS Version     : 1.14
 --
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
 --Creates the inv_items_all_section view using a
@@ -71,7 +71,7 @@ BEGIN
  ||CHR(10)||'-----------------------------------------------------------------------------'
  ||CHR(10)||'--   Originally taken from                                                   '
  ||CHR(10)||'-----------------------------------------------------------------------------'
- ||CHR(10)||'--	Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.     '
+ ||CHR(10)||'--	Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.     '
  ||CHR(10)||'-----------------------------------------------------------------------------'
  ||CHR(10)||'  (iit_created_date'
  ||CHR(10)||'  ,iit_cre_date'
