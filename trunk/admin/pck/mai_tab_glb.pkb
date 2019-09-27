@@ -4,11 +4,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_glb IS
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_glb.pkb-arc   2.2   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai_tab_glb.pkb-arc   2.3   Sep 27 2019 14:39:56   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_tab_glb.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
---       Date fetched Out : $Modtime:   Jun 27 2018 10:54:14  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:56  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:20:40  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 --
@@ -21,11 +21,11 @@ CREATE OR REPLACE PACKAGE BODY mai_tab_glb IS
 --
 -----------------------------------------------------------------------------
 --
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 --
 -----------------------------------------------------------------------------
 --
-   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.2  $"';
+   g_body_sccsid CONSTANT  VARCHAR2(2000) := '"$Revision:   2.3  $"';
 --  g_body_sccsid is the SCCS ID for the package body
 --
    g_package_name    CONSTANT  varchar2(30)   := 'mai_tab_glb';
