@@ -1,0 +1,81 @@
+CREATE OR REPLACE PACKAGE maimerge
+AS
+  -----------------------------------------------------------------------------
+  --   PVCS Identifiers :-
+  --
+  --       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maimerge.pkh-arc   2.4   Sep 27 2019 14:40:20   Chris.Baugh  $
+  --       Module Name      : $Workfile:   maimerge.pkh  $
+  --       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+  --       Date fetched Out : $Modtime:   Sep 27 2019 14:31:58  $
+  --       SCCS Version     : $Revision:   2.4  $
+  --       Based on SCCS Version     : 1.3
+  --
+  -- This package contains procedures and functions which are required by
+  -- the Merge / UnMerge processes within Network Manager.
+  -- Maintenance Manager specific functionality can be found here,
+  -- whilst the core functionality of the network processes can be found
+  -- in the HIGMERGE package.
+  -- Originally taken from '@(#)maimerge.pck  1.11 06/17/02';
+  -----------------------------------------------------------------------------
+  --   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+  -----------------------------------------------------------------------------
+  g_sccsid      CONSTANT  VARCHAR2(2000) := '"$Revision:   2.4  $"';
+  --  g_sccsid is the SCCS ID for the package
+  --
+  -----------------------------------------------------------------------------
+  -- This function returns the current SCCS version
+  FUNCTION get_version RETURN varchar2;
+  
+  --
+  -----------------------------------------------------------------------------
+  -- This function returns the current SCCS version of the package body
+  FUNCTION get_body_version RETURN varchar2;
+  
+  --
+  -----------------------------------------------------------------------------
+  --**** MERGE PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE check_data(p_rse_he_id_1    IN     NUMBER   -- first section to merge
+                      ,p_rse_he_id_2    IN     NUMBER   -- second section to merge
+                      ,p_sect_no        IN     VARCHAR2 -- new section for result of merge
+                      ,p_effective_date IN     DATE     -- effective date of merge
+                      ,p_errors         IN OUT NUMBER
+                      ,p_error_string   IN OUT VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE merge_data(p_rse_he_id_new         IN NUMBER   -- new merged section
+                      ,p_rse_he_id_1           IN NUMBER   -- first section to merge
+                      ,p_rse_he_id_2           IN NUMBER   -- second section to merge
+                      ,p_new_starting_section  IN NUMBER   -- number of the section from which the start of the datum/route is measured either 1 or 2
+                      ,p_flip_cardinality_of_2 IN VARCHAR2 -- flag if cardinality of section 1 was flipped
+                      ,p_effective_date        IN DATE);   -- effective date of merge
+
+  --
+  -----------------------------------------------------------------------------
+  --**** UNMERGE PROCEDURES *****
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE check_data_unmerge(p_id            IN     NUMBER   -- section to be unmerged
+                              ,p_actioned_date IN     VARCHAR2
+                              ,p_errors        IN OUT NUMBER
+                              ,p_error_string  IN OUT VARCHAR2);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PROCEDURE unmerge_data(p_id           IN NUMBER -- section to be unmerged
+                        ,p_rse_he_id_1  IN NUMBER -- first unmerged section
+                        ,p_rse_he_id_2  IN NUMBER -- second unmerged section
+                        ,p_history_date IN DATE);
+
+  --
+  -----------------------------------------------------------------------------
+  --
+  PRAGMA RESTRICT_REFERENCES(get_version, RNDS, WNPS, WNDS);
+  PRAGMA RESTRICT_REFERENCES(get_body_version, RNDS, WNPS, WNDS);
+  --
+END maimerge;
+/

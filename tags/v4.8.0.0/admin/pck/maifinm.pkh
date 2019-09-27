@@ -1,0 +1,56 @@
+CREATE OR REPLACE PACKAGE maifinm AS
+-- MAINTENANCE MANAGER financial / discounts application generic utilities
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maifinm.pkh-arc   2.3   Sep 27 2019 14:40:20   Chris.Baugh  $
+--       Module Name      : $Workfile:   maifinm.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:30:06  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)maifinm.pck	1.1 06/17/99'
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="calc_discount">
+    FUNCTION calc_discount(
+             p_disc_group  in  contractor_disc_bands.cnb_cng_disc_group%TYPE
+            ,p_cost        in  work_orders.wor_act_cost%TYPE) return number;
+--
+--</PROC>
+------------------------------------------------------------------------------
+--
+--<PRAGMA>
+   PRAGMA RESTRICT_REFERENCES( calc_discount, WNDS, WNPS, RNPS);
+--
+--</PRAGMA>
+------------------------------------------------------------------------------
+end maifinm;
+/

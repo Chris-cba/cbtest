@@ -1,0 +1,66 @@
+CREATE OR REPLACE package maiclose is
+--<PACKAGE>
+-----------------------------------------------------------------------------
+--
+--   PVCS Identifiers :-
+--
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/maiclose.pkh-arc   2.3   Sep 27 2019 14:40:20   Chris.Baugh  $
+--       Module Name      : $Workfile:   maiclose.pkh  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:40:20  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:29:24  $
+--       SCCS Version     : $Revision:   2.3  $
+--       Based onSCCS Version     : 1.1
+--
+-----------------------------------------------------------------------------
+--   Originally taken from '@(#)maiclose.pck	1.2 02/16/98';
+-----------------------------------------------------------------------------
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
+-----------------------------------------------------------------------------
+--</PACKAGE>
+--<GLOBVAR>
+    g_sccsid      CONSTANT  VARCHAR2(2000) := '$Revision:   2.3  $';
+--  g_sccsid is the SCCS ID for the package
+--</GLOBVAR>
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_VERSION">
+-- This function returns the current SCCS version
+FUNCTION get_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+--<PROC NAME="GET_BODY_VERSION">
+-- This function returns the current SCCS version of the package body
+FUNCTION get_body_version RETURN VARCHAR2;
+--</PROC>
+--
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="check_data">
+    procedure check_data
+         (p_id 		   in		number,
+	  p_effective_date in		date,
+	  p_errors	   in out	number,
+	  p_error_string   in out	varchar2);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="close_data">
+    procedure close_data
+        (p_id 		   in	number,
+         p_effective_date in	date);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+--
+-- <PROC NAME="unclose_data">
+    procedure unclose_data
+	(p_id       		in     	number,	      -- section to be unclosed
+	 p_history_date 	in     	varchar2);
+--
+-- </PROC>
+-----------------------------------------------------------------------------
+end maiclose;
+/
