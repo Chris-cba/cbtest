@@ -3,20 +3,20 @@ CREATE OR REPLACE package body mai2325 as
 --
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai2325.pkb-arc   2.2   Jun 27 2018 13:06:32   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/admin/pck/mai2325.pkb-arc   2.3   Sep 27 2019 14:39:58   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai2325.pkb  $
---       Date into SCCS   : $Date:   Jun 27 2018 13:06:32  $
---       Date fetched Out : $Modtime:   Jun 27 2018 12:06:34  $
---       SCCS Version     : $Revision:   2.2  $
+--       Date into SCCS   : $Date:   Sep 27 2019 14:39:58  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 14:26:42  $
+--       SCCS Version     : $Revision:   2.3  $
 --       Based on SCCS Version     : 1.1
 --
 -----------------------------------------------------------------------------
 --   Originally taken from '@(#)mai2325.pck	1.7 06/06/02'
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--   Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 --
-g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.2  $"';
+g_body_sccsid  CONSTANT varchar2(2000) := '"$Revision:   2.3  $"';
 
 -----------------------------------------------------------------------------
 --
