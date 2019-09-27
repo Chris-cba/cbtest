@@ -7,15 +7,15 @@ DECLARE
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/wo_claims.trg-arc   3.2   Jun 28 2018 04:36:42   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/admin/trg/wo_claims.trg-arc   3.3   Sep 27 2019 15:18:08   Chris.Baugh  $
 --       Module Name      : $Workfile:   wo_claims.trg  $
---       Date into PVCS   : $Date:   Jun 28 2018 04:36:42  $
---       Date fetched Out : $Modtime:   Jun 28 2018 04:35:46  $
---       Version          : $Revision:   3.2  $
+--       Date into PVCS   : $Date:   Sep 27 2019 15:18:08  $
+--       Date fetched Out : $Modtime:   Sep 27 2019 15:17:02  $
+--       Version          : $Revision:   3.3  $
 --
 --
 -----------------------------------------------------------------------------
---    Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+--    Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
 
   l_today       date := sysdate;
