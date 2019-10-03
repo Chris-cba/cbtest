@@ -1,17 +1,16 @@
 -----------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai.con-arc   2.12   Jun 28 2018 07:41:58   Gaurav.Gaurkar  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai.con-arc   2.13   Oct 03 2019 08:51:32   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai.con  $
---       Date into PVCS   : $Date:   Jun 28 2018 07:41:58  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       PVCS Version     : $Revision:   2.12  $
+--       Date into PVCS   : $Date:   Oct 03 2019 08:51:32  $
+--       Date fetched Out : $Modtime:   Oct 03 2019 08:50:42  $
+--       PVCS Version     : $Revision:   2.13  $
 --
 -----------------------------------------------------------------------------
--- Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-- Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
---
--- Generated for Oracle 10g on Tue Oct 22  10:48:24 2013 by Server Generator 10.1.2.9.28
+---- Generated for Oracle 10g on Wed Oct 02  10:29:01 2019 by Server Generator 10.1.2.9.28
   
 PROMPT Creating Primary Key on 'ACTIVITIES'
 ALTER TABLE ACTIVITIES
@@ -70,6 +69,13 @@ ALTER TABLE MAI_BUDGET_ALLOCATIONS
  ADD (CONSTRAINT MBA_PK PRIMARY KEY 
   (MBA_NIT_INV_TYPE
   ,MBA_NE_ID))
+/
+
+PROMPT Creating Primary Key on 'MAI_CONTRACT_BREAKDOWN'
+ALTER TABLE MAI_CONTRACT_BREAKDOWN
+ ADD (CONSTRAINT CBRR_PK PRIMARY KEY 
+  (CBRR_CON_CODE
+  ,CBRR_STA_ITEM_CODE))
 /
 
 PROMPT Creating Primary Key on 'MAI_DEF_SELECTION_TEMP'
@@ -263,7 +269,7 @@ PROMPT Creating Check Constraint on 'MAI_AUTO_WO_RULE_CRITERIA'
 ALTER TABLE MAI_AUTO_WO_RULE_CRITERIA
  ADD (CONSTRAINT MAWC_INCLUDE_TEMP_REPAIR_CHK CHECK (mawc_include_temp_repair IN ('Y','N')))
 /
-   
+    
 PROMPT Creating Check Constraint on 'MAI_GMIS_LOAD_BATCHES'
 ALTER TABLE MAI_GMIS_LOAD_BATCHES
  ADD (CONSTRAINT GLB_LOAD_ERR_CHK1 CHECK (glb_load_errors IN ('Y', 'N')))
