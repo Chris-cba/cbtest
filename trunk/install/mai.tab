@@ -1,9 +1,17 @@
--- C:\mhtemp\mai.tab
+-----------------------------------------------------------------------------
+--   PVCS Identifiers :-
 --
--- Generated for Oracle 10g on Wed Oct 23  09:28:57 2013 by Server Generator 10.1.2.9.28
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai.tab-arc   2.35   Oct 03 2019 08:55:06   Chris.Baugh  $
+--       Module Name      : $Workfile:   mai.tab  $
+--       Date into PVCS   : $Date:   Oct 03 2019 08:55:06  $
+--       Date fetched Out : $Modtime:   Oct 03 2019 08:54:30  $
+--       PVCS Version     : $Revision:   2.35  $
+--
 -----------------------------------------------------------------------------
---   Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
+-- Copyright (c) 2019 Bentley Systems Incorporated. All rights reserved.
 -----------------------------------------------------------------------------
+---- Generated for Oracle 10g on Wed Oct 02  10:29:00 2019 by Server Generator 10.1.2.9.28
+ 
 
 
 PROMPT Creating Table 'ACTIVITIES'
@@ -353,6 +361,7 @@ CREATE TABLE CONTRACTS
  ,CON_RECALC_DUE_DATE VARCHAR2(1)
  ,CON_ALLOW_PERC_UPLIFT VARCHAR2(1)
  ,CON_INCLUDE_IN_CIM VARCHAR2(1)
+ ,CON_BREAKDOWN VARCHAR2(1)
  )
 /
 
@@ -1926,6 +1935,7 @@ CREATE TABLE MAI_AUTO_WO_RULES
  ,MAWR_DATE_CREATED DATE NOT NULL
  ,MAWR_MODIFIED_BY VARCHAR2(30) NOT NULL
  ,MAWR_DATE_MODIFIED DATE NOT NULL
+ ,MAWR_USE_INSPECTION_DATE VARCHAR2(1)
  )
 /
 
@@ -2048,6 +2058,24 @@ CREATE TABLE MAI_BUDGET_ALLOCATIONS
 /
 
 COMMENT ON TABLE MAI_BUDGET_ALLOCATIONS IS 'Table To Map Inventory Items That Are Not Located On The Network To Default Elements Created Within The Required Budget Group.'
+/
+
+PROMPT Creating Table 'MAI_CONTRACT_BREAKDOWN'
+CREATE TABLE MAI_CONTRACT_BREAKDOWN
+ (CBRR_CON_CODE VARCHAR2(10) NOT NULL
+ ,CBRR_STA_ITEM_CODE VARCHAR2(10) NOT NULL
+ ,CBRR_VALUE1 NUMBER(10,2)
+ ,CBRR_VALUE2 NUMBER(10,2)
+ ,CBRR_VALUE3 NUMBER(10,2)
+ ,CBRR_VALUE4 NUMBER(10,2)
+ ,CBRR_VALUE5 NUMBER(10,2)
+ ,CBRR_VALUE6 NUMBER(10,2)
+ ,CBRR_VALUE7 NUMBER(10,2)
+ ,CBRR_VALUE8 NUMBER(10,2)
+ ,CBRR_VALUE9 NUMBER(10,2)
+ ,CBRR_VALUE10 NUMBER(10,2)
+ ,CBRR_ERROR VARCHAR2(4000)
+ )
 /
 
 PROMPT Creating Table 'MAI_DEF_SELECTION_TEMP'
