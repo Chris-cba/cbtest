@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_install.sql-arc   2.25   Jun 28 2018 07:41:56   Gaurav.Gaurkar  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_install.sql-arc   2.26   Oct 10 2019 09:23:40   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Jun 28 2018 07:41:56  $
---       Date fetched Out : $Modtime:   Jun 28 2018 07:40:36  $
---       PVCS Version     : $Revision:   2.25  $
+--       Date into PVCS   : $Date:   Oct 10 2019 09:23:40  $
+--       Date fetched Out : $Modtime:   Oct 03 2019 10:44:54  $
+--       PVCS Version     : $Revision:   2.26  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
@@ -121,11 +121,11 @@ END;
 /
 
 --
--- Check that HIG has been installed @ v4.7.0.0, as MAI is dependent this
+-- Check that HIG has been installed @ v4.8.0.0, as MAI is dependent this
 --
 BEGIN
  hig2.product_exists_at_version (p_product        => 'HIG'
-                                ,p_VERSION        => '4.7.0.0'
+                                ,p_VERSION        => '4.8.0.0'
                                 );
 END;
 /
@@ -429,8 +429,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.7.0.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.7.0.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.8.0.0');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.8.0.0');
 END;
 /
 COMMIT;
