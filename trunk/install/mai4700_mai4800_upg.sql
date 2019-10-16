@@ -3,11 +3,11 @@
 --
 --   PVCS Identifiers :-
 --
---       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai4700_mai4800_upg.sql-arc   1.0   Oct 10 2019 09:29:14   Chris.Baugh  $
+--       PVCS id          : $Header:   //new_vm_latest/archives/mai/install/mai4700_mai4800_upg.sql-arc   1.1   Oct 16 2019 15:42:28   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai4700_mai4800_upg.sql  $
---       Date into PVCS   : $Date:   Oct 10 2019 09:29:14  $
---       Date fetched Out : $Modtime:   Oct 03 2019 11:02:40  $
---       Version          : $Revision:   1.0  $
+--       Date into PVCS   : $Date:   Oct 16 2019 15:42:28  $
+--       Date fetched Out : $Modtime:   Oct 16 2019 15:41:16  $
+--       Version          : $Revision:   1.1  $
 --
 --   Product upgrade script
 --
@@ -227,7 +227,7 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai4700_mai4800_upg.sql','Upgrade from 4.7.0.0 to 4.8.0.0','4.8.0.0');
+      hig2.upgrade('MAI','mai4700_mai4800_upg.sql','Upgrade from 4.7.0.0 to 4.8.0.0','4.8.0.1');
 END;
 /
 COMMIT;
