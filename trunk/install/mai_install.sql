@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
 --   PVCS Identifiers :-
 --
---       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_install.sql-arc   2.26   Oct 10 2019 09:23:40   Chris.Baugh  $
+--       sccsid           : $Header:   //new_vm_latest/archives/mai/install/mai_install.sql-arc   2.27   Oct 16 2019 15:43:24   Chris.Baugh  $
 --       Module Name      : $Workfile:   mai_install.sql  $
---       Date into PVCS   : $Date:   Oct 10 2019 09:23:40  $
---       Date fetched Out : $Modtime:   Oct 03 2019 10:44:54  $
---       PVCS Version     : $Revision:   2.26  $
+--       Date into PVCS   : $Date:   Oct 16 2019 15:43:24  $
+--       Date fetched Out : $Modtime:   Oct 16 2019 15:42:58  $
+--       PVCS Version     : $Revision:   2.27  $
 --
 --------------------------------------------------------------------------------
 -- Copyright (c) 2018 Bentley Systems Incorporated. All rights reserved.
@@ -429,8 +429,8 @@ SET TERM ON
 Prompt Setting The Version Number...
 SET TERM OFF
 BEGIN
-      hig2.upgrade('MAI','mai_install.sql','Installed','4.8.0.0');
-      hig2.upgrade('PMS','mai_install.sql','Installed','4.8.0.0');
+      hig2.upgrade('MAI','mai_install.sql','Installed','4.8.0.1');
+      hig2.upgrade('PMS','mai_install.sql','Installed','4.8.0.1');
 END;
 /
 COMMIT;
